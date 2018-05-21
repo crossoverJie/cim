@@ -1,5 +1,6 @@
 package com.crossoverjie.netty.action;
 
+import com.crossoverjie.netty.action.server.HeartBeatServer;
 import io.netty.channel.ChannelFuture;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,6 +17,8 @@ public class Application implements CommandLineRunner{
 
 	private final static Logger LOGGER = LoggerFactory.getLogger(Application.class);
 
+	@Autowired
+	private HeartBeatServer heartBeatServer ;
 
 	public static void main(String[] args) {
         SpringApplication.run(Application.class, args);
@@ -24,6 +27,15 @@ public class Application implements CommandLineRunner{
 
 	@Override
 	public void run(String... args) throws Exception {
+		ChannelFuture future = heartBeatServer.start();
 
+		Runtime.getRuntime().addShutdownHook(new Thread(){
+			@Override
+			public void run() {
+				heartBeatServer.destroy();
+			}
+		});
+
+		future.channel().closeFuture().syncUninterruptibly() ;
 	}
 }

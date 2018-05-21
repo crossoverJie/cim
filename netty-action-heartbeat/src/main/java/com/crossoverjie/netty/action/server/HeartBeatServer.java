@@ -12,6 +12,7 @@ import io.netty.handler.timeout.IdleStateHandler;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.stereotype.Component;
 
 import java.net.InetSocketAddress;
 
@@ -22,30 +23,36 @@ import java.net.InetSocketAddress;
  *         Date: 21/05/2018 00:30
  * @since JDK 1.8
  */
-@Configuration
+@Component
 public class HeartBeatServer {
 
-    @Bean
-    public ChannelFuture buildFuture() {
+    private EventLoopGroup boss = new NioEventLoopGroup();
+    private EventLoopGroup work = new NioEventLoopGroup();
 
-        EventLoopGroup boss = new NioEventLoopGroup();
-        EventLoopGroup work = new NioEventLoopGroup();
 
-        try {
+    /**
+     * 启动 Netty
+     * @return
+     * @throws InterruptedException
+     */
+    public ChannelFuture start() throws InterruptedException {
 
-            ServerBootstrap bootstrap = new ServerBootstrap()
-                    .group(boss, work)
-                    .channel(NioServerSocketChannel.class)
-                    .localAddress(new InetSocketAddress(11211))
-                    .childHandler(new HeartbeatInitializer());
+        ServerBootstrap bootstrap = new ServerBootstrap()
+                .group(boss, work)
+                .channel(NioServerSocketChannel.class)
+                .localAddress(new InetSocketAddress(11211))
+                .childHandler(new HeartbeatInitializer());
 
-            ChannelFuture future = bootstrap.bind().sync();
-            future.channel().closeFuture().sync();
-            return future;
-        } catch (InterruptedException e) {
-        } finally {
-        }
+        ChannelFuture future = bootstrap.bind().sync();
+        return future;
+    }
 
-        return null;
+
+    /**
+     * 销毁
+     */
+    public void destroy(){
+        boss.shutdownGracefully() ;
+        work.shutdownGracefully() ;
     }
 }
