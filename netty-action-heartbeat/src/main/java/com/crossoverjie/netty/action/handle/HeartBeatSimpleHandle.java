@@ -44,6 +44,10 @@ public class HeartBeatSimpleHandle extends SimpleChannelInboundHandler<CustomPro
     }
 
     @Override
+    public void channelActive(ChannelHandlerContext ctx) throws Exception {
+    }
+
+    @Override
     protected void channelRead0(ChannelHandlerContext ctx, CustomProtocol customProtocol) throws Exception {
         LOGGER.info("customProtocol={}", customProtocol);
 
