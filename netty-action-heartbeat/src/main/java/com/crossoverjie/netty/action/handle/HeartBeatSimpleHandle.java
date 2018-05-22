@@ -1,10 +1,15 @@
 package com.crossoverjie.netty.action.handle;
 
 import com.crossoverjie.netty.action.common.pojo.CustomProtocol;
+import com.crossoverjie.netty.action.common.util.RandomUtil;
+import com.crossoverjie.netty.action.util.NettySocketHolder;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
+import io.netty.channel.socket.SocketChannel;
+import io.netty.channel.socket.nio.NioServerSocketChannel;
+import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.handler.timeout.IdleState;
 import io.netty.handler.timeout.IdleStateEvent;
 import io.netty.util.CharsetUtil;
@@ -32,7 +37,7 @@ public class HeartBeatSimpleHandle extends SimpleChannelInboundHandler<CustomPro
             if (idleStateEvent.state() == IdleState.READER_IDLE){
                 LOGGER.info("已经5秒没有收到信息！");
                 //向客户端发送消息
-                CustomProtocol customProtocol = new CustomProtocol(12345L,"pong") ;
+                CustomProtocol customProtocol = new CustomProtocol(RandomUtil.getRandom(),"pong") ;
                 ctx.writeAndFlush(Unpooled.copiedBuffer(customProtocol.toString(), CharsetUtil.UTF_8))
                         .addListener(ChannelFutureListener.CLOSE_ON_FAILURE) ;
             }
@@ -44,16 +49,9 @@ public class HeartBeatSimpleHandle extends SimpleChannelInboundHandler<CustomPro
     }
 
     @Override
-    public void channelActive(ChannelHandlerContext ctx) throws Exception {
-    }
-
-    @Override
     protected void channelRead0(ChannelHandlerContext ctx, CustomProtocol customProtocol) throws Exception {
         LOGGER.info("customProtocol={}", customProtocol);
 
-        //手动处理数据并返回
-        customProtocol.setHeader(customProtocol.getHeader() + 1000);
-        customProtocol.setContent(customProtocol.getContent() + "asdfg");
-        ctx.writeAndFlush(Unpooled.copiedBuffer(customProtocol.toString(), CharsetUtil.UTF_8));
+        NettySocketHolder.put(customProtocol.getId(),(NioSocketChannel)ctx.channel()) ;
     }
 }

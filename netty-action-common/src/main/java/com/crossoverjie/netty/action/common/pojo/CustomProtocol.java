@@ -9,15 +9,15 @@ package com.crossoverjie.netty.action.common.pojo;
  */
 public class CustomProtocol {
 
-    private long header ;
+    private long id ;
     private String content ;
 
-    public long getHeader() {
-        return header;
+    public long getId() {
+        return id;
     }
 
-    public void setHeader(long header) {
-        this.header = header;
+    public void setId(long id) {
+        this.id = id;
     }
 
     public String getContent() {
@@ -28,18 +28,18 @@ public class CustomProtocol {
         this.content = content;
     }
 
-    public CustomProtocol(long header, String content) {
-        this.header = header;
-        this.content = content;
+    public CustomProtocol() {
     }
 
-    public CustomProtocol() {
+    public CustomProtocol(long id, String content) {
+        this.id = id;
+        this.content = content;
     }
 
     @Override
     public String toString() {
         return "CustomProtocol{" +
-                "header=" + header +
+                "id=" + id +
                 ", content='" + content + '\'' +
                 '}';
     }

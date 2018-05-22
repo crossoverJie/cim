@@ -3,11 +3,15 @@ package com.crossoverjie.netty.action.server;
 import com.alibaba.fastjson.JSON;
 import com.crossoverjie.netty.action.channel.init.HeartbeatInitializer;
 import com.crossoverjie.netty.action.common.pojo.CustomProtocol;
+import com.crossoverjie.netty.action.util.NettySocketHolder;
 import io.netty.bootstrap.ServerBootstrap;
+import io.netty.buffer.Unpooled;
 import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
+import io.netty.channel.socket.nio.NioSocketChannel;
+import io.netty.util.CharsetUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -78,8 +82,13 @@ public class HeartBeatServer {
      * @param customProtocol
      */
     public void sendMsg(CustomProtocol customProtocol){
-        ChannelFuture future = channel.writeAndFlush(customProtocol);
+        NioSocketChannel socketChannel = NettySocketHolder.get(customProtocol.getId());
 
+        if (null == socketChannel){
+            throw new NullPointerException("没有["+customProtocol.getId()+"]的socketChannel") ;
+        }
+
+        ChannelFuture future = socketChannel.writeAndFlush(Unpooled.copiedBuffer(customProtocol.toString(), CharsetUtil.UTF_8));
         future.addListener((ChannelFutureListener) channelFuture ->
                 LOGGER.info("服务端手动发消息成功={}", JSON.toJSONString(customProtocol)));
     }

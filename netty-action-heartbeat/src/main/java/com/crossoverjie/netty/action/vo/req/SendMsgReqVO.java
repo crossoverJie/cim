@@ -1,4 +1,4 @@
-package com.crossoverjie.netty.action.client.vo.req;
+package com.crossoverjie.netty.action.vo.req;
 
 import com.crossoverjie.netty.action.common.req.BaseRequest;
 import io.swagger.annotations.ApiModelProperty;

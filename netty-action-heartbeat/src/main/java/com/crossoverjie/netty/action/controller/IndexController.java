@@ -40,7 +40,7 @@ public class IndexController {
     @ResponseBody
     public BaseResponse<SendMsgResVO> sendMsg(@RequestBody SendMsgReqVO sendMsgReqVO){
         BaseResponse<SendMsgResVO> res = new BaseResponse();
-        heartbeatClient.sendMsg(new CustomProtocol(RandomUtil.getRandom(),sendMsgReqVO.getMsg())) ;
+        heartbeatClient.sendMsg(new CustomProtocol(sendMsgReqVO.getId(),sendMsgReqVO.getMsg())) ;
 
         SendMsgResVO sendMsgResVO = new SendMsgResVO() ;
         sendMsgResVO.setMsg("OK") ;
