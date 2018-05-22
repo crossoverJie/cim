@@ -1,4 +1,4 @@
-package com.crossoverjie.netty.action.client.handle;
+package com.crossoverjie.netty.action.handle;
 
 import com.crossoverjie.netty.action.common.pojo.CustomProtocol;
 import io.netty.buffer.Unpooled;

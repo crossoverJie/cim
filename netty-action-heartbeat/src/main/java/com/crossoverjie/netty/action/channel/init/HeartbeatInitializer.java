@@ -1,7 +1,7 @@
-package com.crossoverjie.netty.action.client.channel.init;
+package com.crossoverjie.netty.action.channel.init;
 
-import com.crossoverjie.netty.action.client.handle.HeartBeatSimpleHandle;
-import com.crossoverjie.netty.action.client.decoder.HeartbeatDecoder;
+import com.crossoverjie.netty.action.handle.HeartBeatSimpleHandle;
+import com.crossoverjie.netty.action.decoder.HeartbeatDecoder;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelInitializer;
 import io.netty.handler.timeout.IdleStateHandler;

@@ -1,4 +1,4 @@
-package com.crossoverjie.netty.action.client;
+package com.crossoverjie.netty.action;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

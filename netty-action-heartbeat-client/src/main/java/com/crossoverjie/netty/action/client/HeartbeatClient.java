@@ -1,9 +1,11 @@
 package com.crossoverjie.netty.action.client;
 
+import com.alibaba.fastjson.JSON;
 import com.crossoverjie.netty.action.client.init.CustomerHandleInitializer;
 import com.crossoverjie.netty.action.common.pojo.CustomProtocol;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
@@ -58,6 +60,9 @@ public class HeartbeatClient {
      * @param customProtocol
      */
     public void sendMsg(CustomProtocol customProtocol){
-        channel.writeAndFlush(customProtocol) ;
+        ChannelFuture future = channel.writeAndFlush(customProtocol);
+        future.addListener((ChannelFutureListener) channelFuture ->
+                LOGGER.info("手动发消息成功={}", JSON.toJSONString(customProtocol)));
+
     }
 }

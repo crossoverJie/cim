@@ -1,6 +1,7 @@
-package com.crossoverjie.netty.action.client.server;
+package com.crossoverjie.netty.action.server;
 
-import com.crossoverjie.netty.action.client.channel.init.HeartbeatInitializer;
+import com.crossoverjie.netty.action.channel.init.HeartbeatInitializer;
+import com.crossoverjie.netty.action.common.pojo.CustomProtocol;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
@@ -34,7 +35,7 @@ public class HeartBeatServer {
     @Value("${netty.server.port}")
     private int nettyPort ;
 
-    private SocketChannel channel ;
+    private NioServerSocketChannel channel ;
 
     /**
      * 启动 Netty
@@ -56,7 +57,7 @@ public class HeartBeatServer {
         if (future.isSuccess()){
             LOGGER.info("启动 Netty 成功");
         }
-        channel = (SocketChannel) future.channel() ;
+        channel = (NioServerSocketChannel) future.channel() ;
     }
 
 
@@ -68,5 +69,14 @@ public class HeartBeatServer {
         boss.shutdownGracefully().syncUninterruptibly() ;
         work.shutdownGracefully().syncUninterruptibly() ;
         LOGGER.info("关闭 Netty 成功");
+    }
+
+
+    /**
+     * 发送消息
+     * @param customProtocol
+     */
+    public void sendMsg(CustomProtocol customProtocol){
+        channel.writeAndFlush(customProtocol) ;
     }
 }

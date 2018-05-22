@@ -1,4 +1,4 @@
-package com.crossoverjie.netty.action.client.decoder;
+package com.crossoverjie.netty.action.decoder;
 
 import com.crossoverjie.netty.action.common.pojo.CustomProtocol;
 import io.netty.buffer.ByteBuf;

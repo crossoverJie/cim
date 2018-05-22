@@ -2,8 +2,8 @@ package com.crossoverjie.netty.action.common.res;
 
 
 
-import com.crossoverjie.netty.action.common.enums.StatusEnum;
 import com.crossoverjie.netty.action.common.util.StringUtil;
+import com.crossoverjie.netty.action.common.enums.StatusEnum;
 
 import java.io.Serializable;
 
