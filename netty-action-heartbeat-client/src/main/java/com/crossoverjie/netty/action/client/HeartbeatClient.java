@@ -38,7 +38,7 @@ public class HeartbeatClient {
     @Value("${netty.server.host}")
     private String host;
 
-    private SocketChannel channel ;
+    private SocketChannel channel;
 
     @PostConstruct
     public void start() throws InterruptedException {
@@ -57,12 +57,13 @@ public class HeartbeatClient {
 
     /**
      * 发送消息
+     *
      * @param customProtocol
      */
-    public void sendMsg(CustomProtocol customProtocol){
+    public void sendMsg(CustomProtocol customProtocol) {
         ChannelFuture future = channel.writeAndFlush(customProtocol);
         future.addListener((ChannelFutureListener) channelFuture ->
-                LOGGER.info("手动发消息成功={}", JSON.toJSONString(customProtocol)));
+                LOGGER.info("客户端手动发消息成功={}", JSON.toJSONString(customProtocol)));
 
     }
 }

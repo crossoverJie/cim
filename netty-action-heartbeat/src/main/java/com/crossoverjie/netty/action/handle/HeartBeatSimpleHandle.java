@@ -49,7 +49,7 @@ public class HeartBeatSimpleHandle extends SimpleChannelInboundHandler<CustomPro
 
         //手动处理数据并返回
         customProtocol.setHeader(customProtocol.getHeader() + 1000);
-        customProtocol.setContent(customProtocol.getContent() + 1000);
+        customProtocol.setContent(customProtocol.getContent() + "asdfg");
         ctx.writeAndFlush(Unpooled.copiedBuffer(customProtocol.toString(), CharsetUtil.UTF_8));
     }
 }

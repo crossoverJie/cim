@@ -1,5 +1,6 @@
 package com.crossoverjie.netty.action.server;
 
+import com.alibaba.fastjson.JSON;
 import com.crossoverjie.netty.action.channel.init.HeartbeatInitializer;
 import com.crossoverjie.netty.action.common.pojo.CustomProtocol;
 import io.netty.bootstrap.ServerBootstrap;
@@ -77,6 +78,9 @@ public class HeartBeatServer {
      * @param customProtocol
      */
     public void sendMsg(CustomProtocol customProtocol){
-        channel.writeAndFlush(customProtocol) ;
+        ChannelFuture future = channel.writeAndFlush(customProtocol);
+
+        future.addListener((ChannelFutureListener) channelFuture ->
+                LOGGER.info("服务端手动发消息成功={}", JSON.toJSONString(customProtocol)));
     }
 }

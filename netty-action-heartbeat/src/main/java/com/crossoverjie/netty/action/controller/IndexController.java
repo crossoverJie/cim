@@ -1,18 +1,20 @@
-package com.crossoverjie.netty.action.client.controller;
+package com.crossoverjie.netty.action.controller;
 
-import com.crossoverjie.netty.action.client.HeartbeatClient;
-import com.crossoverjie.netty.action.client.vo.req.SendMsgReqVO;
-import com.crossoverjie.netty.action.client.vo.res.SendMsgResVO;
 import com.crossoverjie.netty.action.common.enums.StatusEnum;
 import com.crossoverjie.netty.action.common.pojo.CustomProtocol;
 import com.crossoverjie.netty.action.common.res.BaseResponse;
 import com.crossoverjie.netty.action.common.util.RandomUtil;
+import com.crossoverjie.netty.action.server.HeartBeatServer;
+import com.crossoverjie.netty.action.vo.req.SendMsgReqVO;
+import com.crossoverjie.netty.action.vo.res.SendMsgResVO;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import java.util.UUID;
 
 /**
  * Function:
@@ -26,7 +28,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 public class IndexController {
 
     @Autowired
-    private HeartbeatClient heartbeatClient ;
+    private HeartBeatServer heartbeatClient ;
 
     /**
      * 向服务端发消息
