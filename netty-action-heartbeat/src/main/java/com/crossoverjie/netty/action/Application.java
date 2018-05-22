@@ -13,29 +13,13 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * @author crossoverJie
  */
 @SpringBootApplication
-public class Application implements CommandLineRunner{
+public class Application{
 
 	private final static Logger LOGGER = LoggerFactory.getLogger(Application.class);
-
-	@Autowired
-	private HeartBeatServer heartBeatServer ;
 
 	public static void main(String[] args) {
         SpringApplication.run(Application.class, args);
 		LOGGER.info("启动成功");
 	}
 
-	@Override
-	public void run(String... args) throws Exception {
-		ChannelFuture future = heartBeatServer.start();
-
-		Runtime.getRuntime().addShutdownHook(new Thread(){
-			@Override
-			public void run() {
-				heartBeatServer.destroy();
-			}
-		});
-
-		future.channel().closeFuture().syncUninterruptibly() ;
-	}
 }

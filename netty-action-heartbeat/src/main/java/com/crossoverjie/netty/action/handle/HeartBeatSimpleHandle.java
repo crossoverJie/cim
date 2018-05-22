@@ -2,6 +2,7 @@ package com.crossoverjie.netty.action.handle;
 
 import com.crossoverjie.netty.action.pojo.CustomProtocol;
 import io.netty.buffer.Unpooled;
+import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.handler.timeout.IdleState;
@@ -32,7 +33,8 @@ public class HeartBeatSimpleHandle extends SimpleChannelInboundHandler<CustomPro
                 LOGGER.info("已经5秒没有收到信息！");
                 //向客户端发送消息
                 CustomProtocol customProtocol = new CustomProtocol(12345L,"pong") ;
-                ctx.writeAndFlush(Unpooled.copiedBuffer(customProtocol.toString(), CharsetUtil.UTF_8)) ;
+                ctx.writeAndFlush(Unpooled.copiedBuffer(customProtocol.toString(), CharsetUtil.UTF_8))
+                        .addListener(ChannelFutureListener.CLOSE_ON_FAILURE) ;
             }
 
 
