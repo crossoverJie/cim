@@ -27,11 +27,20 @@
 
 	<modules>
 		<module>netty-action-heartbeat</module>
+		<module>netty-action-heartbeat-client</module>
+		<module>netty-action-common</module>
 	</modules>
 
 
 	<dependencyManagement>
 		<dependencies>
+
+			<dependency>
+				<groupId>com.crossoverjie.netty</groupId>
+				<artifactId>netty-action-common</artifactId>
+				<version>1.0.0-SNAPSHOT</version>
+			</dependency>
+
 			<dependency>
 				<groupId>io.netty</groupId>
 				<artifactId>netty-all</artifactId>

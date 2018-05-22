@@ -1,4 +1,4 @@
-package com.crossoverjie.netty.action.pojo;
+package com.crossoverjie.netty.action.common.pojo;
 
 /**
  * Function:

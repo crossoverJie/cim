@@ -1,17 +1,13 @@
-package com.crossoverjie.netty.action.server;
+package com.crossoverjie.netty.action.client.server;
 
-import com.crossoverjie.netty.action.Application;
-import com.crossoverjie.netty.action.channel.init.HeartbeatInitializer;
+import com.crossoverjie.netty.action.client.channel.init.HeartbeatInitializer;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
-import io.netty.handler.timeout.IdleStateHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Configurable;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
@@ -34,18 +30,21 @@ public class HeartBeatServer {
     private EventLoopGroup work = new NioEventLoopGroup();
 
 
+    @Value("${netty.server.port}")
+    private int nettyPort ;
+
     /**
      * 启动 Netty
      * @return
      * @throws InterruptedException
      */
     @PostConstruct
-    public ChannelFuture start() throws InterruptedException {
+    public void start() throws InterruptedException {
 
         ServerBootstrap bootstrap = new ServerBootstrap()
                 .group(boss, work)
                 .channel(NioServerSocketChannel.class)
-                .localAddress(new InetSocketAddress(11211))
+                .localAddress(new InetSocketAddress(nettyPort))
                 //保持长连接
                 .childOption(ChannelOption.SO_KEEPALIVE,true)
                 .childHandler(new HeartbeatInitializer());
@@ -54,8 +53,6 @@ public class HeartBeatServer {
         if (future.isSuccess()){
             LOGGER.info("启动 Netty 成功");
         }
-
-        return future;
     }
 
 

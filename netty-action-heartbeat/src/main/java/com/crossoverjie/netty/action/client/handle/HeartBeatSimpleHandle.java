@@ -1,6 +1,6 @@
-package com.crossoverjie.netty.action.handle;
+package com.crossoverjie.netty.action.client.handle;
 
-import com.crossoverjie.netty.action.pojo.CustomProtocol;
+import com.crossoverjie.netty.action.common.pojo.CustomProtocol;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;

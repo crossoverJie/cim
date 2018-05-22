@@ -1,6 +1,6 @@
-package com.crossoverjie.netty.action.decoder;
+package com.crossoverjie.netty.action.client.decoder;
 
-import com.crossoverjie.netty.action.pojo.CustomProtocol;
+import com.crossoverjie.netty.action.common.pojo.CustomProtocol;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.ByteToMessageDecoder;

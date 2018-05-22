@@ -8,7 +8,7 @@
         <artifactId>netty-action</artifactId>
         <version>1.0.0-SNAPSHOT</version>
     </parent>
-    <artifactId>netty-action-hearbeat</artifactId>
+    <artifactId>netty-action-heartbeat-client</artifactId>
     <packaging>jar</packaging>
 
     <properties>
