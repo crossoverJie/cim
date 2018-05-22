@@ -17,8 +17,6 @@ public class HeartbeatClientApplication implements CommandLineRunner{
 	private final static Logger LOGGER = LoggerFactory.getLogger(HeartbeatClientApplication.class);
 
 
-	@Autowired
-	private HeartbeatClient heartbeatClient ;
 
 	public static void main(String[] args) {
         SpringApplication.run(HeartbeatClientApplication.class, args);
@@ -27,6 +25,5 @@ public class HeartbeatClientApplication implements CommandLineRunner{
 
 	@Override
 	public void run(String... args) throws Exception {
-		heartbeatClient.sendMsg(new CustomProtocol(999999L,"ping"));
 	}
 }

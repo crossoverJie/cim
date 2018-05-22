@@ -4,6 +4,7 @@ import com.crossoverjie.netty.action.client.channel.init.HeartbeatInitializer;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
+import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,6 +34,8 @@ public class HeartBeatServer {
     @Value("${netty.server.port}")
     private int nettyPort ;
 
+    private SocketChannel channel ;
+
     /**
      * 启动 Netty
      * @return
@@ -53,6 +56,7 @@ public class HeartBeatServer {
         if (future.isSuccess()){
             LOGGER.info("启动 Netty 成功");
         }
+        channel = (SocketChannel) future.channel() ;
     }
 
 
