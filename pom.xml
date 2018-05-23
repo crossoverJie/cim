@@ -30,6 +30,7 @@
 		<module>netty-action-heartbeat</module>
 		<module>netty-action-heartbeat-client</module>
 		<module>netty-action-common</module>
+		<module>springboot-admin</module>
 	</modules>
 
 
