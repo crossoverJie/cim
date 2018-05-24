@@ -3,6 +3,7 @@ package com.crossoverjie.netty.action.handle;
 import com.crossoverjie.netty.action.common.pojo.CustomProtocol;
 import com.crossoverjie.netty.action.common.util.RandomUtil;
 import com.crossoverjie.netty.action.util.NettySocketHolder;
+import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
@@ -27,6 +28,19 @@ public class HeartBeatSimpleHandle extends SimpleChannelInboundHandler<CustomPro
 
     private final static Logger LOGGER = LoggerFactory.getLogger(HeartBeatSimpleHandle.class);
 
+    private static final ByteBuf HEART_BEAT =  Unpooled.unreleasableBuffer(Unpooled.copiedBuffer(new CustomProtocol(123456L,"pong").toString(),CharsetUtil.UTF_8));
+
+
+    /**
+     * 取消绑定
+     * @param ctx
+     * @throws Exception
+     */
+    @Override
+    public void channelInactive(ChannelHandlerContext ctx) throws Exception {
+
+        NettySocketHolder.remove((NioSocketChannel) ctx.channel());
+    }
 
     @Override
     public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
@@ -37,9 +51,7 @@ public class HeartBeatSimpleHandle extends SimpleChannelInboundHandler<CustomPro
             if (idleStateEvent.state() == IdleState.READER_IDLE){
                 LOGGER.info("已经5秒没有收到信息！");
                 //向客户端发送消息
-                CustomProtocol customProtocol = new CustomProtocol(RandomUtil.getRandom(),"pong") ;
-                ctx.writeAndFlush(Unpooled.copiedBuffer(customProtocol.toString(), CharsetUtil.UTF_8))
-                        .addListener(ChannelFutureListener.CLOSE_ON_FAILURE) ;
+                ctx.writeAndFlush(HEART_BEAT) ;
             }
 
 
@@ -50,7 +62,7 @@ public class HeartBeatSimpleHandle extends SimpleChannelInboundHandler<CustomPro
 
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, CustomProtocol customProtocol) throws Exception {
-        LOGGER.info("customProtocol={}", customProtocol);
+        LOGGER.info("收到customProtocol={}", customProtocol);
 
         NettySocketHolder.put(customProtocol.getId(),(NioSocketChannel)ctx.channel()) ;
     }

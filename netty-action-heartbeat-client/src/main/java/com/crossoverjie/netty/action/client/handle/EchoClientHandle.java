@@ -1,5 +1,6 @@
 package com.crossoverjie.netty.action.client.handle;
 
+import com.crossoverjie.netty.action.client.util.SpringBeanFactory;
 import com.crossoverjie.netty.action.common.pojo.CustomProtocol;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -23,6 +24,7 @@ public class EchoClientHandle extends SimpleChannelInboundHandler<ByteBuf> {
     private final static Logger LOGGER = LoggerFactory.getLogger(EchoClientHandle.class);
 
 
+
     @Override
     public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
 
@@ -31,9 +33,9 @@ public class EchoClientHandle extends SimpleChannelInboundHandler<ByteBuf> {
 
             if (idleStateEvent.state() == IdleState.WRITER_IDLE){
                 LOGGER.info("已经 10 秒没有发送信息！");
-                //向客户端发送消息
-                CustomProtocol customProtocol = new CustomProtocol(45678L,"ping") ;
-                ctx.writeAndFlush(Unpooled.copiedBuffer(customProtocol.toString(), CharsetUtil.UTF_8)) ;
+                //向服务端发送消息
+                CustomProtocol heartBeat = SpringBeanFactory.getBean("heartBeat", CustomProtocol.class);
+                ctx.writeAndFlush(heartBeat) ;
             }
 
 

@@ -3,12 +3,14 @@ package com.crossoverjie.netty.action.client.controller;
 import com.crossoverjie.netty.action.client.HeartbeatClient;
 import com.crossoverjie.netty.action.client.vo.req.SendMsgReqVO;
 import com.crossoverjie.netty.action.client.vo.res.SendMsgResVO;
+import com.crossoverjie.netty.action.common.constant.Constants;
 import com.crossoverjie.netty.action.common.enums.StatusEnum;
 import com.crossoverjie.netty.action.common.pojo.CustomProtocol;
 import com.crossoverjie.netty.action.common.res.BaseResponse;
 import com.crossoverjie.netty.action.common.util.RandomUtil;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.actuate.metrics.CounterService;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -25,6 +27,12 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @RequestMapping("/")
 public class IndexController {
 
+    /**
+     * 统计 service
+     */
+    @Autowired
+    private CounterService counterService;
+
     @Autowired
     private HeartbeatClient heartbeatClient ;
 
@@ -33,12 +41,14 @@ public class IndexController {
      * @param sendMsgReqVO
      * @return
      */
-    @ApiOperation("发送消息")
+    @ApiOperation("客户端发送消息")
     @RequestMapping("sendMsg")
     @ResponseBody
     public BaseResponse<SendMsgResVO> sendMsg(@RequestBody SendMsgReqVO sendMsgReqVO){
         BaseResponse<SendMsgResVO> res = new BaseResponse();
         heartbeatClient.sendMsg(new CustomProtocol(sendMsgReqVO.getId(),sendMsgReqVO.getMsg())) ;
+
+        counterService.increment(Constants.COUNTER_CLIENT_PUSH_COUNT);
 
         SendMsgResVO sendMsgResVO = new SendMsgResVO() ;
         sendMsgResVO.setMsg("OK") ;

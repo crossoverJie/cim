@@ -1,5 +1,7 @@
 package com.crossoverjie.netty.action.common.pojo;
 
+import java.io.Serializable;
+
 /**
  * Function:
  *
@@ -7,8 +9,9 @@ package com.crossoverjie.netty.action.common.pojo;
  *         Date: 17/05/2018 17:50
  * @since JDK 1.8
  */
-public class CustomProtocol {
+public class CustomProtocol implements Serializable{
 
+    private static final long serialVersionUID = 4671171056588401542L;
     private long id ;
     private String content ;
 

@@ -38,12 +38,13 @@ public class HeartBeatServer {
 
 
     @Value("${netty.server.port}")
-    private int nettyPort ;
+    private int nettyPort;
 
-    private NioServerSocketChannel channel ;
+    private NioServerSocketChannel channel;
 
     /**
      * 启动 Netty
+     *
      * @return
      * @throws InterruptedException
      */
@@ -55,14 +56,14 @@ public class HeartBeatServer {
                 .channel(NioServerSocketChannel.class)
                 .localAddress(new InetSocketAddress(nettyPort))
                 //保持长连接
-                .childOption(ChannelOption.SO_KEEPALIVE,true)
+                .childOption(ChannelOption.SO_KEEPALIVE, true)
                 .childHandler(new HeartbeatInitializer());
 
         ChannelFuture future = bootstrap.bind().sync();
-        if (future.isSuccess()){
+        if (future.isSuccess()) {
             LOGGER.info("启动 Netty 成功");
         }
-        channel = (NioServerSocketChannel) future.channel() ;
+        channel = (NioServerSocketChannel) future.channel();
     }
 
 
@@ -70,22 +71,23 @@ public class HeartBeatServer {
      * 销毁
      */
     @PreDestroy
-    public void destroy(){
-        boss.shutdownGracefully().syncUninterruptibly() ;
-        work.shutdownGracefully().syncUninterruptibly() ;
+    public void destroy() {
+        boss.shutdownGracefully().syncUninterruptibly();
+        work.shutdownGracefully().syncUninterruptibly();
         LOGGER.info("关闭 Netty 成功");
     }
 
 
     /**
      * 发送消息
+     *
      * @param customProtocol
      */
-    public void sendMsg(CustomProtocol customProtocol){
+    public void sendMsg(CustomProtocol customProtocol) {
         NioSocketChannel socketChannel = NettySocketHolder.get(customProtocol.getId());
 
-        if (null == socketChannel){
-            throw new NullPointerException("没有["+customProtocol.getId()+"]的socketChannel") ;
+        if (null == socketChannel) {
+            throw new NullPointerException("没有[" + customProtocol.getId() + "]的socketChannel");
         }
 
         ChannelFuture future = socketChannel.writeAndFlush(Unpooled.copiedBuffer(customProtocol.toString(), CharsetUtil.UTF_8));
