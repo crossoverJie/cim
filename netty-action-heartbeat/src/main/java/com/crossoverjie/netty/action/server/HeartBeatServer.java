@@ -1,14 +1,13 @@
 package com.crossoverjie.netty.action.server;
 
 import com.alibaba.fastjson.JSON;
-import com.crossoverjie.netty.action.channel.init.HeartbeatInitializer;
+import com.crossoverjie.netty.action.init.HeartbeatInitializer;
 import com.crossoverjie.netty.action.common.pojo.CustomProtocol;
 import com.crossoverjie.netty.action.util.NettySocketHolder;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
-import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.util.CharsetUtil;

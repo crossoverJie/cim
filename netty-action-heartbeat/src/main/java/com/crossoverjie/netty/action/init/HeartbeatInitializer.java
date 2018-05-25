@@ -1,4 +1,4 @@
-package com.crossoverjie.netty.action.channel.init;
+package com.crossoverjie.netty.action.init;
 
 import com.crossoverjie.netty.action.handle.HeartBeatSimpleHandle;
 import com.crossoverjie.netty.action.decoder.HeartbeatDecoder;
