@@ -4,6 +4,7 @@ import com.crossoverjie.netty.action.client.util.SpringBeanFactory;
 import com.crossoverjie.netty.action.common.pojo.CustomProtocol;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
+import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.handler.timeout.IdleState;
@@ -35,7 +36,7 @@ public class EchoClientHandle extends SimpleChannelInboundHandler<ByteBuf> {
                 LOGGER.info("已经 10 秒没有发送信息！");
                 //向服务端发送消息
                 CustomProtocol heartBeat = SpringBeanFactory.getBean("heartBeat", CustomProtocol.class);
-                ctx.writeAndFlush(heartBeat) ;
+                ctx.writeAndFlush(heartBeat).addListener(ChannelFutureListener.CLOSE_ON_FAILURE) ;
             }
 
 
