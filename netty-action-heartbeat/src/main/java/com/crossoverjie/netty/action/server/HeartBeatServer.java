@@ -39,7 +39,6 @@ public class HeartBeatServer {
     @Value("${netty.server.port}")
     private int nettyPort;
 
-    private NioServerSocketChannel channel;
 
     /**
      * 启动 Netty
@@ -62,7 +61,6 @@ public class HeartBeatServer {
         if (future.isSuccess()) {
             LOGGER.info("启动 Netty 成功");
         }
-        channel = (NioServerSocketChannel) future.channel();
     }
 
 
