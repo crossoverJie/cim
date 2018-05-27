@@ -17,11 +17,11 @@ public class EndPointConfig {
 
 
     @Value("${monitor.channel.map.key}")
-    private String sortList;
+    private String channelMap;
 
     @Bean
     public CustomEndpoint buildEndPoint(){
-        CustomEndpoint customEndpoint = new CustomEndpoint(sortList) ;
+        CustomEndpoint customEndpoint = new CustomEndpoint(channelMap) ;
         return customEndpoint ;
     }
 }
