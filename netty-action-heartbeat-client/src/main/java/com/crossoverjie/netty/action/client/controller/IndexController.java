@@ -48,6 +48,7 @@ public class IndexController {
         BaseResponse<SendMsgResVO> res = new BaseResponse();
         heartbeatClient.sendMsg(new CustomProtocol(sendMsgReqVO.getId(),sendMsgReqVO.getMsg())) ;
 
+        // 利用 actuator 来自增
         counterService.increment(Constants.COUNTER_CLIENT_PUSH_COUNT);
 
         SendMsgResVO sendMsgResVO = new SendMsgResVO() ;
