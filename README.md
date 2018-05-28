@@ -5,7 +5,7 @@ Netty 实战相关
 
 ## TODO LIST
 
-[x] [Netty(一) SpringBoot 整合长连接心跳机制](https://crossoverjie.top/2018/05/24/netty/Netty(1)TCP-Heartbeat/)
+* [x] [Netty(一) SpringBoot 整合长连接心跳机制](https://crossoverjie.top/2018/05/24/netty/Netty(1)TCP-Heartbeat/)
 
 
 ## 安装
