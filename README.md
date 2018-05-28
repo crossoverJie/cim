@@ -37,7 +37,7 @@ java -jar netty-action-heartbeat-client-1.0.0-SNAPSHOT.jar --server.port=8083 --
 ![](https://ws4.sinaimg.cn/large/006tKfTcgy1frqfwembi6j31kw0o0dot.jpg)
 
 
-# Contact Author
+# 联系作者
 - [crossoverJie@gmail.com](mailto:crossoverJie@gmail.com)
 - 微信公众号
 
