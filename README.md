@@ -11,6 +11,8 @@ Netty 实战相关
 ## 安装
 
 ```shell
+git clone https://github.com/crossoverJie/netty-action.git
+
 cd netty-action
 
 mvn -Dmaven.test.skip=true clean package
