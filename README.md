@@ -36,3 +36,9 @@ java -jar netty-action-heartbeat-client-1.0.0-SNAPSHOT.jar --server.port=8083 --
 ![show](https://github.com/crossoverJie/netty-action/blob/master/pic/show.gif)
 ![](https://ws4.sinaimg.cn/large/006tKfTcgy1frqfwembi6j31kw0o0dot.jpg)
 
+
+# Contact Author
+- [crossoverJie@gmail.com](mailto:crossoverJie@gmail.com)
+- 微信公众号
+![weixinchat.jpg](https://crossoverjie.top/uploads/weixinchat.jpg)
+
