@@ -9,6 +9,7 @@ Netty 实战相关
 
 * [x] [Netty(一) SpringBoot 整合长连接心跳机制](https://crossoverjie.top/2018/05/24/netty/Netty(1)TCP-Heartbeat/)
 * [x] [Netty(二) 从线程模型的角度看 Netty 为什么是高性能的？](https://crossoverjie.top/2018/07/04/netty/Netty(2)Thread-model/)
+* [] 如何解决 TCP 的拆包、粘包？
 
 
 ## 安装
@@ -46,5 +47,5 @@ java -jar netty-action-heartbeat-client-1.0.0-SNAPSHOT.jar --server.port=8083 --
 - [crossoverJie@gmail.com](mailto:crossoverJie@gmail.com)
 - 微信公众号
 
-![](https://ws1.sinaimg.cn/large/006tKfTcly1frz6eaf3s4j308c0au0ss.jpg)
+![](https://ws1.sinaimg.cn/large/006tKfTcly1ftmfdo6mhmj30760760t7.jpg)
 
