@@ -9,7 +9,7 @@ Netty 实战相关
 
 * [x] [Netty(一) SpringBoot 整合长连接心跳机制](https://crossoverjie.top/2018/05/24/netty/Netty(1)TCP-Heartbeat/)
 * [x] [Netty(二) 从线程模型的角度看 Netty 为什么是高性能的？](https://crossoverjie.top/2018/07/04/netty/Netty(2)Thread-model/)
-* [] 如何解决 TCP 的拆包、粘包？
+* [ ] 如何解决 TCP 的拆包、粘包？
 
 
 ## 安装
