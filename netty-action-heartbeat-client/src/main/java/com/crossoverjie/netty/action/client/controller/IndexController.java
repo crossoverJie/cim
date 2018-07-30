@@ -2,17 +2,20 @@ package com.crossoverjie.netty.action.client.controller;
 
 import com.crossoverjie.netty.action.client.HeartbeatClient;
 import com.crossoverjie.netty.action.client.vo.req.SendMsgReqVO;
+import com.crossoverjie.netty.action.client.vo.req.StringReqVO;
 import com.crossoverjie.netty.action.client.vo.res.SendMsgResVO;
 import com.crossoverjie.netty.action.common.constant.Constants;
 import com.crossoverjie.netty.action.common.enums.StatusEnum;
 import com.crossoverjie.netty.action.common.pojo.CustomProtocol;
 import com.crossoverjie.netty.action.common.res.BaseResponse;
+import com.crossoverjie.netty.action.common.res.NULLBody;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.actuate.metrics.CounterService;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 /**
@@ -41,8 +44,8 @@ public class IndexController {
      * @return
      */
     @ApiOperation("客户端发送消息")
-    @RequestMapping("sendMsg")
-    @ResponseBody
+    @RequestMapping(value = "sendMsg",method = RequestMethod.POST)
+    @ResponseBody()
     public BaseResponse<SendMsgResVO> sendMsg(@RequestBody SendMsgReqVO sendMsgReqVO){
         BaseResponse<SendMsgResVO> res = new BaseResponse();
         heartbeatClient.sendMsg(new CustomProtocol(sendMsgReqVO.getId(),sendMsgReqVO.getMsg())) ;
@@ -60,15 +63,15 @@ public class IndexController {
 
     /**
      * 向服务端发消息 字符串
-     * @param msg
+     * @param stringReqVO
      * @return
      */
     @ApiOperation("客户端发送消息，字符串")
-    @RequestMapping("sendStringMsg")
+    @RequestMapping(value = "sendStringMsg", method = RequestMethod.POST)
     @ResponseBody
-    public BaseResponse<SendMsgResVO> sendStringMsg(@RequestBody String msg){
-        BaseResponse<SendMsgResVO> res = new BaseResponse();
-        heartbeatClient.sendStringMsg(msg) ;
+    public BaseResponse<NULLBody> sendStringMsg(@RequestBody StringReqVO stringReqVO){
+        BaseResponse<NULLBody> res = new BaseResponse();
+        heartbeatClient.sendStringMsg(stringReqVO.getMsg()) ;
 
         // 利用 actuator 来自增
         counterService.increment(Constants.COUNTER_CLIENT_PUSH_COUNT);
@@ -77,7 +80,6 @@ public class IndexController {
         sendMsgResVO.setMsg("OK") ;
         res.setCode(StatusEnum.SUCCESS.getCode()) ;
         res.setMessage(StatusEnum.SUCCESS.getMessage()) ;
-        res.setDataBody(sendMsgResVO) ;
         return res ;
     }
 }
