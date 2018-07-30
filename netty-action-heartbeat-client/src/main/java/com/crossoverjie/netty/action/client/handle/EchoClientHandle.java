@@ -1,14 +1,8 @@
 package com.crossoverjie.netty.action.client.handle;
 
-import com.crossoverjie.netty.action.client.util.SpringBeanFactory;
-import com.crossoverjie.netty.action.common.pojo.CustomProtocol;
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
-import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
-import io.netty.handler.timeout.IdleState;
-import io.netty.handler.timeout.IdleStateEvent;
 import io.netty.util.CharsetUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,7 +23,7 @@ public class EchoClientHandle extends SimpleChannelInboundHandler<ByteBuf> {
     @Override
     public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
 
-        if (evt instanceof IdleStateEvent){
+        /*if (evt instanceof IdleStateEvent){
             IdleStateEvent idleStateEvent = (IdleStateEvent) evt ;
 
             if (idleStateEvent.state() == IdleState.WRITER_IDLE){
@@ -40,7 +34,7 @@ public class EchoClientHandle extends SimpleChannelInboundHandler<ByteBuf> {
             }
 
 
-        }
+        }*/
 
         super.userEventTriggered(ctx, evt);
     }

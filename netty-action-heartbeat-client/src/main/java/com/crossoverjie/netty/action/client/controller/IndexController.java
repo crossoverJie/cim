@@ -7,7 +7,6 @@ import com.crossoverjie.netty.action.common.constant.Constants;
 import com.crossoverjie.netty.action.common.enums.StatusEnum;
 import com.crossoverjie.netty.action.common.pojo.CustomProtocol;
 import com.crossoverjie.netty.action.common.res.BaseResponse;
-import com.crossoverjie.netty.action.common.util.RandomUtil;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.actuate.metrics.CounterService;
@@ -47,6 +46,29 @@ public class IndexController {
     public BaseResponse<SendMsgResVO> sendMsg(@RequestBody SendMsgReqVO sendMsgReqVO){
         BaseResponse<SendMsgResVO> res = new BaseResponse();
         heartbeatClient.sendMsg(new CustomProtocol(sendMsgReqVO.getId(),sendMsgReqVO.getMsg())) ;
+
+        // 利用 actuator 来自增
+        counterService.increment(Constants.COUNTER_CLIENT_PUSH_COUNT);
+
+        SendMsgResVO sendMsgResVO = new SendMsgResVO() ;
+        sendMsgResVO.setMsg("OK") ;
+        res.setCode(StatusEnum.SUCCESS.getCode()) ;
+        res.setMessage(StatusEnum.SUCCESS.getMessage()) ;
+        res.setDataBody(sendMsgResVO) ;
+        return res ;
+    }
+
+    /**
+     * 向服务端发消息 字符串
+     * @param msg
+     * @return
+     */
+    @ApiOperation("客户端发送消息，字符串")
+    @RequestMapping("sendStringMsg")
+    @ResponseBody
+    public BaseResponse<SendMsgResVO> sendStringMsg(@RequestBody String msg){
+        BaseResponse<SendMsgResVO> res = new BaseResponse();
+        heartbeatClient.sendStringMsg(msg) ;
 
         // 利用 actuator 来自增
         counterService.increment(Constants.COUNTER_CLIENT_PUSH_COUNT);

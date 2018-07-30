@@ -1,18 +1,12 @@
 package com.crossoverjie.netty.action.handle;
 
 import com.crossoverjie.netty.action.common.pojo.CustomProtocol;
-import com.crossoverjie.netty.action.common.util.RandomUtil;
 import com.crossoverjie.netty.action.util.NettySocketHolder;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
-import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
-import io.netty.channel.socket.SocketChannel;
-import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
-import io.netty.handler.timeout.IdleState;
-import io.netty.handler.timeout.IdleStateEvent;
 import io.netty.util.CharsetUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,7 +18,7 @@ import org.slf4j.LoggerFactory;
  *         Date: 17/05/2018 18:52
  * @since JDK 1.8
  */
-public class HeartBeatSimpleHandle extends SimpleChannelInboundHandler<CustomProtocol> {
+public class HeartBeatSimpleHandle extends SimpleChannelInboundHandler<String> {
 
     private final static Logger LOGGER = LoggerFactory.getLogger(HeartBeatSimpleHandle.class);
 
@@ -45,7 +39,7 @@ public class HeartBeatSimpleHandle extends SimpleChannelInboundHandler<CustomPro
     @Override
     public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
 
-        if (evt instanceof IdleStateEvent){
+        /*if (evt instanceof IdleStateEvent){
             IdleStateEvent idleStateEvent = (IdleStateEvent) evt ;
 
             if (idleStateEvent.state() == IdleState.READER_IDLE){
@@ -55,16 +49,16 @@ public class HeartBeatSimpleHandle extends SimpleChannelInboundHandler<CustomPro
             }
 
 
-        }
+        }*/
 
         super.userEventTriggered(ctx, evt);
     }
 
     @Override
-    protected void channelRead0(ChannelHandlerContext ctx, CustomProtocol customProtocol) throws Exception {
-        LOGGER.info("收到customProtocol={}", customProtocol);
+    protected void channelRead0(ChannelHandlerContext ctx, String msg) throws Exception {
+        LOGGER.info("收到msg={}", msg);
 
         //保存客户端与 Channel 之间的关系
-        NettySocketHolder.put(customProtocol.getId(),(NioSocketChannel)ctx.channel()) ;
+        //NettySocketHolder.put(CustomProtocolProtocol.getId(),(NioSocketChannel)ctx.channel()) ;
     }
 }

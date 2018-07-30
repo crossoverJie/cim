@@ -4,6 +4,8 @@ import com.alibaba.fastjson.JSON;
 import com.crossoverjie.netty.action.client.init.CustomerHandleInitializer;
 import com.crossoverjie.netty.action.common.pojo.CustomProtocol;
 import io.netty.bootstrap.Bootstrap;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.EventLoopGroup;
@@ -64,6 +66,19 @@ public class HeartbeatClient {
         ChannelFuture future = channel.writeAndFlush(customProtocol);
         future.addListener((ChannelFutureListener) channelFuture ->
                 LOGGER.info("客户端手动发消息成功={}", JSON.toJSONString(customProtocol)));
+
+    }
+    /**
+     * 发送消息字符串
+     *
+     * @param msg
+     */
+    public void sendStringMsg(String msg) {
+        ByteBuf message = Unpooled.buffer(msg.getBytes().length) ;
+        message.writeBytes(msg.getBytes()) ;
+        ChannelFuture future = channel.writeAndFlush(message);
+        future.addListener((ChannelFutureListener) channelFuture ->
+                LOGGER.info("客户端手动发消息成功={}", msg));
 
     }
 }
