@@ -1,6 +1,7 @@
 package com.crossoverjie.netty.action.handle;
 
 import com.crossoverjie.netty.action.common.pojo.CustomProtocol;
+import com.crossoverjie.netty.action.common.protocol.BaseRequestProto;
 import com.crossoverjie.netty.action.util.NettySocketHolder;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -18,7 +19,7 @@ import org.slf4j.LoggerFactory;
  *         Date: 17/05/2018 18:52
  * @since JDK 1.8
  */
-public class HeartBeatSimpleHandle extends SimpleChannelInboundHandler<String> {
+public class HeartBeatSimpleHandle extends SimpleChannelInboundHandler<BaseRequestProto.RequestProtocol> {
 
     private final static Logger LOGGER = LoggerFactory.getLogger(HeartBeatSimpleHandle.class);
 
@@ -55,8 +56,8 @@ public class HeartBeatSimpleHandle extends SimpleChannelInboundHandler<String> {
     }
 
     @Override
-    protected void channelRead0(ChannelHandlerContext ctx, String msg) throws Exception {
-        LOGGER.info("收到msg={}", msg);
+    protected void channelRead0(ChannelHandlerContext ctx, BaseRequestProto.RequestProtocol msg) throws Exception {
+        LOGGER.info("收到msg={}", msg.getReqMsg());
 
         //保存客户端与 Channel 之间的关系
         //NettySocketHolder.put(CustomProtocolProtocol.getId(),(NioSocketChannel)ctx.channel()) ;

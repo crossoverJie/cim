@@ -1,6 +1,7 @@
 package com.crossoverjie.netty.action.client.controller;
 
 import com.crossoverjie.netty.action.client.HeartbeatClient;
+import com.crossoverjie.netty.action.client.vo.req.GoogleProtocolVO;
 import com.crossoverjie.netty.action.client.vo.req.SendMsgReqVO;
 import com.crossoverjie.netty.action.client.vo.req.StringReqVO;
 import com.crossoverjie.netty.action.client.vo.res.SendMsgResVO;
@@ -72,6 +73,31 @@ public class IndexController {
     public BaseResponse<NULLBody> sendStringMsg(@RequestBody StringReqVO stringReqVO){
         BaseResponse<NULLBody> res = new BaseResponse();
         heartbeatClient.sendStringMsg(stringReqVO.getMsg()) ;
+
+        // 利用 actuator 来自增
+        counterService.increment(Constants.COUNTER_CLIENT_PUSH_COUNT);
+
+        SendMsgResVO sendMsgResVO = new SendMsgResVO() ;
+        sendMsgResVO.setMsg("OK") ;
+        res.setCode(StatusEnum.SUCCESS.getCode()) ;
+        res.setMessage(StatusEnum.SUCCESS.getMessage()) ;
+        return res ;
+    }
+
+    /**
+     * 向服务端发消息 Google ProtoBuf
+     * @param googleProtocolVO
+     * @return
+     */
+    @ApiOperation("向服务端发消息 Google ProtoBuf")
+    @RequestMapping(value = "sendProtoBufMsg", method = RequestMethod.POST)
+    @ResponseBody
+    public BaseResponse<NULLBody> sendProtoBufMsg(@RequestBody GoogleProtocolVO googleProtocolVO){
+        BaseResponse<NULLBody> res = new BaseResponse();
+
+        for (int i=0 ;i <100 ;i++){
+            heartbeatClient.sendGoogleProtocolMsg(googleProtocolVO) ;
+        }
 
         // 利用 actuator 来自增
         counterService.increment(Constants.COUNTER_CLIENT_PUSH_COUNT);
