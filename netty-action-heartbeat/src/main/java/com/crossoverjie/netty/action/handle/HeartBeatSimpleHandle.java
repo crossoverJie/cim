@@ -2,6 +2,7 @@ package com.crossoverjie.netty.action.handle;
 
 import com.crossoverjie.netty.action.common.pojo.CustomProtocol;
 import com.crossoverjie.netty.action.common.protocol.BaseRequestProto;
+import com.crossoverjie.netty.action.common.protocol.BaseResponseProto;
 import com.crossoverjie.netty.action.util.NettySocketHolder;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -58,6 +59,14 @@ public class HeartBeatSimpleHandle extends SimpleChannelInboundHandler<BaseReque
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, BaseRequestProto.RequestProtocol msg) throws Exception {
         LOGGER.info("收到msg={}", msg.getReqMsg());
+
+        if (999 == msg.getRequestId()){
+            BaseResponseProto.ResponseProtocol responseProtocol = BaseResponseProto.ResponseProtocol.newBuilder()
+                    .setResponseId(1000)
+                    .setResMsg("服务端响应")
+                    .build();
+            ctx.writeAndFlush(responseProtocol) ;
+        }
 
         //保存客户端与 Channel 之间的关系
         //NettySocketHolder.put(CustomProtocolProtocol.getId(),(NioSocketChannel)ctx.channel()) ;

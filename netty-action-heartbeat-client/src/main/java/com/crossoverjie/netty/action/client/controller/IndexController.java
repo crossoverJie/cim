@@ -95,9 +95,7 @@ public class IndexController {
     public BaseResponse<NULLBody> sendProtoBufMsg(@RequestBody GoogleProtocolVO googleProtocolVO){
         BaseResponse<NULLBody> res = new BaseResponse();
 
-        for (int i=0 ;i <100 ;i++){
-            heartbeatClient.sendGoogleProtocolMsg(googleProtocolVO) ;
-        }
+        heartbeatClient.sendGoogleProtocolMsg(googleProtocolVO) ;
 
         // 利用 actuator 来自增
         counterService.increment(Constants.COUNTER_CLIENT_PUSH_COUNT);
