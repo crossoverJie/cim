@@ -28,14 +28,15 @@ public class CustomerHandleInitializer extends ChannelInitializer<Channel> {
                 //.addLast(new HeartbeatEncode())
 
                 // google Protobuf 编解码
-
                 //拆包解码
                 .addLast(new ProtobufVarint32FrameDecoder())
                 .addLast(new ProtobufDecoder(BaseResponseProto.ResponseProtocol.getDefaultInstance()))
-
+                //
                 //拆包编码
                 .addLast(new ProtobufVarint32LengthFieldPrepender())
                 .addLast(new ProtobufEncoder())
+
+
                 .addLast(new EchoClientHandle())
         ;
     }
