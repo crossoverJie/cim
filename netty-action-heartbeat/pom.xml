@@ -22,6 +22,11 @@
     <dependencies>
 
         <dependency>
+            <groupId>com.google.protobuf</groupId>
+            <artifactId>protobuf-java</artifactId>
+        </dependency>
+
+        <dependency>
             <groupId>com.crossoverjie.netty</groupId>
             <artifactId>netty-action-common</artifactId>
         </dependency>
