@@ -31,11 +31,19 @@
 		<module>netty-action-heartbeat-client</module>
 		<module>netty-action-common</module>
 		<module>springboot-admin</module>
+		<module>netty-action-zk</module>
 	</modules>
 
 
 	<dependencyManagement>
 		<dependencies>
+
+
+			<dependency>
+				<groupId>com.github.sgroschupf</groupId>
+				<artifactId>zkclient</artifactId>
+				<version>0.1</version>
+			</dependency>
 
 			<dependency>
 				<groupId>com.crossoverjie.netty</groupId>
