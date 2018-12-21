@@ -1,5 +1,7 @@
 package com.crossoverjie.netty.action.client.handle;
 
+import com.crossoverjie.netty.action.client.util.SpringBeanFactory;
+import com.crossoverjie.netty.action.common.pojo.CustomProtocol;
 import com.crossoverjie.netty.action.common.protocol.BaseRequestProto;
 import com.crossoverjie.netty.action.common.protocol.BaseResponseProto;
 import io.netty.channel.ChannelFutureListener;
@@ -21,10 +23,7 @@ public class EchoClientHandle extends SimpleChannelInboundHandler<BaseResponsePr
 
     private final static Logger LOGGER = LoggerFactory.getLogger(EchoClientHandle.class);
 
-    private final BaseRequestProto.RequestProtocol heart = BaseRequestProto.RequestProtocol.newBuilder()
-            .setRequestId(99999999)
-            .setReqMsg("ping")
-            .build();
+
 
 
     @Override
@@ -36,7 +35,8 @@ public class EchoClientHandle extends SimpleChannelInboundHandler<BaseResponsePr
             if (idleStateEvent.state() == IdleState.WRITER_IDLE){
                 LOGGER.info("已经 10 秒没有发送信息！");
                 //向服务端发送消息
-                ctx.writeAndFlush(heart).addListener(ChannelFutureListener.CLOSE_ON_FAILURE) ;
+                BaseRequestProto.RequestProtocol heartBeat = SpringBeanFactory.getBean("heartBeat", BaseRequestProto.RequestProtocol.class);
+                ctx.writeAndFlush(heartBeat).addListener(ChannelFutureListener.CLOSE_ON_FAILURE) ;
             }
 
 

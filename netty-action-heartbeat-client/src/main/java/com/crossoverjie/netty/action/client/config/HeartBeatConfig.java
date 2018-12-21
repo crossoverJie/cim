@@ -1,7 +1,6 @@
 package com.crossoverjie.netty.action.client.config;
 
-import com.crossoverjie.netty.action.common.pojo.CustomProtocol;
-import org.springframework.beans.factory.annotation.Configurable;
+import com.crossoverjie.netty.action.common.protocol.BaseRequestProto;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -16,12 +15,18 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class HeartBeatConfig {
 
-    @Value("${channel.id}")
-    private long id ;
+    @Value("${client.request.id}")
+    private int requestId;
 
 
     @Bean(value = "heartBeat")
-    public CustomProtocol heartBeat(){
-        return new CustomProtocol(id,"ping") ;
+    public BaseRequestProto.RequestProtocol heartBeat() {
+
+        BaseRequestProto.RequestProtocol heart = BaseRequestProto.RequestProtocol.newBuilder()
+                .setRequestId(requestId)
+                .setReqMsg("ping")
+                .build();
+
+        return heart;
     }
 }
