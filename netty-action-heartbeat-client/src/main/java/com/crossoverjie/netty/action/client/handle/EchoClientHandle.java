@@ -1,8 +1,12 @@
 package com.crossoverjie.netty.action.client.handle;
 
+import com.crossoverjie.netty.action.common.protocol.BaseRequestProto;
 import com.crossoverjie.netty.action.common.protocol.BaseResponseProto;
+import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
+import io.netty.handler.timeout.IdleState;
+import io.netty.handler.timeout.IdleStateEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -17,23 +21,26 @@ public class EchoClientHandle extends SimpleChannelInboundHandler<BaseResponsePr
 
     private final static Logger LOGGER = LoggerFactory.getLogger(EchoClientHandle.class);
 
+    private final BaseRequestProto.RequestProtocol heart = BaseRequestProto.RequestProtocol.newBuilder()
+            .setRequestId(99999999)
+            .setReqMsg("ping")
+            .build();
 
 
     @Override
     public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
 
-        /*if (evt instanceof IdleStateEvent){
+        if (evt instanceof IdleStateEvent){
             IdleStateEvent idleStateEvent = (IdleStateEvent) evt ;
 
             if (idleStateEvent.state() == IdleState.WRITER_IDLE){
                 LOGGER.info("已经 10 秒没有发送信息！");
                 //向服务端发送消息
-                CustomProtocol heartBeat = SpringBeanFactory.getBean("heartBeat", CustomProtocol.class);
-                ctx.writeAndFlush(heartBeat).addListener(ChannelFutureListener.CLOSE_ON_FAILURE) ;
+                ctx.writeAndFlush(heart).addListener(ChannelFutureListener.CLOSE_ON_FAILURE) ;
             }
 
 
-        }*/
+        }
 
         super.userEventTriggered(ctx, evt);
     }

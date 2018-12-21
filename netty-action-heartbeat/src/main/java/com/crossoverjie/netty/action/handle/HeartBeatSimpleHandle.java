@@ -69,6 +69,6 @@ public class HeartBeatSimpleHandle extends SimpleChannelInboundHandler<BaseReque
         }
 
         //保存客户端与 Channel 之间的关系
-        //NettySocketHolder.put(CustomProtocolProtocol.getId(),(NioSocketChannel)ctx.channel()) ;
+        NettySocketHolder.put((long) msg.getRequestId(),(NioSocketChannel)ctx.channel()) ;
     }
 }

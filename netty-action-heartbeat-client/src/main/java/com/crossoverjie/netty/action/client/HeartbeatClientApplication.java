@@ -1,7 +1,9 @@
 package com.crossoverjie.netty.action.client;
 
+import com.crossoverjie.netty.action.client.scanner.Scan;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -14,6 +16,8 @@ public class HeartbeatClientApplication implements CommandLineRunner{
 
 	private final static Logger LOGGER = LoggerFactory.getLogger(HeartbeatClientApplication.class);
 
+	@Autowired
+	private HeartbeatClient heartbeatClient ;
 
 
 	public static void main(String[] args) {
@@ -23,5 +27,9 @@ public class HeartbeatClientApplication implements CommandLineRunner{
 
 	@Override
 	public void run(String... args) throws Exception {
+		Scan scan = new Scan(heartbeatClient) ;
+		Thread thread = new Thread(scan);
+		thread.setName("scan-thread");
+		thread.start();
 	}
 }
