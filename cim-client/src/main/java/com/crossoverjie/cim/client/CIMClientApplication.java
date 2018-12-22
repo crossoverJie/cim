@@ -1,5 +1,6 @@
 package com.crossoverjie.cim.client;
 
+import com.crossoverjie.cim.client.client.CIMClient;
 import com.crossoverjie.cim.client.scanner.Scan;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,7 +18,7 @@ public class CIMClientApplication implements CommandLineRunner{
 	private final static Logger LOGGER = LoggerFactory.getLogger(CIMClientApplication.class);
 
 	@Autowired
-	private HeartbeatClient heartbeatClient ;
+	private CIMClient heartbeatClient ;
 
 
 	public static void main(String[] args) {

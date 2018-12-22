@@ -1,7 +1,7 @@
-package com.crossoverjie.cim.server.zk.util;
+package com.crossoverjie.cim.route.kit;
 
 import com.alibaba.fastjson.JSON;
-import com.crossoverjie.cim.server.zk.cache.ServerCache;
+import com.crossoverjie.cim.route.cache.ServerCache;
 import org.I0Itec.zkclient.IZkChildListener;
 import org.I0Itec.zkclient.ZkClient;
 import org.slf4j.Logger;
@@ -19,43 +19,16 @@ import java.util.List;
  * @since JDK 1.8
  */
 @Component
-public class ZKUtil {
+public class ZKit {
 
-    private static Logger logger = LoggerFactory.getLogger(ZKUtil.class);
+    private static Logger logger = LoggerFactory.getLogger(ZKit.class);
 
 
     @Autowired
     private ZkClient zkClient;
 
     @Autowired
-    private AppConfiguration appConfiguration ;
-
-    @Autowired
     private ServerCache serverCache ;
-
-
-    /**
-     * 创建父级节点
-     */
-    public void createRootNode(){
-        boolean exists = zkClient.exists(appConfiguration.getZkRoot());
-        if (exists){
-            return;
-        }
-
-        //创建 root
-        zkClient.createPersistent(appConfiguration.getZkRoot()) ;
-    }
-
-    /**
-     * 写入指定节点 临时目录
-     *
-     * @param path
-     * @param value
-     */
-    public void createNode(String path, String value) {
-        zkClient.createEphemeral(path, value);
-    }
 
 
     /**
@@ -88,13 +61,5 @@ public class ZKUtil {
        return children;
     }
 
-    /**
-     * 关闭 ZK
-     */
-    public void closeZK() {
-        logger.info("正在关闭 ZK");
-        zkClient.close();
-        logger.info("关闭 ZK 成功");
 
-    }
 }

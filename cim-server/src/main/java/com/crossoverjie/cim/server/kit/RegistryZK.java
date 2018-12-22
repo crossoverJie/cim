@@ -1,8 +1,7 @@
-package com.crossoverjie.cim.server.zk.thread;
+package com.crossoverjie.cim.server.kit;
 
-import com.crossoverjie.cim.server.zk.util.AppConfiguration;
-import com.crossoverjie.cim.server.zk.util.SpringBeanFactory;
-import com.crossoverjie.cim.server.zk.util.ZKit;
+import com.crossoverjie.cim.server.config.AppConfiguration;
+import com.crossoverjie.cim.server.util.SpringBeanFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -17,7 +16,7 @@ public class RegistryZK implements Runnable {
 
     private static Logger logger = LoggerFactory.getLogger(RegistryZK.class);
 
-    private ZKit zkUtil;
+    private ZKit zKit;
 
     private AppConfiguration appConfiguration ;
 
@@ -27,7 +26,7 @@ public class RegistryZK implements Runnable {
     public RegistryZK(String ip, int port) {
         this.ip = ip;
         this.port = port;
-        zkUtil = SpringBeanFactory.getBean(ZKit.class) ;
+        zKit = SpringBeanFactory.getBean(ZKit.class) ;
         appConfiguration = SpringBeanFactory.getBean(AppConfiguration.class) ;
     }
 
@@ -35,17 +34,15 @@ public class RegistryZK implements Runnable {
     public void run() {
 
         //创建父节点
-        zkUtil.createRootNode();
+        zKit.createRootNode();
 
         //是否要将自己注册到 ZK
         if (appConfiguration.isZkSwitch()){
             String path = appConfiguration.getZkRoot() + "/ip-" + ip + ":" + port;
-            zkUtil.createNode(path, path);
+            zKit.createNode(path, path);
             logger.info("注册 zookeeper 成功，msg=[{}]", path);
         }
 
-        //注册监听服务
-        zkUtil.subscribeEvent(appConfiguration.getZkRoot());
 
     }
 }

@@ -1,6 +1,6 @@
 package com.crossoverjie.cim.client.scanner;
 
-import com.crossoverjie.cim.client.HeartbeatClient;
+import com.crossoverjie.cim.client.client.CIMClient;
 import com.crossoverjie.cim.client.vo.req.GoogleProtocolVO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,9 +18,9 @@ public class Scan implements Runnable{
 
     private final static Logger LOGGER = LoggerFactory.getLogger(Scan.class);
 
-    private HeartbeatClient heartbeatClient ;
+    private CIMClient heartbeatClient ;
 
-    public Scan(HeartbeatClient heartbeatClient) {
+    public Scan(CIMClient heartbeatClient) {
         this.heartbeatClient = heartbeatClient;
     }
 

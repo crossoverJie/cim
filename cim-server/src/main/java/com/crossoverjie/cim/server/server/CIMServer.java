@@ -33,9 +33,9 @@ import java.net.InetSocketAddress;
  * @since JDK 1.8
  */
 @Component
-public class HeartBeatServer {
+public class CIMServer {
 
-    private final static Logger LOGGER = LoggerFactory.getLogger(HeartBeatServer.class);
+    private final static Logger LOGGER = LoggerFactory.getLogger(CIMServer.class);
 
     private EventLoopGroup boss = new NioEventLoopGroup();
     private EventLoopGroup work = new NioEventLoopGroup();

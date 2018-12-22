@@ -4,7 +4,7 @@ import com.crossoverjie.cim.common.enums.StatusEnum;
 import com.crossoverjie.cim.common.res.BaseResponse;
 import com.crossoverjie.cim.server.vo.req.SendMsgReqVO;
 import com.crossoverjie.cim.common.constant.Constants;
-import com.crossoverjie.cim.server.server.HeartBeatServer;
+import com.crossoverjie.cim.server.server.CIMServer;
 import com.crossoverjie.cim.server.vo.res.SendMsgResVO;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +27,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 public class IndexController {
 
     @Autowired
-    private HeartBeatServer heartbeatClient ;
+    private CIMServer heartbeatClient ;
 
 
     /**

@@ -1,6 +1,6 @@
 package com.crossoverjie.cim.client.controller;
 
-import com.crossoverjie.cim.client.HeartbeatClient;
+import com.crossoverjie.cim.client.client.CIMClient;
 import com.crossoverjie.cim.client.vo.req.SendMsgReqVO;
 import com.crossoverjie.cim.client.vo.res.SendMsgResVO;
 import com.crossoverjie.cim.client.vo.req.GoogleProtocolVO;
@@ -38,7 +38,7 @@ public class IndexController {
     private CounterService counterService;
 
     @Autowired
-    private HeartbeatClient heartbeatClient ;
+    private CIMClient heartbeatClient ;
 
 
 

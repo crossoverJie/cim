@@ -2,7 +2,7 @@ package com.crossoverjie.cim.server.zk;
 
 import com.crossoverjie.cim.server.zk.util.AppConfiguration;
 import com.crossoverjie.cim.server.zk.thread.RegistryZK;
-import com.crossoverjie.cim.server.zk.util.ZKUtil;
+import com.crossoverjie.cim.server.zk.util.ZKit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +24,7 @@ public class Application implements CommandLineRunner{
 	private AppConfiguration appConfiguration ;
 
 	@Autowired
-	private static ZKUtil zkUtil ;
+	private static ZKit zkUtil ;
 
 	public static void main(String[] args) {
         SpringApplication.run(Application.class, args);

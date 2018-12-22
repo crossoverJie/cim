@@ -3,13 +3,9 @@ package com.crossoverjie.cim.server.handle;
 import com.crossoverjie.cim.common.protocol.BaseRequestProto;
 import com.crossoverjie.cim.common.protocol.BaseResponseProto;
 import com.crossoverjie.cim.server.util.NettySocketHolder;
-import com.crossoverjie.cim.common.pojo.CustomProtocol;
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.channel.socket.nio.NioSocketChannel;
-import io.netty.util.CharsetUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -20,11 +16,9 @@ import org.slf4j.LoggerFactory;
  *         Date: 17/05/2018 18:52
  * @since JDK 1.8
  */
-public class HeartBeatSimpleHandle extends SimpleChannelInboundHandler<BaseRequestProto.RequestProtocol> {
+public class ServerHandle extends SimpleChannelInboundHandler<BaseRequestProto.RequestProtocol> {
 
-    private final static Logger LOGGER = LoggerFactory.getLogger(HeartBeatSimpleHandle.class);
-
-    private static final ByteBuf HEART_BEAT =  Unpooled.unreleasableBuffer(Unpooled.copiedBuffer(new CustomProtocol(123456L,"pong").toString(),CharsetUtil.UTF_8));
+    private final static Logger LOGGER = LoggerFactory.getLogger(ServerHandle.class);
 
 
     /**
@@ -34,26 +28,12 @@ public class HeartBeatSimpleHandle extends SimpleChannelInboundHandler<BaseReque
      */
     @Override
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
-
         NettySocketHolder.remove((NioSocketChannel) ctx.channel());
     }
 
     @Override
-    public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
-
-        /*if (evt instanceof IdleStateEvent){
-            IdleStateEvent idleStateEvent = (IdleStateEvent) evt ;
-
-            if (idleStateEvent.state() == IdleState.READER_IDLE){
-                LOGGER.info("已经5秒没有收到信息！");
-                //向客户端发送消息
-                ctx.writeAndFlush(HEART_BEAT).addListener(ChannelFutureListener.CLOSE_ON_FAILURE) ;
-            }
-
-
-        }*/
-
-        super.userEventTriggered(ctx, evt);
+    public void channelActive(ChannelHandlerContext ctx) throws Exception {
+        LOGGER.info("有客户端连上来了。。");
     }
 
     @Override

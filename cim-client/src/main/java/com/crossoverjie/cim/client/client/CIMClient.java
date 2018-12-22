@@ -1,4 +1,4 @@
-package com.crossoverjie.cim.client;
+package com.crossoverjie.cim.client.client;
 
 import com.alibaba.fastjson.JSON;
 import com.crossoverjie.cim.client.init.CustomerHandleInitializer;
@@ -29,9 +29,9 @@ import javax.annotation.PostConstruct;
  * @since JDK 1.8
  */
 @Component
-public class HeartbeatClient {
+public class CIMClient {
 
-    private final static Logger LOGGER = LoggerFactory.getLogger(HeartbeatClient.class);
+    private final static Logger LOGGER = LoggerFactory.getLogger(CIMClient.class);
 
     private EventLoopGroup group = new NioEventLoopGroup();
 
