@@ -2,8 +2,8 @@ package com.crossoverjie.cim.route.controller;
 
 import com.crossoverjie.cim.route.vo.req.P2PRequest;
 import com.crossoverjie.cim.route.vo.req.GroupRequest;
-import com.crossoverjie.netty.action.common.enums.StatusEnum;
-import com.crossoverjie.netty.action.common.res.BaseResponse;
+import com.crossoverjie.cim.common.enums.StatusEnum;
+import com.crossoverjie.cim.common.res.BaseResponse;
 import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

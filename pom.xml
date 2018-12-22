@@ -2,7 +2,7 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.crossoverjie.netty</groupId>
-	<artifactId>netty-action</artifactId>
+	<artifactId>cim</artifactId>
 	<version>1.0.0-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
@@ -27,11 +27,11 @@
 	</parent>
 
 	<modules>
-		<module>netty-action-heartbeat</module>
-		<module>netty-action-heartbeat-client</module>
-		<module>netty-action-common</module>
+		<module>cim-server</module>
+		<module>cim-client</module>
+		<module>cim-common</module>
 		<module>springboot-admin</module>
-		<module>netty-action-zk</module>
+		<module>cim-zk</module>
 		<module>cim-forward-route</module>
 	</modules>
 
@@ -52,7 +52,7 @@
 
 			<dependency>
 				<groupId>com.crossoverjie.netty</groupId>
-				<artifactId>netty-action-common</artifactId>
+				<artifactId>cim-common</artifactId>
 				<version>1.0.0-SNAPSHOT</version>
 			</dependency>
 

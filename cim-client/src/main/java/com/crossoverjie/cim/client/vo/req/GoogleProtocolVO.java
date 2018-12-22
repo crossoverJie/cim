@@ -1,4 +1,4 @@
-package com.crossoverjie.cim.route.vo.req;
+package com.crossoverjie.cim.client.vo.req;
 
 import com.crossoverjie.cim.common.req.BaseRequest;
 import io.swagger.annotations.ApiModelProperty;
@@ -12,7 +12,10 @@ import javax.validation.constraints.NotNull;
  *         Date: 2018/05/21 15:56
  * @since JDK 1.8
  */
-public class GroupRequest extends BaseRequest {
+public class GoogleProtocolVO extends BaseRequest {
+    @NotNull(message = "requestId 不能为空")
+    @ApiModelProperty(required = true, value = "requestId", example = "123")
+    private Integer requestId ;
 
     @NotNull(message = "msg 不能为空")
     @ApiModelProperty(required = true, value = "msg", example = "hello")
@@ -26,10 +29,19 @@ public class GroupRequest extends BaseRequest {
         this.msg = msg;
     }
 
+    public Integer getRequestId() {
+        return requestId;
+    }
+
+    public void setRequestId(Integer requestId) {
+        this.requestId = requestId;
+    }
+
     @Override
     public String toString() {
-        return "GroupRequest{" +
-                "msg='" + msg + '\'' +
+        return "GoogleProtocolVO{" +
+                "requestId=" + requestId +
+                ", msg='" + msg + '\'' +
                 "} " + super.toString();
     }
 }

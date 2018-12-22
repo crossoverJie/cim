@@ -1,4 +1,4 @@
-package com.crossoverjie.cim.route.vo.req;
+package com.crossoverjie.cim.server.vo.req;
 
 import com.crossoverjie.cim.common.req.BaseRequest;
 import io.swagger.annotations.ApiModelProperty;

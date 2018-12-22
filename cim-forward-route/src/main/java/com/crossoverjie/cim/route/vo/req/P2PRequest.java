@@ -1,6 +1,6 @@
 package com.crossoverjie.cim.route.vo.req;
 
-import com.crossoverjie.netty.action.common.req.BaseRequest;
+import com.crossoverjie.cim.common.req.BaseRequest;
 import io.swagger.annotations.ApiModelProperty;
 
 import javax.validation.constraints.NotNull;
