@@ -2,7 +2,6 @@ package com.crossoverjie.cim.route.service.impl;
 
 import com.crossoverjie.cim.route.service.AccountService;
 import com.crossoverjie.cim.route.vo.req.LoginReqVO;
-import com.crossoverjie.cim.route.vo.res.CIMServerResVO;
 import com.crossoverjie.cim.route.vo.res.RegisterInfoResVO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,6 +10,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 import static com.crossoverjie.cim.route.constant.Constant.ACCOUNT_PREFIX;
+import static com.crossoverjie.cim.route.constant.Constant.ROUTE_PREFIX;
 
 /**
  * Function:
@@ -32,7 +32,7 @@ public class AccountServiceRedisImpl implements AccountService {
 
         String name = redisTemplate.opsForValue().get(info.getUserName()) ;
         if (null == name){
-            //为了方便查询，冗余存一份
+            //为了方便查询，冗余一份
             redisTemplate.opsForValue().set(key, info.getUserName());
             redisTemplate.opsForValue().set(info.getUserName(),key);
         }else {
@@ -59,7 +59,8 @@ public class AccountServiceRedisImpl implements AccountService {
     }
 
     @Override
-    public void saveRouteInfo(CIMServerResVO vo) throws Exception {
-
+    public void saveRouteInfo(LoginReqVO loginReqVO,String msg) throws Exception {
+        String key = ROUTE_PREFIX + loginReqVO.getUserId() ;
+        redisTemplate.opsForValue().set(key,msg) ;
     }
 }

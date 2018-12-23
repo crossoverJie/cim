@@ -1,7 +1,6 @@
 package com.crossoverjie.cim.route.service;
 
 import com.crossoverjie.cim.route.vo.req.LoginReqVO;
-import com.crossoverjie.cim.route.vo.res.CIMServerResVO;
 import com.crossoverjie.cim.route.vo.res.RegisterInfoResVO;
 
 /**
@@ -31,8 +30,9 @@ public interface AccountService {
 
     /**
      * 保存路由信息
-     * @param vo
+     * @param msg 服务器信息
+     * @param loginReqVO 用户信息
      * @throws Exception
      */
-    void saveRouteInfo(CIMServerResVO vo) throws Exception ;
+    void saveRouteInfo(LoginReqVO loginReqVO ,String msg) throws Exception ;
 }

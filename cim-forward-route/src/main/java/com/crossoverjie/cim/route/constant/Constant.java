@@ -15,5 +15,10 @@ public final class Constant {
      */
     public final static String ACCOUNT_PREFIX = "cim-account:";
 
+    /**
+     * 路由信息前缀
+     */
+    public final static String ROUTE_PREFIX = "cim-route:";
+
 
 }

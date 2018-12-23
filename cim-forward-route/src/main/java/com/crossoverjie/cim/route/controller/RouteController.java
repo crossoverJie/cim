@@ -34,93 +34,94 @@ public class RouteController {
     private final static Logger LOGGER = LoggerFactory.getLogger(RouteController.class);
 
     @Autowired
-    private ServerCache serverCache ;
+    private ServerCache serverCache;
 
     @Autowired
     private AccountService accountService;
 
     @ApiOperation("群聊 API")
-    @RequestMapping(value = "groupRoute",method = RequestMethod.POST)
+    @RequestMapping(value = "groupRoute", method = RequestMethod.POST)
     @ResponseBody()
-    public BaseResponse<NULLBody> groupRoute(@RequestBody GroupReqVO groupReqVO){
+    public BaseResponse<NULLBody> groupRoute(@RequestBody GroupReqVO groupReqVO) {
         BaseResponse<NULLBody> res = new BaseResponse();
 
         LOGGER.info("msg=[{}]", groupReqVO.toString());
 
-        res.setCode(StatusEnum.SUCCESS.getCode()) ;
-        res.setMessage(StatusEnum.SUCCESS.getMessage()) ;
-        return res ;
+        res.setCode(StatusEnum.SUCCESS.getCode());
+        res.setMessage(StatusEnum.SUCCESS.getMessage());
+        return res;
     }
 
 
     /**
      * 私聊路由
+     *
      * @param p2pRequest
      * @return
      */
     @ApiOperation("私聊 API")
-    @RequestMapping(value = "p2pRoute",method = RequestMethod.POST)
+    @RequestMapping(value = "p2pRoute", method = RequestMethod.POST)
     @ResponseBody()
-    public BaseResponse<NULLBody> p2pRoute(@RequestBody P2PReqVO p2pRequest){
+    public BaseResponse<NULLBody> p2pRoute(@RequestBody P2PReqVO p2pRequest) {
         BaseResponse<NULLBody> res = new BaseResponse();
 
-        res.setCode(StatusEnum.SUCCESS.getCode()) ;
-        res.setMessage(StatusEnum.SUCCESS.getMessage()) ;
-        return res ;
+        res.setCode(StatusEnum.SUCCESS.getCode());
+        res.setMessage(StatusEnum.SUCCESS.getMessage());
+        return res;
     }
 
     /**
      * 获取一台 CIM server
+     *
      * @return
      */
     @ApiOperation("登录并获取服务器")
-    @RequestMapping(value = "login",method = RequestMethod.POST)
+    @RequestMapping(value = "login", method = RequestMethod.POST)
     @ResponseBody()
     public BaseResponse<CIMServerResVO> login(@RequestBody LoginReqVO loginReqVO) throws Exception {
         BaseResponse<CIMServerResVO> res = new BaseResponse();
 
         //登录校验
         boolean login = accountService.login(loginReqVO);
-        if (login){
+        if (login) {
             String server = serverCache.selectServer();
             String[] serverInfo = server.split(":");
-            CIMServerResVO vo = new CIMServerResVO(serverInfo[0],Integer.parseInt(serverInfo[1])) ;
+            CIMServerResVO vo = new CIMServerResVO(serverInfo[0], Integer.parseInt(serverInfo[1]));
 
             //保存路由信息
-            accountService.saveRouteInfo(vo) ;
+            accountService.saveRouteInfo(loginReqVO,server);
 
             res.setDataBody(vo);
-            res.setCode(StatusEnum.SUCCESS.getCode()) ;
-            res.setMessage(StatusEnum.SUCCESS.getMessage()) ;
-        }else {
-            res.setCode(StatusEnum.FAIL.getCode()) ;
-            res.setMessage(StatusEnum.FAIL.getMessage()) ;
+            res.setCode(StatusEnum.SUCCESS.getCode());
+            res.setMessage(StatusEnum.SUCCESS.getMessage());
+        } else {
+            res.setCode(StatusEnum.FAIL.getCode());
+            res.setMessage(StatusEnum.FAIL.getMessage());
         }
 
-        return res ;
+        return res;
     }
 
     /**
      * 注册账号
+     *
      * @return
      */
     @ApiOperation("注册账号")
-    @RequestMapping(value = "registerAccount",method = RequestMethod.POST)
+    @RequestMapping(value = "registerAccount", method = RequestMethod.POST)
     @ResponseBody()
     public BaseResponse<RegisterInfoResVO> registerAccount(@RequestBody RegisterInfoReqVO registerInfoReqVO) throws Exception {
         BaseResponse<RegisterInfoResVO> res = new BaseResponse();
 
         long userId = System.currentTimeMillis();
-        RegisterInfoResVO info = new RegisterInfoResVO(userId,registerInfoReqVO.getUserName()) ;
+        RegisterInfoResVO info = new RegisterInfoResVO(userId, registerInfoReqVO.getUserName());
         info = accountService.register(info);
 
         res.setDataBody(info);
-        res.setCode(StatusEnum.SUCCESS.getCode()) ;
-        res.setMessage(StatusEnum.SUCCESS.getMessage()) ;
-        return res ;
+        res.setCode(StatusEnum.SUCCESS.getCode());
+        res.setMessage(StatusEnum.SUCCESS.getMessage());
+        return res;
     }
-
-
 
 
 }
