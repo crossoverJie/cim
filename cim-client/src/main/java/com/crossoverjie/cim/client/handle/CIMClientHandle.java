@@ -1,9 +1,9 @@
 package com.crossoverjie.cim.client.handle;
 
 import com.crossoverjie.cim.client.util.SpringBeanFactory;
-import com.crossoverjie.cim.common.protocol.BaseRequestProto;
-import com.crossoverjie.cim.common.protocol.BaseResponseProto;
-import io.netty.channel.ChannelFutureListener;
+import com.crossoverjie.cim.common.protocol.CIMRequestProto;
+import com.crossoverjie.cim.common.protocol.CIMResponseProto;
+import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.handler.timeout.IdleState;
@@ -18,9 +18,10 @@ import org.slf4j.LoggerFactory;
  *         Date: 16/02/2018 18:09
  * @since JDK 1.8
  */
-public class EchoClientHandle extends SimpleChannelInboundHandler<BaseResponseProto.ResponseProtocol> {
+@ChannelHandler.Sharable
+public class CIMClientHandle extends SimpleChannelInboundHandler<CIMResponseProto.CIMResProtocol> {
 
-    private final static Logger LOGGER = LoggerFactory.getLogger(EchoClientHandle.class);
+    private final static Logger LOGGER = LoggerFactory.getLogger(CIMClientHandle.class);
 
 
 
@@ -34,8 +35,8 @@ public class EchoClientHandle extends SimpleChannelInboundHandler<BaseResponsePr
             if (idleStateEvent.state() == IdleState.WRITER_IDLE){
                 LOGGER.info("已经 10 秒没有发送信息！");
                 //向服务端发送消息
-                BaseRequestProto.RequestProtocol heartBeat = SpringBeanFactory.getBean("heartBeat", BaseRequestProto.RequestProtocol.class);
-                ctx.writeAndFlush(heartBeat).addListener(ChannelFutureListener.CLOSE_ON_FAILURE) ;
+                CIMRequestProto.CIMReqProtocol heartBeat = SpringBeanFactory.getBean("heartBeat", CIMRequestProto.CIMReqProtocol.class);
+                ctx.writeAndFlush(heartBeat) ;
             }
 
 
@@ -48,11 +49,11 @@ public class EchoClientHandle extends SimpleChannelInboundHandler<BaseResponsePr
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
 
         //客户端和服务端建立连接时调用
-        LOGGER.info("已经建立了联系。。");
+        LOGGER.info("cim server connect success");
     }
 
     @Override
-    protected void channelRead0(ChannelHandlerContext channelHandlerContext, BaseResponseProto.ResponseProtocol responseProtocol) throws Exception {
+    protected void channelRead0(ChannelHandlerContext channelHandlerContext, CIMResponseProto.CIMResProtocol responseProtocol) throws Exception {
 
         //从服务端收到消息时被调用
         //LOGGER.info("客户端收到消息={}",in.toString(CharsetUtil.UTF_8)) ;

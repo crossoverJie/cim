@@ -1,10 +1,12 @@
 package com.crossoverjie.cim.client.client;
 
 import com.alibaba.fastjson.JSON;
-import com.crossoverjie.cim.client.init.CustomerHandleInitializer;
+import com.crossoverjie.cim.client.init.CIMClientHandleInitializer;
+import com.crossoverjie.cim.client.service.RouteRequest;
 import com.crossoverjie.cim.client.vo.req.GoogleProtocolVO;
-import com.crossoverjie.cim.common.protocol.BaseRequestProto;
+import com.crossoverjie.cim.client.vo.res.CIMServerResVO;
 import com.crossoverjie.cim.common.pojo.CustomProtocol;
+import com.crossoverjie.cim.common.protocol.CIMRequestProto;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -16,6 +18,7 @@ import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -44,17 +47,24 @@ public class CIMClient {
 
     private SocketChannel channel;
 
+    @Autowired
+    private RouteRequest routeRequest ;
+
     @PostConstruct
-    public void start() throws InterruptedException {
+    public void start() throws Exception {
+        //获取可以使用的服务器 ip+port
+        CIMServerResVO.ServerInfo cimServer = routeRequest.getCIMServer();
+        LOGGER.info("cimServer=[{}]",cimServer.toString());
+
         Bootstrap bootstrap = new Bootstrap();
         bootstrap.group(group)
                 .channel(NioSocketChannel.class)
-                .handler(new CustomerHandleInitializer())
+                .handler(new CIMClientHandleInitializer())
         ;
 
-        ChannelFuture future = bootstrap.connect(host, nettyPort).sync();
+        ChannelFuture future = bootstrap.connect(cimServer.getIp(), cimServer.getPort()).sync();
         if (future.isSuccess()) {
-            LOGGER.info("启动 Netty 成功");
+            LOGGER.info("启动 cim client 成功");
         }
         channel = (SocketChannel) future.channel();
     }
@@ -91,7 +101,7 @@ public class CIMClient {
      */
     public void sendGoogleProtocolMsg(GoogleProtocolVO googleProtocolVO) {
 
-        BaseRequestProto.RequestProtocol protocol = BaseRequestProto.RequestProtocol.newBuilder()
+        CIMRequestProto.CIMReqProtocol protocol = CIMRequestProto.CIMReqProtocol.newBuilder()
                 .setRequestId(googleProtocolVO.getRequestId())
                 .setReqMsg(googleProtocolVO.getMsg())
                 .build();

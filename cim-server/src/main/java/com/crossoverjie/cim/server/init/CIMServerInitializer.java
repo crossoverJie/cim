@@ -1,7 +1,7 @@
 package com.crossoverjie.cim.server.init;
 
-import com.crossoverjie.cim.common.protocol.BaseRequestProto;
-import com.crossoverjie.cim.server.handle.ServerHandle;
+import com.crossoverjie.cim.common.protocol.CIMRequestProto;
+import com.crossoverjie.cim.server.handle.CIMServerHandle;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelInitializer;
 import io.netty.handler.codec.protobuf.ProtobufDecoder;
@@ -16,9 +16,9 @@ import io.netty.handler.codec.protobuf.ProtobufVarint32LengthFieldPrepender;
  *         Date: 17/05/2018 18:51
  * @since JDK 1.8
  */
-public class HeartbeatInitializer extends ChannelInitializer<Channel> {
+public class CIMServerInitializer extends ChannelInitializer<Channel> {
 
-    private final ServerHandle serverHandle = new ServerHandle();
+    private final CIMServerHandle cimServerHandle = new CIMServerHandle() ;
 
     @Override
     protected void initChannel(Channel ch) throws Exception {
@@ -26,9 +26,9 @@ public class HeartbeatInitializer extends ChannelInitializer<Channel> {
         ch.pipeline()
                 // google Protobuf 编解码
                 .addLast(new ProtobufVarint32FrameDecoder())
-                .addLast(new ProtobufDecoder(BaseRequestProto.RequestProtocol.getDefaultInstance()))
+                .addLast(new ProtobufDecoder(CIMRequestProto.CIMReqProtocol.getDefaultInstance()))
                 .addLast(new ProtobufVarint32LengthFieldPrepender())
                 .addLast(new ProtobufEncoder())
-                .addLast(serverHandle);
+                .addLast(cimServerHandle);
     }
 }

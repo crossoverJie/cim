@@ -80,7 +80,7 @@ public class ServerCache {
     public String selectServer() {
         List<String> all = getAll();
         if (all.size() == 0) {
-            throw new RuntimeException("路由列表为空");
+            throw new RuntimeException("CIM 服务器可用服务列表为空");
         }
         Long position = index.incrementAndGet() % all.size();
         if (position < 0) {

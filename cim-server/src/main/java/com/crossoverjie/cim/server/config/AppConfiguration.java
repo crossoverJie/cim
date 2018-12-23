@@ -22,7 +22,7 @@ public class AppConfiguration {
     @Value("${app.zk.switch}")
     private boolean zkSwitch;
 
-    @Value("${server.port}")
+    @Value("${netty.server.port}")
     private int port;
 
     public int getPort() {

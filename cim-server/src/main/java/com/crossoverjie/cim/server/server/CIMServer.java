@@ -1,11 +1,11 @@
 package com.crossoverjie.cim.server.server;
 
 import com.alibaba.fastjson.JSON;
-import com.crossoverjie.cim.common.protocol.BaseRequestProto;
+import com.crossoverjie.cim.common.pojo.CustomProtocol;
+import com.crossoverjie.cim.common.protocol.CIMRequestProto;
+import com.crossoverjie.cim.server.init.CIMServerInitializer;
 import com.crossoverjie.cim.server.util.NettySocketHolder;
 import com.crossoverjie.cim.server.vo.req.SendMsgReqVO;
-import com.crossoverjie.cim.common.pojo.CustomProtocol;
-import com.crossoverjie.cim.server.init.HeartbeatInitializer;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelFuture;
@@ -60,7 +60,7 @@ public class CIMServer {
                 .localAddress(new InetSocketAddress(nettyPort))
                 //保持长连接
                 .childOption(ChannelOption.SO_KEEPALIVE, true)
-                .childHandler(new HeartbeatInitializer());
+                .childHandler(new CIMServerInitializer());
 
         ChannelFuture future = bootstrap.bind().sync();
         if (future.isSuccess()) {
@@ -107,7 +107,7 @@ public class CIMServer {
         if (null == socketChannel) {
             throw new NullPointerException("没有[" + sendMsgReqVO.getId() + "]的socketChannel");
         }
-        BaseRequestProto.RequestProtocol protocol = BaseRequestProto.RequestProtocol.newBuilder()
+        CIMRequestProto.CIMReqProtocol protocol = CIMRequestProto.CIMReqProtocol.newBuilder()
                 .setRequestId((int) sendMsgReqVO.getId())
                 .setReqMsg(sendMsgReqVO.getMsg())
                 .build();

@@ -1,7 +1,7 @@
 package com.crossoverjie.cim.client.init;
 
-import com.crossoverjie.cim.client.handle.EchoClientHandle;
-import com.crossoverjie.cim.common.protocol.BaseResponseProto;
+import com.crossoverjie.cim.client.handle.CIMClientHandle;
+import com.crossoverjie.cim.common.protocol.CIMResponseProto;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelInitializer;
 import io.netty.handler.codec.protobuf.ProtobufDecoder;
@@ -17,7 +17,10 @@ import io.netty.handler.timeout.IdleStateHandler;
  *         Date: 23/02/2018 22:47
  * @since JDK 1.8
  */
-public class CustomerHandleInitializer extends ChannelInitializer<Channel> {
+public class CIMClientHandleInitializer extends ChannelInitializer<Channel> {
+
+    private final CIMClientHandle cimClientHandle = new CIMClientHandle();
+
     @Override
     protected void initChannel(Channel ch) throws Exception {
         ch.pipeline()
@@ -30,14 +33,12 @@ public class CustomerHandleInitializer extends ChannelInitializer<Channel> {
                 // google Protobuf 编解码
                 //拆包解码
                 .addLast(new ProtobufVarint32FrameDecoder())
-                .addLast(new ProtobufDecoder(BaseResponseProto.ResponseProtocol.getDefaultInstance()))
+                .addLast(new ProtobufDecoder(CIMResponseProto.CIMResProtocol.getDefaultInstance()))
                 //
                 //拆包编码
                 .addLast(new ProtobufVarint32LengthFieldPrepender())
                 .addLast(new ProtobufEncoder())
-
-
-                .addLast(new EchoClientHandle())
+                .addLast(cimClientHandle)
         ;
     }
 }

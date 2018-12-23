@@ -1,5 +1,7 @@
 package com.crossoverjie.cim.client.service;
 
+import com.crossoverjie.cim.client.vo.res.CIMServerResVO;
+
 /**
  * Function:
  *
@@ -15,4 +17,11 @@ public interface RouteRequest {
      * @throws Exception
      */
     void sendGroupMsg(String msg) throws Exception;
+
+    /**
+     * 获取服务器
+     * @return 服务ip+port
+     * @throws Exception
+     */
+    CIMServerResVO.ServerInfo getCIMServer() throws Exception;
 }

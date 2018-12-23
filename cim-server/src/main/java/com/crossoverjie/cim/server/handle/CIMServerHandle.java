@@ -1,8 +1,9 @@
 package com.crossoverjie.cim.server.handle;
 
-import com.crossoverjie.cim.common.protocol.BaseRequestProto;
-import com.crossoverjie.cim.common.protocol.BaseResponseProto;
+import com.crossoverjie.cim.common.protocol.CIMRequestProto;
+import com.crossoverjie.cim.common.protocol.CIMResponseProto;
 import com.crossoverjie.cim.server.util.NettySocketHolder;
+import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.channel.socket.nio.NioSocketChannel;
@@ -16,9 +17,10 @@ import org.slf4j.LoggerFactory;
  *         Date: 17/05/2018 18:52
  * @since JDK 1.8
  */
-public class ServerHandle extends SimpleChannelInboundHandler<BaseRequestProto.RequestProtocol> {
+@ChannelHandler.Sharable
+public class CIMServerHandle extends SimpleChannelInboundHandler<CIMRequestProto.CIMReqProtocol> {
 
-    private final static Logger LOGGER = LoggerFactory.getLogger(ServerHandle.class);
+    private final static Logger LOGGER = LoggerFactory.getLogger(CIMServerHandle.class);
 
 
     /**
@@ -28,6 +30,7 @@ public class ServerHandle extends SimpleChannelInboundHandler<BaseRequestProto.R
      */
     @Override
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
+        LOGGER.info("客户端断开");
         NettySocketHolder.remove((NioSocketChannel) ctx.channel());
     }
 
@@ -37,11 +40,11 @@ public class ServerHandle extends SimpleChannelInboundHandler<BaseRequestProto.R
     }
 
     @Override
-    protected void channelRead0(ChannelHandlerContext ctx, BaseRequestProto.RequestProtocol msg) throws Exception {
+    protected void channelRead0(ChannelHandlerContext ctx, CIMRequestProto.CIMReqProtocol msg) throws Exception {
         LOGGER.info("收到msg={}", msg.getReqMsg());
 
         if (999 == msg.getRequestId()){
-            BaseResponseProto.ResponseProtocol responseProtocol = BaseResponseProto.ResponseProtocol.newBuilder()
+            CIMResponseProto.CIMResProtocol responseProtocol = CIMResponseProto.CIMResProtocol.newBuilder()
                     .setResponseId(1000)
                     .setResMsg("服务端响应")
                     .build();
