@@ -2,6 +2,7 @@ package com.crossoverjie.cim.route.service.impl;
 
 import com.crossoverjie.cim.route.service.AccountService;
 import com.crossoverjie.cim.route.vo.req.LoginReqVO;
+import com.crossoverjie.cim.route.vo.res.CIMServerResVO;
 import com.crossoverjie.cim.route.vo.res.RegisterInfoResVO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,7 +27,7 @@ public class AccountServiceRedisImpl implements AccountService {
     private RedisTemplate<String, String> redisTemplate;
 
     @Override
-    public RegisterInfoResVO registerAccount(RegisterInfoResVO info) {
+    public RegisterInfoResVO register(RegisterInfoResVO info) {
         String key = ACCOUNT_PREFIX + info.getUserId();
 
         String name = redisTemplate.opsForValue().get(info.getUserName()) ;
@@ -55,5 +56,10 @@ public class AccountServiceRedisImpl implements AccountService {
             return false ;
         }
         return true ;
+    }
+
+    @Override
+    public void saveRouteInfo(CIMServerResVO vo) throws Exception {
+
     }
 }

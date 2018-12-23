@@ -86,6 +86,9 @@ public class RouteController {
             String[] serverInfo = server.split(":");
             CIMServerResVO vo = new CIMServerResVO(serverInfo[0],Integer.parseInt(serverInfo[1])) ;
 
+            //保存路由信息
+            accountService.saveRouteInfo(vo) ;
+
             res.setDataBody(vo);
             res.setCode(StatusEnum.SUCCESS.getCode()) ;
             res.setMessage(StatusEnum.SUCCESS.getMessage()) ;
@@ -109,7 +112,7 @@ public class RouteController {
 
         long userId = System.currentTimeMillis();
         RegisterInfoResVO info = new RegisterInfoResVO(userId,registerInfoReqVO.getUserName()) ;
-        info = accountService.registerAccount(info);
+        info = accountService.register(info);
 
         res.setDataBody(info);
         res.setCode(StatusEnum.SUCCESS.getCode()) ;
