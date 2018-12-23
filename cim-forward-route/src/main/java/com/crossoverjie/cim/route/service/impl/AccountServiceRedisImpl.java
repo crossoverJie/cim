@@ -113,13 +113,13 @@ public class AccountServiceRedisImpl implements AccountService {
 
 
     @Override
-    public void pushMsg(String url, ChatReqVO groupReqVO) throws Exception {
-        Long userId = groupReqVO.getUserId();
-        String userName = redisTemplate.opsForValue().get(ACCOUNT_PREFIX + userId);
+    public void pushMsg(String url, long sendUserId, ChatReqVO groupReqVO) throws Exception {
+        //可考虑本地缓存
+        String sendUserName = redisTemplate.opsForValue().get(ACCOUNT_PREFIX + sendUserId);
 
         JSONObject jsonObject = new JSONObject();
-        jsonObject.put("msg", userName + ":【" + groupReqVO.getMsg() + "】");
-        jsonObject.put("userId", userId);
+        jsonObject.put("msg", sendUserName + ":【" + groupReqVO.getMsg() + "】");
+        jsonObject.put("userId", groupReqVO.getUserId());
         RequestBody requestBody = RequestBody.create(mediaType, jsonObject.toString());
 
         Request request = new Request.Builder()

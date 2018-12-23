@@ -62,8 +62,9 @@ public class RouteController {
 
             //推送消息
             String url = "http://" + value.getIp() + ":" + value.getHttpPort() + "/sendMsg" ;
-            ChatReqVO vo = new ChatReqVO(userId,groupReqVO.getMsg()) ;
-            accountService.pushMsg(url,vo);
+            ChatReqVO chatVO = new ChatReqVO(userId,groupReqVO.getMsg()) ;
+
+            accountService.pushMsg(url,groupReqVO.getUserId(),chatVO);
 
         }
 

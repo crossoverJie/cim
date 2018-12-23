@@ -55,6 +55,7 @@ public class CIMServerHandle extends SimpleChannelInboundHandler<CIMRequestProto
         AppConfiguration configuration = SpringBeanFactory.getBean(AppConfiguration.class);
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("userId", userInfo.getUserId());
+        jsonObject.put("msg", "offLine");
         RequestBody requestBody = RequestBody.create(mediaType, jsonObject.toString());
 
         Request request = new Request.Builder()
