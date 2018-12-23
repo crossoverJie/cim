@@ -4,9 +4,13 @@ import com.crossoverjie.cim.common.enums.StatusEnum;
 import com.crossoverjie.cim.common.res.BaseResponse;
 import com.crossoverjie.cim.common.res.NULLBody;
 import com.crossoverjie.cim.route.cache.ServerCache;
-import com.crossoverjie.cim.route.vo.req.GroupRequest;
-import com.crossoverjie.cim.route.vo.req.P2PRequest;
+import com.crossoverjie.cim.route.service.AccountService;
+import com.crossoverjie.cim.route.vo.req.GroupReqVO;
+import com.crossoverjie.cim.route.vo.req.LoginReqVO;
+import com.crossoverjie.cim.route.vo.req.P2PReqVO;
+import com.crossoverjie.cim.route.vo.req.RegisterInfoReqVO;
 import com.crossoverjie.cim.route.vo.res.CIMServerResVO;
+import com.crossoverjie.cim.route.vo.res.RegisterInfoResVO;
 import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,13 +36,16 @@ public class RouteController {
     @Autowired
     private ServerCache serverCache ;
 
+    @Autowired
+    private AccountService accountService;
+
     @ApiOperation("群聊 API")
     @RequestMapping(value = "groupRoute",method = RequestMethod.POST)
     @ResponseBody()
-    public BaseResponse<NULLBody> groupRoute(@RequestBody GroupRequest groupRequest){
+    public BaseResponse<NULLBody> groupRoute(@RequestBody GroupReqVO groupReqVO){
         BaseResponse<NULLBody> res = new BaseResponse();
 
-        LOGGER.info("msg=[{}]",groupRequest.toString());
+        LOGGER.info("msg=[{}]", groupReqVO.toString());
 
         res.setCode(StatusEnum.SUCCESS.getCode()) ;
         res.setMessage(StatusEnum.SUCCESS.getMessage()) ;
@@ -54,7 +61,7 @@ public class RouteController {
     @ApiOperation("私聊 API")
     @RequestMapping(value = "p2pRoute",method = RequestMethod.POST)
     @ResponseBody()
-    public BaseResponse<NULLBody> p2pRoute(@RequestBody P2PRequest p2pRequest){
+    public BaseResponse<NULLBody> p2pRoute(@RequestBody P2PReqVO p2pRequest){
         BaseResponse<NULLBody> res = new BaseResponse();
 
         res.setCode(StatusEnum.SUCCESS.getCode()) ;
@@ -66,17 +73,45 @@ public class RouteController {
      * 获取一台 CIM server
      * @return
      */
-    @ApiOperation("获取服务器")
-    @RequestMapping(value = "getCIMServer",method = RequestMethod.POST)
+    @ApiOperation("登录并获取服务器")
+    @RequestMapping(value = "login",method = RequestMethod.POST)
     @ResponseBody()
-    public BaseResponse<CIMServerResVO> getCIMServer(){
+    public BaseResponse<CIMServerResVO> login(@RequestBody LoginReqVO loginReqVO) throws Exception {
         BaseResponse<CIMServerResVO> res = new BaseResponse();
 
-        String server = serverCache.selectServer();
-        String[] serverInfo = server.split(":");
-        CIMServerResVO vo = new CIMServerResVO(serverInfo[0],Integer.parseInt(serverInfo[1])) ;
+        //登录校验
+        boolean login = accountService.login(loginReqVO);
+        if (login){
+            String server = serverCache.selectServer();
+            String[] serverInfo = server.split(":");
+            CIMServerResVO vo = new CIMServerResVO(serverInfo[0],Integer.parseInt(serverInfo[1])) ;
 
-        res.setDataBody(vo);
+            res.setDataBody(vo);
+            res.setCode(StatusEnum.SUCCESS.getCode()) ;
+            res.setMessage(StatusEnum.SUCCESS.getMessage()) ;
+        }else {
+            res.setCode(StatusEnum.FAIL.getCode()) ;
+            res.setMessage(StatusEnum.FAIL.getMessage()) ;
+        }
+
+        return res ;
+    }
+
+    /**
+     * 注册账号
+     * @return
+     */
+    @ApiOperation("注册账号")
+    @RequestMapping(value = "registerAccount",method = RequestMethod.POST)
+    @ResponseBody()
+    public BaseResponse<RegisterInfoResVO> registerAccount(@RequestBody RegisterInfoReqVO registerInfoReqVO) throws Exception {
+        BaseResponse<RegisterInfoResVO> res = new BaseResponse();
+
+        long userId = System.currentTimeMillis();
+        RegisterInfoResVO info = new RegisterInfoResVO(userId,registerInfoReqVO.getUserName()) ;
+        info = accountService.registerAccount(info);
+
+        res.setDataBody(info);
         res.setCode(StatusEnum.SUCCESS.getCode()) ;
         res.setMessage(StatusEnum.SUCCESS.getMessage()) ;
         return res ;

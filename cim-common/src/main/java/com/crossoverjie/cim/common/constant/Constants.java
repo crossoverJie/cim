@@ -22,4 +22,23 @@ public class Constants {
     public static final String COUNTER_CLIENT_PUSH_COUNT = "counter.client.push.count" ;
 
 
+
+
+    public static class CommandType{
+        /**
+         * 登录
+         */
+        public static final int LOGIN = 1 ;
+        /**
+         * 业务消息
+         */
+        public static final int MSG = 2 ;
+
+        /**
+         * 业务消息
+         */
+        public static final int PING = 3 ;
+    }
+
+
 }

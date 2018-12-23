@@ -19,13 +19,13 @@ public final class CIMResponseProto {
       com.google.protobuf.MessageOrBuilder {
 
     /**
-     * <code>required int32 responseId = 2;</code>
+     * <code>required int64 responseId = 2;</code>
      */
     boolean hasResponseId();
     /**
-     * <code>required int32 responseId = 2;</code>
+     * <code>required int64 responseId = 2;</code>
      */
-    int getResponseId();
+    long getResponseId();
 
     /**
      * <code>required string resMsg = 1;</code>
@@ -54,7 +54,7 @@ public final class CIMResponseProto {
       super(builder);
     }
     private CIMResProtocol() {
-      responseId_ = 0;
+      responseId_ = 0L;
       resMsg_ = "";
     }
 
@@ -97,7 +97,7 @@ public final class CIMResponseProto {
             }
             case 16: {
               bitField0_ |= 0x00000001;
-              responseId_ = input.readInt32();
+              responseId_ = input.readInt64();
               break;
             }
           }
@@ -126,17 +126,17 @@ public final class CIMResponseProto {
 
     private int bitField0_;
     public static final int RESPONSEID_FIELD_NUMBER = 2;
-    private int responseId_;
+    private long responseId_;
     /**
-     * <code>required int32 responseId = 2;</code>
+     * <code>required int64 responseId = 2;</code>
      */
     public boolean hasResponseId() {
       return ((bitField0_ & 0x00000001) == 0x00000001);
     }
     /**
-     * <code>required int32 responseId = 2;</code>
+     * <code>required int64 responseId = 2;</code>
      */
-    public int getResponseId() {
+    public long getResponseId() {
       return responseId_;
     }
 
@@ -206,7 +206,7 @@ public final class CIMResponseProto {
         com.google.protobuf.GeneratedMessageV3.writeString(output, 1, resMsg_);
       }
       if (((bitField0_ & 0x00000001) == 0x00000001)) {
-        output.writeInt32(2, responseId_);
+        output.writeInt64(2, responseId_);
       }
       unknownFields.writeTo(output);
     }
@@ -221,7 +221,7 @@ public final class CIMResponseProto {
       }
       if (((bitField0_ & 0x00000001) == 0x00000001)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeInt32Size(2, responseId_);
+          .computeInt64Size(2, responseId_);
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -262,7 +262,8 @@ public final class CIMResponseProto {
       hash = (19 * hash) + getDescriptor().hashCode();
       if (hasResponseId()) {
         hash = (37 * hash) + RESPONSEID_FIELD_NUMBER;
-        hash = (53 * hash) + getResponseId();
+        hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+            getResponseId());
       }
       if (hasResMsg()) {
         hash = (37 * hash) + RESMSG_FIELD_NUMBER;
@@ -397,7 +398,7 @@ public final class CIMResponseProto {
       }
       public Builder clear() {
         super.clear();
-        responseId_ = 0;
+        responseId_ = 0L;
         bitField0_ = (bitField0_ & ~0x00000001);
         resMsg_ = "";
         bitField0_ = (bitField0_ & ~0x00000002);
@@ -517,34 +518,34 @@ public final class CIMResponseProto {
       }
       private int bitField0_;
 
-      private int responseId_ ;
+      private long responseId_ ;
       /**
-       * <code>required int32 responseId = 2;</code>
+       * <code>required int64 responseId = 2;</code>
        */
       public boolean hasResponseId() {
         return ((bitField0_ & 0x00000001) == 0x00000001);
       }
       /**
-       * <code>required int32 responseId = 2;</code>
+       * <code>required int64 responseId = 2;</code>
        */
-      public int getResponseId() {
+      public long getResponseId() {
         return responseId_;
       }
       /**
-       * <code>required int32 responseId = 2;</code>
+       * <code>required int64 responseId = 2;</code>
        */
-      public Builder setResponseId(int value) {
+      public Builder setResponseId(long value) {
         bitField0_ |= 0x00000001;
         responseId_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>required int32 responseId = 2;</code>
+       * <code>required int64 responseId = 2;</code>
        */
       public Builder clearResponseId() {
         bitField0_ = (bitField0_ & ~0x00000001);
-        responseId_ = 0;
+        responseId_ = 0L;
         onChanged();
         return this;
       }
@@ -688,7 +689,7 @@ public final class CIMResponseProto {
   static {
     String[] descriptorData = {
       "\n\027BaseResponseProto.proto\022\010protocol\"4\n\016C" +
-      "IMResProtocol\022\022\n\nresponseId\030\002 \002(\005\022\016\n\006res" +
+      "IMResProtocol\022\022\n\nresponseId\030\002 \002(\003\022\016\n\006res" +
       "Msg\030\001 \002(\tB8\n$com.crossoverjie.cim.common" +
       ".protocolB\020CIMResponseProto"
     };

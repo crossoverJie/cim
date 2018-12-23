@@ -1,5 +1,6 @@
 package com.crossoverjie.cim.client.service;
 
+import com.crossoverjie.cim.client.vo.req.LoginReqVO;
 import com.crossoverjie.cim.client.vo.res.CIMServerResVO;
 
 /**
@@ -23,5 +24,5 @@ public interface RouteRequest {
      * @return 服务ip+port
      * @throws Exception
      */
-    CIMServerResVO.ServerInfo getCIMServer() throws Exception;
+    CIMServerResVO.ServerInfo getCIMServer(LoginReqVO loginReqVO) throws Exception;
 }

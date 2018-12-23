@@ -1,5 +1,6 @@
 package com.crossoverjie.cim.client.config;
 
+import com.crossoverjie.cim.common.constant.Constants;
 import com.crossoverjie.cim.common.protocol.CIMRequestProto;
 import okhttp3.OkHttpClient;
 import org.springframework.beans.factory.annotation.Value;
@@ -18,8 +19,8 @@ import java.util.concurrent.TimeUnit;
 @Configuration
 public class BeanConfig {
 
-    @Value("${client.request.id}")
-    private int requestId;
+    @Value("${cim.user.id}")
+    private long userId;
 
 
     /**
@@ -29,8 +30,9 @@ public class BeanConfig {
     @Bean(value = "heartBeat")
     public CIMRequestProto.CIMReqProtocol heartBeat() {
         CIMRequestProto.CIMReqProtocol heart = CIMRequestProto.CIMReqProtocol.newBuilder()
-                .setRequestId(requestId)
+                .setRequestId(userId)
                 .setReqMsg("ping")
+                .setType(Constants.CommandType.PING)
                 .build();
         return heart;
     }

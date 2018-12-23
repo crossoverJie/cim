@@ -12,7 +12,7 @@ import javax.validation.constraints.NotNull;
  *         Date: 2018/05/21 15:56
  * @since JDK 1.8
  */
-public class GroupRequest extends BaseRequest {
+public class GroupReqVO extends BaseRequest {
 
     @NotNull(message = "msg 不能为空")
     @ApiModelProperty(required = true, value = "msg", example = "hello")

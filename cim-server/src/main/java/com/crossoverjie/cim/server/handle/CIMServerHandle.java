@@ -1,8 +1,8 @@
 package com.crossoverjie.cim.server.handle;
 
+import com.crossoverjie.cim.common.constant.Constants;
 import com.crossoverjie.cim.common.protocol.CIMRequestProto;
-import com.crossoverjie.cim.common.protocol.CIMResponseProto;
-import com.crossoverjie.cim.server.util.NettySocketHolder;
+import com.crossoverjie.cim.server.util.SessionSocketHolder;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
@@ -30,28 +30,22 @@ public class CIMServerHandle extends SimpleChannelInboundHandler<CIMRequestProto
      */
     @Override
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
-        LOGGER.info("客户端断开");
-        NettySocketHolder.remove((NioSocketChannel) ctx.channel());
+        String userName = SessionSocketHolder.getUserName((NioSocketChannel) ctx.channel());
+        LOGGER.info("用户[{}]断开",userName);
+        SessionSocketHolder.remove((NioSocketChannel) ctx.channel());
     }
 
-    @Override
-    public void channelActive(ChannelHandlerContext ctx) throws Exception {
-        LOGGER.info("有客户端连上来了。。");
-    }
 
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, CIMRequestProto.CIMReqProtocol msg) throws Exception {
-        LOGGER.info("收到msg={}", msg.getReqMsg());
+        LOGGER.info("收到msg={}", msg.toString());
 
-        if (999 == msg.getRequestId()){
-            CIMResponseProto.CIMResProtocol responseProtocol = CIMResponseProto.CIMResProtocol.newBuilder()
-                    .setResponseId(1000)
-                    .setResMsg("服务端响应")
-                    .build();
-            ctx.writeAndFlush(responseProtocol) ;
+        if (msg.getType() == Constants.CommandType.LOGIN){
+            //保存客户端与 Channel 之间的关系
+            SessionSocketHolder.put(msg.getRequestId(),(NioSocketChannel)ctx.channel()) ;
+            SessionSocketHolder.saveSession(msg.getRequestId(),msg.getReqMsg());
+            LOGGER.info("客户端[{}]注册成功",msg.getReqMsg());
         }
 
-        //保存客户端与 Channel 之间的关系
-        NettySocketHolder.put((long) msg.getRequestId(),(NioSocketChannel)ctx.channel()) ;
     }
 }

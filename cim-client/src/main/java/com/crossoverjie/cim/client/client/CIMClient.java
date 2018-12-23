@@ -4,7 +4,9 @@ import com.alibaba.fastjson.JSON;
 import com.crossoverjie.cim.client.init.CIMClientHandleInitializer;
 import com.crossoverjie.cim.client.service.RouteRequest;
 import com.crossoverjie.cim.client.vo.req.GoogleProtocolVO;
+import com.crossoverjie.cim.client.vo.req.LoginReqVO;
 import com.crossoverjie.cim.client.vo.res.CIMServerResVO;
+import com.crossoverjie.cim.common.constant.Constants;
 import com.crossoverjie.cim.common.pojo.CustomProtocol;
 import com.crossoverjie.cim.common.protocol.CIMRequestProto;
 import io.netty.bootstrap.Bootstrap;
@@ -38,6 +40,12 @@ public class CIMClient {
 
     private EventLoopGroup group = new NioEventLoopGroup();
 
+    @Value("${cim.user.id}")
+    private long userId;
+
+    @Value("${cim.user.userName}")
+    private String userName;
+
 
     @Value("${netty.server.port}")
     private int nettyPort;
@@ -52,10 +60,38 @@ public class CIMClient {
 
     @PostConstruct
     public void start() throws Exception {
-        //获取可以使用的服务器 ip+port
-        CIMServerResVO.ServerInfo cimServer = routeRequest.getCIMServer();
+        //登录 + 获取可以使用的服务器 ip+port
+        LoginReqVO loginReqVO = new LoginReqVO(userId,userName) ;
+        CIMServerResVO.ServerInfo cimServer = routeRequest.getCIMServer(loginReqVO);
         LOGGER.info("cimServer=[{}]",cimServer.toString());
 
+        //启动客户端
+        startClient(cimServer);
+
+        //向服务端注册
+        loginCIMServer();
+    }
+
+    /**
+     * 向服务器注册
+     */
+    private void loginCIMServer() {
+        CIMRequestProto.CIMReqProtocol login = CIMRequestProto.CIMReqProtocol.newBuilder()
+                .setRequestId(userId)
+                .setReqMsg(userName)
+                .setType(Constants.CommandType.LOGIN)
+                .build();
+        ChannelFuture future = channel.writeAndFlush(login);
+        future.addListener((ChannelFutureListener) channelFuture ->
+                LOGGER.info("注册成功={}", login.toString()));
+    }
+
+    /**
+     * 启动客户端
+     * @param cimServer
+     * @throws InterruptedException
+     */
+    private void startClient(CIMServerResVO.ServerInfo cimServer) throws InterruptedException {
         Bootstrap bootstrap = new Bootstrap();
         bootstrap.group(group)
                 .channel(NioSocketChannel.class)
@@ -104,6 +140,7 @@ public class CIMClient {
         CIMRequestProto.CIMReqProtocol protocol = CIMRequestProto.CIMReqProtocol.newBuilder()
                 .setRequestId(googleProtocolVO.getRequestId())
                 .setReqMsg(googleProtocolVO.getMsg())
+                .setType(Constants.CommandType.MSG)
                 .build();
 
 

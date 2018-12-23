@@ -4,7 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.crossoverjie.cim.common.pojo.CustomProtocol;
 import com.crossoverjie.cim.common.protocol.CIMRequestProto;
 import com.crossoverjie.cim.server.init.CIMServerInitializer;
-import com.crossoverjie.cim.server.util.NettySocketHolder;
+import com.crossoverjie.cim.server.util.SessionSocketHolder;
 import com.crossoverjie.cim.server.vo.req.SendMsgReqVO;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.buffer.Unpooled;
@@ -86,7 +86,7 @@ public class CIMServer {
      * @param customProtocol
      */
     public void sendMsg(CustomProtocol customProtocol) {
-        NioSocketChannel socketChannel = NettySocketHolder.get(customProtocol.getId());
+        NioSocketChannel socketChannel = SessionSocketHolder.get(customProtocol.getId());
 
         if (null == socketChannel) {
             throw new NullPointerException("没有[" + customProtocol.getId() + "]的socketChannel");
@@ -102,7 +102,7 @@ public class CIMServer {
      * @param sendMsgReqVO 消息
      */
     public void sendGoogleProtoMsg(SendMsgReqVO sendMsgReqVO){
-        NioSocketChannel socketChannel = NettySocketHolder.get(sendMsgReqVO.getId());
+        NioSocketChannel socketChannel = SessionSocketHolder.get(sendMsgReqVO.getId());
 
         if (null == socketChannel) {
             throw new NullPointerException("没有[" + sendMsgReqVO.getId() + "]的socketChannel");

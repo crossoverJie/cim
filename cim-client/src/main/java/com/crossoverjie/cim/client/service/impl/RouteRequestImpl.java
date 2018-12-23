@@ -3,6 +3,7 @@ package com.crossoverjie.cim.client.service.impl;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.crossoverjie.cim.client.service.RouteRequest;
+import com.crossoverjie.cim.client.vo.req.LoginReqVO;
 import com.crossoverjie.cim.client.vo.res.CIMServerResVO;
 import com.crossoverjie.cim.common.enums.StatusEnum;
 import okhttp3.*;
@@ -56,9 +57,11 @@ public class RouteRequestImpl implements RouteRequest {
     }
 
     @Override
-    public CIMServerResVO.ServerInfo getCIMServer() throws Exception {
+    public CIMServerResVO.ServerInfo getCIMServer(LoginReqVO loginReqVO) throws Exception {
 
         JSONObject jsonObject = new JSONObject();
+        jsonObject.put("userId",loginReqVO.getUserId());
+        jsonObject.put("userName",loginReqVO.getUserName());
         RequestBody requestBody = RequestBody.create(mediaType,jsonObject.toString());
 
         Request request = new Request.Builder()

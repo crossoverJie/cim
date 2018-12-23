@@ -13,7 +13,7 @@ public class ProtocolUtil {
 
     public static void main(String[] args) throws InvalidProtocolBufferException {
         CIMRequestProto.CIMReqProtocol protocol = CIMRequestProto.CIMReqProtocol.newBuilder()
-                .setRequestId(123)
+                .setRequestId(123L)
                 .setReqMsg("你好啊")
                 .build();
 

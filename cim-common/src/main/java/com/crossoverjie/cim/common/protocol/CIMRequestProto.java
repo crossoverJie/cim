@@ -19,13 +19,13 @@ public final class CIMRequestProto {
       com.google.protobuf.MessageOrBuilder {
 
     /**
-     * <code>required int32 requestId = 2;</code>
+     * <code>required int64 requestId = 2;</code>
      */
     boolean hasRequestId();
     /**
-     * <code>required int32 requestId = 2;</code>
+     * <code>required int64 requestId = 2;</code>
      */
-    int getRequestId();
+    long getRequestId();
 
     /**
      * <code>required string reqMsg = 1;</code>
@@ -40,6 +40,15 @@ public final class CIMRequestProto {
      */
     com.google.protobuf.ByteString
         getReqMsgBytes();
+
+    /**
+     * <code>required int32 type = 3;</code>
+     */
+    boolean hasType();
+    /**
+     * <code>required int32 type = 3;</code>
+     */
+    int getType();
   }
   /**
    * Protobuf type {@code protocol.CIMReqProtocol}
@@ -54,8 +63,9 @@ public final class CIMRequestProto {
       super(builder);
     }
     private CIMReqProtocol() {
-      requestId_ = 0;
+      requestId_ = 0L;
       reqMsg_ = "";
+      type_ = 0;
     }
 
     @Override
@@ -97,7 +107,12 @@ public final class CIMRequestProto {
             }
             case 16: {
               bitField0_ |= 0x00000001;
-              requestId_ = input.readInt32();
+              requestId_ = input.readInt64();
+              break;
+            }
+            case 24: {
+              bitField0_ |= 0x00000004;
+              type_ = input.readInt32();
               break;
             }
           }
@@ -126,17 +141,17 @@ public final class CIMRequestProto {
 
     private int bitField0_;
     public static final int REQUESTID_FIELD_NUMBER = 2;
-    private int requestId_;
+    private long requestId_;
     /**
-     * <code>required int32 requestId = 2;</code>
+     * <code>required int64 requestId = 2;</code>
      */
     public boolean hasRequestId() {
       return ((bitField0_ & 0x00000001) == 0x00000001);
     }
     /**
-     * <code>required int32 requestId = 2;</code>
+     * <code>required int64 requestId = 2;</code>
      */
-    public int getRequestId() {
+    public long getRequestId() {
       return requestId_;
     }
 
@@ -182,6 +197,21 @@ public final class CIMRequestProto {
       }
     }
 
+    public static final int TYPE_FIELD_NUMBER = 3;
+    private int type_;
+    /**
+     * <code>required int32 type = 3;</code>
+     */
+    public boolean hasType() {
+      return ((bitField0_ & 0x00000004) == 0x00000004);
+    }
+    /**
+     * <code>required int32 type = 3;</code>
+     */
+    public int getType() {
+      return type_;
+    }
+
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
@@ -196,6 +226,10 @@ public final class CIMRequestProto {
         memoizedIsInitialized = 0;
         return false;
       }
+      if (!hasType()) {
+        memoizedIsInitialized = 0;
+        return false;
+      }
       memoizedIsInitialized = 1;
       return true;
     }
@@ -206,7 +240,10 @@ public final class CIMRequestProto {
         com.google.protobuf.GeneratedMessageV3.writeString(output, 1, reqMsg_);
       }
       if (((bitField0_ & 0x00000001) == 0x00000001)) {
-        output.writeInt32(2, requestId_);
+        output.writeInt64(2, requestId_);
+      }
+      if (((bitField0_ & 0x00000004) == 0x00000004)) {
+        output.writeInt32(3, type_);
       }
       unknownFields.writeTo(output);
     }
@@ -221,7 +258,11 @@ public final class CIMRequestProto {
       }
       if (((bitField0_ & 0x00000001) == 0x00000001)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeInt32Size(2, requestId_);
+          .computeInt64Size(2, requestId_);
+      }
+      if (((bitField0_ & 0x00000004) == 0x00000004)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(3, type_);
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -249,6 +290,11 @@ public final class CIMRequestProto {
         result = result && getReqMsg()
             .equals(other.getReqMsg());
       }
+      result = result && (hasType() == other.hasType());
+      if (hasType()) {
+        result = result && (getType()
+            == other.getType());
+      }
       result = result && unknownFields.equals(other.unknownFields);
       return result;
     }
@@ -262,11 +308,16 @@ public final class CIMRequestProto {
       hash = (19 * hash) + getDescriptor().hashCode();
       if (hasRequestId()) {
         hash = (37 * hash) + REQUESTID_FIELD_NUMBER;
-        hash = (53 * hash) + getRequestId();
+        hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+            getRequestId());
       }
       if (hasReqMsg()) {
         hash = (37 * hash) + REQMSG_FIELD_NUMBER;
         hash = (53 * hash) + getReqMsg().hashCode();
+      }
+      if (hasType()) {
+        hash = (37 * hash) + TYPE_FIELD_NUMBER;
+        hash = (53 * hash) + getType();
       }
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
@@ -397,10 +448,12 @@ public final class CIMRequestProto {
       }
       public Builder clear() {
         super.clear();
-        requestId_ = 0;
+        requestId_ = 0L;
         bitField0_ = (bitField0_ & ~0x00000001);
         reqMsg_ = "";
         bitField0_ = (bitField0_ & ~0x00000002);
+        type_ = 0;
+        bitField0_ = (bitField0_ & ~0x00000004);
         return this;
       }
 
@@ -433,6 +486,10 @@ public final class CIMRequestProto {
           to_bitField0_ |= 0x00000002;
         }
         result.reqMsg_ = reqMsg_;
+        if (((from_bitField0_ & 0x00000004) == 0x00000004)) {
+          to_bitField0_ |= 0x00000004;
+        }
+        result.type_ = type_;
         result.bitField0_ = to_bitField0_;
         onBuilt();
         return result;
@@ -483,6 +540,9 @@ public final class CIMRequestProto {
           reqMsg_ = other.reqMsg_;
           onChanged();
         }
+        if (other.hasType()) {
+          setType(other.getType());
+        }
         this.mergeUnknownFields(other.unknownFields);
         onChanged();
         return this;
@@ -493,6 +553,9 @@ public final class CIMRequestProto {
           return false;
         }
         if (!hasReqMsg()) {
+          return false;
+        }
+        if (!hasType()) {
           return false;
         }
         return true;
@@ -517,34 +580,34 @@ public final class CIMRequestProto {
       }
       private int bitField0_;
 
-      private int requestId_ ;
+      private long requestId_ ;
       /**
-       * <code>required int32 requestId = 2;</code>
+       * <code>required int64 requestId = 2;</code>
        */
       public boolean hasRequestId() {
         return ((bitField0_ & 0x00000001) == 0x00000001);
       }
       /**
-       * <code>required int32 requestId = 2;</code>
+       * <code>required int64 requestId = 2;</code>
        */
-      public int getRequestId() {
+      public long getRequestId() {
         return requestId_;
       }
       /**
-       * <code>required int32 requestId = 2;</code>
+       * <code>required int64 requestId = 2;</code>
        */
-      public Builder setRequestId(int value) {
+      public Builder setRequestId(long value) {
         bitField0_ |= 0x00000001;
         requestId_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>required int32 requestId = 2;</code>
+       * <code>required int64 requestId = 2;</code>
        */
       public Builder clearRequestId() {
         bitField0_ = (bitField0_ & ~0x00000001);
-        requestId_ = 0;
+        requestId_ = 0L;
         onChanged();
         return this;
       }
@@ -624,6 +687,38 @@ public final class CIMRequestProto {
         onChanged();
         return this;
       }
+
+      private int type_ ;
+      /**
+       * <code>required int32 type = 3;</code>
+       */
+      public boolean hasType() {
+        return ((bitField0_ & 0x00000004) == 0x00000004);
+      }
+      /**
+       * <code>required int32 type = 3;</code>
+       */
+      public int getType() {
+        return type_;
+      }
+      /**
+       * <code>required int32 type = 3;</code>
+       */
+      public Builder setType(int value) {
+        bitField0_ |= 0x00000004;
+        type_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>required int32 type = 3;</code>
+       */
+      public Builder clearType() {
+        bitField0_ = (bitField0_ & ~0x00000004);
+        type_ = 0;
+        onChanged();
+        return this;
+      }
       public final Builder setUnknownFields(
           final com.google.protobuf.UnknownFieldSet unknownFields) {
         return super.setUnknownFields(unknownFields);
@@ -687,10 +782,10 @@ public final class CIMRequestProto {
       descriptor;
   static {
     String[] descriptorData = {
-      "\n\026BaseRequestProto.proto\022\010protocol\"3\n\016CI" +
-      "MReqProtocol\022\021\n\trequestId\030\002 \002(\005\022\016\n\006reqMs" +
-      "g\030\001 \002(\tB7\n$com.crossoverjie.cim.common.p" +
-      "rotocolB\017CIMRequestProto"
+      "\n\026BaseRequestProto.proto\022\010protocol\"A\n\016CI" +
+      "MReqProtocol\022\021\n\trequestId\030\002 \002(\003\022\016\n\006reqMs" +
+      "g\030\001 \002(\t\022\014\n\004type\030\003 \002(\005B7\n$com.crossoverji" +
+      "e.cim.common.protocolB\017CIMRequestProto"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
@@ -709,7 +804,7 @@ public final class CIMRequestProto {
     internal_static_protocol_CIMReqProtocol_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_protocol_CIMReqProtocol_descriptor,
-        new String[] { "RequestId", "ReqMsg", });
+        new String[] { "RequestId", "ReqMsg", "Type", });
   }
 
   // @@protoc_insertion_point(outer_class_scope)

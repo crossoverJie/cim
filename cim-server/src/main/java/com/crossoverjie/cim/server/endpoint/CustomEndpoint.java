@@ -1,6 +1,6 @@
 package com.crossoverjie.cim.server.endpoint;
 
-import com.crossoverjie.cim.server.util.NettySocketHolder;
+import com.crossoverjie.cim.server.util.SessionSocketHolder;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import org.springframework.boot.actuate.endpoint.AbstractEndpoint;
 
@@ -27,6 +27,6 @@ public class CustomEndpoint extends AbstractEndpoint<Map<Long,NioSocketChannel>>
 
     @Override
     public Map<Long, NioSocketChannel> invoke() {
-        return NettySocketHolder.getMAP();
+        return SessionSocketHolder.getMAP();
     }
 }
