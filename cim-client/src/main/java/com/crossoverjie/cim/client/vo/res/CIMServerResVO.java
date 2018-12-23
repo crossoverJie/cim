@@ -60,9 +60,9 @@ public class CIMServerResVO implements Serializable {
          * ip : 127.0.0.1
          * port : 8081
          */
-
-        private String ip;
-        private int port;
+        private String ip ;
+        private Integer cimServerPort;
+        private Integer httpPort;
 
         public String getIp() {
             return ip;
@@ -72,19 +72,28 @@ public class CIMServerResVO implements Serializable {
             this.ip = ip;
         }
 
-        public int getPort() {
-            return port;
+        public Integer getCimServerPort() {
+            return cimServerPort;
         }
 
-        public void setPort(int port) {
-            this.port = port;
+        public void setCimServerPort(Integer cimServerPort) {
+            this.cimServerPort = cimServerPort;
+        }
+
+        public Integer getHttpPort() {
+            return httpPort;
+        }
+
+        public void setHttpPort(Integer httpPort) {
+            this.httpPort = httpPort;
         }
 
         @Override
         public String toString() {
-            return "DataBodyBean{" +
+            return "ServerInfo{" +
                     "ip='" + ip + '\'' +
-                    ", port=" + port +
+                    ", cimServerPort=" + cimServerPort +
+                    ", httpPort=" + httpPort +
                     '}';
         }
     }

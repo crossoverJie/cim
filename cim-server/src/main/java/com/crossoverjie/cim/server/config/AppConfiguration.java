@@ -22,15 +22,18 @@ public class AppConfiguration {
     @Value("${app.zk.switch}")
     private boolean zkSwitch;
 
-    @Value("${netty.server.port}")
-    private int port;
+    @Value("${cim.server.port}")
+    private int cimServerPort;
 
-    public int getPort() {
-        return port;
+    @Value("${cim.clear.route.request.url}")
+    private String clearRouteUrl ;
+
+    public String getClearRouteUrl() {
+        return clearRouteUrl;
     }
 
-    public void setPort(int port) {
-        this.port = port;
+    public void setClearRouteUrl(String clearRouteUrl) {
+        this.clearRouteUrl = clearRouteUrl;
     }
 
     public String getZkRoot() {
@@ -55,5 +58,13 @@ public class AppConfiguration {
 
     public void setZkSwitch(boolean zkSwitch) {
         this.zkSwitch = zkSwitch;
+    }
+
+    public int getCimServerPort() {
+        return cimServerPort;
+    }
+
+    public void setCimServerPort(int cimServerPort) {
+        this.cimServerPort = cimServerPort;
     }
 }

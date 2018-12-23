@@ -5,7 +5,7 @@ import com.crossoverjie.cim.common.res.BaseResponse;
 import com.crossoverjie.cim.common.res.NULLBody;
 import com.crossoverjie.cim.route.cache.ServerCache;
 import com.crossoverjie.cim.route.service.AccountService;
-import com.crossoverjie.cim.route.vo.req.GroupReqVO;
+import com.crossoverjie.cim.route.vo.req.ChatReqVO;
 import com.crossoverjie.cim.route.vo.req.LoginReqVO;
 import com.crossoverjie.cim.route.vo.req.P2PReqVO;
 import com.crossoverjie.cim.route.vo.req.RegisterInfoReqVO;
@@ -20,6 +20,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import java.util.Map;
 
 /**
  * Function:
@@ -42,10 +44,42 @@ public class RouteController {
     @ApiOperation("群聊 API")
     @RequestMapping(value = "groupRoute", method = RequestMethod.POST)
     @ResponseBody()
-    public BaseResponse<NULLBody> groupRoute(@RequestBody GroupReqVO groupReqVO) {
+    public BaseResponse<NULLBody> groupRoute(@RequestBody ChatReqVO groupReqVO) throws Exception {
         BaseResponse<NULLBody> res = new BaseResponse();
 
         LOGGER.info("msg=[{}]", groupReqVO.toString());
+
+        //获取所有的推送列表
+        Map<Long, CIMServerResVO> serverResVOMap = accountService.loadRouteRelated();
+        for (Map.Entry<Long, CIMServerResVO> cimServerResVOEntry : serverResVOMap.entrySet()) {
+            Long userId = cimServerResVOEntry.getKey();
+            CIMServerResVO value = cimServerResVOEntry.getValue();
+            if (userId.equals(groupReqVO.getUserId())){
+                //过滤掉自己
+                LOGGER.info("过滤掉了发送者 userId={}",groupReqVO.getUserId());
+                continue;
+            }
+
+            //推送消息
+            String url = "http://" + value.getIp() + ":" + value.getHttpPort() + "/sendMsg" ;
+            ChatReqVO vo = new ChatReqVO(userId,groupReqVO.getMsg()) ;
+            accountService.pushMsg(url,vo);
+
+        }
+
+        res.setCode(StatusEnum.SUCCESS.getCode());
+        res.setMessage(StatusEnum.SUCCESS.getMessage());
+        return res;
+    }
+
+    @ApiOperation("客户端下线")
+    @RequestMapping(value = "offLine", method = RequestMethod.POST)
+    @ResponseBody()
+    public BaseResponse<NULLBody> offLine(@RequestBody ChatReqVO groupReqVO) throws Exception {
+        BaseResponse<NULLBody> res = new BaseResponse();
+
+        LOGGER.info("下线用户[{}]", groupReqVO.toString());
+        accountService.offLine(groupReqVO.getUserId());
 
         res.setCode(StatusEnum.SUCCESS.getCode());
         res.setMessage(StatusEnum.SUCCESS.getMessage());
@@ -86,7 +120,7 @@ public class RouteController {
         if (login) {
             String server = serverCache.selectServer();
             String[] serverInfo = server.split(":");
-            CIMServerResVO vo = new CIMServerResVO(serverInfo[0], Integer.parseInt(serverInfo[1]));
+            CIMServerResVO vo = new CIMServerResVO(serverInfo[0], Integer.parseInt(serverInfo[1]),Integer.parseInt(serverInfo[2]));
 
             //保存路由信息
             accountService.saveRouteInfo(loginReqVO,server);

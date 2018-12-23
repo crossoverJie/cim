@@ -46,13 +46,6 @@ public class CIMClient {
     @Value("${cim.user.userName}")
     private String userName;
 
-
-    @Value("${netty.server.port}")
-    private int nettyPort;
-
-    @Value("${netty.server.host}")
-    private String host;
-
     private SocketChannel channel;
 
     @Autowired
@@ -98,7 +91,7 @@ public class CIMClient {
                 .handler(new CIMClientHandleInitializer())
         ;
 
-        ChannelFuture future = bootstrap.connect(cimServer.getIp(), cimServer.getPort()).sync();
+        ChannelFuture future = bootstrap.connect(cimServer.getIp(), cimServer.getCimServerPort()).sync();
         if (future.isSuccess()) {
             LOGGER.info("启动 cim client 成功");
         }

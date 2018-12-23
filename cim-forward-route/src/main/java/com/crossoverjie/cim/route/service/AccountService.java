@@ -1,7 +1,11 @@
 package com.crossoverjie.cim.route.service;
 
+import com.crossoverjie.cim.route.vo.req.ChatReqVO;
 import com.crossoverjie.cim.route.vo.req.LoginReqVO;
+import com.crossoverjie.cim.route.vo.res.CIMServerResVO;
 import com.crossoverjie.cim.route.vo.res.RegisterInfoResVO;
+
+import java.util.Map;
 
 /**
  * Function: 账户服务
@@ -35,4 +39,26 @@ public interface AccountService {
      * @throws Exception
      */
     void saveRouteInfo(LoginReqVO loginReqVO ,String msg) throws Exception ;
+
+    /**
+     * 加载所有的路有关系
+     * @return 所有的路由关系
+     */
+    Map<Long,CIMServerResVO> loadRouteRelated() ;
+
+
+    /**
+     * 推送消息
+     * @param url url
+     * @param groupReqVO 消息
+     * @throws Exception
+     */
+    void pushMsg(String url,ChatReqVO groupReqVO) throws Exception;
+
+    /**
+     * 用户下线
+     * @param userId 下线用户ID
+     * @throws Exception
+     */
+    void offLine(Long userId) throws Exception;
 }

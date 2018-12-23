@@ -1,6 +1,7 @@
 package com.crossoverjie.cim.server.server;
 
 import com.alibaba.fastjson.JSON;
+import com.crossoverjie.cim.common.constant.Constants;
 import com.crossoverjie.cim.common.pojo.CustomProtocol;
 import com.crossoverjie.cim.common.protocol.CIMRequestProto;
 import com.crossoverjie.cim.server.init.CIMServerInitializer;
@@ -41,7 +42,7 @@ public class CIMServer {
     private EventLoopGroup work = new NioEventLoopGroup();
 
 
-    @Value("${netty.server.port}")
+    @Value("${cim.server.port}")
     private int nettyPort;
 
 
@@ -101,15 +102,16 @@ public class CIMServer {
      * 发送 Google Protocol 编码消息
      * @param sendMsgReqVO 消息
      */
-    public void sendGoogleProtoMsg(SendMsgReqVO sendMsgReqVO){
-        NioSocketChannel socketChannel = SessionSocketHolder.get(sendMsgReqVO.getId());
+    public void sendMsg(SendMsgReqVO sendMsgReqVO){
+        NioSocketChannel socketChannel = SessionSocketHolder.get(sendMsgReqVO.getUserId());
 
         if (null == socketChannel) {
-            throw new NullPointerException("没有[" + sendMsgReqVO.getId() + "]的socketChannel");
+            throw new NullPointerException("客户端[" + sendMsgReqVO.getUserId() + "]不在线！");
         }
         CIMRequestProto.CIMReqProtocol protocol = CIMRequestProto.CIMReqProtocol.newBuilder()
-                .setRequestId((int) sendMsgReqVO.getId())
+                .setRequestId(sendMsgReqVO.getUserId())
                 .setReqMsg(sendMsgReqVO.getMsg())
+                .setType(Constants.CommandType.MSG)
                 .build();
 
         ChannelFuture future = socketChannel.writeAndFlush(protocol);

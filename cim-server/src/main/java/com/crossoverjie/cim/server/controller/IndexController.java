@@ -27,7 +27,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 public class IndexController {
 
     @Autowired
-    private CIMServer heartbeatClient ;
+    private CIMServer cimServer;
 
 
     /**
@@ -46,7 +46,7 @@ public class IndexController {
     @ResponseBody
     public BaseResponse<SendMsgResVO> sendMsg(@RequestBody SendMsgReqVO sendMsgReqVO){
         BaseResponse<SendMsgResVO> res = new BaseResponse();
-        heartbeatClient.sendGoogleProtoMsg(sendMsgReqVO) ;
+        cimServer.sendMsg(sendMsgReqVO) ;
 
         counterService.increment(Constants.COUNTER_SERVER_PUSH_COUNT);
 

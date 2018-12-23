@@ -1,5 +1,6 @@
 package com.crossoverjie.cim.server.util;
 
+import com.crossoverjie.cim.server.kit.CIMUserInfo;
 import io.netty.channel.socket.nio.NioSocketChannel;
 
 import java.util.Map;
@@ -41,17 +42,20 @@ public class SessionSocketHolder {
      * @param nioSocketChannel
      * @return
      */
-    public static String getUserName(NioSocketChannel nioSocketChannel){
+    public static CIMUserInfo getUserId(NioSocketChannel nioSocketChannel){
         for (Map.Entry<Long, NioSocketChannel> entry : CHANNEL_MAP.entrySet()) {
             NioSocketChannel value = entry.getValue();
             if (nioSocketChannel == value){
                 Long key = entry.getKey();
                 String userName = SESSION_MAP.get(key);
-                return userName ;
+                CIMUserInfo info = new CIMUserInfo(key,userName) ;
+                return info ;
             }
         }
 
         return null;
     }
+
+
 
 }

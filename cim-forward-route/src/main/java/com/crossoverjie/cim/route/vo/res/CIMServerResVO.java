@@ -12,11 +12,13 @@ import java.io.Serializable;
 public class CIMServerResVO implements Serializable {
 
     private String ip ;
-    private Integer port;
+    private Integer cimServerPort;
+    private Integer httpPort;
 
-    public CIMServerResVO(String ip, Integer port) {
+    public CIMServerResVO(String ip, Integer cimServerPort, Integer httpPort) {
         this.ip = ip;
-        this.port = port;
+        this.cimServerPort = cimServerPort;
+        this.httpPort = httpPort;
     }
 
     public String getIp() {
@@ -27,19 +29,19 @@ public class CIMServerResVO implements Serializable {
         this.ip = ip;
     }
 
-    public Integer getPort() {
-        return port;
+    public Integer getCimServerPort() {
+        return cimServerPort;
     }
 
-    public void setPort(Integer port) {
-        this.port = port;
+    public void setCimServerPort(Integer cimServerPort) {
+        this.cimServerPort = cimServerPort;
     }
 
-    @Override
-    public String toString() {
-        return "CIMServerResVO{" +
-                "ip='" + ip + '\'' +
-                ", port=" + port +
-                '}';
+    public Integer getHttpPort() {
+        return httpPort;
+    }
+
+    public void setHttpPort(Integer httpPort) {
+        this.httpPort = httpPort;
     }
 }

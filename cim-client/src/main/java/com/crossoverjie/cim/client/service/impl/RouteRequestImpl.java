@@ -3,6 +3,7 @@ package com.crossoverjie.cim.client.service.impl;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.crossoverjie.cim.client.service.RouteRequest;
+import com.crossoverjie.cim.client.vo.req.GroupReqVO;
 import com.crossoverjie.cim.client.vo.req.LoginReqVO;
 import com.crossoverjie.cim.client.vo.res.CIMServerResVO;
 import com.crossoverjie.cim.common.enums.StatusEnum;
@@ -39,10 +40,11 @@ public class RouteRequestImpl implements RouteRequest {
     private String serverRouteRequestUrl;
 
     @Override
-    public void sendGroupMsg(String msg) throws Exception {
+    public void sendGroupMsg(GroupReqVO groupReqVO) throws Exception {
 
         JSONObject jsonObject = new JSONObject();
-        jsonObject.put("msg",msg);
+        jsonObject.put("msg",groupReqVO.getMsg());
+        jsonObject.put("userId",groupReqVO.getUserId());
         RequestBody requestBody = RequestBody.create(mediaType,jsonObject.toString());
 
         Request request = new Request.Builder()

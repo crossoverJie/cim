@@ -21,11 +21,13 @@ public class RegistryZK implements Runnable {
     private AppConfiguration appConfiguration ;
 
     private String ip;
-    private int port;
+    private int cimServerPort;
+    private int httpPort;
 
-    public RegistryZK(String ip, int port) {
+    public RegistryZK(String ip, int cimServerPort,int httpPort) {
         this.ip = ip;
-        this.port = port;
+        this.cimServerPort = cimServerPort;
+        this.httpPort = httpPort ;
         zKit = SpringBeanFactory.getBean(ZKit.class) ;
         appConfiguration = SpringBeanFactory.getBean(AppConfiguration.class) ;
     }
@@ -38,7 +40,7 @@ public class RegistryZK implements Runnable {
 
         //是否要将自己注册到 ZK
         if (appConfiguration.isZkSwitch()){
-            String path = appConfiguration.getZkRoot() + "/ip-" + ip + ":" + port;
+            String path = appConfiguration.getZkRoot() + "/ip-" + ip + ":" + cimServerPort + ":" + httpPort;
             zKit.createNode(path, path);
             logger.info("注册 zookeeper 成功，msg=[{}]", path);
         }

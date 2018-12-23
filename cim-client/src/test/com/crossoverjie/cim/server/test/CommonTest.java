@@ -23,5 +23,8 @@ public class CommonTest {
 
         System.out.println(cimServerResVO.toString());
 
+        String text = "nihaoaaa" ;
+        String[] split = text.split(" ");
+        System.out.println(split.length);
     }
 }

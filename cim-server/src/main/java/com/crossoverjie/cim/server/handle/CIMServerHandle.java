@@ -1,14 +1,21 @@
 package com.crossoverjie.cim.server.handle;
 
+import com.alibaba.fastjson.JSONObject;
 import com.crossoverjie.cim.common.constant.Constants;
 import com.crossoverjie.cim.common.protocol.CIMRequestProto;
+import com.crossoverjie.cim.server.config.AppConfiguration;
+import com.crossoverjie.cim.server.kit.CIMUserInfo;
 import com.crossoverjie.cim.server.util.SessionSocketHolder;
+import com.crossoverjie.cim.server.util.SpringBeanFactory;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.channel.socket.nio.NioSocketChannel;
+import okhttp3.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.IOException;
 
 /**
  * Function:
@@ -22,7 +29,7 @@ public class CIMServerHandle extends SimpleChannelInboundHandler<CIMRequestProto
 
     private final static Logger LOGGER = LoggerFactory.getLogger(CIMServerHandle.class);
 
-
+    private final MediaType mediaType = MediaType.parse("application/json");
     /**
      * 取消绑定
      * @param ctx
@@ -30,9 +37,35 @@ public class CIMServerHandle extends SimpleChannelInboundHandler<CIMRequestProto
      */
     @Override
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
-        String userName = SessionSocketHolder.getUserName((NioSocketChannel) ctx.channel());
-        LOGGER.info("用户[{}]断开",userName);
+        CIMUserInfo userInfo = SessionSocketHolder.getUserId((NioSocketChannel) ctx.channel());
+        LOGGER.info("用户[{}]下线",userInfo.getUserName());
         SessionSocketHolder.remove((NioSocketChannel) ctx.channel());
+
+        //清除路由关系
+        clearRouteInfo(userInfo);
+    }
+
+    /**
+     * 清除路由关系
+     * @param userInfo
+     * @throws IOException
+     */
+    private void clearRouteInfo(CIMUserInfo userInfo) throws IOException {
+        OkHttpClient okHttpClient = SpringBeanFactory.getBean(OkHttpClient.class);
+        AppConfiguration configuration = SpringBeanFactory.getBean(AppConfiguration.class);
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("userId", userInfo.getUserId());
+        RequestBody requestBody = RequestBody.create(mediaType, jsonObject.toString());
+
+        Request request = new Request.Builder()
+                .url(configuration.getClearRouteUrl())
+                .post(requestBody)
+                .build();
+
+        Response response = okHttpClient.newCall(request).execute();
+        if (!response.isSuccessful()) {
+            throw new IOException("Unexpected code " + response);
+        }
     }
 
 

@@ -1,15 +1,16 @@
 package com.crossoverjie.cim.client.controller;
 
 import com.crossoverjie.cim.client.client.CIMClient;
-import com.crossoverjie.cim.client.vo.req.SendMsgReqVO;
-import com.crossoverjie.cim.client.vo.res.SendMsgResVO;
-import com.crossoverjie.cim.client.vo.req.GoogleProtocolVO;
-import com.crossoverjie.cim.client.vo.req.StringReqVO;
-import com.crossoverjie.cim.common.enums.StatusEnum;
-import com.crossoverjie.cim.common.res.BaseResponse;
 import com.crossoverjie.cim.client.service.RouteRequest;
+import com.crossoverjie.cim.client.vo.req.GoogleProtocolVO;
+import com.crossoverjie.cim.client.vo.req.GroupReqVO;
+import com.crossoverjie.cim.client.vo.req.SendMsgReqVO;
+import com.crossoverjie.cim.client.vo.req.StringReqVO;
+import com.crossoverjie.cim.client.vo.res.SendMsgResVO;
 import com.crossoverjie.cim.common.constant.Constants;
+import com.crossoverjie.cim.common.enums.StatusEnum;
 import com.crossoverjie.cim.common.pojo.CustomProtocol;
+import com.crossoverjie.cim.common.res.BaseResponse;
 import com.crossoverjie.cim.common.res.NULLBody;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,7 +56,7 @@ public class IndexController {
     @ResponseBody()
     public BaseResponse<SendMsgResVO> sendMsg(@RequestBody SendMsgReqVO sendMsgReqVO){
         BaseResponse<SendMsgResVO> res = new BaseResponse();
-        heartbeatClient.sendMsg(new CustomProtocol(sendMsgReqVO.getId(),sendMsgReqVO.getMsg())) ;
+        heartbeatClient.sendMsg(new CustomProtocol(sendMsgReqVO.getUserId(),sendMsgReqVO.getMsg())) ;
 
         // 利用 actuator 来自增
         counterService.increment(Constants.COUNTER_CLIENT_PUSH_COUNT);
@@ -131,7 +132,8 @@ public class IndexController {
     public BaseResponse sendGroupMsg(@RequestBody SendMsgReqVO sendMsgReqVO) throws Exception {
         BaseResponse<NULLBody> res = new BaseResponse();
 
-        routeRequest.sendGroupMsg(sendMsgReqVO.getMsg()) ;
+        GroupReqVO groupReqVO = new GroupReqVO(sendMsgReqVO.getUserId(),sendMsgReqVO.getMsg()) ;
+        routeRequest.sendGroupMsg(groupReqVO) ;
 
         counterService.increment(Constants.COUNTER_SERVER_PUSH_COUNT);
 

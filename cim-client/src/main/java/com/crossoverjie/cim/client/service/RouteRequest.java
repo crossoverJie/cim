@@ -1,5 +1,6 @@
 package com.crossoverjie.cim.client.service;
 
+import com.crossoverjie.cim.client.vo.req.GroupReqVO;
 import com.crossoverjie.cim.client.vo.req.LoginReqVO;
 import com.crossoverjie.cim.client.vo.res.CIMServerResVO;
 
@@ -14,10 +15,10 @@ public interface RouteRequest {
 
     /**
      * 群发消息
-     * @param msg 消息
+     * @param groupReqVO 消息
      * @throws Exception
      */
-    void sendGroupMsg(String msg) throws Exception;
+    void sendGroupMsg(GroupReqVO groupReqVO) throws Exception;
 
     /**
      * 获取服务器

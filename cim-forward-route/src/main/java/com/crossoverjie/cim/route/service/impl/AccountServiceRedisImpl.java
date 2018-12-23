@@ -1,13 +1,25 @@
 package com.crossoverjie.cim.route.service.impl;
 
+import com.alibaba.fastjson.JSONObject;
 import com.crossoverjie.cim.route.service.AccountService;
+import com.crossoverjie.cim.route.vo.req.ChatReqVO;
 import com.crossoverjie.cim.route.vo.req.LoginReqVO;
+import com.crossoverjie.cim.route.vo.res.CIMServerResVO;
 import com.crossoverjie.cim.route.vo.res.RegisterInfoResVO;
+import okhttp3.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.connection.RedisConnection;
+import org.springframework.data.redis.core.Cursor;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.ScanOptions;
 import org.springframework.stereotype.Service;
+
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
+import java.util.Map;
 
 import static com.crossoverjie.cim.route.constant.Constant.ACCOUNT_PREFIX;
 import static com.crossoverjie.cim.route.constant.Constant.ROUTE_PREFIX;
@@ -26,41 +38,103 @@ public class AccountServiceRedisImpl implements AccountService {
     @Autowired
     private RedisTemplate<String, String> redisTemplate;
 
+    @Autowired
+    private OkHttpClient okHttpClient;
+
+    private MediaType mediaType = MediaType.parse("application/json");
+
     @Override
     public RegisterInfoResVO register(RegisterInfoResVO info) {
         String key = ACCOUNT_PREFIX + info.getUserId();
 
-        String name = redisTemplate.opsForValue().get(info.getUserName()) ;
-        if (null == name){
+        String name = redisTemplate.opsForValue().get(info.getUserName());
+        if (null == name) {
             //为了方便查询，冗余一份
             redisTemplate.opsForValue().set(key, info.getUserName());
-            redisTemplate.opsForValue().set(info.getUserName(),key);
-        }else {
+            redisTemplate.opsForValue().set(info.getUserName(), key);
+        } else {
             long userId = Long.parseLong(name.split(":")[1]);
             info.setUserId(userId);
             info.setUserName(info.getUserName());
         }
 
-        return info ;
+        return info;
     }
 
     @Override
     public boolean login(LoginReqVO loginReqVO) throws Exception {
         String key = ACCOUNT_PREFIX + loginReqVO.getUserId();
         String userName = redisTemplate.opsForValue().get(key);
-        if (null == userName){
-            return false ;
+        if (null == userName) {
+            return false;
         }
 
-        if (!userName.equals(loginReqVO.getUserName())){
-            return false ;
+        if (!userName.equals(loginReqVO.getUserName())) {
+            return false;
         }
-        return true ;
+        return true;
     }
 
     @Override
-    public void saveRouteInfo(LoginReqVO loginReqVO,String msg) throws Exception {
-        String key = ROUTE_PREFIX + loginReqVO.getUserId() ;
-        redisTemplate.opsForValue().set(key,msg) ;
+    public void saveRouteInfo(LoginReqVO loginReqVO, String msg) throws Exception {
+        String key = ROUTE_PREFIX + loginReqVO.getUserId();
+        redisTemplate.opsForValue().set(key, msg);
+    }
+
+    @Override
+    public Map<Long, CIMServerResVO> loadRouteRelated() {
+
+        Map<Long, CIMServerResVO> routes = new HashMap<>(64);
+
+        RedisConnection connection = redisTemplate.getConnectionFactory().getConnection();
+        ScanOptions options = ScanOptions.scanOptions()
+                .match(ROUTE_PREFIX + "*")
+                .build();
+        Cursor<byte[]> scan = connection.scan(options);
+
+        while (scan.hasNext()) {
+            byte[] next = scan.next();
+            String key = new String(next, StandardCharsets.UTF_8);
+            LOGGER.info("key={}", key);
+            parseServerInfo(routes, key);
+
+        }
+
+        return routes;
+    }
+
+    private void parseServerInfo(Map<Long, CIMServerResVO> routes, String key) {
+        long userId = Long.valueOf(key.split(":")[1]);
+        String value = redisTemplate.opsForValue().get(key);
+        String[] server = value.split(":");
+        CIMServerResVO cimServerResVO = new CIMServerResVO(server[0], Integer.parseInt(server[1]), Integer.parseInt(server[2]));
+        routes.put(userId, cimServerResVO);
+    }
+
+
+    @Override
+    public void pushMsg(String url, ChatReqVO groupReqVO) throws Exception {
+        Long userId = groupReqVO.getUserId();
+        String userName = redisTemplate.opsForValue().get(ACCOUNT_PREFIX + userId);
+
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("msg", userName + ":【" + groupReqVO.getMsg() + "】");
+        jsonObject.put("userId", userId);
+        RequestBody requestBody = RequestBody.create(mediaType, jsonObject.toString());
+
+        Request request = new Request.Builder()
+                .url(url)
+                .post(requestBody)
+                .build();
+
+        Response response = okHttpClient.newCall(request).execute();
+        if (!response.isSuccessful()) {
+            throw new IOException("Unexpected code " + response);
+        }
+    }
+
+    @Override
+    public void offLine(Long userId) throws Exception {
+        redisTemplate.delete(ROUTE_PREFIX + userId) ;
     }
 }
