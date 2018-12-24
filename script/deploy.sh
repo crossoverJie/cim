@@ -39,8 +39,13 @@ do
     kill -9 $var
 done
 
-echo "开始部署服务。。。。"
+echo "开始部署服务1。。。。"
 sh /root/work/server/server-startup.sh
-echo "部署服务成功！"
+echo "部署服务1成功！"
+
+
+echo "开始部署服务2。。。。"
+sh /root/work/server2/server-startup.sh
+echo "部署服务2成功！"
 
 
