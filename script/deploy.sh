@@ -27,7 +27,7 @@ echo "部署路由成功！"
 
 #=======================================
 # 部署server
-mv /root/work/netty-action/cim-server/target/cim-server-1.0.0-SNAPSHOT.jar /root/work/cim-server/
+mv /root/work/netty-action/cim-server/target/cim-server-1.0.0-SNAPSHOT.jar /root/work/server/
 
 appname="cim-server" ;
 PID=$(ps -ef | grep $appname | grep -v grep | awk '{print $2}')
