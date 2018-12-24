@@ -2,6 +2,8 @@
 
 git pull
 
+cd ..
+
 mvn -Dmaven.test.skip=true clean package
 
 # 分发路由
