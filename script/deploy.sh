@@ -19,6 +19,23 @@ do
     kill -9 $var
 done
 
+echo "开始部署路由！"
+
 sh /root/work/route/route-startup.sh
 
-echo "启动路由成功！"
+echo "部署路由成功！"
+
+# 部署server
+mv /root/work/netty-action/cim-server/target/cim-server-1.0.0-SNAPSHOT.jar /root/work/cim-server/
+
+appname="cim-server" ;
+PID=$(ps -ef | grep $appname | grep -v grep | awk '{print $2}')
+
+# 遍历杀掉 pid
+for var in ${PID[@]};
+do
+    echo "loop pid= $var"
+    kill -9 $var
+done
+
+echo "开始部署服务！"
