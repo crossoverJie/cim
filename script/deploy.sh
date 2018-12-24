@@ -25,6 +25,7 @@ sh /root/work/route/route-startup.sh
 
 echo "部署路由成功！"
 
+#=======================================
 # 部署server
 mv /root/work/netty-action/cim-server/target/cim-server-1.0.0-SNAPSHOT.jar /root/work/cim-server/
 
@@ -39,3 +40,7 @@ do
 done
 
 echo "开始部署服务！"
+sh /root/work/server/server-startup.sh
+echo "部署服务成功！"
+
+
