@@ -19,6 +19,6 @@ do
     kill -9 $var
 done
 
-sh route-startup.sh
+sh /root/work/route/route-startup.sh
 
 echo "启动路由成功！"
