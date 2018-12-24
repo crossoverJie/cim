@@ -1,7 +1,9 @@
 package com.crossoverjie.cim.route.service.impl;
 
 import com.alibaba.fastjson.JSONObject;
+import com.crossoverjie.cim.common.pojo.CIMUserInfo;
 import com.crossoverjie.cim.route.service.AccountService;
+import com.crossoverjie.cim.route.service.UserInfoCacheService;
 import com.crossoverjie.cim.route.vo.req.ChatReqVO;
 import com.crossoverjie.cim.route.vo.req.LoginReqVO;
 import com.crossoverjie.cim.route.vo.res.CIMServerResVO;
@@ -37,6 +39,9 @@ public class AccountServiceRedisImpl implements AccountService {
 
     @Autowired
     private RedisTemplate<String, String> redisTemplate;
+
+    @Autowired
+    private UserInfoCacheService userInfoCacheService ;
 
     @Autowired
     private OkHttpClient okHttpClient;
@@ -114,11 +119,10 @@ public class AccountServiceRedisImpl implements AccountService {
 
     @Override
     public void pushMsg(String url, long sendUserId, ChatReqVO groupReqVO) throws Exception {
-        //可考虑本地缓存
-        String sendUserName = redisTemplate.opsForValue().get(ACCOUNT_PREFIX + sendUserId);
+        CIMUserInfo cimUserInfo = userInfoCacheService.loadUserInfo(sendUserId);
 
         JSONObject jsonObject = new JSONObject();
-        jsonObject.put("msg", sendUserName + ":【" + groupReqVO.getMsg() + "】");
+        jsonObject.put("msg", cimUserInfo.getUserName() + ":【" + groupReqVO.getMsg() + "】");
         jsonObject.put("userId", groupReqVO.getUserId());
         RequestBody requestBody = RequestBody.create(mediaType, jsonObject.toString());
 

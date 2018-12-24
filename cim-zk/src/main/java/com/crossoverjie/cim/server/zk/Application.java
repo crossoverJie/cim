@@ -38,6 +38,6 @@ public class Application implements CommandLineRunner{
 		String addr = InetAddress.getLocalHost().getHostAddress();
 		Thread thread = new Thread(new RegistryZK(addr, appConfiguration.getPort()));
 		thread.setName("registry-zk");
-		thread.start() ;
+		//thread.start() ;
 	}
 }

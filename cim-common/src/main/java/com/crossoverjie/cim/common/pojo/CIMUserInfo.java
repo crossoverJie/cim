@@ -1,4 +1,4 @@
-package com.crossoverjie.cim.server.kit;
+package com.crossoverjie.cim.common.pojo;
 
 /**
  * Function:

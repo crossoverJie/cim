@@ -1,6 +1,7 @@
 package com.crossoverjie.cim.client.scanner;
 
 import com.crossoverjie.cim.client.client.CIMClient;
+import com.crossoverjie.cim.client.config.AppConfiguration;
 import com.crossoverjie.cim.client.service.RouteRequest;
 import com.crossoverjie.cim.client.util.SpringBeanFactory;
 import com.crossoverjie.cim.client.vo.req.GoogleProtocolVO;
@@ -25,10 +26,10 @@ public class Scan implements Runnable {
 
     private RouteRequest routeRequest;
 
-    private Long userId ;
+    private AppConfiguration configuration;
 
-    public Scan(Long userId) {
-        this.userId = userId ;
+    public Scan() {
+        this.configuration = SpringBeanFactory.getBean(AppConfiguration.class);
         this.heartbeatClient = SpringBeanFactory.getBean(CIMClient.class);
         this.routeRequest = SpringBeanFactory.getBean(RouteRequest.class);
     }
@@ -42,7 +43,7 @@ public class Scan implements Runnable {
             String msg = sc.nextLine();
 
             //单聊
-            totalMsg = msg.split(" ");
+            totalMsg = msg.split("><");
             if (totalMsg.length > 1) {
                 vo = new GoogleProtocolVO();
                 vo.setRequestId(Integer.parseInt(totalMsg[0]));
@@ -51,15 +52,15 @@ public class Scan implements Runnable {
             } else {
                 //群聊
                 try {
-                    GroupReqVO groupReqVO = new GroupReqVO(userId,msg) ;
-                    routeRequest.sendGroupMsg(groupReqVO) ;
+                    GroupReqVO groupReqVO = new GroupReqVO(configuration.getUserId(), msg);
+                    routeRequest.sendGroupMsg(groupReqVO);
                 } catch (Exception e) {
                     LOGGER.error("Exception", e);
                 }
             }
 
 
-            LOGGER.info("scan =[{}]", msg);
+            LOGGER.info("{}:【{}】", configuration.getUserName(), msg);
         }
     }
 }

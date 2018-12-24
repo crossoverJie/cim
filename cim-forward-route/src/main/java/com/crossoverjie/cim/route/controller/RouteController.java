@@ -1,10 +1,12 @@
 package com.crossoverjie.cim.route.controller;
 
 import com.crossoverjie.cim.common.enums.StatusEnum;
+import com.crossoverjie.cim.common.pojo.CIMUserInfo;
 import com.crossoverjie.cim.common.res.BaseResponse;
 import com.crossoverjie.cim.common.res.NULLBody;
 import com.crossoverjie.cim.route.cache.ServerCache;
 import com.crossoverjie.cim.route.service.AccountService;
+import com.crossoverjie.cim.route.service.UserInfoCacheService;
 import com.crossoverjie.cim.route.vo.req.ChatReqVO;
 import com.crossoverjie.cim.route.vo.req.LoginReqVO;
 import com.crossoverjie.cim.route.vo.req.P2PReqVO;
@@ -41,6 +43,9 @@ public class RouteController {
     @Autowired
     private AccountService accountService;
 
+    @Autowired
+    private UserInfoCacheService userInfoCacheService ;
+
     @ApiOperation("群聊 API")
     @RequestMapping(value = "groupRoute", method = RequestMethod.POST)
     @ResponseBody()
@@ -56,7 +61,8 @@ public class RouteController {
             CIMServerResVO value = cimServerResVOEntry.getValue();
             if (userId.equals(groupReqVO.getUserId())){
                 //过滤掉自己
-                LOGGER.info("过滤掉了发送者 userId={}",groupReqVO.getUserId());
+                CIMUserInfo cimUserInfo = userInfoCacheService.loadUserInfo(groupReqVO.getUserId());
+                LOGGER.warn("过滤掉了发送者 userId={}",cimUserInfo.toString());
                 continue;
             }
 
@@ -79,7 +85,9 @@ public class RouteController {
     public BaseResponse<NULLBody> offLine(@RequestBody ChatReqVO groupReqVO) throws Exception {
         BaseResponse<NULLBody> res = new BaseResponse();
 
-        LOGGER.info("下线用户[{}]", groupReqVO.toString());
+        CIMUserInfo cimUserInfo = userInfoCacheService.loadUserInfo(groupReqVO.getUserId());
+
+        LOGGER.info("下线用户[{}]", cimUserInfo.toString());
         accountService.offLine(groupReqVO.getUserId());
 
         res.setCode(StatusEnum.SUCCESS.getCode());

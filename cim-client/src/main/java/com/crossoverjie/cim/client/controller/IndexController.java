@@ -9,7 +9,6 @@ import com.crossoverjie.cim.client.vo.req.StringReqVO;
 import com.crossoverjie.cim.client.vo.res.SendMsgResVO;
 import com.crossoverjie.cim.common.constant.Constants;
 import com.crossoverjie.cim.common.enums.StatusEnum;
-import com.crossoverjie.cim.common.pojo.CustomProtocol;
 import com.crossoverjie.cim.common.res.BaseResponse;
 import com.crossoverjie.cim.common.res.NULLBody;
 import io.swagger.annotations.ApiOperation;
@@ -46,28 +45,6 @@ public class IndexController {
     @Autowired
     private RouteRequest routeRequest ;
 
-    /**
-     * 向服务端发消息
-     * @param sendMsgReqVO
-     * @return
-     */
-    @ApiOperation("客户端发送消息")
-    @RequestMapping(value = "sendMsg",method = RequestMethod.POST)
-    @ResponseBody()
-    public BaseResponse<SendMsgResVO> sendMsg(@RequestBody SendMsgReqVO sendMsgReqVO){
-        BaseResponse<SendMsgResVO> res = new BaseResponse();
-        heartbeatClient.sendMsg(new CustomProtocol(sendMsgReqVO.getUserId(),sendMsgReqVO.getMsg())) ;
-
-        // 利用 actuator 来自增
-        counterService.increment(Constants.COUNTER_CLIENT_PUSH_COUNT);
-
-        SendMsgResVO sendMsgResVO = new SendMsgResVO() ;
-        sendMsgResVO.setMsg("OK") ;
-        res.setCode(StatusEnum.SUCCESS.getCode()) ;
-        res.setMessage(StatusEnum.SUCCESS.getMessage()) ;
-        res.setDataBody(sendMsgResVO) ;
-        return res ;
-    }
 
     /**
      * 向服务端发消息 字符串

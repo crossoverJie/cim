@@ -1,13 +1,11 @@
 package com.crossoverjie.cim.client.client;
 
-import com.alibaba.fastjson.JSON;
 import com.crossoverjie.cim.client.init.CIMClientHandleInitializer;
 import com.crossoverjie.cim.client.service.RouteRequest;
 import com.crossoverjie.cim.client.vo.req.GoogleProtocolVO;
 import com.crossoverjie.cim.client.vo.req.LoginReqVO;
 import com.crossoverjie.cim.client.vo.res.CIMServerResVO;
 import com.crossoverjie.cim.common.constant.Constants;
-import com.crossoverjie.cim.common.pojo.CustomProtocol;
 import com.crossoverjie.cim.common.protocol.CIMRequestProto;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.buffer.ByteBuf;
@@ -98,17 +96,6 @@ public class CIMClient {
         channel = (SocketChannel) future.channel();
     }
 
-    /**
-     * 发送消息
-     *
-     * @param customProtocol
-     */
-    public void sendMsg(CustomProtocol customProtocol) {
-        ChannelFuture future = channel.writeAndFlush(customProtocol);
-        future.addListener((ChannelFutureListener) channelFuture ->
-                LOGGER.info("客户端手动发消息成功={}", JSON.toJSONString(customProtocol)));
-
-    }
     /**
      * 发送消息字符串
      *

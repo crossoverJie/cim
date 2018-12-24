@@ -1,14 +1,11 @@
 package com.crossoverjie.cim.server.server;
 
-import com.alibaba.fastjson.JSON;
 import com.crossoverjie.cim.common.constant.Constants;
-import com.crossoverjie.cim.common.pojo.CustomProtocol;
 import com.crossoverjie.cim.common.protocol.CIMRequestProto;
 import com.crossoverjie.cim.server.init.CIMServerInitializer;
 import com.crossoverjie.cim.server.util.SessionSocketHolder;
 import com.crossoverjie.cim.server.vo.req.SendMsgReqVO;
 import io.netty.bootstrap.ServerBootstrap;
-import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelOption;
@@ -16,7 +13,6 @@ import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
-import io.netty.util.CharsetUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -80,23 +76,6 @@ public class CIMServer {
         LOGGER.info("关闭 cim server 成功");
     }
 
-
-    /**
-     * 发送消息
-     *
-     * @param customProtocol
-     */
-    public void sendMsg(CustomProtocol customProtocol) {
-        NioSocketChannel socketChannel = SessionSocketHolder.get(customProtocol.getId());
-
-        if (null == socketChannel) {
-            throw new NullPointerException("没有[" + customProtocol.getId() + "]的socketChannel");
-        }
-
-        ChannelFuture future = socketChannel.writeAndFlush(Unpooled.copiedBuffer(customProtocol.toString(), CharsetUtil.UTF_8));
-        future.addListener((ChannelFutureListener) channelFuture ->
-                LOGGER.info("服务端手动发消息成功={}", JSON.toJSONString(customProtocol)));
-    }
 
     /**
      * 发送 Google Protocol 编码消息

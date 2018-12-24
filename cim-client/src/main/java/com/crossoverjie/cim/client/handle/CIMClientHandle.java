@@ -33,7 +33,7 @@ public class CIMClientHandle extends SimpleChannelInboundHandler<CIMResponseProt
             IdleStateEvent idleStateEvent = (IdleStateEvent) evt ;
 
             if (idleStateEvent.state() == IdleState.WRITER_IDLE){
-                LOGGER.info("已经 10 秒没有发送信息！");
+                //LOGGER.info("已经 10 秒没有发送信息！");
                 //向服务端发送消息
                 CIMRequestProto.CIMReqProtocol heartBeat = SpringBeanFactory.getBean("heartBeat", CIMRequestProto.CIMReqProtocol.class);
                 ctx.writeAndFlush(heartBeat) ;
@@ -58,7 +58,7 @@ public class CIMClientHandle extends SimpleChannelInboundHandler<CIMResponseProt
         //从服务端收到消息时被调用
         //LOGGER.info("客户端收到消息={}",in.toString(CharsetUtil.UTF_8)) ;
 
-        LOGGER.info("客户端收到消息={}" ,responseProtocol.getResMsg());
+        LOGGER.info(responseProtocol.getResMsg());
     }
 
     @Override

@@ -2,9 +2,9 @@ package com.crossoverjie.cim.server.handle;
 
 import com.alibaba.fastjson.JSONObject;
 import com.crossoverjie.cim.common.constant.Constants;
+import com.crossoverjie.cim.common.pojo.CIMUserInfo;
 import com.crossoverjie.cim.common.protocol.CIMRequestProto;
 import com.crossoverjie.cim.server.config.AppConfiguration;
-import com.crossoverjie.cim.server.kit.CIMUserInfo;
 import com.crossoverjie.cim.server.util.SessionSocketHolder;
 import com.crossoverjie.cim.server.util.SpringBeanFactory;
 import io.netty.channel.ChannelHandler;
@@ -63,9 +63,14 @@ public class CIMServerHandle extends SimpleChannelInboundHandler<CIMRequestProto
                 .post(requestBody)
                 .build();
 
-        Response response = okHttpClient.newCall(request).execute();
-        if (!response.isSuccessful()) {
-            throw new IOException("Unexpected code " + response);
+        Response response = null;
+        try {
+            response = okHttpClient.newCall(request).execute();
+            if (!response.isSuccessful()) {
+                throw new IOException("Unexpected code " + response);
+            }
+        }finally {
+            response.body().close();
         }
     }
 
@@ -78,7 +83,7 @@ public class CIMServerHandle extends SimpleChannelInboundHandler<CIMRequestProto
             //保存客户端与 Channel 之间的关系
             SessionSocketHolder.put(msg.getRequestId(),(NioSocketChannel)ctx.channel()) ;
             SessionSocketHolder.saveSession(msg.getRequestId(),msg.getReqMsg());
-            LOGGER.info("客户端[{}]注册成功",msg.getReqMsg());
+            LOGGER.info("客户端[{}]上线成功",msg.getReqMsg());
         }
 
     }
