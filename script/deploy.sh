@@ -19,7 +19,7 @@ do
     kill -9 $var
 done
 
-echo "开始部署路由！"
+echo "开始部署路由。。。。"
 
 sh /root/work/route/route-startup.sh
 
@@ -39,7 +39,7 @@ do
     kill -9 $var
 done
 
-echo "开始部署服务！"
+echo "开始部署服务。。。。"
 sh /root/work/server/server-startup.sh
 echo "部署服务成功！"
 
