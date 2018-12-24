@@ -87,4 +87,24 @@ public class CIMServerHandle extends SimpleChannelInboundHandler<CIMRequestProto
         }
 
     }
+
+
+
+    @Override
+    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
+        if (isResetByPeer(cause.getMessage())){
+            return;
+        }
+
+        LOGGER.error(cause.getMessage(), cause);
+
+    }
+
+
+    private boolean isResetByPeer(String msg) {
+        if ("Connection reset by peer".equals(msg)) {
+            return true;
+        }
+        return false;
+    }
 }
