@@ -6,6 +6,7 @@ import com.crossoverjie.cim.client.service.RouteRequest;
 import com.crossoverjie.cim.client.util.SpringBeanFactory;
 import com.crossoverjie.cim.client.vo.req.GoogleProtocolVO;
 import com.crossoverjie.cim.client.vo.req.GroupReqVO;
+import com.crossoverjie.cim.common.util.StringUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -41,6 +42,10 @@ public class Scan implements Runnable {
         GoogleProtocolVO vo;
         while (true) {
             String msg = sc.nextLine();
+            if (StringUtil.isEmpty(msg)){
+                LOGGER.warn("不能发送空消息！");
+                continue ;
+            }
 
             //单聊
             totalMsg = msg.split("><");
