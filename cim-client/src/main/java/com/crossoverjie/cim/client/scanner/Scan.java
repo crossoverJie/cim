@@ -42,9 +42,8 @@ public class Scan implements Runnable {
         GoogleProtocolVO vo;
         while (true) {
             String msg = sc.nextLine();
-            if (StringUtil.isEmpty(msg)){
-                LOGGER.warn("不能发送空消息！");
-                continue ;
+            if (checkMsg(msg)) {
+                continue;
             }
 
             //单聊
@@ -67,5 +66,18 @@ public class Scan implements Runnable {
 
             LOGGER.info("{}:【{}】", configuration.getUserName(), msg);
         }
+    }
+
+    /**
+     * 校验消息
+     * @param msg
+     * @return 不能为空，后续可以加上一些敏感词
+     */
+    private boolean checkMsg(String msg) {
+        if (StringUtil.isEmpty(msg)){
+            LOGGER.warn("不能发送空消息！");
+            return true;
+        }
+        return false;
     }
 }
