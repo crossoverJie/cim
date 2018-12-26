@@ -12,6 +12,11 @@ import com.crossoverjie.cim.client.vo.req.P2PReqVO;
  */
 public interface MsgHandle {
 
+    /**
+     * 统一的发送接口，包含了 groupChat p2pChat
+     * @param msg
+     */
+    void sendMsg(String msg) ;
 
     /**
      * 群聊
@@ -25,7 +30,7 @@ public interface MsgHandle {
      * @param p2PReqVO 私聊请求
      * @throws Exception
      */
-    void p2pChat(P2PReqVO p2PReqVO) throws Exception;
+    void p2pChat(P2PReqVO p2PReqVO) ;
 
 
     // TODO: 2018/12/26 后续对消息的处理可以优化为责任链模式

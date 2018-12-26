@@ -1,6 +1,7 @@
 package com.crossoverjie.cim.client.service.impl;
 
 import com.crossoverjie.cim.client.client.CIMClient;
+import com.crossoverjie.cim.client.config.AppConfiguration;
 import com.crossoverjie.cim.client.service.MsgHandle;
 import com.crossoverjie.cim.client.service.RouteRequest;
 import com.crossoverjie.cim.client.vo.req.GroupReqVO;
@@ -29,6 +30,8 @@ public class MsgHandler implements MsgHandle {
     @Autowired
     private RouteRequest routeRequest ;
 
+    @Autowired
+    private AppConfiguration configuration;
 
     @Autowired
     private ThreadPoolExecutor executor ;
@@ -37,12 +40,34 @@ public class MsgHandler implements MsgHandle {
     private CIMClient cimClient ;
 
     @Override
+    public void sendMsg(String msg) {
+        String[] totalMsg = msg.split("><");
+        if (totalMsg.length > 1) {
+            //私聊
+            P2PReqVO p2PReqVO = new P2PReqVO();
+            p2PReqVO.setUserId(configuration.getUserId());
+            p2PReqVO.setReceiveUserId(Long.parseLong(totalMsg[0]));
+            p2PReqVO.setMsg(totalMsg[1]);
+            p2pChat(p2PReqVO);
+
+        } else {
+            //群聊
+            GroupReqVO groupReqVO = new GroupReqVO(configuration.getUserId(), msg);
+            try {
+                groupChat(groupReqVO);
+            } catch (Exception e) {
+                LOGGER.error("Exception",e);
+            }
+        }
+    }
+
+    @Override
     public void groupChat(GroupReqVO groupReqVO) throws Exception {
         routeRequest.sendGroupMsg(groupReqVO);
     }
 
     @Override
-    public void p2pChat(P2PReqVO p2PReqVO) throws Exception {
+    public void p2pChat(P2PReqVO p2PReqVO)  {
 
     }
 
