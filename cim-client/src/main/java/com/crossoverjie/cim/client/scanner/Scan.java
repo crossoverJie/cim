@@ -1,14 +1,11 @@
 package com.crossoverjie.cim.client.scanner;
 
-import com.crossoverjie.cim.client.client.CIMClient;
 import com.crossoverjie.cim.client.config.AppConfiguration;
 import com.crossoverjie.cim.client.service.MsgHandle;
-import com.crossoverjie.cim.client.service.RouteRequest;
 import com.crossoverjie.cim.client.util.SpringBeanFactory;
 import com.crossoverjie.cim.client.vo.req.GroupReqVO;
 import com.crossoverjie.cim.client.vo.req.P2PReqVO;
 import com.crossoverjie.cim.common.enums.SystemCommandEnumType;
-import com.crossoverjie.cim.common.util.StringUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -26,18 +23,15 @@ public class Scan implements Runnable {
 
     private final static Logger LOGGER = LoggerFactory.getLogger(Scan.class);
 
-    private CIMClient heartbeatClient;
-
-    private RouteRequest routeRequest;
-
+    /**
+     * 系统参数
+     */
     private AppConfiguration configuration;
 
     private MsgHandle msgHandle ;
 
     public Scan() {
         this.configuration = SpringBeanFactory.getBean(AppConfiguration.class);
-        this.heartbeatClient = SpringBeanFactory.getBean(CIMClient.class);
-        this.routeRequest = SpringBeanFactory.getBean(RouteRequest.class);
         this.msgHandle = SpringBeanFactory.getBean(MsgHandle.class) ;
     }
 
@@ -47,15 +41,17 @@ public class Scan implements Runnable {
         String[] totalMsg;
         while (true) {
             String msg = sc.nextLine();
-            if (checkMsg(msg)) {
+
+            //检查消息
+            if (msgHandle.checkMsg(msg)) {
                 continue;
             }
 
             //系统内置命令
-            if (msg.startsWith(":")){
-                innerCommand(msg);
-                continue ;
+            if (msgHandle.innerCommand(msg)){
+                continue;
             }
+
 
             //单聊
             totalMsg = msg.split("><");
@@ -115,16 +111,4 @@ public class Scan implements Runnable {
         }
     }
 
-    /**
-     * 校验消息
-     * @param msg
-     * @return 不能为空，后续可以加上一些敏感词
-     */
-    private boolean checkMsg(String msg) {
-        if (StringUtil.isEmpty(msg)){
-            LOGGER.warn("不能发送空消息！");
-            return true;
-        }
-        return false;
-    }
 }

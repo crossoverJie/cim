@@ -42,7 +42,7 @@ public enum SystemCommandEnumType {
      * @return 枚举值码。
      */
     public String getCommandType() {
-        return commandType.trim();
+        return commandType;
     }
 
     /**
