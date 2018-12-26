@@ -117,6 +117,14 @@ public class AccountServiceRedisImpl implements AccountService {
         return routes;
     }
 
+    @Override
+    public CIMServerResVO loadRouteRelatedByUserId(Long userId) {
+        String value = redisTemplate.opsForValue().get(ROUTE_PREFIX + userId);
+        String[] server = value.split(":");
+        CIMServerResVO cimServerResVO = new CIMServerResVO(server[0], Integer.parseInt(server[1]), Integer.parseInt(server[2]));
+        return cimServerResVO;
+    }
+
     private void parseServerInfo(Map<Long, CIMServerResVO> routes, String key) {
         long userId = Long.valueOf(key.split(":")[1]);
         String value = redisTemplate.opsForValue().get(key);

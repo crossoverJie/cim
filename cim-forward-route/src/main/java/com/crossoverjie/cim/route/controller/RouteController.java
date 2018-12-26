@@ -80,22 +80,7 @@ public class RouteController {
         return res;
     }
 
-    @ApiOperation("客户端下线")
-    @RequestMapping(value = "offLine", method = RequestMethod.POST)
-    @ResponseBody()
-    public BaseResponse<NULLBody> offLine(@RequestBody ChatReqVO groupReqVO) throws Exception {
-        BaseResponse<NULLBody> res = new BaseResponse();
-
-        CIMUserInfo cimUserInfo = userInfoCacheService.loadUserInfoByUserId(groupReqVO.getUserId());
-
-        LOGGER.info("下线用户[{}]", cimUserInfo.toString());
-        accountService.offLine(groupReqVO.getUserId());
-
-        res.setCode(StatusEnum.SUCCESS.getCode());
-        res.setMessage(StatusEnum.SUCCESS.getMessage());
-        return res;
-    }
-
+    // TODO: 2018/12/26 这些基于 HTTP 接口的远程通信都可以换为 SpringCloud
 
     /**
      * 私聊路由
@@ -106,8 +91,35 @@ public class RouteController {
     @ApiOperation("私聊 API")
     @RequestMapping(value = "p2pRoute", method = RequestMethod.POST)
     @ResponseBody()
-    public BaseResponse<NULLBody> p2pRoute(@RequestBody P2PReqVO p2pRequest) {
+    public BaseResponse<NULLBody> p2pRoute(@RequestBody P2PReqVO p2pRequest) throws Exception {
         BaseResponse<NULLBody> res = new BaseResponse();
+
+        //获取接收消息用户的路由信息
+        CIMServerResVO cimServerResVO = accountService.loadRouteRelatedByUserId(p2pRequest.getReceiveUserId());
+        //推送消息
+        String url = "http://" + cimServerResVO.getIp() + ":" + cimServerResVO.getHttpPort() + "/sendMsg" ;
+
+        //p2pRequest.getReceiveUserId()==>消息接收者的 userID
+        ChatReqVO chatVO = new ChatReqVO(p2pRequest.getReceiveUserId(),p2pRequest.getMsg()) ;
+        accountService.pushMsg(url,p2pRequest.getUserId(),chatVO);
+
+
+        res.setCode(StatusEnum.SUCCESS.getCode());
+        res.setMessage(StatusEnum.SUCCESS.getMessage());
+        return res;
+    }
+
+
+    @ApiOperation("客户端下线")
+    @RequestMapping(value = "offLine", method = RequestMethod.POST)
+    @ResponseBody()
+    public BaseResponse<NULLBody> offLine(@RequestBody ChatReqVO groupReqVO) throws Exception {
+        BaseResponse<NULLBody> res = new BaseResponse();
+
+        CIMUserInfo cimUserInfo = userInfoCacheService.loadUserInfoByUserId(groupReqVO.getUserId());
+
+        LOGGER.info("下线用户[{}]", cimUserInfo.toString());
+        accountService.offLine(groupReqVO.getUserId());
 
         res.setCode(StatusEnum.SUCCESS.getCode());
         res.setMessage(StatusEnum.SUCCESS.getMessage());

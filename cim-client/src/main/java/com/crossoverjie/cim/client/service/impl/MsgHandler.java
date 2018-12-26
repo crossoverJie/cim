@@ -50,7 +50,11 @@ public class MsgHandler implements MsgHandle {
             p2PReqVO.setUserId(configuration.getUserId());
             p2PReqVO.setReceiveUserId(Long.parseLong(totalMsg[0]));
             p2PReqVO.setMsg(totalMsg[1]);
-            p2pChat(p2PReqVO);
+            try {
+                p2pChat(p2PReqVO);
+            } catch (Exception e) {
+                LOGGER.error("Exception",e);
+            }
 
         } else {
             //群聊
@@ -69,7 +73,9 @@ public class MsgHandler implements MsgHandle {
     }
 
     @Override
-    public void p2pChat(P2PReqVO p2PReqVO)  {
+    public void p2pChat(P2PReqVO p2PReqVO) throws Exception {
+
+        routeRequest.sendP2PMsg(p2PReqVO);
 
     }
 

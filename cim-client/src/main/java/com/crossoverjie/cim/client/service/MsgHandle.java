@@ -30,7 +30,7 @@ public interface MsgHandle {
      * @param p2PReqVO 私聊请求
      * @throws Exception
      */
-    void p2pChat(P2PReqVO p2PReqVO) ;
+    void p2pChat(P2PReqVO p2PReqVO) throws Exception;
 
 
     // TODO: 2018/12/26 后续对消息的处理可以优化为责任链模式

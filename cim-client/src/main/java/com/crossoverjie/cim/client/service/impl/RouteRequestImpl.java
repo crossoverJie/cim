@@ -6,6 +6,7 @@ import com.crossoverjie.cim.client.config.AppConfiguration;
 import com.crossoverjie.cim.client.service.RouteRequest;
 import com.crossoverjie.cim.client.vo.req.GroupReqVO;
 import com.crossoverjie.cim.client.vo.req.LoginReqVO;
+import com.crossoverjie.cim.client.vo.req.P2PReqVO;
 import com.crossoverjie.cim.client.vo.res.CIMServerResVO;
 import com.crossoverjie.cim.client.vo.res.OnlineUsersResVO;
 import com.crossoverjie.cim.common.enums.StatusEnum;
@@ -39,6 +40,9 @@ public class RouteRequestImpl implements RouteRequest {
     @Value("${cim.group.route.request.url}")
     private String groupRouteRequestUrl;
 
+    @Value("${cim.p2p.route.request.url}")
+    private String p2pRouteRequestUrl;
+
     @Value("${cim.server.route.request.url}")
     private String serverRouteRequestUrl;
 
@@ -60,6 +64,25 @@ public class RouteRequestImpl implements RouteRequest {
 
         Request request = new Request.Builder()
                 .url(groupRouteRequestUrl)
+                .post(requestBody)
+                .build();
+
+        Response response = okHttpClient.newCall(request).execute() ;
+        if (!response.isSuccessful()){
+            throw new IOException("Unexpected code " + response);
+        }
+    }
+
+    @Override
+    public void sendP2PMsg(P2PReqVO p2PReqVO) throws Exception {
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("msg",p2PReqVO.getMsg());
+        jsonObject.put("userId",p2PReqVO.getUserId());
+        jsonObject.put("receiveUserId",p2PReqVO.getReceiveUserId());
+        RequestBody requestBody = RequestBody.create(mediaType,jsonObject.toString());
+
+        Request request = new Request.Builder()
+                .url(p2pRouteRequestUrl)
                 .post(requestBody)
                 .build();
 

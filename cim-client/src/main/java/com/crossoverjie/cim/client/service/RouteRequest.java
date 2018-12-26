@@ -2,6 +2,7 @@ package com.crossoverjie.cim.client.service;
 
 import com.crossoverjie.cim.client.vo.req.GroupReqVO;
 import com.crossoverjie.cim.client.vo.req.LoginReqVO;
+import com.crossoverjie.cim.client.vo.req.P2PReqVO;
 import com.crossoverjie.cim.client.vo.res.CIMServerResVO;
 import com.crossoverjie.cim.client.vo.res.OnlineUsersResVO;
 
@@ -23,9 +24,18 @@ public interface RouteRequest {
      */
     void sendGroupMsg(GroupReqVO groupReqVO) throws Exception;
 
+
+    /**
+     * 私聊
+     * @param p2PReqVO
+     * @throws Exception
+     */
+    void sendP2PMsg(P2PReqVO p2PReqVO)throws Exception;
+
     /**
      * 获取服务器
      * @return 服务ip+port
+     * @param loginReqVO
      * @throws Exception
      */
     CIMServerResVO.ServerInfo getCIMServer(LoginReqVO loginReqVO) throws Exception;
@@ -35,4 +45,6 @@ public interface RouteRequest {
      * @return 获取所有在线用户
      */
     List<OnlineUsersResVO.DataBodyBean> onlineUsers()throws Exception ;
+
+
 }
