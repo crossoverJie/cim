@@ -10,6 +10,7 @@ import com.crossoverjie.cim.client.vo.req.P2PReqVO;
 import com.crossoverjie.cim.client.vo.res.CIMServerResVO;
 import com.crossoverjie.cim.client.vo.res.OnlineUsersResVO;
 import com.crossoverjie.cim.common.enums.StatusEnum;
+import com.crossoverjie.cim.common.res.BaseResponse;
 import okhttp3.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -89,6 +90,15 @@ public class RouteRequestImpl implements RouteRequest {
         Response response = okHttpClient.newCall(request).execute() ;
         if (!response.isSuccessful()){
             throw new IOException("Unexpected code " + response);
+        }
+
+        String json = response.body().toString() ;
+        BaseResponse baseResponse = JSON.parseObject(json, BaseResponse.class);
+
+        //选择的账号不存在
+        if (baseResponse.getCode().equals(StatusEnum.OFF_LINE.getCode())){
+            LOGGER.error(p2PReqVO.getReceiveUserId() + ":" + StatusEnum.OFF_LINE.getMessage());
+            System.exit(-1);
         }
     }
 

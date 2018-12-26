@@ -1,6 +1,7 @@
 package com.crossoverjie.cim.route.service.impl;
 
 import com.alibaba.fastjson.JSONObject;
+import com.crossoverjie.cim.common.exception.CIMException;
 import com.crossoverjie.cim.common.pojo.CIMUserInfo;
 import com.crossoverjie.cim.route.service.AccountService;
 import com.crossoverjie.cim.route.service.UserInfoCacheService;
@@ -23,6 +24,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.crossoverjie.cim.common.enums.StatusEnum.OFF_LINE;
 import static com.crossoverjie.cim.route.constant.Constant.ACCOUNT_PREFIX;
 import static com.crossoverjie.cim.route.constant.Constant.ROUTE_PREFIX;
 
@@ -120,6 +122,11 @@ public class AccountServiceRedisImpl implements AccountService {
     @Override
     public CIMServerResVO loadRouteRelatedByUserId(Long userId) {
         String value = redisTemplate.opsForValue().get(ROUTE_PREFIX + userId);
+
+        if (value == null){
+            throw new CIMException(OFF_LINE) ;
+        }
+
         String[] server = value.split(":");
         CIMServerResVO cimServerResVO = new CIMServerResVO(server[0], Integer.parseInt(server[1]), Integer.parseInt(server[2]));
         return cimServerResVO;

@@ -1,6 +1,7 @@
 package com.crossoverjie.cim.route.controller;
 
 import com.crossoverjie.cim.common.enums.StatusEnum;
+import com.crossoverjie.cim.common.exception.CIMException;
 import com.crossoverjie.cim.common.pojo.CIMUserInfo;
 import com.crossoverjie.cim.common.res.BaseResponse;
 import com.crossoverjie.cim.common.res.NULLBody;
@@ -94,18 +95,23 @@ public class RouteController {
     public BaseResponse<NULLBody> p2pRoute(@RequestBody P2PReqVO p2pRequest) throws Exception {
         BaseResponse<NULLBody> res = new BaseResponse();
 
-        //获取接收消息用户的路由信息
-        CIMServerResVO cimServerResVO = accountService.loadRouteRelatedByUserId(p2pRequest.getReceiveUserId());
-        //推送消息
-        String url = "http://" + cimServerResVO.getIp() + ":" + cimServerResVO.getHttpPort() + "/sendMsg" ;
+        try {
+            //获取接收消息用户的路由信息
+            CIMServerResVO cimServerResVO = accountService.loadRouteRelatedByUserId(p2pRequest.getReceiveUserId());
+            //推送消息
+            String url = "http://" + cimServerResVO.getIp() + ":" + cimServerResVO.getHttpPort() + "/sendMsg" ;
 
-        //p2pRequest.getReceiveUserId()==>消息接收者的 userID
-        ChatReqVO chatVO = new ChatReqVO(p2pRequest.getReceiveUserId(),p2pRequest.getMsg()) ;
-        accountService.pushMsg(url,p2pRequest.getUserId(),chatVO);
+            //p2pRequest.getReceiveUserId()==>消息接收者的 userID
+            ChatReqVO chatVO = new ChatReqVO(p2pRequest.getReceiveUserId(),p2pRequest.getMsg()) ;
+            accountService.pushMsg(url,p2pRequest.getUserId(),chatVO);
 
+            res.setCode(StatusEnum.SUCCESS.getCode());
+            res.setMessage(StatusEnum.SUCCESS.getMessage());
 
-        res.setCode(StatusEnum.SUCCESS.getCode());
-        res.setMessage(StatusEnum.SUCCESS.getMessage());
+        }catch (CIMException e){
+            res.setCode(e.getErrorCode());
+            res.setMessage(e.getErrorMessage());
+        }
         return res;
     }
 
