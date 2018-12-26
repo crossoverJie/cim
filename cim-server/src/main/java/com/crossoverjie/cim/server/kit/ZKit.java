@@ -43,10 +43,9 @@ public class ZKit {
      * 写入指定节点 临时目录
      *
      * @param path
-     * @param value
      */
-    public void createNode(String path, String value) {
-        zkClient.createEphemeral(path, value);
+    public void createNode(String path) {
+        zkClient.createEphemeral(path);
     }
 
 }
