@@ -50,15 +50,22 @@ public class CIMClient {
     private RouteRequest routeRequest ;
 
     @PostConstruct
-    public void start() throws Exception {
-        //登录 + 获取可以使用的服务器 ip+port
-        CIMServerResVO.ServerInfo cimServer = userLogin();
+    public void start()  {
 
-        //启动客户端
-        startClient(cimServer);
+        try {
+            //登录 + 获取可以使用的服务器 ip+port
+            CIMServerResVO.ServerInfo cimServer = userLogin();
 
-        //向服务端注册
-        loginCIMServer();
+            //启动客户端
+            startClient(cimServer);
+
+            //向服务端注册
+            loginCIMServer();
+
+        }catch (Exception e){
+            LOGGER.error("Exception",e);
+        }
+
     }
 
     /**

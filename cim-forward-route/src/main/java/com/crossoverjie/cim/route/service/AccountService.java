@@ -41,7 +41,7 @@ public interface AccountService {
     void saveRouteInfo(LoginReqVO loginReqVO ,String msg) throws Exception ;
 
     /**
-     * 加载所有的路有关系
+     * 加载所有用户的路有关系
      * @return 所有的路由关系
      */
     Map<Long,CIMServerResVO> loadRouteRelated() ;

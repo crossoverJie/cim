@@ -2,6 +2,7 @@ package com.crossoverjie.cim.server.handle;
 
 import com.alibaba.fastjson.JSONObject;
 import com.crossoverjie.cim.common.constant.Constants;
+import com.crossoverjie.cim.common.exception.CIMException;
 import com.crossoverjie.cim.common.pojo.CIMUserInfo;
 import com.crossoverjie.cim.common.protocol.CIMRequestProto;
 import com.crossoverjie.cim.server.config.AppConfiguration;
@@ -92,7 +93,7 @@ public class CIMServerHandle extends SimpleChannelInboundHandler<CIMRequestProto
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
-        if (isResetByPeer(cause.getMessage())){
+        if (CIMException.isResetByPeer(cause.getMessage())){
             return;
         }
 
@@ -100,11 +101,4 @@ public class CIMServerHandle extends SimpleChannelInboundHandler<CIMRequestProto
 
     }
 
-
-    private boolean isResetByPeer(String msg) {
-        if ("Connection reset by peer".equals(msg)) {
-            return true;
-        }
-        return false;
-    }
 }

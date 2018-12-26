@@ -61,7 +61,7 @@ public class RouteController {
             CIMServerResVO value = cimServerResVOEntry.getValue();
             if (userId.equals(groupReqVO.getUserId())){
                 //过滤掉自己
-                CIMUserInfo cimUserInfo = userInfoCacheService.loadUserInfo(groupReqVO.getUserId());
+                CIMUserInfo cimUserInfo = userInfoCacheService.loadUserInfoByUserId(groupReqVO.getUserId());
                 LOGGER.warn("过滤掉了发送者 userId={}",cimUserInfo.toString());
                 continue;
             }
@@ -85,7 +85,7 @@ public class RouteController {
     public BaseResponse<NULLBody> offLine(@RequestBody ChatReqVO groupReqVO) throws Exception {
         BaseResponse<NULLBody> res = new BaseResponse();
 
-        CIMUserInfo cimUserInfo = userInfoCacheService.loadUserInfo(groupReqVO.getUserId());
+        CIMUserInfo cimUserInfo = userInfoCacheService.loadUserInfoByUserId(groupReqVO.getUserId());
 
         LOGGER.info("下线用户[{}]", cimUserInfo.toString());
         accountService.offLine(groupReqVO.getUserId());
@@ -138,8 +138,8 @@ public class RouteController {
             res.setCode(StatusEnum.SUCCESS.getCode());
             res.setMessage(StatusEnum.SUCCESS.getMessage());
         } else {
-            res.setCode(StatusEnum.FAIL.getCode());
-            res.setMessage(StatusEnum.FAIL.getMessage());
+            res.setCode(StatusEnum.REPEAT_LOGIN.getCode());
+            res.setMessage(StatusEnum.REPEAT_LOGIN.getMessage());
         }
 
         return res;

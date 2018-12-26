@@ -13,9 +13,9 @@ public interface UserInfoCacheService {
 
     /**
      * 通过 userID 获取用户信息
-     * @param userId
+     * @param userId 用户唯一 ID
      * @return
      * @throws Exception
      */
-    CIMUserInfo loadUserInfo(long userId) throws Exception ;
+    CIMUserInfo loadUserInfoByUserId(long userId) throws Exception ;
 }

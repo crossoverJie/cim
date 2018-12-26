@@ -1,7 +1,7 @@
 package com.crossoverjie.cim.common.pojo;
 
 /**
- * Function:
+ * Function: 用户信息
  *
  * @author crossoverJie
  *         Date: 2018/12/24 02:33

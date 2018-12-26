@@ -22,7 +22,7 @@ import static com.crossoverjie.cim.route.constant.Constant.ACCOUNT_PREFIX;
 public class UserInfoCacheServiceImpl implements UserInfoCacheService {
 
     /**
-     * 本地缓存，后期可换为 LRU
+     * 本地缓存，为了防止内存撑爆，后期可换为 LRU。
      */
     private final static Map<Long,CIMUserInfo> USER_INFO_MAP = new ConcurrentHashMap<>(64) ;
 
@@ -30,7 +30,7 @@ public class UserInfoCacheServiceImpl implements UserInfoCacheService {
     private RedisTemplate<String,String> redisTemplate ;
 
     @Override
-    public CIMUserInfo loadUserInfo(long userId) throws Exception {
+    public CIMUserInfo loadUserInfoByUserId(long userId) throws Exception {
 
         //优先从本地缓存获取
         CIMUserInfo cimUserInfo = USER_INFO_MAP.get(userId);

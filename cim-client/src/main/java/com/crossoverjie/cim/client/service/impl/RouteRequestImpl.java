@@ -7,6 +7,7 @@ import com.crossoverjie.cim.client.vo.req.GroupReqVO;
 import com.crossoverjie.cim.client.vo.req.LoginReqVO;
 import com.crossoverjie.cim.client.vo.res.CIMServerResVO;
 import com.crossoverjie.cim.common.enums.StatusEnum;
+import com.crossoverjie.cim.common.exception.CIMException;
 import okhttp3.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -78,6 +79,12 @@ public class RouteRequestImpl implements RouteRequest {
 
         String json = response.body().string();
         CIMServerResVO cimServerResVO = JSON.parseObject(json, CIMServerResVO.class);
+
+        //重复登录
+        if (cimServerResVO.getCode().equals(StatusEnum.REPEAT_LOGIN.getCode())){
+            throw new CIMException(StatusEnum.REPEAT_LOGIN) ;
+        }
+
         if (!cimServerResVO.getCode().equals(StatusEnum.SUCCESS.getCode())){
             throw new RuntimeException("route server exception code=" + cimServerResVO.getCode()) ;
         }
