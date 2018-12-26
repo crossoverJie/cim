@@ -25,9 +25,9 @@ public class CIMClientHandle extends SimpleChannelInboundHandler<CIMResponseProt
 
     private final static Logger LOGGER = LoggerFactory.getLogger(CIMClientHandle.class);
 
-    private MsgHandleCaller caller = SpringBeanFactory.getBean(MsgHandleCaller.class);
+    private MsgHandleCaller caller ;
 
-    private ThreadPoolExecutor threadPoolExecutor = SpringBeanFactory.getBean("callBackThreadPool",ThreadPoolExecutor.class) ;;
+    private ThreadPoolExecutor threadPoolExecutor ;
 
 
     @Override
@@ -73,8 +73,9 @@ public class CIMClientHandle extends SimpleChannelInboundHandler<CIMResponseProt
      * @param msg
      */
     private void callBackMsg(String msg) {
-
+        threadPoolExecutor = SpringBeanFactory.getBean("callBackThreadPool",ThreadPoolExecutor.class) ;
         threadPoolExecutor.execute(() -> {
+            caller = SpringBeanFactory.getBean(MsgHandleCaller.class) ;
             caller.getMsgHandleListener().handle(msg);
         });
 

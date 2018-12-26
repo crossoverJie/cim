@@ -74,7 +74,7 @@ public class BeanConfig {
     public ThreadPoolExecutor buildCallerThread(){
         BlockingQueue<Runnable> queue = new LinkedBlockingQueue(queueSize);
         ThreadFactory product = new ThreadFactoryBuilder()
-                .setNameFormat("product-%d")
+                .setNameFormat("msg-callback-%d")
                 .setDaemon(true)
                 .build();
         ThreadPoolExecutor productExecutor = new ThreadPoolExecutor(poolSize, poolSize, 1, TimeUnit.MILLISECONDS, queue,product);
@@ -88,7 +88,6 @@ public class BeanConfig {
     @Bean
     public MsgHandleCaller buildCaller(){
         MsgHandleCaller caller = new MsgHandleCaller(msg -> {
-            LOGGER.warn("caller msg=[{}]" ,msg);
         }) ;
 
         return caller ;

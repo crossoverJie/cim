@@ -15,7 +15,7 @@ public enum StatusEnum {
     FAIL("4000", "失败"),
 
     /** 重复登录 */
-    REPEAT_LOGIN("5000", "重复登录"),
+    REPEAT_LOGIN("5000", "账号重复登录，请退出一个账号！"),
 
     /** 请求限流 */
     REQUEST_LIMIT("6000", "请求限流"),
