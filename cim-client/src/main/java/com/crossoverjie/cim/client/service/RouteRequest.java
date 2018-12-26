@@ -3,6 +3,9 @@ package com.crossoverjie.cim.client.service;
 import com.crossoverjie.cim.client.vo.req.GroupReqVO;
 import com.crossoverjie.cim.client.vo.req.LoginReqVO;
 import com.crossoverjie.cim.client.vo.res.CIMServerResVO;
+import com.crossoverjie.cim.client.vo.res.OnlineUsersResVO;
+
+import java.util.List;
 
 /**
  * Function:
@@ -26,4 +29,10 @@ public interface RouteRequest {
      * @throws Exception
      */
     CIMServerResVO.ServerInfo getCIMServer(LoginReqVO loginReqVO) throws Exception;
+
+    /**
+     *
+     * @return 获取所有在线用户
+     */
+    List<OnlineUsersResVO.DataBodyBean> onlineUsers()throws Exception ;
 }

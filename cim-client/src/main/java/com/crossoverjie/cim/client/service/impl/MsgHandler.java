@@ -6,6 +6,7 @@ import com.crossoverjie.cim.client.service.MsgHandle;
 import com.crossoverjie.cim.client.service.RouteRequest;
 import com.crossoverjie.cim.client.vo.req.GroupReqVO;
 import com.crossoverjie.cim.client.vo.req.P2PReqVO;
+import com.crossoverjie.cim.client.vo.res.OnlineUsersResVO;
 import com.crossoverjie.cim.common.enums.SystemCommandEnumType;
 import com.crossoverjie.cim.common.util.StringUtil;
 import org.slf4j.Logger;
@@ -13,6 +14,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -91,6 +93,11 @@ public class MsgHandler implements MsgHandle {
                 shutdown();
             } else if (SystemCommandEnumType.ALL.getCommandType().trim().equals(msg)){
                 printAllCommand(allStatusCode);
+
+            } else if (SystemCommandEnumType.ONLINE_USER.getCommandType().trim().equals(msg)){
+                //打印在线用户
+                printOnlineUsers();
+
             }else {
                 printAllCommand(allStatusCode);
             }
@@ -102,6 +109,24 @@ public class MsgHandler implements MsgHandle {
         }
 
 
+    }
+
+    /**
+     * 打印在线用户
+     */
+    private void printOnlineUsers() {
+        try {
+            List<OnlineUsersResVO.DataBodyBean> onlineUsers = routeRequest.onlineUsers();
+
+            LOGGER.info("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+            for (OnlineUsersResVO.DataBodyBean onlineUser : onlineUsers) {
+                LOGGER.info("userId={}=====userName={}",onlineUser.getUserId(),onlineUser.getUserName());
+            }
+            LOGGER.info("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+
+        } catch (Exception e) {
+            LOGGER.error("Exception" ,e);
+        }
     }
 
     /**

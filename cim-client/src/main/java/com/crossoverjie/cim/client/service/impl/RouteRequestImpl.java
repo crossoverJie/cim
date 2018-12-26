@@ -7,6 +7,7 @@ import com.crossoverjie.cim.client.service.RouteRequest;
 import com.crossoverjie.cim.client.vo.req.GroupReqVO;
 import com.crossoverjie.cim.client.vo.req.LoginReqVO;
 import com.crossoverjie.cim.client.vo.res.CIMServerResVO;
+import com.crossoverjie.cim.client.vo.res.OnlineUsersResVO;
 import com.crossoverjie.cim.common.enums.StatusEnum;
 import okhttp3.*;
 import org.slf4j.Logger;
@@ -16,6 +17,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.util.List;
 
 /**
  * Function:
@@ -39,6 +41,11 @@ public class RouteRequestImpl implements RouteRequest {
 
     @Value("${cim.server.route.request.url}")
     private String serverRouteRequestUrl;
+
+    @Value("${cim.server.online.user.url}")
+    private String onlineUserUrl;
+
+
 
     @Autowired
     private AppConfiguration appConfiguration ;
@@ -94,5 +101,30 @@ public class RouteRequestImpl implements RouteRequest {
         }
 
         return cimServerResVO.getDataBody();
+    }
+
+    @Override
+    public List<OnlineUsersResVO.DataBodyBean> onlineUsers() throws Exception{
+
+        JSONObject jsonObject = new JSONObject();
+        RequestBody requestBody = RequestBody.create(mediaType,jsonObject.toString());
+
+        Request request = new Request.Builder()
+                .url(onlineUserUrl)
+                .post(requestBody)
+                .build();
+
+        Response response = okHttpClient.newCall(request).execute() ;
+        if (!response.isSuccessful()){
+            throw new IOException("Unexpected code " + response);
+        }
+        if (!response.isSuccessful()){
+            throw new IOException("Unexpected code " + response);
+        }
+
+        String json = response.body().string() ;
+        OnlineUsersResVO onlineUsersResVO = JSON.parseObject(json, OnlineUsersResVO.class);
+
+        return onlineUsersResVO.getDataBody();
     }
 }
