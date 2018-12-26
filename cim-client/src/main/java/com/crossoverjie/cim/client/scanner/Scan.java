@@ -3,8 +3,6 @@ package com.crossoverjie.cim.client.scanner;
 import com.crossoverjie.cim.client.config.AppConfiguration;
 import com.crossoverjie.cim.client.service.MsgHandle;
 import com.crossoverjie.cim.client.util.SpringBeanFactory;
-import com.crossoverjie.cim.client.vo.req.GroupReqVO;
-import com.crossoverjie.cim.client.vo.req.P2PReqVO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,7 +34,6 @@ public class Scan implements Runnable {
     @Override
     public void run() {
         Scanner sc = new Scanner(System.in);
-        String[] totalMsg;
         while (true) {
             String msg = sc.nextLine();
 
@@ -55,28 +52,6 @@ public class Scan implements Runnable {
 
 
             LOGGER.info("{}:【{}】", configuration.getUserName(), msg);
-        }
-    }
-
-
-    private void p2pChat(String[] totalMsg) {
-        P2PReqVO p2PReqVO = new P2PReqVO();
-        p2PReqVO.setUserId(configuration.getUserId());
-        p2PReqVO.setReceiveUserId(Long.parseLong(totalMsg[0]));
-        p2PReqVO.setMsg(totalMsg[1]);
-        try {
-            msgHandle.p2pChat(p2PReqVO);
-        } catch (Exception e) {
-            LOGGER.error("Exception", e);
-        }
-    }
-
-    private void groupChat(String msg) {
-        GroupReqVO groupReqVO = new GroupReqVO(configuration.getUserId(), msg);
-        try {
-            msgHandle.groupChat(groupReqVO);
-        } catch (Exception e) {
-            LOGGER.error("Exception", e);
         }
     }
 
