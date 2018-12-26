@@ -98,7 +98,6 @@ public class RouteRequestImpl implements RouteRequest {
         //选择的账号不存在
         if (baseResponse.getCode().equals(StatusEnum.OFF_LINE.getCode())){
             LOGGER.error(p2PReqVO.getReceiveUserId() + ":" + StatusEnum.OFF_LINE.getMessage());
-            System.exit(-1);
         }
     }
 
