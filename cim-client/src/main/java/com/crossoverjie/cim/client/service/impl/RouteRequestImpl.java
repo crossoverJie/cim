@@ -92,7 +92,7 @@ public class RouteRequestImpl implements RouteRequest {
             throw new IOException("Unexpected code " + response);
         }
 
-        String json = response.body().toString() ;
+        String json = response.body().string() ;
         BaseResponse baseResponse = JSON.parseObject(json, BaseResponse.class);
 
         //选择的账号不存在

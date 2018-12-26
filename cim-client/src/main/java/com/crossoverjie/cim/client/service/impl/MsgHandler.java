@@ -43,7 +43,7 @@ public class MsgHandler implements MsgHandle {
 
     @Override
     public void sendMsg(String msg) {
-        String[] totalMsg = msg.split("^^");
+        String[] totalMsg = msg.split(";;");
         if (totalMsg.length > 1) {
             //私聊
             P2PReqVO p2PReqVO = new P2PReqVO();
