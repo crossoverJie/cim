@@ -94,7 +94,7 @@ public class MsgHandler implements MsgHandle {
             } else if (SystemCommandEnumType.ALL.getCommandType().trim().equals(msg)){
                 printAllCommand(allStatusCode);
 
-            } else if (SystemCommandEnumType.ONLINE_USER.getCommandType().trim().equals(msg)){
+            } else if (SystemCommandEnumType.ONLINE_USER.getCommandType().toLowerCase().trim().equals(msg.toLowerCase())){
                 //打印在线用户
                 printOnlineUsers();
 
