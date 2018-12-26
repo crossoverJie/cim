@@ -47,29 +47,26 @@ public class CIMClient {
     private SocketChannel channel;
 
     @Autowired
-    private RouteRequest routeRequest ;
+    private RouteRequest routeRequest;
 
     @PostConstruct
-    public void start()  {
+    public void start() throws Exception {
 
-        try {
-            //登录 + 获取可以使用的服务器 ip+port
-            CIMServerResVO.ServerInfo cimServer = userLogin();
+        //登录 + 获取可以使用的服务器 ip+port
+        CIMServerResVO.ServerInfo cimServer = userLogin();
 
-            //启动客户端
-            startClient(cimServer);
+        //启动客户端
+        startClient(cimServer);
 
-            //向服务端注册
-            loginCIMServer();
+        //向服务端注册
+        loginCIMServer();
 
-        }catch (Exception e){
-            LOGGER.error("Exception",e);
-        }
 
     }
 
     /**
      * 启动客户端
+     *
      * @param cimServer
      * @throws InterruptedException
      */
@@ -89,13 +86,14 @@ public class CIMClient {
 
     /**
      * 登录+路由服务器
+     *
      * @return 路由服务器信息
      * @throws Exception
      */
     private CIMServerResVO.ServerInfo userLogin() throws Exception {
-        LoginReqVO loginReqVO = new LoginReqVO(userId,userName) ;
+        LoginReqVO loginReqVO = new LoginReqVO(userId, userName);
         CIMServerResVO.ServerInfo cimServer = routeRequest.getCIMServer(loginReqVO);
-        LOGGER.info("cimServer=[{}]",cimServer.toString());
+        LOGGER.info("cimServer=[{}]", cimServer.toString());
         return cimServer;
     }
 
@@ -119,8 +117,8 @@ public class CIMClient {
      * @param msg
      */
     public void sendStringMsg(String msg) {
-        ByteBuf message = Unpooled.buffer(msg.getBytes().length) ;
-        message.writeBytes(msg.getBytes()) ;
+        ByteBuf message = Unpooled.buffer(msg.getBytes().length);
+        message.writeBytes(msg.getBytes());
         ChannelFuture future = channel.writeAndFlush(message);
         future.addListener((ChannelFutureListener) channelFuture ->
                 LOGGER.info("客户端手动发消息成功={}", msg));

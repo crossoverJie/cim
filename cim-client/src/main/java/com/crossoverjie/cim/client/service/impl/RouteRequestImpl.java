@@ -2,12 +2,12 @@ package com.crossoverjie.cim.client.service.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.crossoverjie.cim.client.config.AppConfiguration;
 import com.crossoverjie.cim.client.service.RouteRequest;
 import com.crossoverjie.cim.client.vo.req.GroupReqVO;
 import com.crossoverjie.cim.client.vo.req.LoginReqVO;
 import com.crossoverjie.cim.client.vo.res.CIMServerResVO;
 import com.crossoverjie.cim.common.enums.StatusEnum;
-import com.crossoverjie.cim.common.exception.CIMException;
 import okhttp3.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,6 +39,9 @@ public class RouteRequestImpl implements RouteRequest {
 
     @Value("${cim.server.route.request.url}")
     private String serverRouteRequestUrl;
+
+    @Autowired
+    private AppConfiguration appConfiguration ;
 
     @Override
     public void sendGroupMsg(GroupReqVO groupReqVO) throws Exception {
@@ -82,7 +85,8 @@ public class RouteRequestImpl implements RouteRequest {
 
         //重复登录
         if (cimServerResVO.getCode().equals(StatusEnum.REPEAT_LOGIN.getCode())){
-            throw new CIMException(StatusEnum.REPEAT_LOGIN) ;
+            LOGGER.error(appConfiguration.getUserName() + ":" + StatusEnum.REPEAT_LOGIN.getMessage());
+            System.exit(-1);
         }
 
         if (!cimServerResVO.getCode().equals(StatusEnum.SUCCESS.getCode())){

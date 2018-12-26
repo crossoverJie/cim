@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import static com.crossoverjie.cim.route.constant.Constant.ACCOUNT_PREFIX;
+import static com.crossoverjie.cim.route.constant.Constant.LOGIN_STATUS_PREFIX;
 
 /**
  * Function:
@@ -30,7 +31,7 @@ public class UserInfoCacheServiceImpl implements UserInfoCacheService {
     private RedisTemplate<String,String> redisTemplate ;
 
     @Override
-    public CIMUserInfo loadUserInfoByUserId(long userId) throws Exception {
+    public CIMUserInfo loadUserInfoByUserId(Long userId) throws Exception {
 
         //优先从本地缓存获取
         CIMUserInfo cimUserInfo = USER_INFO_MAP.get(userId);
@@ -47,4 +48,21 @@ public class UserInfoCacheServiceImpl implements UserInfoCacheService {
 
         return cimUserInfo;
     }
+
+    @Override
+    public boolean saveAndCheckUserLoginStatus(Long userId) throws Exception {
+
+        Long add = redisTemplate.opsForSet().add(LOGIN_STATUS_PREFIX, userId.toString());
+        if (add == 0){
+            return false ;
+        }else {
+            return true ;
+        }
+    }
+
+    @Override
+    public void removeLoginStatus(Long userId) throws Exception {
+        redisTemplate.opsForSet().remove(LOGIN_STATUS_PREFIX,userId.toString()) ;
+    }
+
 }

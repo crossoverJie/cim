@@ -68,14 +68,6 @@ public class AccountServiceRedisImpl implements AccountService {
 
     @Override
     public boolean login(LoginReqVO loginReqVO) throws Exception {
-
-        //先判断是否已经登录，第一次登录 cimUserInfo 为空
-        CIMUserInfo cimUserInfo = userInfoCacheService.loadUserInfoByUserId(loginReqVO.getUserId());
-        if (cimUserInfo != null){
-            //重复登录
-            return false ;
-        }
-
         //再去Redis里查询
         String key = ACCOUNT_PREFIX + loginReqVO.getUserId();
         String userName = redisTemplate.opsForValue().get(key);
@@ -86,6 +78,14 @@ public class AccountServiceRedisImpl implements AccountService {
         if (!userName.equals(loginReqVO.getUserName())) {
             return false;
         }
+
+        //登录成功，保存登录状态
+        boolean status = userInfoCacheService.saveAndCheckUserLoginStatus(loginReqVO.getUserId());
+        if (status == false){
+            //重复登录
+            return false;
+        }
+
         return true;
     }
 
@@ -148,6 +148,10 @@ public class AccountServiceRedisImpl implements AccountService {
 
     @Override
     public void offLine(Long userId) throws Exception {
+        //删除路由
         redisTemplate.delete(ROUTE_PREFIX + userId) ;
+
+        //删除登录状态
+        userInfoCacheService.removeLoginStatus(userId);
     }
 }
