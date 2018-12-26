@@ -1,5 +1,11 @@
 package com.crossoverjie.cim.common;
 
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 import org.junit.Test;
 
 import java.time.LocalDate;
@@ -78,5 +84,20 @@ public class CommonTest {
             TimeUnit.MILLISECONDS.sleep(200);
         }
     }
+
+    @Test
+    public void test3(){
+
+        List<String> coll = List.of("abc","def");
+        Set<String> set = new HashSet<>(coll);
+        System.out.println(set);
+        Map<String, Void> map = set.stream()
+                .collect(Collectors.toMap(
+                        Function.identity(), // 将Set中的元素作为键
+                        v -> null          // 每个键对应的值为null
+                ));
+        System.out.println(map);
+    }
+
 
 }

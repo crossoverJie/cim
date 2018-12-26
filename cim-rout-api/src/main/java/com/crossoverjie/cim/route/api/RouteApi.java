@@ -67,4 +67,6 @@ public interface RouteApi {
      * @throws Exception
      */
     Object onlineUser() throws Exception;
+
+    // TODO: 2024/8/19  Get cache server & metastore server
 }

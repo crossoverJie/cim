@@ -1,5 +1,8 @@
 package com.crossoverjie.cim.route.config;
 
+import com.crossoverjie.cim.common.metastore.MetaStore;
+import com.crossoverjie.cim.common.metastore.ZkConfiguration;
+import com.crossoverjie.cim.common.metastore.ZkMetaStoreImpl;
 import com.crossoverjie.cim.common.route.algorithm.RouteHandle;
 import com.crossoverjie.cim.common.route.algorithm.consistenthash.AbstractConsistentHash;
 import com.google.common.cache.CacheBuilder;
@@ -8,6 +11,7 @@ import com.google.common.cache.LoadingCache;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.OkHttpClient;
 import org.I0Itec.zkclient.ZkClient;
+import org.apache.curator.retry.ExponentialBackoffRetry;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -40,14 +44,18 @@ public class BeanConfig {
     }
 
     @Bean
-    public LoadingCache<String, String> buildCache() {
-        return CacheBuilder.newBuilder()
-                .build(new CacheLoader<String, String>() {
-                    @Override
-                    public String load(String s) throws Exception {
-                        return null;
-                    }
-                });
+    public MetaStore metaStore() throws Exception {
+        MetaStore metaStore = new ZkMetaStoreImpl();
+        ExponentialBackoffRetry retryPolicy = new ExponentialBackoffRetry(1000, 3);
+        metaStore.initialize(ZkConfiguration.builder()
+                .metaServiceUri(appConfiguration.getZkAddr())
+                .timeoutMs(appConfiguration.getZkConnectTimeout())
+                .retryPolicy(retryPolicy)
+                .build());
+        metaStore.listenServerList((root, currentChildren) -> {
+            log.info("Server list change, root=[{}], currentChildren=[{}]", root, currentChildren);
+        });
+        return metaStore;
     }
 
 
@@ -92,8 +100,8 @@ public class BeanConfig {
             Method method = Class.forName(routeWay).getMethod("setHash", AbstractConsistentHash.class);
             AbstractConsistentHash consistentHash = (AbstractConsistentHash)
                     Class.forName(appConfiguration.getConsistentHashWay()).newInstance();
-            method.invoke(routeHandle,consistentHash) ;
-            return routeHandle ;
+            method.invoke(routeHandle, consistentHash);
+            return routeHandle;
         } else {
 
             return routeHandle;
