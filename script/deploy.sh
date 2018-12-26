@@ -45,6 +45,7 @@ echo "部署服务1成功！"
 
 
 echo "开始部署服务2。。。。"
+mv /root/work/netty-action/cim-server/target/cim-server-1.0.0-SNAPSHOT.jar /root/work/server2/
 sh /root/work/server2/server-startup.sh
 echo "部署服务2成功！"
 
