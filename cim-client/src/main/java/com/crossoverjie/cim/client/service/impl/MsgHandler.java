@@ -1,5 +1,6 @@
 package com.crossoverjie.cim.client.service.impl;
 
+import com.crossoverjie.cim.client.client.CIMClient;
 import com.crossoverjie.cim.client.service.MsgHandle;
 import com.crossoverjie.cim.client.service.RouteRequest;
 import com.crossoverjie.cim.client.vo.req.GroupReqVO;
@@ -12,6 +13,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Function:
@@ -25,6 +28,13 @@ public class MsgHandler implements MsgHandle {
     private final static Logger LOGGER = LoggerFactory.getLogger(MsgHandler.class);
     @Autowired
     private RouteRequest routeRequest ;
+
+
+    @Autowired
+    private ThreadPoolExecutor executor ;
+
+    @Autowired
+    private CIMClient cimClient ;
 
     @Override
     public void groupChat(GroupReqVO groupReqVO) throws Exception {
@@ -52,8 +62,8 @@ public class MsgHandler implements MsgHandle {
             Map<String, String> allStatusCode = SystemCommandEnumType.getAllStatusCode();
 
             if (SystemCommandEnumType.QUIT.getCommandType().trim().equals(msg)){
-                LOGGER.info("系统关闭中。。。。");
-                System.exit(0);
+                //关闭系统
+                shutdown();
             } else if (SystemCommandEnumType.ALL.getCommandType().trim().equals(msg)){
                 printAllCommand(allStatusCode);
             }else {
@@ -67,6 +77,23 @@ public class MsgHandler implements MsgHandle {
         }
 
 
+    }
+
+    /**
+     * 关闭系统
+     */
+    private void shutdown() {
+        LOGGER.info("系统关闭中。。。。");
+        executor.shutdown();
+        try {
+            while (!executor.awaitTermination(1, TimeUnit.SECONDS)) {
+                LOGGER.info("线程池关闭中。。。。");
+            }
+            cimClient.close();
+        } catch (InterruptedException e) {
+            LOGGER.error("InterruptedException",e);
+        }
+        System.exit(0);
     }
 
     private void printAllCommand(Map<String, String> allStatusCode) {

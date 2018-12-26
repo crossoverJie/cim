@@ -144,4 +144,12 @@ public class CIMClient {
                 LOGGER.info("客户端手动发送 Google Protocol 成功={}", googleProtocolVO.toString()));
 
     }
+
+    /**
+     * 关闭
+     * @throws InterruptedException
+     */
+    public void close() throws InterruptedException {
+        channel.close() ;
+    }
 }
