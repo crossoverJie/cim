@@ -88,6 +88,7 @@ public class BeanConfig {
     @Bean
     public MsgHandleCaller buildCaller(){
         MsgHandleCaller caller = new MsgHandleCaller(msg -> {
+            //处理业务逻辑，或者自定义实现接口
         }) ;
 
         return caller ;
