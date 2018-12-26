@@ -11,6 +11,8 @@ import io.netty.handler.timeout.IdleStateEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.concurrent.ThreadPoolExecutor;
+
 /**
  * Function:
  *
@@ -23,7 +25,9 @@ public class CIMClientHandle extends SimpleChannelInboundHandler<CIMResponseProt
 
     private final static Logger LOGGER = LoggerFactory.getLogger(CIMClientHandle.class);
 
+    private MsgHandleCaller caller = SpringBeanFactory.getBean(MsgHandleCaller.class);
 
+    private ThreadPoolExecutor threadPoolExecutor = SpringBeanFactory.getBean("callBackThreadPool",ThreadPoolExecutor.class) ;;
 
 
     @Override
@@ -58,7 +62,22 @@ public class CIMClientHandle extends SimpleChannelInboundHandler<CIMResponseProt
         //从服务端收到消息时被调用
         //LOGGER.info("客户端收到消息={}",in.toString(CharsetUtil.UTF_8)) ;
 
+        //回调消息
+        callBackMsg(responseProtocol.getResMsg());
+
         LOGGER.info(responseProtocol.getResMsg());
+    }
+
+    /**
+     * 回调消息
+     * @param msg
+     */
+    private void callBackMsg(String msg) {
+
+        threadPoolExecutor.execute(() -> {
+            caller.getMsgHandleListener().handle(msg);
+        });
+
     }
 
     @Override

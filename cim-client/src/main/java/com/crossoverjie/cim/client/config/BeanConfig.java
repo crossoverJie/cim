@@ -1,13 +1,17 @@
 package com.crossoverjie.cim.client.config;
 
+import com.crossoverjie.cim.client.handle.MsgHandleCaller;
 import com.crossoverjie.cim.common.constant.Constants;
 import com.crossoverjie.cim.common.protocol.CIMRequestProto;
+import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import okhttp3.OkHttpClient;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 
 /**
  * Function:bean 配置
@@ -19,8 +23,17 @@ import java.util.concurrent.TimeUnit;
 @Configuration
 public class BeanConfig {
 
+    private final static Logger LOGGER = LoggerFactory.getLogger(BeanConfig.class);
+
+
     @Value("${cim.user.id}")
     private long userId;
+
+    @Value("${cim.callback.thread.queue.size}")
+    private int queueSize;
+
+    @Value("${cim.callback.thread.pool.size}")
+    private int poolSize;
 
 
     /**
@@ -50,6 +63,35 @@ public class BeanConfig {
                 .writeTimeout(10,TimeUnit.SECONDS)
                 .retryOnConnectionFailure(true);
         return builder.build();
+    }
+
+
+    /**
+     * 创建回调线程池
+     * @return
+     */
+    @Bean("callBackThreadPool")
+    public ThreadPoolExecutor buildCallerThread(){
+        BlockingQueue<Runnable> queue = new LinkedBlockingQueue(queueSize);
+        ThreadFactory product = new ThreadFactoryBuilder()
+                .setNameFormat("product-%d")
+                .setDaemon(true)
+                .build();
+        ThreadPoolExecutor productExecutor = new ThreadPoolExecutor(poolSize, poolSize, 1, TimeUnit.MILLISECONDS, queue,product);
+        return  productExecutor ;
+    }
+
+    /**
+     * 回调 bean
+     * @return
+     */
+    @Bean
+    public MsgHandleCaller buildCaller(){
+        MsgHandleCaller caller = new MsgHandleCaller(msg -> {
+            LOGGER.warn("caller msg=[{}]" ,msg);
+        }) ;
+
+        return caller ;
     }
 
 }
