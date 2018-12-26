@@ -52,29 +52,13 @@ public class CIMClient {
     @PostConstruct
     public void start() throws Exception {
         //登录 + 获取可以使用的服务器 ip+port
-        LoginReqVO loginReqVO = new LoginReqVO(userId,userName) ;
-        CIMServerResVO.ServerInfo cimServer = routeRequest.getCIMServer(loginReqVO);
-        LOGGER.info("cimServer=[{}]",cimServer.toString());
+        CIMServerResVO.ServerInfo cimServer = userLogin();
 
         //启动客户端
         startClient(cimServer);
 
         //向服务端注册
         loginCIMServer();
-    }
-
-    /**
-     * 向服务器注册
-     */
-    private void loginCIMServer() {
-        CIMRequestProto.CIMReqProtocol login = CIMRequestProto.CIMReqProtocol.newBuilder()
-                .setRequestId(userId)
-                .setReqMsg(userName)
-                .setType(Constants.CommandType.LOGIN)
-                .build();
-        ChannelFuture future = channel.writeAndFlush(login);
-        future.addListener((ChannelFutureListener) channelFuture ->
-                LOGGER.info("注册成功={}", login.toString()));
     }
 
     /**
@@ -94,6 +78,32 @@ public class CIMClient {
             LOGGER.info("启动 cim client 成功");
         }
         channel = (SocketChannel) future.channel();
+    }
+
+    /**
+     * 登录+路由服务器
+     * @return 路由服务器信息
+     * @throws Exception
+     */
+    private CIMServerResVO.ServerInfo userLogin() throws Exception {
+        LoginReqVO loginReqVO = new LoginReqVO(userId,userName) ;
+        CIMServerResVO.ServerInfo cimServer = routeRequest.getCIMServer(loginReqVO);
+        LOGGER.info("cimServer=[{}]",cimServer.toString());
+        return cimServer;
+    }
+
+    /**
+     * 向服务器注册
+     */
+    private void loginCIMServer() {
+        CIMRequestProto.CIMReqProtocol login = CIMRequestProto.CIMReqProtocol.newBuilder()
+                .setRequestId(userId)
+                .setReqMsg(userName)
+                .setType(Constants.CommandType.LOGIN)
+                .build();
+        ChannelFuture future = channel.writeAndFlush(login);
+        future.addListener((ChannelFutureListener) channelFuture ->
+                LOGGER.info("注册成功={}", login.toString()));
     }
 
     /**

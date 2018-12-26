@@ -2,10 +2,11 @@ package com.crossoverjie.cim.client.scanner;
 
 import com.crossoverjie.cim.client.client.CIMClient;
 import com.crossoverjie.cim.client.config.AppConfiguration;
+import com.crossoverjie.cim.client.service.MsgHandle;
 import com.crossoverjie.cim.client.service.RouteRequest;
 import com.crossoverjie.cim.client.util.SpringBeanFactory;
-import com.crossoverjie.cim.client.vo.req.GoogleProtocolVO;
 import com.crossoverjie.cim.client.vo.req.GroupReqVO;
+import com.crossoverjie.cim.client.vo.req.P2PReqVO;
 import com.crossoverjie.cim.common.util.StringUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,17 +30,19 @@ public class Scan implements Runnable {
 
     private AppConfiguration configuration;
 
+    private MsgHandle msgHandle ;
+
     public Scan() {
         this.configuration = SpringBeanFactory.getBean(AppConfiguration.class);
         this.heartbeatClient = SpringBeanFactory.getBean(CIMClient.class);
         this.routeRequest = SpringBeanFactory.getBean(RouteRequest.class);
+        this.msgHandle = SpringBeanFactory.getBean(MsgHandle.class) ;
     }
 
     @Override
     public void run() {
         Scanner sc = new Scanner(System.in);
         String[] totalMsg;
-        GoogleProtocolVO vo;
         while (true) {
             String msg = sc.nextLine();
             if (checkMsg(msg)) {
@@ -49,22 +52,36 @@ public class Scan implements Runnable {
             //单聊
             totalMsg = msg.split("><");
             if (totalMsg.length > 1) {
-                vo = new GoogleProtocolVO();
-                vo.setRequestId(Integer.parseInt(totalMsg[0]));
-                vo.setMsg(totalMsg[1]);
-                heartbeatClient.sendGoogleProtocolMsg(vo);
+                //私聊
+                p2pChat(totalMsg);
             } else {
                 //群聊
-                try {
-                    GroupReqVO groupReqVO = new GroupReqVO(configuration.getUserId(), msg);
-                    routeRequest.sendGroupMsg(groupReqVO);
-                } catch (Exception e) {
-                    LOGGER.error("Exception", e);
-                }
+                groupChat(msg);
             }
 
 
             LOGGER.info("{}:【{}】", configuration.getUserName(), msg);
+        }
+    }
+
+    private void p2pChat(String[] totalMsg) {
+        P2PReqVO p2PReqVO = new P2PReqVO();
+        p2PReqVO.setUserId(configuration.getUserId());
+        p2PReqVO.setReceiveUserId(Long.parseLong(totalMsg[0]));
+        p2PReqVO.setMsg(totalMsg[1]);
+        try {
+            msgHandle.p2pChat(p2PReqVO);
+        } catch (Exception e) {
+            LOGGER.error("Exception", e);
+        }
+    }
+
+    private void groupChat(String msg) {
+        GroupReqVO groupReqVO = new GroupReqVO(configuration.getUserId(), msg);
+        try {
+            msgHandle.groupChat(groupReqVO);
+        } catch (Exception e) {
+            LOGGER.error("Exception", e);
         }
     }
 
