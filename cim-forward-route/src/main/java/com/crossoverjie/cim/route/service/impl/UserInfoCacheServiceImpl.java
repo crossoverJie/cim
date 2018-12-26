@@ -6,7 +6,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 import static com.crossoverjie.cim.route.constant.Constant.ACCOUNT_PREFIX;
@@ -31,7 +33,7 @@ public class UserInfoCacheServiceImpl implements UserInfoCacheService {
     private RedisTemplate<String,String> redisTemplate ;
 
     @Override
-    public CIMUserInfo loadUserInfoByUserId(Long userId) throws Exception {
+    public CIMUserInfo loadUserInfoByUserId(Long userId) {
 
         //优先从本地缓存获取
         CIMUserInfo cimUserInfo = USER_INFO_MAP.get(userId);
@@ -63,6 +65,21 @@ public class UserInfoCacheServiceImpl implements UserInfoCacheService {
     @Override
     public void removeLoginStatus(Long userId) throws Exception {
         redisTemplate.opsForSet().remove(LOGIN_STATUS_PREFIX,userId.toString()) ;
+    }
+
+    @Override
+    public Set<CIMUserInfo> onlineUser() {
+        Set<CIMUserInfo> set = null ;
+        Set<String> members = redisTemplate.opsForSet().members(LOGIN_STATUS_PREFIX);
+        for (String member : members) {
+            if (set == null){
+                set = new HashSet<>(64) ;
+            }
+            CIMUserInfo cimUserInfo = loadUserInfoByUserId(Long.valueOf(member)) ;
+            set.add(cimUserInfo) ;
+        }
+
+        return set;
     }
 
 }

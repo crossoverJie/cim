@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Function:
@@ -165,6 +166,27 @@ public class RouteController {
         res.setMessage(StatusEnum.SUCCESS.getMessage());
         return res;
     }
+
+    /**
+     * 注册账号
+     *
+     * @return
+     */
+    @ApiOperation("获取所有在线用户")
+    @RequestMapping(value = "onlineUser", method = RequestMethod.POST)
+    @ResponseBody()
+    public BaseResponse<Set<CIMUserInfo>> onlineUser() throws Exception {
+        BaseResponse<Set<CIMUserInfo>> res = new BaseResponse();
+
+        Set<CIMUserInfo> cimUserInfos = userInfoCacheService.onlineUser();
+        res.setDataBody(cimUserInfos) ;
+        res.setCode(StatusEnum.SUCCESS.getCode());
+        res.setMessage(StatusEnum.SUCCESS.getMessage());
+        return res;
+    }
+
+
+
 
 
 }
