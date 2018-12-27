@@ -2,6 +2,9 @@
 
 <div align="center">  
 
+<img src="https://ws1.sinaimg.cn/large/006tNbRwly1fyl9txgcwfj30p00p0glu.jpg" height="300" /> 
+<br/>
+
 [![QQ群](https://img.shields.io/badge/QQ%E7%BE%A4-787381170-yellowgreen.svg)](https://jq.qq.com/?_wv=1027&k=5HPYvQk)
 
 
@@ -11,7 +14,7 @@
 
 ## 介绍
 
-cim(cross IM) 一款面向开发者的 IM(即时通讯)系统；同时提供了一些组件帮助开发者构建一款属于自己可水平扩展的 `IM` 系统。
+`cim(cross IM)` 一款面向开发者的 IM(即时通讯)系统；同时提供了一些组件帮助开发者构建一款属于自己可水平扩展的 `IM` 系统。
 
 > 老版本已经归档到[这里](https://github.com/crossoverJie/cim/releases/tag/archive-20181227)。
 
