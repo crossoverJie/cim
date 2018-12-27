@@ -1,8 +1,34 @@
-# CIM
+
+
+<div align="center">  
 
 [![QQ群](https://img.shields.io/badge/QQ%E7%BE%A4-787381170-yellowgreen.svg)](https://jq.qq.com/?_wv=1027&k=5HPYvQk)
 
-Netty 实战相关
+
+</div>
+<br/>
+
+
+## 介绍
+
+cim(cross IM) 一款面向开发者的 IM(即时通讯)系统；同时提供了一些组件帮助开发者构建一款属于自己可水平扩展的 `IM` 系统。
+
+> 老版本已经归档到[这里](https://github.com/crossoverJie/cim/releases/tag/archive-20181227)。
+
+### cim-server
+
+`IM` 服务端；用于接收 `client` 连接、消息透传、消息推送等功能。
+
+**支持集群部署。**
+
+### cim-forward-route
+
+消息路由服务器；用于处理消息路由、消息转发、用户登录、用户下线以及一些运营工具（获取在线用户数等）。
+
+### cim-client
+
+`IM` 客户端；给用户使用的消息终端，一个命令即可启动并向其他人发起通讯（群聊、私聊）。
+
 
 
 ## TODO LIST
@@ -12,35 +38,7 @@ Netty 实战相关
 * [x] [Netty(三) 什么是 TCP 拆、粘包？如何解决？](https://crossoverjie.top/2018/08/03/netty/Netty(3)TCP-Sticky/)
 
 
-## 安装
 
-```shell
-git clone https://github.com/crossoverJie/netty-action.git
-
-cd netty-action
-
-mvn -Dmaven.test.skip=true clean package
-``` 
-
-## 启动
-
-```shell
--- 启动 SBA
-java -jar springboot-admin-1.0.0-SNAPSHOT.jar
-
--- 启动 服务端
-java -jar netty-action-hearbeat-1.0.0-SNAPSHOT.jar
-
--- 启动 客户端
-java -jar netty-action-heartbeat-client-1.0.0-SNAPSHOT.jar
-
--- 启动 第二个客户端
-java -jar netty-action-heartbeat-client-1.0.0-SNAPSHOT.jar --server.port=8083 --spring.application.name=netty-heartbeat-client2 --logging.level.root=info --channel.id=101
-```
-
-## 截图
-![show](https://github.com/crossoverJie/netty-action/blob/master/pic/show.gif)
-![](https://ws4.sinaimg.cn/large/006tKfTcgy1frqfwembi6j31kw0o0dot.jpg)
 
 
 # 联系作者
