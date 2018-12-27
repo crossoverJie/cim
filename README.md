@@ -5,7 +5,7 @@
 <img src="https://ws4.sinaimg.cn/large/006tNbRwly1fylahz0rrgj30p008ca9x.jpg"  /> 
 <br/>
 
-[![Build Status](https://img.shields.io/badge/cim-cross--im-brightgreen.svg)](https://travis-ci.org/crossoverJie/cicada)
+[![Build Status](https://img.shields.io/badge/cim-cross--im-brightgreen.svg)](https://github.com/crossoverJie/cim)
 [![QQ群](https://img.shields.io/badge/QQ%E7%BE%A4-787381170-yellowgreen.svg)](https://jq.qq.com/?_wv=1027&k=5HPYvQk)
 
 
