@@ -24,7 +24,8 @@
 - 适用于 `APP` 的消息推送中间件。
 - `IOT` 海量连接场景中的消息透传中间件。
 
-> 老版本已经归档到[这里](https://github.com/crossoverJie/cim/releases/tag/archive-20181227)。
+> 点击下图可以查看视频版 Demo。
+
 
 ### cim-server
 
@@ -49,6 +50,7 @@
 * [x] 内置命令。
 * [x] 使用 `Google Protocol Buffer` 高效编解码。
 * [x] 根据实际情况灵活的水平扩容、缩容。
+* [x] 路由(`cim-forward-route`)服务器自身是无状态，可用 `Nginx` 代理支持高可用。
 * [ ] 协议支持消息加密。
 * [ ] 弱网情况下客户端自动上线。
 * [ ] 更多的客户端路由策略。
@@ -74,6 +76,62 @@
 - 客户端下线时通过 `route` 清除状态信息。
 
 
+## 快速启动
+
+首先需要安装 `Zookeeper、Redis` 并保证网络通畅。
+
+```shell
+git clone https://github.com/crossoverJie/cim.git
+cd cim
+mvn -Dmaven.test.skip=true clean package
+```
+
+### 部署 IM-server(cim-server)
+
+```shell
+cp /cim/cim-server/target/cim-server-1.0.0-SNAPSHOT.jar /xx/work/server0/
+cd /xx/work/server0/
+nohup java -jar  /root/work/server/cim-server-1.0.0-SNAPSHOT.jar --cim.server.port=9000 --app.zk.addr=zk地址  > /root/work/server/log.file 2>&1 &
+```
+
+> cim-server 集群部署同理，只要保证 Zookeeper 地址相同即可。
+
+### 部署路由服务器(cim-forward-route)
+
+```shell
+cp /cim/cim-server/cim-forward-route/target/cim-forward-route-1.0.0-SNAPSHOT.jar /xx/work/route0/
+cd /xx/work/route0/
+nohup java -jar  /root/work/route/cim-forward-route-1.0.0-SNAPSHOT.jar --app.zk.addr=zk地址 --spring.redis.host=redis地址  > /root/work/route/log.file 2>&1 &
+```
+
+> cim-forward-route 本身就是无状态，可以部署多台；使用 Nginx 代理即可。
+
+
+### 启动客户端
+
+```shell
+cp /cim/cim-client/target/cim-client-1.0.0-SNAPSHOT.jar /xx/work/route0/
+cd /xx/work/route0/
+java -jar cim-client-1.0.0-SNAPSHOT.jar --server.port=8084 --cim.user.id=唯一客户端ID --cim.user.userName=用户名 --cim.group.route.request.url=http://路由服务器:8083/groupRoute --cim.server.route.request.url=http://路由服务器:8083/login
+```
+
+![](https://ws2.sinaimg.cn/large/006tNbRwly1fylgxjgshfj31vo04m7p9.jpg)
+![](https://ws1.sinaimg.cn/large/006tNbRwly1fylgxu0x4uj31hy04q75z.jpg)
+
+如上图，启动两个客户端可以互相通信即可。
+
+
+
+## 客户端内置命令
+
+| 命令 | 描述|
+| ------ | ------ | 
+| `:q` | 退出客户端| 
+| `:olu` | 获取所有在线用户信息 | 
+| `:all` | 获取所有命令 | 
+| `:` | 更多命令真正开发中。。 | 
+
+![](https://ws3.sinaimg.cn/large/006tNbRwly1fylh7bdlo6g30go01shdt.gif)
 
 # 联系作者
 - [crossoverJie@gmail.com](mailto:crossoverJie@gmail.com)
