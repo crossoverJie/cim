@@ -2,7 +2,7 @@
 
 <div align="center">  
 
-<img src="https://ws3.sinaimg.cn/large/006tNbRwly1fylag4lva6j30p00dcmx3.jpg"  /> 
+<img src="https://ws4.sinaimg.cn/large/006tNbRwly1fylahz0rrgj30p008ca9x.jpg"  /> 
 <br/>
 
 [![QQ群](https://img.shields.io/badge/QQ%E7%BE%A4-787381170-yellowgreen.svg)](https://jq.qq.com/?_wv=1027&k=5HPYvQk)
