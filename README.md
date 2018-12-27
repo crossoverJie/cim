@@ -129,7 +129,7 @@ java -jar cim-client-1.0.0-SNAPSHOT.jar --server.port=8084 --cim.user.id=唯一�
 | `:q` | 退出客户端| 
 | `:olu` | 获取所有在线用户信息 | 
 | `:all` | 获取所有命令 | 
-| `:` | 更多命令真正开发中。。 | 
+| `:` | 更多命令真在开发中。。 | 
 
 ![](https://ws3.sinaimg.cn/large/006tNbRwly1fylh7bdlo6g30go01shdt.gif)
 
