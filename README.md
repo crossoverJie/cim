@@ -142,7 +142,7 @@ java -jar cim-client-1.0.0-SNAPSHOT.jar --server.port=8084 --cim.user.id=唯一�
 ![](https://ws3.sinaimg.cn/large/006tNbRwly1fyli5yyspmj31im06atb8.jpg)
 ![](https://ws3.sinaimg.cn/large/006tNbRwly1fyli6sn3c8j31ss06qmzq.jpg)
 
-群聊只需要在控制台里输入消息回收后即可发送，同时所有在线客户端都可收到消息。
+群聊只需要在控制台里输入消息回车后即可发送，同时所有在线客户端都可收到消息。
 
 ### 私聊
 
