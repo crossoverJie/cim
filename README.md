@@ -31,9 +31,10 @@
 
 > 点击下方标题可以查看视频版 Demo。
 
-| [YouTube](https://github.com/crossoverJie/cim) | [Bilibili](https://github.com/crossoverJie/cim)|
-| ------ | ------ | 
-| ![](https://ws4.sinaimg.cn/large/006tNbRwly1fyljsskct0j31wo0es4qq.jpg)| ![](https://ws4.sinaimg.cn/large/006tNbRwly1fyljsskct0j31wo0es4qq.jpg)
+| YouTube | Bilibili|
+| :------:| :------: | 
+| [群聊](https://youtu.be/_9a4lIkQ5_o) [私聊](https://youtu.be/kfEfQFPLBTQ) | [群聊](https://youtu.be/_9a4lIkQ5_o) [私聊](https://youtu.be/kfEfQFPLBTQ) | 
+| ![](https://ws4.sinaimg.cn/large/006tNbRwly1fylq36zy83j31ga0n71ky.jpg)| ![](https://ws4.sinaimg.cn/large/006tNbRwly1fylq36zy83j31ga0n71ky.jpg)
 
 
 ### cim-server
