@@ -47,6 +47,7 @@
 * [x] 群聊。
 * [x] 私聊。
 * [x] 内置命令。
+* [x] 使用 `Google Protocol Buffer` 高效编解码。
 * [ ] 协议支持消息加密。
 * [ ] 弱网情况下的客户端自动上线。
 * [ ] 更多的客户端路由策略。
@@ -56,6 +57,11 @@
 ## 系统架构
 
 ![](https://ws1.sinaimg.cn/large/006tNbRwly1fyldgiizhuj315o0r4n0k.jpg)
+
+- `CIM` 中的各个组件均采用 `SpringBoot` 构建。
+-  采用 `Netty` 构建底层通信。
+-  `Redis` 存放各个客户端的路由信息、账号信息、在线状态等。
+-  `Zookeeper` 用于 `cim-server` 服务的注册与发现。
 
 ## 流程图
 
