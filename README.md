@@ -22,7 +22,7 @@
 
 - 即时通讯系统。
 - 适用于 `APP` 的消息推送中间件。
-- `IOT` 场景中的消息透传中间件。
+- `IOT` 海量连接场景中的消息透传中间件。
 
 > 老版本已经归档到[这里](https://github.com/crossoverJie/cim/releases/tag/archive-20181227)。
 
