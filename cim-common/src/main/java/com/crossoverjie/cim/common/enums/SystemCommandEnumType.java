@@ -15,7 +15,7 @@ import java.util.Map;
 public enum SystemCommandEnumType {
 
             ALL(":all       ","获取所有命令"),
-    ONLINE_USER(":onlineUser","获取所有在线用户"),
+    ONLINE_USER(":olu","获取所有在线用户"),
            QUIT(":q         ","退出程序")
 
     ;
