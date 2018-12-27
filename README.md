@@ -25,7 +25,13 @@
 - 适用于 `APP` 的消息推送中间件。
 - `IOT` 海量连接场景中的消息透传中间件。
 
+## 视频演示
+
 > 点击下图可以查看视频版 Demo。
+
+| YouTube | Bilibili|
+| ------ | ------ | 
+| <img src="https://ws4.sinaimg.cn/large/006tNbRwly1fyljsskct0j31wo0es4qq.jpg" href="https://github.com/crossoverJie/cim" /> | ![](https://ws4.sinaimg.cn/large/006tNbRwly1fyljsskct0j31wo0es4qq.jpg)
 
 
 ### cim-server
@@ -161,6 +167,9 @@ java -jar cim-client-1.0.0-SNAPSHOT.jar --server.port=8084 --cim.user.id=唯一�
 
 同时另一个账号是收不到消息的。
 ![](https://ws3.sinaimg.cn/large/006tNbRwly1fylie727jaj31t20dq1ky.jpg)
+
+
+> 我有在公网部署了一套演示环境，想要体验的可以联系我获取账号。
 
 # 联系作者
 - [crossoverJie@gmail.com](mailto:crossoverJie@gmail.com)
