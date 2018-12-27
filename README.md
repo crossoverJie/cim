@@ -8,6 +8,7 @@
 [![Build Status](https://img.shields.io/badge/cim-cross--im-brightgreen.svg)](https://github.com/crossoverJie/cim)
 [![QQ群](https://img.shields.io/badge/QQ%E7%BE%A4-787381170-yellowgreen.svg)](https://jq.qq.com/?_wv=1027&k=5HPYvQk)
 
+📘[介绍](#features) |🌁[Quick Start](#quick-start) | 🏖[Performance Test](#performance-test) | 🌈[ChangeLog](#changelog) | 💡 [Contact Author](#contact-author)|🇨🇳[中文文档](https://github.com/TogetherOS/cicada/blob/master/README-ZH.md)
 
 
 </div>
@@ -132,6 +133,34 @@ java -jar cim-client-1.0.0-SNAPSHOT.jar --server.port=8084 --cim.user.id=唯一�
 | `:` | 更多命令真在开发中。。 | 
 
 ![](https://ws3.sinaimg.cn/large/006tNbRwly1fylh7bdlo6g30go01shdt.gif)
+
+## 群聊/私聊
+
+### 群聊
+
+![](https://ws1.sinaimg.cn/large/006tNbRwly1fyli54e8e1j31t0056x11.jpg)
+![](https://ws3.sinaimg.cn/large/006tNbRwly1fyli5yyspmj31im06atb8.jpg)
+![](https://ws3.sinaimg.cn/large/006tNbRwly1fyli6sn3c8j31ss06qmzq.jpg)
+
+群聊只需要在控制台里输入消息回收后即可发送，同时所有在线客户端都可收到消息。
+
+### 私聊
+
+私聊首先需要知道对方的 `userID` 才能进行。
+
+输入命令 `:olu` 可列出所有在线用户。
+
+![](https://ws4.sinaimg.cn/large/006tNbRwly1fyli98mlf3j31ta06mwhv.jpg)
+
+接着使用 `userId;;消息内容` 的格式即可发送私聊消息。
+
+![](https://ws4.sinaimg.cn/large/006tNbRwly1fylib08qlnj31sk082zo6.jpg)
+![](https://ws1.sinaimg.cn/large/006tNbRwly1fylibc13etj31wa0564lp.jpg)
+![](https://ws3.sinaimg.cn/large/006tNbRwly1fylicmjj6cj31wg07c4qp.jpg)
+![](https://ws1.sinaimg.cn/large/006tNbRwly1fylicwhe04j31ua03ejsv.jpg)
+
+同时另一个账号是收不到消息的。
+![](https://ws3.sinaimg.cn/large/006tNbRwly1fylie727jaj31t20dq1ky.jpg)
 
 # 联系作者
 - [crossoverJie@gmail.com](mailto:crossoverJie@gmail.com)
