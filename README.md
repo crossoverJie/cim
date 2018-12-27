@@ -61,10 +61,16 @@
 - `CIM` 中的各个组件均采用 `SpringBoot` 构建。
 -  采用 `Netty` 构建底层通信。
 -  `Redis` 存放各个客户端的路由信息、账号信息、在线状态等。
--  `Zookeeper` 用于 `cim-server` 服务的注册与发现。
+-  `Zookeeper` 用于 `IM-server` 服务的注册与发现。
 
 ## 流程图
 
+![](https://ws1.sinaimg.cn/large/006tNbRwly1fylfxevl2ij30it0etaau.jpg)
+
+- 客户端向 `route` 发起登录。
+- 登录成功从 `Zookeeper` 中选择可用 `IM-server` 返回给客户端，并保存登录、路由信息到 `Redis`。
+- 客户端向 `IM-server` 发起长连接，成功后保持心跳。
+- 客户端下线时通过 `route` 清除状态信息。
 
 
 
