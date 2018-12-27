@@ -20,7 +20,7 @@
 
 借助 `CIM` 你可以实现以下需求：
 
-- 即时通讯系统。
+- `IM` 即时通讯系统。
 - 适用于 `APP` 的消息推送中间件。
 - `IOT` 海量连接场景中的消息透传中间件。
 
@@ -44,10 +44,13 @@
 
 ## TODO LIST
 
-* [x] [Netty(一) SpringBoot 整合长连接心跳机制](https://crossoverjie.top/2018/05/24/netty/Netty(1)TCP-Heartbeat/)
-* [x] [Netty(二) 从线程模型的角度看 Netty 为什么是高性能的？](https://crossoverjie.top/2018/07/04/netty/Netty(2)Thread-model/)
-* [x] [Netty(三) 什么是 TCP 拆、粘包？如何解决？](https://crossoverjie.top/2018/08/03/netty/Netty(3)TCP-Sticky/)
-
+* [x] 群聊
+* [x] 私聊
+* [x] 内置命令
+* [ ] 协议支持消息加密
+* [ ] 弱网情况下的客户端自动上线
+* [ ] 更多的客户端路由策略
+* [ ] 远程通信更换为 `SpringCloud`
 
 
 
