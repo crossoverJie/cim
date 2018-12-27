@@ -56,7 +56,7 @@
 
 ## 系统架构
 
-![](https://ws2.sinaimg.cn/large/006tNbRwly1fylev4s5w9j30ry0i440m.jpg)
+![](https://ws2.sinaimg.cn/large/006tNbRwly1fylf067jy9j30rq0i6mzr.jpg)
 
 - `CIM` 中的各个组件均采用 `SpringBoot` 构建。
 -  采用 `Netty` 构建底层通信。
