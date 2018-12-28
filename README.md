@@ -101,7 +101,7 @@ mvn -Dmaven.test.skip=true clean package
 ```shell
 cp /cim/cim-server/target/cim-server-1.0.0-SNAPSHOT.jar /xx/work/server0/
 cd /xx/work/server0/
-nohup java -jar  /root/work/server/cim-server-1.0.0-SNAPSHOT.jar --cim.server.port=9000 --app.zk.addr=zk地址  > /root/work/server/log.file 2>&1 &
+nohup java -jar  /root/work/server0/cim-server-1.0.0-SNAPSHOT.jar --cim.server.port=9000 --app.zk.addr=zk地址  > /root/work/server0/log.file 2>&1 &
 ```
 
 > cim-server 集群部署同理，只要保证 Zookeeper 地址相同即可。
@@ -111,7 +111,7 @@ nohup java -jar  /root/work/server/cim-server-1.0.0-SNAPSHOT.jar --cim.server.po
 ```shell
 cp /cim/cim-server/cim-forward-route/target/cim-forward-route-1.0.0-SNAPSHOT.jar /xx/work/route0/
 cd /xx/work/route0/
-nohup java -jar  /root/work/route/cim-forward-route-1.0.0-SNAPSHOT.jar --app.zk.addr=zk地址 --spring.redis.host=redis地址 --spring.redis.port=6379  > /root/work/route/log.file 2>&1 &
+nohup java -jar  /root/work/route0/cim-forward-route-1.0.0-SNAPSHOT.jar --app.zk.addr=zk地址 --spring.redis.host=redis地址 --spring.redis.port=6379  > /root/work/route/log.file 2>&1 &
 ```
 
 > cim-forward-route 本身就是无状态，可以部署多台；使用 Nginx 代理即可。
@@ -172,8 +172,12 @@ java -jar cim-client-1.0.0-SNAPSHOT.jar --server.port=8084 --cim.user.id=唯一�
 ![](https://ws3.sinaimg.cn/large/006tNbRwly1fylie727jaj31t20dq1ky.jpg)
 
 
+## QA
 
-# 联系作者
+
+
+
+## 联系作者
 - [crossoverJie@gmail.com](mailto:crossoverJie@gmail.com)
 - 微信公众号
 
