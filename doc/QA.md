@@ -7,7 +7,7 @@
 
 `server` 端口号通过 `cim-server.port` 设置，同一台服务器启动多个 `server` 只要保证端口号唯一即可。
 
-2.部署路由服务器 `zk` 和 `redis` 地址加不加端口
+## 部署路由服务器 `zk` 和 `redis` 地址加不加端口
 
 ![](https://ws2.sinaimg.cn/large/006tNbRwly1fymb9wgo5hj31g909jjv6.jpg)
 
@@ -20,7 +20,7 @@ spring.redis.host=47.98.194.60 spring.redis.port=6379
 如果不加会默认使用 jar 包里的配置。
 
 
-3．本地启动 路由服务器写 `127.0.0.1` 吗
+## 本地启动 路由服务器写 `127.0.0.1` 吗
 
 ![](https://ws4.sinaimg.cn/large/006tNbRwly1fymbc9lzidj31g908g0xb.jpg)
 
