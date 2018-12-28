@@ -111,7 +111,7 @@ nohup java -jar  /root/work/server/cim-server-1.0.0-SNAPSHOT.jar --cim.server.po
 ```shell
 cp /cim/cim-server/cim-forward-route/target/cim-forward-route-1.0.0-SNAPSHOT.jar /xx/work/route0/
 cd /xx/work/route0/
-nohup java -jar  /root/work/route/cim-forward-route-1.0.0-SNAPSHOT.jar --app.zk.addr=zk地址 --spring.redis.host=redis地址  > /root/work/route/log.file 2>&1 &
+nohup java -jar  /root/work/route/cim-forward-route-1.0.0-SNAPSHOT.jar --app.zk.addr=zk地址 --spring.redis.host=redis地址 --spring.redis.port=6379  > /root/work/route/log.file 2>&1 &
 ```
 
 > cim-forward-route 本身就是无状态，可以部署多台；使用 Nginx 代理即可。
