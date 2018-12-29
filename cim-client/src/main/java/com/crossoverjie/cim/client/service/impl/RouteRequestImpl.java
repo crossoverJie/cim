@@ -150,9 +150,7 @@ public class RouteRequestImpl implements RouteRequest {
         if (!response.isSuccessful()){
             throw new IOException("Unexpected code " + response);
         }
-        if (!response.isSuccessful()){
-            throw new IOException("Unexpected code " + response);
-        }
+
 
         String json = response.body().string() ;
         OnlineUsersResVO onlineUsersResVO = JSON.parseObject(json, OnlineUsersResVO.class);
