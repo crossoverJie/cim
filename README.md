@@ -8,7 +8,7 @@
 [![Build Status](https://img.shields.io/badge/cim-cross--im-brightgreen.svg)](https://github.com/crossoverJie/cim)
 [![QQ群](https://img.shields.io/badge/QQ%E7%BE%A4-787381170-yellowgreen.svg)](https://jq.qq.com/?_wv=1027&k=5HPYvQk)
 
-📘[介绍](#介绍) |📽[视频演示](#视频演示) | 🏖[TODO LIST](#todo-list) | 🌈[系统架构](#系统架构) |💡[流程图](#流程图)|🌁[快速启动](#快速启动)|👨🏻‍✈️[内置命令](#客户端内置命令)|🎤[群聊/私聊](##群聊私聊)|❓[QA](https://github.com/crossoverJie/cim/blob/master/doc/QA.md)|💌[联系作者](#联系作者)
+📘[介绍](#介绍) |📽[视频演示](#视频演示) | 🏖[TODO LIST](#todo-list) | 🌈[系统架构](#系统架构) |💡[流程图](#流程图)|🌁[快速启动](#快速启动)|👨🏻‍✈️[内置命令](#客户端内置命令)|🎤[通信](##群聊私聊)|❓[QA](https://github.com/crossoverJie/cim/blob/master/doc/QA.md)|💌[联系作者](#联系作者)
 
 
 </div>
@@ -25,7 +25,7 @@
 - 适用于 `APP` 的消息推送中间件。
 - `IOT` 海量连接场景中的消息透传中间件。
 
-> 我有在公网部署了一套演示环境，想要体验的可以联系我获取账号。
+> 我有在公网部署了一套演示环境，想要体验的可以[联系我](#联系作者)加入内测群获取账号。
 
 ## 视频演示
 
@@ -61,12 +61,13 @@
 * [x] 使用 `Google Protocol Buffer` 高效编解码。
 * [x] 根据实际情况灵活的水平扩容、缩容。
 * [x] 路由(`cim-forward-route`)服务自身是无状态，可用 `Nginx` 代理支持高可用。
-* [ ] 协议支持消息加密。
-* [ ] 弱网情况下客户端自动上线。
-* [ ] 更多的客户端路由策略。
 * [ ] 聊天记录查询。
 * [ ] 离线消息。
 * [ ] 路由服务自动分配。
+* [ ] 协议支持消息加密。
+* [ ] 弱网情况下客户端自动上线。
+* [ ] 更多的客户端路由策略。
+
 
 
 ## 系统架构
