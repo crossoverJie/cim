@@ -186,7 +186,7 @@ public class RouteController {
     }
 
     /**
-     * 注册账号
+     * 获取所有在线用户
      *
      * @return
      */
