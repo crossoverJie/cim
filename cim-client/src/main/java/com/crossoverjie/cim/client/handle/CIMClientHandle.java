@@ -37,7 +37,8 @@ public class CIMClientHandle extends SimpleChannelInboundHandler<CIMResponseProt
             IdleStateEvent idleStateEvent = (IdleStateEvent) evt ;
 
             if (idleStateEvent.state() == IdleState.WRITER_IDLE){
-                CIMRequestProto.CIMReqProtocol heartBeat = SpringBeanFactory.getBean("heartBeat", CIMRequestProto.CIMReqProtocol.class);
+                CIMRequestProto.CIMReqProtocol heartBeat = SpringBeanFactory.getBean("heartBeat",
+                        CIMRequestProto.CIMReqProtocol.class);
                 ctx.writeAndFlush(heartBeat) ;
             }
 
