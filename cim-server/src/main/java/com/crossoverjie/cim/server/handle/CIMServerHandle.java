@@ -41,6 +41,7 @@ public class CIMServerHandle extends SimpleChannelInboundHandler<CIMRequestProto
         CIMUserInfo userInfo = SessionSocketHolder.getUserId((NioSocketChannel) ctx.channel());
         LOGGER.info("用户[{}]下线",userInfo.getUserName());
         SessionSocketHolder.remove((NioSocketChannel) ctx.channel());
+        SessionSocketHolder.removeSession(userInfo.getUserId());
 
         //清除路由关系
         clearRouteInfo(userInfo);

@@ -21,6 +21,10 @@ public class SessionSocketHolder {
         SESSION_MAP.put(userId, userName);
     }
 
+    public static void removeSession(Long userId){
+        SESSION_MAP.remove(userId) ;
+    }
+
     public static void put(Long id, NioSocketChannel socketChannel) {
         CHANNEL_MAP.put(id, socketChannel);
     }
