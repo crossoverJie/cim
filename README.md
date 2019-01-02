@@ -35,7 +35,7 @@
 | YouTube | Bilibili|
 | :------:| :------: | 
 | [群聊](https://youtu.be/_9a4lIkQ5_o) [私聊](https://youtu.be/kfEfQFPLBTQ) | [群聊](https://www.bilibili.com/video/av39405501) [私聊](https://www.bilibili.com/video/av39405821) | 
-| ![](https://ws3.sinaimg.cn/large/006tNbRwly1fys8flaofrj315e0ose81.jpg)| ![](https://ws4.sinaimg.cn/large/006tNbRwly1fylq36zy83j31ga0n71ky.jpg)
+| ![](https://ws3.sinaimg.cn/large/006tNbRwly1fys8flaofrj315e0ose81.jpg)| ![](https://ws4.sinaimg.cn/large/006tNbRwly1fys8mpa6wij31240lghdt.jpg)
 
 
 ### cim-server
