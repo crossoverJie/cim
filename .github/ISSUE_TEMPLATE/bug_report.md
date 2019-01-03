@@ -1,7 +1,7 @@
 ---
 name: Bug report
 about: Create a report to help us improve
-title: '提交之前请查看是否有相关 issue，谢谢'
+title: '提交之前请查看是否有相关 issue，谢谢。'
 labels: ''
 assignees: ''
 
