@@ -1,6 +1,7 @@
 package com.crossoverjie.cim.route.service.impl;
 
 import com.alibaba.fastjson.JSONObject;
+import com.crossoverjie.cim.common.enums.StatusEnum;
 import com.crossoverjie.cim.common.exception.CIMException;
 import com.crossoverjie.cim.common.pojo.CIMUserInfo;
 import com.crossoverjie.cim.route.service.AccountService;
@@ -69,26 +70,26 @@ public class AccountServiceRedisImpl implements AccountService {
     }
 
     @Override
-    public boolean login(LoginReqVO loginReqVO) throws Exception {
+    public StatusEnum login(LoginReqVO loginReqVO) throws Exception {
         //再去Redis里查询
         String key = ACCOUNT_PREFIX + loginReqVO.getUserId();
         String userName = redisTemplate.opsForValue().get(key);
         if (null == userName) {
-            return false;
+            return StatusEnum.ACCOUNT_NOT_MATCH;
         }
 
         if (!userName.equals(loginReqVO.getUserName())) {
-            return false;
+            return StatusEnum.ACCOUNT_NOT_MATCH;
         }
 
         //登录成功，保存登录状态
         boolean status = userInfoCacheService.saveAndCheckUserLoginStatus(loginReqVO.getUserId());
         if (status == false){
             //重复登录
-            return false;
+            return StatusEnum.REPEAT_LOGIN ;
         }
 
-        return true;
+        return StatusEnum.SUCCESS;
     }
 
     @Override
