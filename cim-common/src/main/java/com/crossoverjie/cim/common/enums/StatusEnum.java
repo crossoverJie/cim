@@ -25,7 +25,7 @@ public enum StatusEnum {
     OFF_LINE("7000", "你选择的账号不在线，请重新选择！"),
 
     /** 登录信息不匹配 */
-    ACCOUNT_NOT_MATCH("9000", "登录信息不匹配！"),
+    ACCOUNT_NOT_MATCH("9100", "登录信息不匹配！"),
 
     /** 请求限流 */
     REQUEST_LIMIT("6000", "请求限流"),

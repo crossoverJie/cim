@@ -122,15 +122,13 @@ public class RouteRequestImpl implements RouteRequest {
         String json = response.body().string();
         CIMServerResVO cimServerResVO = JSON.parseObject(json, CIMServerResVO.class);
 
-        //重复登录
-        if (cimServerResVO.getCode().equals(StatusEnum.REPEAT_LOGIN.getCode())){
+        //重复失败
+        if (!cimServerResVO.getCode().equals(StatusEnum.SUCCESS.getCode())){
             LOGGER.error(appConfiguration.getUserName() + ":" + StatusEnum.REPEAT_LOGIN.getMessage());
             System.exit(-1);
         }
 
-        if (!cimServerResVO.getCode().equals(StatusEnum.SUCCESS.getCode())){
-            throw new RuntimeException("route server exception code=" + cimServerResVO.getCode()) ;
-        }
+
 
         return cimServerResVO.getDataBody();
     }
