@@ -124,7 +124,7 @@ public class RouteRequestImpl implements RouteRequest {
 
         //重复失败
         if (!cimServerResVO.getCode().equals(StatusEnum.SUCCESS.getCode())){
-            LOGGER.error(appConfiguration.getUserName() + ":" + StatusEnum.REPEAT_LOGIN.getMessage());
+            LOGGER.error(appConfiguration.getUserName() + ":" + cimServerResVO.getMessage());
             System.exit(-1);
         }
 
