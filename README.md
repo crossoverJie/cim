@@ -135,7 +135,20 @@ java -jar cim-client-1.0.0-SNAPSHOT.jar --server.port=8084 --cim.user.id=唯一�
 
 如上图，启动两个客户端可以互相通信即可。
 
+### 本地启动客户端
 
+```shell
+# 1. 修改 /cim/cim-client/src/main/resources/application.properties
+# 注释掉生产模拟，打开本地模拟
+# 2. 本地 redis 中添加
+127.0.0.1:6379> SET cim-account:1545574841528 zhangsan
+OK
+
+# 启动本地客户端
+cp /cim/cim-client/target/cim-client-1.0.0-SNAPSHOT.jar /xx/work/route0/
+cd /xx/work/route0/
+java -jar cim-client-1.0.0-SNAPSHOT.jar --server.port=8084
+```
 
 ## 客户端内置命令
 

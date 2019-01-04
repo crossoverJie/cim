@@ -116,3 +116,8 @@ fabric.properties
 .idea/httpRequests
 .idea/
 *.iml
+
+*.project
+*.settings/
+*.classpath
+*.factorypath
