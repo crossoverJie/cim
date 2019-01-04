@@ -103,6 +103,7 @@ public class AccountServiceRedisImpl implements AccountService {
 
         Map<Long, CIMServerResVO> routes = new HashMap<>(64);
 
+
         RedisConnection connection = redisTemplate.getConnectionFactory().getConnection();
         ScanOptions options = ScanOptions.scanOptions()
                 .match(ROUTE_PREFIX + "*")
@@ -115,6 +116,11 @@ public class AccountServiceRedisImpl implements AccountService {
             LOGGER.info("key={}", key);
             parseServerInfo(routes, key);
 
+        }
+        try {
+            scan.close();
+        } catch (IOException e) {
+            LOGGER.error("IOException",e);
         }
 
         return routes;
