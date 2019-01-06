@@ -60,12 +60,12 @@ public class CIMServerHandle extends SimpleChannelInboundHandler<CIMRequestProto
                         CIMUserInfo userInfo = SessionSocketHolder.getUserId((NioSocketChannel) future.channel());
                         if (!future.isSuccess()) {
 
-                            LOGGER.info("向客户端{}下发心跳失败",userInfo.getUserName());
+                            LOGGER.info("向客户端[{}]下发心跳失败",userInfo.getUserName());
 
                             userOffLine(userInfo, (NioSocketChannel) future.channel());
                             future.channel().close();
                         }else {
-                            LOGGER.info("向客户端{}下发心跳成功",userInfo.getUserName());
+                            LOGGER.info("向客户端[{}]下发心跳成功",userInfo.getUserName());
                         }
                     }
                 });
