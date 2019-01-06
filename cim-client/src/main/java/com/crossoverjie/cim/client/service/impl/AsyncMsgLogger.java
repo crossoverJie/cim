@@ -141,6 +141,6 @@ public class AsyncMsgLogger implements MsgLogger {
             LOGGER.info("IOException", e);
         }
 
-        return sb.toString().replace(key,"\033[31;4m" + key+"\033[0m");
+        return sb.toString().replace(key, "\033[31;4m" + key + "\033[0m");
     }
 }

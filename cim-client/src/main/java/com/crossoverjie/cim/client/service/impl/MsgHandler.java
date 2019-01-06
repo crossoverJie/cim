@@ -45,8 +45,22 @@ public class MsgHandler implements MsgHandle {
     @Autowired
     private MsgLogger msgLogger ;
 
+    private boolean aiModel = false ;
+
     @Override
     public void sendMsg(String msg) {
+        if (aiModel){
+            aiChat(msg);
+        }else {
+            normalChat(msg);
+        }
+    }
+
+    /**
+     * 正常聊天
+     * @param msg
+     */
+    private void normalChat(String msg) {
         String[] totalMsg = msg.split(";;");
         if (totalMsg.length > 1) {
             //私聊
@@ -69,6 +83,19 @@ public class MsgHandler implements MsgHandle {
                 LOGGER.error("Exception",e);
             }
         }
+    }
+
+    /**
+     * AI model
+     * @param msg
+     */
+    private void aiChat(String msg) {
+        msg = msg.replace("吗","") ;
+        msg = msg.replace("嘛","") ;
+        msg = msg.replace("?","!");
+        msg = msg.replace("？","!");
+        msg = msg.replace("你","我");
+        System.out.println("AI:\033[31;4m" + msg + "\033[0m");
     }
 
     @Override
@@ -109,9 +136,16 @@ public class MsgHandler implements MsgHandle {
                 printOnlineUsers();
 
             } else if (msg.startsWith(SystemCommandEnumType.QUERY.getCommandType().trim() + " ")){
-                String[] split = msg.split(" ") ;
-                String res = msgLogger.query(split[1]);
-                System.out.println(res);
+                //查询聊天记录
+                queryChatHistory(msg);
+            }else if (SystemCommandEnumType.AI.getCommandType().trim().equals(msg.toLowerCase())){
+                //开启 AI 模式
+                aiModel = true ;
+                System.out.println("\033[31;4m" + "Hello,我是估值两亿的 AI 机器人！" +  "\033[0m");
+            }else if (SystemCommandEnumType.QAI.getCommandType().trim().equals(msg.toLowerCase())){
+                //关闭 AI 模式
+                aiModel = false ;
+                System.out.println("\033[31;4m" + "｡ﾟ(ﾟ´ω`ﾟ)ﾟ｡  AI 下线了！" +  "\033[0m");
             }else {
                 printAllCommand(allStatusCode);
             }
@@ -123,6 +157,16 @@ public class MsgHandler implements MsgHandle {
         }
 
 
+    }
+
+    /**
+     * 查询聊天记录
+     * @param msg
+     */
+    private void queryChatHistory(String msg) {
+        String[] split = msg.split(" ") ;
+        String res = msgLogger.query(split[1]);
+        System.out.println(res);
     }
 
     /**
