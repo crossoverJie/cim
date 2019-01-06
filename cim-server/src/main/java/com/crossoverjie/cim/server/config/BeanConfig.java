@@ -1,5 +1,7 @@
 package com.crossoverjie.cim.server.config;
 
+import com.crossoverjie.cim.common.constant.Constants;
+import com.crossoverjie.cim.common.protocol.CIMRequestProto;
 import okhttp3.OkHttpClient;
 import org.I0Itec.zkclient.ZkClient;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,5 +40,20 @@ public class BeanConfig {
                 .writeTimeout(10,TimeUnit.SECONDS)
                 .retryOnConnectionFailure(true);
         return builder.build();
+    }
+
+
+    /**
+     * 创建心跳单例
+     * @return
+     */
+    @Bean(value = "heartBeat")
+    public CIMRequestProto.CIMReqProtocol heartBeat() {
+        CIMRequestProto.CIMReqProtocol heart = CIMRequestProto.CIMReqProtocol.newBuilder()
+                .setRequestId(0L)
+                .setReqMsg("ping")
+                .setType(Constants.CommandType.PING)
+                .build();
+        return heart;
     }
 }
