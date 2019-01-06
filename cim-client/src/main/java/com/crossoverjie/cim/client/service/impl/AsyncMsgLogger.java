@@ -15,6 +15,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Function:
@@ -115,5 +117,30 @@ public class AsyncMsgLogger implements MsgLogger {
     public void stop() {
         started = false;
         worker.interrupt();
+    }
+
+    @Override
+    public String query(String key) {
+        StringBuilder sb = new StringBuilder();
+
+        Path path = Paths.get(appConfiguration.getMsgLoggerPath() + appConfiguration.getUserName() + "/");
+
+        try {
+            Stream<Path> list = Files.list(path);
+            List<Path> collect = list.collect(Collectors.toList());
+            for (Path file : collect) {
+                List<String> strings = Files.readAllLines(file);
+                for (String msg : strings) {
+                    if (msg.trim().contains(key)) {
+                        sb.append(msg).append("\n");
+                    }
+                }
+
+            }
+        } catch (IOException e) {
+            LOGGER.info("IOException", e);
+        }
+
+        return sb.toString().replace(key,"\033[31;4m" + key+"\033[0m");
     }
 }

@@ -28,4 +28,12 @@ public class AsyncMsgLoggerTest {
         TimeUnit.SECONDS.sleep(2);
     }
 
+
+
+    @Test
+    public void query(){
+        String crossoverJie = msgLogger.query("crossoverJie");
+        System.out.println(crossoverJie);
+    }
+
 }

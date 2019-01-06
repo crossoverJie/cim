@@ -108,6 +108,10 @@ public class MsgHandler implements MsgHandle {
                 //打印在线用户
                 printOnlineUsers();
 
+            } else if (msg.startsWith(SystemCommandEnumType.QUERY.getCommandType().trim() + " ")){
+                String[] split = msg.split(" ") ;
+                String res = msgLogger.query(split[1]);
+                System.out.println(res);
             }else {
                 printAllCommand(allStatusCode);
             }

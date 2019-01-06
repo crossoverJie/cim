@@ -126,7 +126,7 @@ public class CommonTest {
                 "\n" +
                 "借助 CIM 你可以实现以下需求：" ;
 
-        String key = "IM" ;
+        String key = "CIM" ;
 
         String[] split = allMsg.split("\n");
         for (String msg : split) {
@@ -150,8 +150,8 @@ public class CommonTest {
             count ++ ;
         }
 
-
-        System.out.println(sb.toString().replace(key,"**" + key+"**"));
+        System.out.println(sb.toString());
+        System.out.println(sb.toString().replace(key,"\033[31;4m" + key+"\033[0m"));
     }
 
     @Test

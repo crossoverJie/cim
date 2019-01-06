@@ -16,7 +16,8 @@ public enum SystemCommandEnumType {
 
             ALL(":all       ","获取所有命令"),
     ONLINE_USER(":olu       ","获取所有在线用户"),
-           QUIT(":q         ","退出程序")
+           QUIT(":q!        ","退出程序"),
+           QUERY(":q        ","查询聊天记录")
 
     ;
 
