@@ -72,8 +72,6 @@ public class AsyncMsgLogger implements MsgLogger {
 
     private void writeLog(String msg) {
 
-        msg = appConfiguration.getUserName() + ":" + "【" + msg + "】";
-
         LocalDate today = LocalDate.now();
         int year = today.getYear();
         int month = today.getMonthValue();
