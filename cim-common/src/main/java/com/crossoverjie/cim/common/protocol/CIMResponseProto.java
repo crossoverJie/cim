@@ -40,6 +40,15 @@ public final class CIMResponseProto {
      */
     com.google.protobuf.ByteString
         getResMsgBytes();
+
+    /**
+     * <code>required int32 type = 3;</code>
+     */
+    boolean hasType();
+    /**
+     * <code>required int32 type = 3;</code>
+     */
+    int getType();
   }
   /**
    * Protobuf type {@code protocol.CIMResProtocol}
@@ -56,6 +65,7 @@ public final class CIMResponseProto {
     private CIMResProtocol() {
       responseId_ = 0L;
       resMsg_ = "";
+      type_ = 0;
     }
 
     @Override
@@ -98,6 +108,11 @@ public final class CIMResponseProto {
             case 16: {
               bitField0_ |= 0x00000001;
               responseId_ = input.readInt64();
+              break;
+            }
+            case 24: {
+              bitField0_ |= 0x00000004;
+              type_ = input.readInt32();
               break;
             }
           }
@@ -182,6 +197,21 @@ public final class CIMResponseProto {
       }
     }
 
+    public static final int TYPE_FIELD_NUMBER = 3;
+    private int type_;
+    /**
+     * <code>required int32 type = 3;</code>
+     */
+    public boolean hasType() {
+      return ((bitField0_ & 0x00000004) == 0x00000004);
+    }
+    /**
+     * <code>required int32 type = 3;</code>
+     */
+    public int getType() {
+      return type_;
+    }
+
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
@@ -193,6 +223,10 @@ public final class CIMResponseProto {
         return false;
       }
       if (!hasResMsg()) {
+        memoizedIsInitialized = 0;
+        return false;
+      }
+      if (!hasType()) {
         memoizedIsInitialized = 0;
         return false;
       }
@@ -208,6 +242,9 @@ public final class CIMResponseProto {
       if (((bitField0_ & 0x00000001) == 0x00000001)) {
         output.writeInt64(2, responseId_);
       }
+      if (((bitField0_ & 0x00000004) == 0x00000004)) {
+        output.writeInt32(3, type_);
+      }
       unknownFields.writeTo(output);
     }
 
@@ -222,6 +259,10 @@ public final class CIMResponseProto {
       if (((bitField0_ & 0x00000001) == 0x00000001)) {
         size += com.google.protobuf.CodedOutputStream
           .computeInt64Size(2, responseId_);
+      }
+      if (((bitField0_ & 0x00000004) == 0x00000004)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(3, type_);
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -249,6 +290,11 @@ public final class CIMResponseProto {
         result = result && getResMsg()
             .equals(other.getResMsg());
       }
+      result = result && (hasType() == other.hasType());
+      if (hasType()) {
+        result = result && (getType()
+            == other.getType());
+      }
       result = result && unknownFields.equals(other.unknownFields);
       return result;
     }
@@ -268,6 +314,10 @@ public final class CIMResponseProto {
       if (hasResMsg()) {
         hash = (37 * hash) + RESMSG_FIELD_NUMBER;
         hash = (53 * hash) + getResMsg().hashCode();
+      }
+      if (hasType()) {
+        hash = (37 * hash) + TYPE_FIELD_NUMBER;
+        hash = (53 * hash) + getType();
       }
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
@@ -402,6 +452,8 @@ public final class CIMResponseProto {
         bitField0_ = (bitField0_ & ~0x00000001);
         resMsg_ = "";
         bitField0_ = (bitField0_ & ~0x00000002);
+        type_ = 0;
+        bitField0_ = (bitField0_ & ~0x00000004);
         return this;
       }
 
@@ -434,6 +486,10 @@ public final class CIMResponseProto {
           to_bitField0_ |= 0x00000002;
         }
         result.resMsg_ = resMsg_;
+        if (((from_bitField0_ & 0x00000004) == 0x00000004)) {
+          to_bitField0_ |= 0x00000004;
+        }
+        result.type_ = type_;
         result.bitField0_ = to_bitField0_;
         onBuilt();
         return result;
@@ -484,6 +540,9 @@ public final class CIMResponseProto {
           resMsg_ = other.resMsg_;
           onChanged();
         }
+        if (other.hasType()) {
+          setType(other.getType());
+        }
         this.mergeUnknownFields(other.unknownFields);
         onChanged();
         return this;
@@ -494,6 +553,9 @@ public final class CIMResponseProto {
           return false;
         }
         if (!hasResMsg()) {
+          return false;
+        }
+        if (!hasType()) {
           return false;
         }
         return true;
@@ -625,6 +687,38 @@ public final class CIMResponseProto {
         onChanged();
         return this;
       }
+
+      private int type_ ;
+      /**
+       * <code>required int32 type = 3;</code>
+       */
+      public boolean hasType() {
+        return ((bitField0_ & 0x00000004) == 0x00000004);
+      }
+      /**
+       * <code>required int32 type = 3;</code>
+       */
+      public int getType() {
+        return type_;
+      }
+      /**
+       * <code>required int32 type = 3;</code>
+       */
+      public Builder setType(int value) {
+        bitField0_ |= 0x00000004;
+        type_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>required int32 type = 3;</code>
+       */
+      public Builder clearType() {
+        bitField0_ = (bitField0_ & ~0x00000004);
+        type_ = 0;
+        onChanged();
+        return this;
+      }
       public final Builder setUnknownFields(
           final com.google.protobuf.UnknownFieldSet unknownFields) {
         return super.setUnknownFields(unknownFields);
@@ -688,10 +782,11 @@ public final class CIMResponseProto {
       descriptor;
   static {
     String[] descriptorData = {
-      "\n\027BaseResponseProto.proto\022\010protocol\"4\n\016C" +
+      "\n\027BaseResponseProto.proto\022\010protocol\"B\n\016C" +
       "IMResProtocol\022\022\n\nresponseId\030\002 \002(\003\022\016\n\006res" +
-      "Msg\030\001 \002(\tB8\n$com.crossoverjie.cim.common" +
-      ".protocolB\020CIMResponseProto"
+      "Msg\030\001 \002(\t\022\014\n\004type\030\003 \002(\005B8\n$com.crossover" +
+      "jie.cim.common.protocolB\020CIMResponseProt" +
+      "o"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
@@ -710,7 +805,7 @@ public final class CIMResponseProto {
     internal_static_protocol_CIMResProtocol_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_protocol_CIMResProtocol_descriptor,
-        new String[] { "ResponseId", "ResMsg", });
+        new String[] { "ResponseId", "ResMsg", "Type", });
   }
 
   // @@protoc_insertion_point(outer_class_scope)
