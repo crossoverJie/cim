@@ -8,7 +8,12 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
+import java.nio.charset.Charset;
+import java.nio.file.*;
+import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -147,5 +152,32 @@ public class CommonTest {
 
 
         System.out.println(sb.toString().replace(key,"**" + key+"**"));
+    }
+
+    @Test
+    public void log(){
+        String msg = "hahahdsadsd" ;
+        LocalDate today = LocalDate.now();
+        int year = today.getYear();
+        int month = today.getMonthValue();
+        int day = today.getDayOfMonth();
+
+        String dir = "/opt/logs/cim/zhangsan" + "/";
+        String fileName = dir + year + month + day + ".log";
+        LOGGER.info("fileName={}", fileName);
+
+        Path file = Paths.get(fileName);
+        boolean exists = Files.exists(Paths.get(dir), LinkOption.NOFOLLOW_LINKS);
+        try {
+            if (!exists) {
+                Files.createDirectories(Paths.get(dir));
+            }
+
+            List<String> lines = Arrays.asList(msg);
+
+            Files.write(file, lines, Charset.forName("UTF-8"), StandardOpenOption.CREATE, StandardOpenOption.APPEND);
+        } catch (IOException e) {
+            LOGGER.info("IOException", e);
+        }
     }
 }

@@ -1,10 +1,18 @@
 package com.crossoverjie.cim.client.service.impl;
 
+import com.crossoverjie.cim.client.config.AppConfiguration;
 import com.crossoverjie.cim.client.service.MsgLogger;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
+import java.nio.charset.Charset;
+import java.nio.file.*;
+import java.time.LocalDate;
+import java.util.Arrays;
+import java.util.List;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 
@@ -26,15 +34,18 @@ public class AsyncMsgLogger implements MsgLogger {
     private static final int DEFAULT_QUEUE_SIZE = 16;
     private BlockingQueue<String> blockingQueue = new ArrayBlockingQueue<String>(DEFAULT_QUEUE_SIZE);
 
-    private volatile boolean started = false ;
-    private Worker worker = new Worker() ;
+    private volatile boolean started = false;
+    private Worker worker = new Worker();
 
+    @Autowired
+    private AppConfiguration appConfiguration;
 
     @Override
     public void log(String msg) {
         //开始消费
         startMsgLogger();
         try {
+            // TODO: 2019/1/6 消息堆满是否阻塞线程？
             blockingQueue.put(msg);
         } catch (InterruptedException e) {
             LOGGER.error("InterruptedException", e);
@@ -49,7 +60,7 @@ public class AsyncMsgLogger implements MsgLogger {
             while (started) {
                 try {
                     String msg = blockingQueue.take();
-                    LOGGER.info("写入聊天记录={}", msg);
+                    writeLog(msg);
                 } catch (InterruptedException e) {
                     break;
                 }
@@ -58,24 +69,53 @@ public class AsyncMsgLogger implements MsgLogger {
 
     }
 
+
+    private void writeLog(String msg) {
+
+        msg = appConfiguration.getUserName() + ":" + "【" + msg + "】";
+
+        LocalDate today = LocalDate.now();
+        int year = today.getYear();
+        int month = today.getMonthValue();
+        int day = today.getDayOfMonth();
+
+        String dir = appConfiguration.getMsgLoggerPath() + appConfiguration.getUserName() + "/";
+        String fileName = dir + year + month + day + ".log";
+
+        Path file = Paths.get(fileName);
+        boolean exists = Files.exists(Paths.get(dir), LinkOption.NOFOLLOW_LINKS);
+        try {
+            if (!exists) {
+                Files.createDirectories(Paths.get(dir));
+            }
+
+            List<String> lines = Arrays.asList(msg);
+
+            Files.write(file, lines, Charset.forName("UTF-8"), StandardOpenOption.CREATE, StandardOpenOption.APPEND);
+        } catch (IOException e) {
+            LOGGER.info("IOException", e);
+        }
+
+    }
+
     /**
      * 开始工作
      */
-    private void startMsgLogger(){
-        if (started){
-            return ;
+    private void startMsgLogger() {
+        if (started) {
+            return;
         }
 
         worker.setDaemon(true);
         worker.setName("AsyncMsgLogger-Worker");
-        started = true ;
+        started = true;
         worker.start();
     }
 
 
     @Override
     public void stop() {
-        started = false ;
+        started = false;
         worker.interrupt();
     }
 }
