@@ -2,6 +2,7 @@ package com.crossoverjie.cim.client.scanner;
 
 import com.crossoverjie.cim.client.config.AppConfiguration;
 import com.crossoverjie.cim.client.service.MsgHandle;
+import com.crossoverjie.cim.client.service.MsgLogger;
 import com.crossoverjie.cim.client.util.SpringBeanFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,9 +27,12 @@ public class Scan implements Runnable {
 
     private MsgHandle msgHandle ;
 
+    private MsgLogger msgLogger ;
+
     public Scan() {
         this.configuration = SpringBeanFactory.getBean(AppConfiguration.class);
         this.msgHandle = SpringBeanFactory.getBean(MsgHandle.class) ;
+        this.msgLogger = SpringBeanFactory.getBean(MsgLogger.class) ;
     }
 
     @Override
@@ -50,6 +54,8 @@ public class Scan implements Runnable {
             //真正的发送消息
             msgHandle.sendMsg(msg) ;
 
+            //写入聊天记录
+            msgLogger.log(msg) ;
 
             LOGGER.info("{}:【{}】", configuration.getUserName(), msg);
         }

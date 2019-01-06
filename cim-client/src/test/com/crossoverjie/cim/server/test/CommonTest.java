@@ -60,4 +60,92 @@ public class CommonTest {
         }
         LOGGER.info("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
     }
+
+
+    @Test
+    public void searchMsg(){
+        StringBuilder sb = new StringBuilder() ;
+        String allMsg = "于是在之前的基础上我完善了一些内容，先来看看这个项目的介绍吧：\n" +
+                "\n" +
+                "CIM(CROSS-IM) 一款面向开发者的 IM(即时通讯)系统；同时提供了一些组件帮助开发者构建一款属于自己可水平扩展的 IM 。\n" +
+                "\n" +
+                "借助 CIM 你可以实现以下需求：" ;
+
+        String key = "IM" ;
+
+        String[] split = allMsg.split("\n");
+        for (String msg : split) {
+            if (msg.trim().contains(key)){
+                sb.append(msg).append("\n") ;
+            }
+        }
+        int pos = 0;
+
+        String result = sb.toString();
+
+        int count = 1 ;
+        int multiple = 2 ;
+        while((pos = result.indexOf(key, pos)) >= 0) {
+
+            LOGGER.info("{},{}",pos, pos + key.length());
+
+            if (count == 1){
+                sb.insert(pos,"**");
+            }else {
+                Double pow = Math.pow(multiple, count);
+                sb.insert(pos +pow.intValue(),"**");
+            }
+
+            pos += key.length();
+
+            if (count == 1){
+                sb.insert(pos +2,"**");
+            }else {
+                Double pow = Math.pow(multiple, count);
+                sb.insert((pos +2) + pow.intValue(),"**");
+
+            }
+
+
+            count ++ ;
+        }
+
+        System.out.println(sb);
+    }
+    @Test
+    public void searchMsg2(){
+        StringBuilder sb = new StringBuilder() ;
+        String allMsg = "于是在之前的基础上我完善了一些内容，先来看看这个项目的介绍吧：\n" +
+                "\n" +
+                "CIM(CROSS-IM) 一款面向开发者的 IM(即时通讯)系统；同时提供了一些组件帮助开发者构建一款属于自己可水平扩展的 IM 。\n" +
+                "\n" +
+                "借助 CIM 你可以实现以下需求：" ;
+
+        String key = "IM" ;
+
+        String[] split = allMsg.split("\n");
+        for (String msg : split) {
+            if (msg.trim().contains(key)){
+                sb.append(msg).append("\n") ;
+            }
+        }
+        int pos = 0;
+
+        String result = sb.toString();
+
+        int count = 1 ;
+        int multiple = 2 ;
+        while((pos = result.indexOf(key, pos)) >= 0) {
+
+            LOGGER.info("{},{}",pos, pos + key.length());
+
+            pos += key.length();
+
+
+            count ++ ;
+        }
+
+
+        System.out.println(sb.toString().replace(key,"**" + key+"**"));
+    }
 }

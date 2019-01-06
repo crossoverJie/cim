@@ -3,6 +3,7 @@ package com.crossoverjie.cim.client.service.impl;
 import com.crossoverjie.cim.client.client.CIMClient;
 import com.crossoverjie.cim.client.config.AppConfiguration;
 import com.crossoverjie.cim.client.service.MsgHandle;
+import com.crossoverjie.cim.client.service.MsgLogger;
 import com.crossoverjie.cim.client.service.RouteRequest;
 import com.crossoverjie.cim.client.vo.req.GroupReqVO;
 import com.crossoverjie.cim.client.vo.req.P2PReqVO;
@@ -40,6 +41,9 @@ public class MsgHandler implements MsgHandle {
 
     @Autowired
     private CIMClient cimClient ;
+
+    @Autowired
+    private MsgLogger msgLogger ;
 
     @Override
     public void sendMsg(String msg) {
@@ -140,6 +144,7 @@ public class MsgHandler implements MsgHandle {
      */
     private void shutdown() {
         LOGGER.info("系统关闭中。。。。");
+        msgLogger.stop();
         executor.shutdown();
         try {
             while (!executor.awaitTermination(1, TimeUnit.SECONDS)) {
