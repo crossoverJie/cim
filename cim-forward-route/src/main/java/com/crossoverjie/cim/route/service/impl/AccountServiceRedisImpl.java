@@ -163,8 +163,12 @@ public class AccountServiceRedisImpl implements AccountService {
                 .build();
 
         Response response = okHttpClient.newCall(request).execute();
-        if (!response.isSuccessful()) {
-            throw new IOException("Unexpected code " + response);
+        try {
+            if (!response.isSuccessful()) {
+                throw new IOException("Unexpected code " + response);
+            }
+        }finally {
+            response.body().close();
         }
     }
 
