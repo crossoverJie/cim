@@ -42,6 +42,7 @@ public class CIMServerHandle extends SimpleChannelInboundHandler<CIMRequestProto
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
         CIMUserInfo userInfo = SessionSocketHolder.getUserId((NioSocketChannel) ctx.channel());
         userOffLine(userInfo, (NioSocketChannel) ctx.channel());
+        ctx.channel().close();
     }
 
     @Override
