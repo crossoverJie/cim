@@ -16,13 +16,17 @@ public class NettyAttrUtil {
     private static final AttributeKey<String> ATTR_KEY_READER_TIME = AttributeKey.valueOf("readerTime");
 
 
-    public static void updateReaderTime(Channel channel,Long time){
+    public static void updateReaderTime(Channel channel, Long time) {
         channel.attr(ATTR_KEY_READER_TIME).set(time.toString());
     }
 
-    public static Long getReaderTime(Channel channel){
+    public static Long getReaderTime(Channel channel) {
         String value = getAttribute(channel, ATTR_KEY_READER_TIME);
-        return Long.valueOf(value) ;
+
+        if (value != null) {
+            return Long.valueOf(value);
+        }
+        return null;
     }
 
 
