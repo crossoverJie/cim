@@ -41,9 +41,13 @@ public class CIMServerHandle extends SimpleChannelInboundHandler<CIMRequestProto
      */
     @Override
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
+        //可能出现业务判断离线后再次触发 channelInactive
         CIMUserInfo userInfo = SessionSocketHolder.getUserId((NioSocketChannel) ctx.channel());
-        userOffLine(userInfo, (NioSocketChannel) ctx.channel());
-        ctx.channel().close();
+        if (userInfo != null){
+            LOGGER.warn("[{}]触发 channelInactive 掉线!",userInfo.getUserName());
+            userOffLine(userInfo, (NioSocketChannel) ctx.channel());
+            ctx.channel().close();
+        }
     }
 
     @Override
@@ -64,7 +68,7 @@ public class CIMServerHandle extends SimpleChannelInboundHandler<CIMRequestProto
                 long now = System.currentTimeMillis();
                 if (lastReadTime != null && now - lastReadTime > heartBeatTime){
                     CIMUserInfo userInfo = SessionSocketHolder.getUserId((NioSocketChannel) ctx.channel());
-                    LOGGER.warn("客户端[{}]心跳超时，需要关闭连接",userInfo.getUserName());
+                    LOGGER.warn("客户端[{}]心跳超时[{}]ms，需要关闭连接!",userInfo.getUserName(),now - lastReadTime);
                     userOffLine(userInfo, (NioSocketChannel) ctx.channel());
                     ctx.channel().close();
                 }
