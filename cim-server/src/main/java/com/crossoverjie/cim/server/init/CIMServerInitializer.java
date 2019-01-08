@@ -25,7 +25,7 @@ public class CIMServerInitializer extends ChannelInitializer<Channel> {
     protected void initChannel(Channel ch) throws Exception {
 
         ch.pipeline()
-                //45 秒没有向客户端发送消息就发生心跳
+                //30 秒没有向客户端发送消息就发生心跳
                 .addLast(new IdleStateHandler(30, 0, 0))
                 // google Protobuf 编解码
                 .addLast(new ProtobufVarint32FrameDecoder())

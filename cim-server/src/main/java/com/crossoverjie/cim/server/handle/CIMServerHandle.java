@@ -6,6 +6,7 @@ import com.crossoverjie.cim.common.exception.CIMException;
 import com.crossoverjie.cim.common.pojo.CIMUserInfo;
 import com.crossoverjie.cim.common.protocol.CIMRequestProto;
 import com.crossoverjie.cim.server.config.AppConfiguration;
+import com.crossoverjie.cim.server.util.NettyAttrUtil;
 import com.crossoverjie.cim.server.util.SessionSocketHolder;
 import com.crossoverjie.cim.server.util.SpringBeanFactory;
 import io.netty.channel.*;
@@ -50,26 +51,23 @@ public class CIMServerHandle extends SimpleChannelInboundHandler<CIMRequestProto
         if (evt instanceof IdleStateEvent) {
             IdleStateEvent idleStateEvent = (IdleStateEvent) evt;
             if (idleStateEvent.state() == IdleState.READER_IDLE) {
+                AppConfiguration configuration = SpringBeanFactory.getBean(AppConfiguration.class);
+                long heartBeatTime = configuration.getHeartBeatTime() * 1000;
+
 
                 //向客户端发送消息
                 CIMRequestProto.CIMReqProtocol heartBeat = SpringBeanFactory.getBean("heartBeat",
                         CIMRequestProto.CIMReqProtocol.class);
-                ctx.writeAndFlush(heartBeat).addListeners(new ChannelFutureListener() {
-                    @Override
-                    public void operationComplete(ChannelFuture future) throws Exception {
-                        //下线客户端
-                        CIMUserInfo userInfo = SessionSocketHolder.getUserId((NioSocketChannel) future.channel());
-                        if (!future.isSuccess()) {
+                ctx.writeAndFlush(heartBeat).addListeners(ChannelFutureListener.CLOSE_ON_FAILURE);
 
-                            LOGGER.info("向客户端[{}]下发心跳失败",userInfo.getUserName());
-
-                            userOffLine(userInfo, (NioSocketChannel) future.channel());
-                            future.channel().close();
-                        }else {
-                            LOGGER.info("向客户端[{}]下发心跳成功",userInfo.getUserName());
-                        }
-                    }
-                });
+                Long lastReadTime = NettyAttrUtil.getReaderTime(ctx.channel());
+                long now = System.currentTimeMillis();
+                if (lastReadTime != null && now - lastReadTime > heartBeatTime){
+                    CIMUserInfo userInfo = SessionSocketHolder.getUserId((NioSocketChannel) ctx.channel());
+                    LOGGER.warn("客户端[{}]心跳超时，需要关闭连接",userInfo.getUserName());
+                    userOffLine(userInfo, (NioSocketChannel) ctx.channel());
+                    ctx.channel().close();
+                }
             }
         }
         super.userEventTriggered(ctx, evt);
@@ -130,6 +128,11 @@ public class CIMServerHandle extends SimpleChannelInboundHandler<CIMRequestProto
             SessionSocketHolder.put(msg.getRequestId(), (NioSocketChannel) ctx.channel());
             SessionSocketHolder.saveSession(msg.getRequestId(), msg.getReqMsg());
             LOGGER.info("客户端[{}]上线成功", msg.getReqMsg());
+        }
+
+        //心跳更新时间
+        if (msg.getType() == Constants.CommandType.PING){
+            NettyAttrUtil.updateReaderTime(ctx.channel(),System.currentTimeMillis());
         }
 
     }
