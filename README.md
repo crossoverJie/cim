@@ -143,7 +143,21 @@ curl -X POST --header 'Content-Type: application/json' --header 'Accept: applica
   "reqNo": "1234567890",
   "timeStamp": 0,
   "userName": "zhangsan"
-}' 'http://127.0.0.1:8083/registerAccount'
+}' 'http://路由服务器:8083/registerAccount'
+```
+
+从返回结果中获取 `userId`
+
+```shell
+{
+	"code": "9000",
+	"message": "成功",
+	"reqNo": null,
+	"dataBody": {
+		"userId": 1547028929406,
+		"userName": "zhangsan"
+	}
+}
 ```
 
 #### 启动本地客户端
@@ -151,7 +165,7 @@ curl -X POST --header 'Content-Type: application/json' --header 'Accept: applica
 # 启动本地客户端
 cp /cim/cim-client/target/cim-client-1.0.0-SNAPSHOT.jar /xx/work/route0/
 cd /xx/work/route0/
-java -jar cim-client-1.0.0-SNAPSHOT.jar --server.port=8084
+java -jar cim-client-1.0.0-SNAPSHOT.jar --server.port=8084 --cim.user.id=上方返回的userId --cim.user.userName=用户名 --cim.group.route.request.url=http://路由服务器:8083/groupRoute --cim.server.route.request.url=http://路由服务器:8083/login
 ```
 
 ## 客户端内置命令
