@@ -137,13 +137,17 @@ java -jar cim-client-1.0.0-SNAPSHOT.jar --server.port=8084 --cim.user.id=唯一�
 
 ### 本地启动客户端
 
+#### 注册账号
 ```shell
-# 1. 修改 /cim/cim-client/src/main/resources/application.properties
-# 注释掉生产模拟，打开本地模拟
-# 2. 本地 redis 中添加
-127.0.0.1:6379> SET cim-account:1545574841528 zhangsan
-OK
+curl -X POST --header 'Content-Type: application/json' --header 'Accept: application/json' -d '{
+  "reqNo": "1234567890",
+  "timeStamp": 0,
+  "userName": "zhangsan"
+}' 'http://127.0.0.1:8083/registerAccount'
+```
 
+#### 启动本地客户端
+```shell
 # 启动本地客户端
 cp /cim/cim-client/target/cim-client-1.0.0-SNAPSHOT.jar /xx/work/route0/
 cd /xx/work/route0/

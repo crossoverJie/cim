@@ -121,3 +121,4 @@ fabric.properties
 *.settings/
 *.classpath
 *.factorypath
+.vscode/
