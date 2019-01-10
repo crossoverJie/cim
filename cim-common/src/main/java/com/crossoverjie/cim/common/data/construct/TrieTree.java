@@ -14,6 +14,9 @@ import java.util.List;
  */
 public class TrieTree {
 
+    /**
+     * 大小写都可保存
+     */
     private static final int CHILDREN_LENGTH = 26 * 2;
     private static final int MAX_CHAR_LENGTH = 16;
 
@@ -43,7 +46,7 @@ public class TrieTree {
         char[] chars = data.toCharArray();
         for (int i = 0; i < chars.length; i++) {
             char aChar = chars[i];
-            int index ;
+            int index;
             if (Character.isUpperCase(aChar)) {
                 index = aChar - UPPERCASE_STAR;
             } else {
@@ -105,7 +108,7 @@ public class TrieTree {
         if (child.isEnd && key == null) {
             value.add(result);
         }
-        if (key != null) {
+        if (StringUtil.isNotEmpty(key)) {
             char ca = key.charAt(0);
 
             int index;
@@ -121,17 +124,19 @@ public class TrieTree {
             }
         } else {
             for (int i = 0; i < CHILDREN_LENGTH; i++) {
-                if (child.children[i] != null) {
-                    int j;
-                    if (Character.isUpperCase(child.children[i].data)) {
-                        j = UPPERCASE_STAR + i;
-                    } else {
-                        j = LOWERCASE_STAR + i;
-                    }
-
-                    char temp = (char) j;
-                    query(child.children[i], value, null, result + temp);
+                if (child.children[i] == null) {
+                    continue;
                 }
+
+                int j;
+                if (Character.isUpperCase(child.children[i].data)) {
+                    j = UPPERCASE_STAR + i;
+                } else {
+                    j = LOWERCASE_STAR + i;
+                }
+
+                char temp = (char) j;
+                query(child.children[i], value, null, result + temp);
             }
         }
 

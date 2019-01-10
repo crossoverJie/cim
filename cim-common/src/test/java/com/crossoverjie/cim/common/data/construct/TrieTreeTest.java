@@ -129,4 +129,71 @@ public class TrieTreeTest {
         }
         Assert.assertTrue(result.equals("CDa,CDfff,"));
     }
+
+    @Test
+    public void prefixSearch7() throws Exception {
+        TrieTree trieTree = new TrieTree();
+        trieTree.insert("Cde");
+        trieTree.insert("CDa");
+        trieTree.insert("ABe");
+        trieTree.insert("CDfff");
+        trieTree.insert("Cdfff");
+
+        List<String> ab = trieTree.prefixSearch("");
+        String result = "";
+        for (String s : ab) {
+            result += s + "," ;
+            System.out.println(s);
+        }
+        Assert.assertTrue(result.equals(""));
+    }
+
+    @Test
+    public void prefixSearch8() throws Exception {
+        TrieTree trieTree = new TrieTree();
+
+        List<String> ab = trieTree.prefixSearch("");
+        String result = "";
+        for (String s : ab) {
+            result += s + "," ;
+            System.out.println(s);
+        }
+        Assert.assertTrue(result.equals(""));
+    }
+
+
+    @Test
+    public void prefixSearch9() throws Exception {
+        TrieTree trieTree = new TrieTree();
+        trieTree.insert("Cde");
+        trieTree.insert("CDa");
+        trieTree.insert("ABe");
+        trieTree.insert("CDfff");
+        trieTree.insert("Cdfff");
+
+        List<String> ab = trieTree.prefixSearch("CDFD");
+        String result = "";
+        for (String s : ab) {
+            result += s + "," ;
+            System.out.println(s);
+        }
+        Assert.assertTrue(result.equals(""));
+    }
+
+
+    @Test
+    public void prefixSearch10() throws Exception {
+        TrieTree trieTree = new TrieTree();
+        trieTree.insert("crossoverJie");
+        trieTree.insert("zhangsan");
+
+        List<String> ab = trieTree.prefixSearch("c");
+        String result = "";
+        for (String s : ab) {
+            result += s + "," ;
+            System.out.println(s);
+        }
+        Assert.assertTrue(result.equals("crossoverJie,"));
+    }
+
 }

@@ -19,7 +19,8 @@ public enum SystemCommandEnumType {
            QUIT(":q!        ","退出程序"),
           QUERY(":q         ","【:q 关键字】查询聊天记录"),
              AI(":ai        ","开启 AI 模式"),
-            QAI(":qai       ","关闭 AI 模式")
+            QAI(":qai       ","关闭 AI 模式"),
+            PREFIX(":pu     ","模糊匹配用户")
 
     ;
 
