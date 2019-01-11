@@ -198,7 +198,6 @@ public class TrieTree {
         return list;
     }
 
-
     private class Node {
         /**
          * 是否为最后一个字符

@@ -20,9 +20,28 @@ public class TrieTreeTest {
         trieTree.insert("ABC");
         trieTree.insert("abC");
         List<String> all = trieTree.all();
+        String result = "";
         for (String s : all) {
+            result += s + ",";
             System.out.println(s);
         }
+
+        Assert.assertTrue("ABC,abC,".equals(result));
+
+    }
+    @Test
+    public void all2() throws Exception {
+        TrieTree trieTree = new TrieTree();
+        trieTree.insert("abc");
+        trieTree.insert("abC");
+        List<String> all = trieTree.all();
+        String result = "";
+        for (String s : all) {
+            result += s + ",";
+            System.out.println(s);
+        }
+
+        //Assert.assertTrue("ABC,abC,".equals(result));
 
     }
 
@@ -88,7 +107,7 @@ public class TrieTreeTest {
         List<String> ab = trieTree.prefixSearch("Cd");
         String result = "";
         for (String s : ab) {
-            result += s + "," ;
+            result += s + ",";
             System.out.println(s);
         }
         Assert.assertTrue(result.equals("Cde,"));
@@ -106,7 +125,7 @@ public class TrieTreeTest {
         List<String> ab = trieTree.prefixSearch("Cd");
         String result = "";
         for (String s : ab) {
-            result += s + "," ;
+            result += s + ",";
             System.out.println(s);
         }
         Assert.assertTrue(result.equals("Cde,Cdfff,"));
@@ -124,7 +143,7 @@ public class TrieTreeTest {
         List<String> ab = trieTree.prefixSearch("CD");
         String result = "";
         for (String s : ab) {
-            result += s + "," ;
+            result += s + ",";
             System.out.println(s);
         }
         Assert.assertTrue(result.equals("CDa,CDfff,"));
@@ -142,7 +161,7 @@ public class TrieTreeTest {
         List<String> ab = trieTree.prefixSearch("");
         String result = "";
         for (String s : ab) {
-            result += s + "," ;
+            result += s + ",";
             System.out.println(s);
         }
         Assert.assertTrue(result.equals(""));
@@ -155,7 +174,7 @@ public class TrieTreeTest {
         List<String> ab = trieTree.prefixSearch("");
         String result = "";
         for (String s : ab) {
-            result += s + "," ;
+            result += s + ",";
             System.out.println(s);
         }
         Assert.assertTrue(result.equals(""));
@@ -174,7 +193,7 @@ public class TrieTreeTest {
         List<String> ab = trieTree.prefixSearch("CDFD");
         String result = "";
         for (String s : ab) {
-            result += s + "," ;
+            result += s + ",";
             System.out.println(s);
         }
         Assert.assertTrue(result.equals(""));
@@ -190,7 +209,7 @@ public class TrieTreeTest {
         List<String> ab = trieTree.prefixSearch("c");
         String result = "";
         for (String s : ab) {
-            result += s + "," ;
+            result += s + ",";
             System.out.println(s);
         }
         Assert.assertTrue(result.equals("crossoverJie,"));
