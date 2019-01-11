@@ -3,6 +3,10 @@ package com.crossoverjie.cim.common.enums;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * @author crossoverJie
+ */
+
 public enum StatusEnum {
 
     /** 成功 */
@@ -19,6 +23,9 @@ public enum StatusEnum {
 
     /** 账号不在线 */
     OFF_LINE("7000", "你选择的账号不在线，请重新选择！"),
+
+    /** 登录信息不匹配 */
+    ACCOUNT_NOT_MATCH("9100", "登录信息不匹配！"),
 
     /** 请求限流 */
     REQUEST_LIMIT("6000", "请求限流"),

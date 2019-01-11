@@ -28,6 +28,9 @@ public class AppConfiguration {
     @Value("${cim.clear.route.request.url}")
     private String clearRouteUrl ;
 
+    @Value("${cim.heartbeat.time}")
+    private long heartBeatTime ;
+
     public String getClearRouteUrl() {
         return clearRouteUrl;
     }
@@ -66,5 +69,13 @@ public class AppConfiguration {
 
     public void setCimServerPort(int cimServerPort) {
         this.cimServerPort = cimServerPort;
+    }
+
+    public long getHeartBeatTime() {
+        return heartBeatTime;
+    }
+
+    public void setHeartBeatTime(long heartBeatTime) {
+        this.heartBeatTime = heartBeatTime;
     }
 }
