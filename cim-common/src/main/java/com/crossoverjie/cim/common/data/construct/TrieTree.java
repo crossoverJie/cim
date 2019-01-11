@@ -198,6 +198,10 @@ public class TrieTree {
         return list;
     }
 
+
+    /**
+     * 字典树节点
+     */
     private class Node {
         /**
          * 是否为最后一个字符
