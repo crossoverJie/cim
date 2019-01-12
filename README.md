@@ -62,12 +62,12 @@
 * [x] 使用 `Google Protocol Buffer` 高效编解码。
 * [x] 根据实际情况灵活的水平扩容、缩容。
 * [x] 路由(`cim-forward-route`)服务自身是无状态，可用 `Nginx` 代理支持高可用。
-* [ ] 聊天记录查询。
+* [x] 聊天记录查询。
+* [x] 服务端自动剔除离线客户端。
+* [ ] 弱网环境下客户端自动重连。
 * [ ] 分组群聊。
 * [ ] 离线消息。
-* [ ] 路由服务自动分配。
 * [ ] 协议支持消息加密。
-* [ ] 弱网情况下客户端自动上线。
 * [ ] 更多的客户端路由策略。
 
 
@@ -172,9 +172,13 @@ java -jar cim-client-1.0.0-SNAPSHOT.jar --server.port=8084 --cim.user.id=上方�
 
 | 命令 | 描述|
 | ------ | ------ | 
-| `:q` | 退出客户端| 
+| `:q!` | 退出客户端| 
 | `:olu` | 获取所有在线用户信息 | 
 | `:all` | 获取所有命令 | 
+| `:q` | 【:q 关键字】查询聊天记录 | 
+| `:ai` | 开启 AI 模式 | 
+| `:qai` | 关闭 AI 模式 | 
+| `:pu` | 模糊匹配用户 | 
 | `:` | 更多命令正在开发中。。 | 
 
 ![](https://ws3.sinaimg.cn/large/006tNbRwly1fylh7bdlo6g30go01shdt.gif)
@@ -218,3 +222,8 @@ java -jar cim-client-1.0.0-SNAPSHOT.jar --server.port=8084 --cim.user.id=上方�
 
 ![](https://ws1.sinaimg.cn/large/006tKfTcly1ftmfdo6mhmj30760760t7.jpg)
 
+# Code Visualization
+=========================
+感谢`gitviscode`组织制作的`commit history`视频，记录从15年萌芽发展，有那么多开发者加入完善。1'50的时候，以为项目都停止更新了，然后突然如烟花绽放的感觉，我他妈都感动得要哭了
+
+ [![Watch the video](https://img.youtube.com/vi/NhV_brPIG74/maxresdefault.jpg)](https://youtu.be/NhV_brPIG74)
