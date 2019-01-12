@@ -64,6 +64,7 @@
 * [x] 路由(`cim-forward-route`)服务自身是无状态，可用 `Nginx` 代理支持高可用。
 * [x] 聊天记录查询。
 * [x] 服务端自动剔除离线客户端。
+* [x] 一键开启价值 2 亿的 `AI` 模式。
 * [ ] 弱网环境下客户端自动重连。
 * [ ] 分组群聊。
 * [ ] 离线消息。
@@ -148,15 +149,15 @@ curl -X POST --header 'Content-Type: application/json' --header 'Accept: applica
 
 从返回结果中获取 `userId`
 
-```shell
+```json
 {
-	"code": "9000",
-	"message": "成功",
-	"reqNo": null,
-	"dataBody": {
-		"userId": 1547028929406,
-		"userName": "zhangsan"
-	}
+    "code":"9000",
+    "message":"成功",
+    "reqNo":null,
+    "dataBody":{
+        "userId":1547028929407,
+        "userName":"test"
+    }
 }
 ```
 
@@ -183,6 +184,32 @@ java -jar cim-client-1.0.0-SNAPSHOT.jar --server.port=8084 --cim.user.id=上方�
 
 ![](https://ws3.sinaimg.cn/large/006tNbRwly1fylh7bdlo6g30go01shdt.gif)
 
+### 聊天记录查询
+
+![](https://ws2.sinaimg.cn/large/006tNc79gy1fz3uwmb5hsj30s8046wm3.jpg)
+
+使用命令 `:q 关键字` 即可查询与个人相关的聊天记录。
+
+> 客户端聊天记录默认存放在 `/opt/logs/cim/`，所以需要这个目录的写入权限。也可在启动命令中加入 `--cim.msg.logger.path = /自定义` 参数自定义目录。
+
+
+
+### AI 模式
+
+![](https://ws3.sinaimg.cn/large/006tNc79gy1fz3vf3nsq3j31dc0j01ky.jpg)
+
+使用命令 `:ai` 开启 AI 模式，之后所有的消息都会由 `AI` 响应。
+
+`:qai` 退出 AI 模式。
+
+### 前缀匹配用户名
+
+![](https://ws4.sinaimg.cn/large/006tNc79gy1fz3vo4tgkjj31ni09s41u.jpg)
+
+使用命令 `:qu prefix` 可以按照前缀的方式重新用户信息。
+
+> 该功能主要用于在移动端中的输入框中搜索用户。 
+
 ## 群聊/私聊
 
 ### 群聊
@@ -208,7 +235,7 @@ java -jar cim-client-1.0.0-SNAPSHOT.jar --server.port=8084 --cim.user.id=上方�
 ![](https://ws3.sinaimg.cn/large/006tNbRwly1fylicmjj6cj31wg07c4qp.jpg)
 ![](https://ws1.sinaimg.cn/large/006tNbRwly1fylicwhe04j31ua03ejsv.jpg)
 
-同时另一个账号是收不到消息的。
+同时另一个账号收不到消息。
 ![](https://ws3.sinaimg.cn/large/006tNbRwly1fylie727jaj31t20dq1ky.jpg)
 
 
@@ -223,7 +250,5 @@ java -jar cim-client-1.0.0-SNAPSHOT.jar --server.port=8084 --cim.user.id=上方�
 ![](https://ws1.sinaimg.cn/large/006tKfTcly1ftmfdo6mhmj30760760t7.jpg)
 
 # Code Visualization
-=========================
-感谢`gitviscode`组织制作的`commit history`视频，记录从15年萌芽发展，有那么多开发者加入完善。1'50的时候，以为项目都停止更新了，然后突然如烟花绽放的感觉，我他妈都感动得要哭了
 
  [![Watch the video](https://img.youtube.com/vi/NhV_brPIG74/maxresdefault.jpg)](https://youtu.be/NhV_brPIG74)
