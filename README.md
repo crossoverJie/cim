@@ -205,7 +205,7 @@ java -jar cim-client-1.0.0-SNAPSHOT.jar --server.port=8084 --cim.user.id=上方�
 
 ![](https://ws4.sinaimg.cn/large/006tNc79gy1fz3vo4tgkjj31ni09s41u.jpg)
 
-使用命令 `:qu prefix` 可以按照前缀的方式重新用户信息。
+使用命令 `:qu prefix` 可以按照前缀的方式搜索用户信息。
 
 > 该功能主要用于在移动端中的输入框中搜索用户。 
 
