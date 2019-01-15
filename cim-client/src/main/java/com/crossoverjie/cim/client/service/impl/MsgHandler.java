@@ -3,10 +3,12 @@ package com.crossoverjie.cim.client.service.impl;
 import com.crossoverjie.cim.client.client.CIMClient;
 import com.crossoverjie.cim.client.config.AppConfiguration;
 import com.crossoverjie.cim.client.service.MsgHandle;
+import com.crossoverjie.cim.client.service.MsgLogger;
 import com.crossoverjie.cim.client.service.RouteRequest;
 import com.crossoverjie.cim.client.vo.req.GroupReqVO;
 import com.crossoverjie.cim.client.vo.req.P2PReqVO;
 import com.crossoverjie.cim.client.vo.res.OnlineUsersResVO;
+import com.crossoverjie.cim.common.data.construct.TrieTree;
 import com.crossoverjie.cim.common.enums.SystemCommandEnumType;
 import com.crossoverjie.cim.common.util.StringUtil;
 import org.slf4j.Logger;
@@ -41,8 +43,25 @@ public class MsgHandler implements MsgHandle {
     @Autowired
     private CIMClient cimClient ;
 
+    @Autowired
+    private MsgLogger msgLogger ;
+
+    private boolean aiModel = false ;
+
     @Override
     public void sendMsg(String msg) {
+        if (aiModel){
+            aiChat(msg);
+        }else {
+            normalChat(msg);
+        }
+    }
+
+    /**
+     * 正常聊天
+     * @param msg
+     */
+    private void normalChat(String msg) {
         String[] totalMsg = msg.split(";;");
         if (totalMsg.length > 1) {
             //私聊
@@ -65,6 +84,19 @@ public class MsgHandler implements MsgHandle {
                 LOGGER.error("Exception",e);
             }
         }
+    }
+
+    /**
+     * AI model
+     * @param msg
+     */
+    private void aiChat(String msg) {
+        msg = msg.replace("吗","") ;
+        msg = msg.replace("嘛","") ;
+        msg = msg.replace("?","!");
+        msg = msg.replace("？","!");
+        msg = msg.replace("你","我");
+        System.out.println("AI:\033[31;4m" + msg + "\033[0m");
     }
 
     @Override
@@ -104,6 +136,20 @@ public class MsgHandler implements MsgHandle {
                 //打印在线用户
                 printOnlineUsers();
 
+            } else if (msg.startsWith(SystemCommandEnumType.QUERY.getCommandType().trim() + " ")){
+                //查询聊天记录
+                queryChatHistory(msg);
+            }else if (SystemCommandEnumType.AI.getCommandType().trim().equals(msg.toLowerCase())){
+                //开启 AI 模式
+                aiModel = true ;
+                System.out.println("\033[31;4m" + "Hello,我是估值两亿的 AI 机器人！" +  "\033[0m");
+            }else if (SystemCommandEnumType.QAI.getCommandType().trim().equals(msg.toLowerCase())){
+                //关闭 AI 模式
+                aiModel = false ;
+                System.out.println("\033[31;4m" + "｡ﾟ(ﾟ´ω`ﾟ)ﾟ｡  AI 下线了！" +  "\033[0m");
+            }else if (msg.startsWith(SystemCommandEnumType.PREFIX.getCommandType().trim() + " ")){
+                //模糊匹配
+                prefixSearch(msg);
             }else {
                 printAllCommand(allStatusCode);
             }
@@ -115,6 +161,43 @@ public class MsgHandler implements MsgHandle {
         }
 
 
+    }
+
+
+    /**
+     * 模糊匹配
+     * @param msg
+     */
+    private void prefixSearch(String msg) {
+        try {
+            List<OnlineUsersResVO.DataBodyBean> onlineUsers = routeRequest.onlineUsers();
+            TrieTree trieTree = new TrieTree() ;
+            for (OnlineUsersResVO.DataBodyBean onlineUser : onlineUsers) {
+                trieTree.insert(onlineUser.getUserName());
+            }
+
+            String[] split = msg.split(" ");
+            String key = split[1];
+            List<String> list = trieTree.prefixSearch(key);
+
+            for (String res : list) {
+                res = res.replace(key, "\033[31;4m" + key + "\033[0m");
+                System.out.println(res);
+            }
+
+        } catch (Exception e) {
+            LOGGER.error("Exception" ,e);
+        }
+    }
+
+    /**
+     * 查询聊天记录
+     * @param msg
+     */
+    private void queryChatHistory(String msg) {
+        String[] split = msg.split(" ") ;
+        String res = msgLogger.query(split[1]);
+        System.out.println(res);
     }
 
     /**
@@ -140,6 +223,7 @@ public class MsgHandler implements MsgHandle {
      */
     private void shutdown() {
         LOGGER.info("系统关闭中。。。。");
+        msgLogger.stop();
         executor.shutdown();
         try {
             while (!executor.awaitTermination(1, TimeUnit.SECONDS)) {

@@ -13,6 +13,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 @SpringBootTest(classes = RouteApplication.class)
 @RunWith(SpringRunner.class)
@@ -25,8 +26,12 @@ public class AccountServiceRedisImplTest {
 
     @Test
     public void loadRouteRelated() throws Exception {
-        Map<Long, CIMServerResVO> longCIMServerResVOMap = accountService.loadRouteRelated();
-        LOGGER.info("longCIMServerResVOMap={}" , JSON.toJSONString(longCIMServerResVOMap));
+        for (int i = 0; i < 100; i++) {
+
+            Map<Long, CIMServerResVO> longCIMServerResVOMap = accountService.loadRouteRelated();
+            LOGGER.info("longCIMServerResVOMap={},cun={}" , JSON.toJSONString(longCIMServerResVOMap),i);
+        }
+        TimeUnit.SECONDS.sleep(10);
     }
 
 }

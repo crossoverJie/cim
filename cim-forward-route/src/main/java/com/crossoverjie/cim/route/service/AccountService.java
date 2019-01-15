@@ -1,5 +1,6 @@
 package com.crossoverjie.cim.route.service;
 
+import com.crossoverjie.cim.common.enums.StatusEnum;
 import com.crossoverjie.cim.route.vo.req.ChatReqVO;
 import com.crossoverjie.cim.route.vo.req.LoginReqVO;
 import com.crossoverjie.cim.route.vo.res.CIMServerResVO;
@@ -30,7 +31,7 @@ public interface AccountService {
      * @return true 成功 false 失败
      * @throws Exception
      */
-    boolean login(LoginReqVO loginReqVO) throws Exception ;
+    StatusEnum login(LoginReqVO loginReqVO) throws Exception ;
 
     /**
      * 保存路由信息

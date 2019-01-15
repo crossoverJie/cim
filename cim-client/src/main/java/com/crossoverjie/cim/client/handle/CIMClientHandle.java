@@ -1,8 +1,10 @@
 package com.crossoverjie.cim.client.handle;
 
 import com.crossoverjie.cim.client.util.SpringBeanFactory;
+import com.crossoverjie.cim.common.constant.Constants;
 import com.crossoverjie.cim.common.protocol.CIMRequestProto;
 import com.crossoverjie.cim.common.protocol.CIMResponseProto;
+import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
@@ -39,7 +41,7 @@ public class CIMClientHandle extends SimpleChannelInboundHandler<CIMResponseProt
             if (idleStateEvent.state() == IdleState.WRITER_IDLE){
                 CIMRequestProto.CIMReqProtocol heartBeat = SpringBeanFactory.getBean("heartBeat",
                         CIMRequestProto.CIMReqProtocol.class);
-                ctx.writeAndFlush(heartBeat) ;
+                ctx.writeAndFlush(heartBeat).addListeners(ChannelFutureListener.CLOSE_ON_FAILURE) ;
             }
 
 
@@ -56,15 +58,18 @@ public class CIMClientHandle extends SimpleChannelInboundHandler<CIMResponseProt
     }
 
     @Override
-    protected void channelRead0(ChannelHandlerContext channelHandlerContext, CIMResponseProto.CIMResProtocol responseProtocol) throws Exception {
+    protected void channelRead0(ChannelHandlerContext channelHandlerContext, CIMResponseProto.CIMResProtocol msg) throws Exception {
 
         //从服务端收到消息时被调用
         //LOGGER.info("客户端收到消息={}",in.toString(CharsetUtil.UTF_8)) ;
 
-        //回调消息
-        callBackMsg(responseProtocol.getResMsg());
+        if (msg.getType() != Constants.CommandType.PING) {
+            //回调消息
+            callBackMsg(msg.getResMsg());
 
-        LOGGER.info(responseProtocol.getResMsg());
+            LOGGER.info(msg.getResMsg());
+        }
+
     }
 
     /**
