@@ -69,8 +69,12 @@ public class RouteRequestImpl implements RouteRequest {
                 .build();
 
         Response response = okHttpClient.newCall(request).execute() ;
-        if (!response.isSuccessful()){
-            throw new IOException("Unexpected code " + response);
+        try {
+            if (!response.isSuccessful()){
+                throw new IOException("Unexpected code " + response);
+            }
+        }finally {
+            response.body().close();
         }
     }
 
@@ -92,12 +96,18 @@ public class RouteRequestImpl implements RouteRequest {
             throw new IOException("Unexpected code " + response);
         }
 
-        String json = response.body().string() ;
-        BaseResponse baseResponse = JSON.parseObject(json, BaseResponse.class);
+        ResponseBody body = response.body();
+        try {
+            String json = body.string() ;
+            BaseResponse baseResponse = JSON.parseObject(json, BaseResponse.class);
 
-        //选择的账号不存在
-        if (baseResponse.getCode().equals(StatusEnum.OFF_LINE.getCode())){
-            LOGGER.error(p2PReqVO.getReceiveUserId() + ":" + StatusEnum.OFF_LINE.getMessage());
+            //选择的账号不存在
+            if (baseResponse.getCode().equals(StatusEnum.OFF_LINE.getCode())){
+                LOGGER.error(p2PReqVO.getReceiveUserId() + ":" + StatusEnum.OFF_LINE.getMessage());
+            }
+
+        }finally {
+            body.close();
         }
     }
 
@@ -118,19 +128,23 @@ public class RouteRequestImpl implements RouteRequest {
         if (!response.isSuccessful()){
             throw new IOException("Unexpected code " + response);
         }
+        CIMServerResVO cimServerResVO ;
+        ResponseBody body = response.body();
+        try {
+            String json = body.string();
+            cimServerResVO = JSON.parseObject(json, CIMServerResVO.class);
 
-        String json = response.body().string();
-        CIMServerResVO cimServerResVO = JSON.parseObject(json, CIMServerResVO.class);
+            //重复失败
+            if (!cimServerResVO.getCode().equals(StatusEnum.SUCCESS.getCode())){
+                LOGGER.error(appConfiguration.getUserName() + ":" + cimServerResVO.getMessage());
+                System.exit(-1);
+            }
 
-        //重复登录
-        if (cimServerResVO.getCode().equals(StatusEnum.REPEAT_LOGIN.getCode())){
-            LOGGER.error(appConfiguration.getUserName() + ":" + StatusEnum.REPEAT_LOGIN.getMessage());
-            System.exit(-1);
+        }finally {
+            body.close();
         }
 
-        if (!cimServerResVO.getCode().equals(StatusEnum.SUCCESS.getCode())){
-            throw new RuntimeException("route server exception code=" + cimServerResVO.getCode()) ;
-        }
+
 
         return cimServerResVO.getDataBody();
     }
@@ -152,8 +166,15 @@ public class RouteRequestImpl implements RouteRequest {
         }
 
 
-        String json = response.body().string() ;
-        OnlineUsersResVO onlineUsersResVO = JSON.parseObject(json, OnlineUsersResVO.class);
+        ResponseBody body = response.body();
+        OnlineUsersResVO onlineUsersResVO ;
+        try {
+            String json = body.string() ;
+            onlineUsersResVO = JSON.parseObject(json, OnlineUsersResVO.class);
+
+        }finally {
+            body.close();
+        }
 
         return onlineUsersResVO.getDataBody();
     }

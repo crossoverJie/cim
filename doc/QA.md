@@ -34,3 +34,13 @@ spring.redis.host=47.98.194.60 spring.redis.port=6379
 ![](https://ws2.sinaimg.cn/large/006tNbRwly1fymbjn98f6j31bn0u0aff.jpg)
 
 账号信息会存放在 `Redis`。
+
+
+## 本地如何模拟调试？
+
+至少需要启动以下服务:
+
+1. 服务端
+2. 路由
+3. 至少两个客户端
+4. `redis`、`zk` 基础组件
