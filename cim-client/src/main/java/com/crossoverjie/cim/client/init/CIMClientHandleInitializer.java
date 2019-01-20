@@ -25,7 +25,7 @@ public class CIMClientHandleInitializer extends ChannelInitializer<Channel> {
     protected void initChannel(Channel ch) throws Exception {
         ch.pipeline()
                 //30 秒没发送消息 将IdleStateHandler 添加到 ChannelPipeline 中
-                .addLast(new IdleStateHandler(0, 30, 0))
+                .addLast(new IdleStateHandler(0, 50, 0))
 
                 //心跳解码
                 //.addLast(new HeartbeatEncode())

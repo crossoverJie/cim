@@ -82,6 +82,17 @@ public class BeanConfig {
         return  productExecutor ;
     }
 
+
+    @Bean("scheduledTask")
+    public ScheduledExecutorService buildSchedule(){
+        ThreadFactory sche = new ThreadFactoryBuilder()
+                .setNameFormat("scheduled-%d")
+                .setDaemon(true)
+                .build();
+        ScheduledExecutorService scheduledExecutorService = new ScheduledThreadPoolExecutor(1,sche) ;
+        return scheduledExecutorService ;
+    }
+
     /**
      * 回调 bean
      * @return

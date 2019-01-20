@@ -16,6 +16,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -37,7 +38,7 @@ public class MsgHandler implements MsgHandle {
     @Autowired
     private AppConfiguration configuration;
 
-    @Autowired
+    @Resource(name = "callBackThreadPool")
     private ThreadPoolExecutor executor ;
 
     @Autowired
@@ -221,8 +222,10 @@ public class MsgHandler implements MsgHandle {
     /**
      * 关闭系统
      */
-    private void shutdown() {
+    @Override
+    public void shutdown() {
         LOGGER.info("系统关闭中。。。。");
+        routeRequest.offLine();
         msgLogger.stop();
         executor.shutdown();
         try {

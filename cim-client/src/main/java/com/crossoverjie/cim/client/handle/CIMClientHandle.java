@@ -1,5 +1,6 @@
 package com.crossoverjie.cim.client.handle;
 
+import com.crossoverjie.cim.client.thread.HeartBeatJob;
 import com.crossoverjie.cim.client.util.SpringBeanFactory;
 import com.crossoverjie.cim.common.constant.Constants;
 import com.crossoverjie.cim.common.protocol.CIMRequestProto;
@@ -14,7 +15,9 @@ import io.netty.handler.timeout.IdleStateEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Function:
@@ -31,6 +34,8 @@ public class CIMClientHandle extends SimpleChannelInboundHandler<CIMResponseProt
     private MsgHandleCaller caller ;
 
     private ThreadPoolExecutor threadPoolExecutor ;
+
+    private ScheduledExecutorService scheduledExecutorService ;
 
 
     @Override
@@ -50,7 +55,6 @@ public class CIMClientHandle extends SimpleChannelInboundHandler<CIMResponseProt
                 }) ;
             }
 
-
         }
 
         super.userEventTriggered(ctx, evt);
@@ -68,6 +72,7 @@ public class CIMClientHandle extends SimpleChannelInboundHandler<CIMResponseProt
 
         //心跳更新时间
         if (msg.getType() == Constants.CommandType.PING){
+            LOGGER.info("收到服务端心跳！！！");
             NettyAttrUtil.updateReaderTime(ctx.channel(),System.currentTimeMillis());
         }
 
@@ -77,6 +82,13 @@ public class CIMClientHandle extends SimpleChannelInboundHandler<CIMResponseProt
 
             LOGGER.info(msg.getResMsg());
         }
+
+        if (scheduledExecutorService == null){
+            scheduledExecutorService = SpringBeanFactory.getBean("scheduledTask",ScheduledExecutorService.class) ;
+        }
+
+
+        scheduledExecutorService.scheduleAtFixedRate(new HeartBeatJob(ctx),30,30, TimeUnit.SECONDS) ;
 
     }
 

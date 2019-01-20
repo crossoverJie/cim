@@ -178,4 +178,26 @@ public class RouteRequestImpl implements RouteRequest {
 
         return onlineUsersResVO.getDataBody();
     }
+
+    @Override
+    public void offLine() {
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("userId", appConfiguration.getUserId());
+        jsonObject.put("msg", "offLine");
+        RequestBody requestBody = RequestBody.create(mediaType, jsonObject.toString());
+
+        Request request = new Request.Builder()
+                .url(appConfiguration.getClearRouteUrl())
+                .post(requestBody)
+                .build();
+
+        Response response = null;
+        try {
+            response = okHttpClient.newCall(request).execute();
+        } catch (IOException e) {
+            LOGGER.error("exception",e);
+        } finally {
+            response.body().close();
+        }
+    }
 }

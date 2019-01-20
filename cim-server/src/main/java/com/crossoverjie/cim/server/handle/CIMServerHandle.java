@@ -94,7 +94,7 @@ public class CIMServerHandle extends SimpleChannelInboundHandler<CIMRequestProto
     }
 
     /**
-     * 清除路由关系
+     * 下线，清除路由关系
      *
      * @param userInfo
      * @throws IOException
