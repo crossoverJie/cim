@@ -88,7 +88,7 @@ public class CIMClientHandle extends SimpleChannelInboundHandler<CIMResponseProt
         }
 
 
-        scheduledExecutorService.scheduleAtFixedRate(new HeartBeatJob(ctx),30,30, TimeUnit.SECONDS) ;
+        scheduledExecutorService.scheduleAtFixedRate(new HeartBeatJob(ctx),60,60, TimeUnit.SECONDS) ;
 
     }
 
