@@ -3,13 +3,18 @@ package com.crossoverjie.cim.server.handle;
 import com.alibaba.fastjson.JSONObject;
 import com.crossoverjie.cim.common.constant.Constants;
 import com.crossoverjie.cim.common.exception.CIMException;
+import com.crossoverjie.cim.common.kit.HeartBeatHandler;
 import com.crossoverjie.cim.common.pojo.CIMUserInfo;
 import com.crossoverjie.cim.common.protocol.CIMRequestProto;
+import com.crossoverjie.cim.common.util.NettyAttrUtil;
 import com.crossoverjie.cim.server.config.AppConfiguration;
-import com.crossoverjie.cim.server.util.NettyAttrUtil;
+import com.crossoverjie.cim.server.kit.ServerHeartBeatHandlerImpl;
 import com.crossoverjie.cim.server.util.SessionSocketHolder;
 import com.crossoverjie.cim.server.util.SpringBeanFactory;
-import io.netty.channel.*;
+import io.netty.channel.ChannelFutureListener;
+import io.netty.channel.ChannelHandler;
+import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.handler.timeout.IdleState;
 import io.netty.handler.timeout.IdleStateEvent;
@@ -55,23 +60,19 @@ public class CIMServerHandle extends SimpleChannelInboundHandler<CIMRequestProto
         if (evt instanceof IdleStateEvent) {
             IdleStateEvent idleStateEvent = (IdleStateEvent) evt;
             if (idleStateEvent.state() == IdleState.READER_IDLE) {
-                AppConfiguration configuration = SpringBeanFactory.getBean(AppConfiguration.class);
-                long heartBeatTime = configuration.getHeartBeatTime() * 1000;
-
 
                 //向客户端发送消息
                 CIMRequestProto.CIMReqProtocol heartBeat = SpringBeanFactory.getBean("heartBeat",
                         CIMRequestProto.CIMReqProtocol.class);
-                ctx.writeAndFlush(heartBeat).addListeners(ChannelFutureListener.CLOSE_ON_FAILURE);
+                ctx.writeAndFlush(heartBeat).addListeners((ChannelFutureListener) future -> {
+                    if (!future.isSuccess()) {
+                        LOGGER.error("IO error,close Channel");
+                        future.channel().close();
+                    }
+                }) ;
 
-                Long lastReadTime = NettyAttrUtil.getReaderTime(ctx.channel());
-                long now = System.currentTimeMillis();
-                if (lastReadTime != null && now - lastReadTime > heartBeatTime){
-                    CIMUserInfo userInfo = SessionSocketHolder.getUserId((NioSocketChannel) ctx.channel());
-                    LOGGER.warn("客户端[{}]心跳超时[{}]ms，需要关闭连接!",userInfo.getUserName(),now - lastReadTime);
-                    userOffLine(userInfo, (NioSocketChannel) ctx.channel());
-                    ctx.channel().close();
-                }
+                HeartBeatHandler heartBeatHandler = SpringBeanFactory.getBean(ServerHeartBeatHandlerImpl.class) ;
+                heartBeatHandler.process(ctx) ;
             }
         }
         super.userEventTriggered(ctx, evt);

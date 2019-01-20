@@ -1,4 +1,4 @@
-package com.crossoverjie.cim.server.util;
+package com.crossoverjie.cim.common.util;
 
 import io.netty.channel.Channel;
 import io.netty.util.Attribute;
