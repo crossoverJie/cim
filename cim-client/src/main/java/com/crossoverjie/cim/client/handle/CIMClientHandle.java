@@ -44,7 +44,7 @@ public class CIMClientHandle extends SimpleChannelInboundHandler<CIMResponseProt
         if (evt instanceof IdleStateEvent){
             IdleStateEvent idleStateEvent = (IdleStateEvent) evt ;
 
-            LOGGER.info("定时检测服务端是否存活");
+            //LOGGER.info("定时检测服务端是否存活");
 
             if (idleStateEvent.state() == IdleState.WRITER_IDLE){
                 CIMRequestProto.CIMReqProtocol heartBeat = SpringBeanFactory.getBean("heartBeat",
@@ -84,7 +84,7 @@ public class CIMClientHandle extends SimpleChannelInboundHandler<CIMResponseProt
 
         //心跳更新时间
         if (msg.getType() == Constants.CommandType.PING){
-            LOGGER.info("收到服务端心跳！！！");
+            //LOGGER.info("收到服务端心跳！！！");
             NettyAttrUtil.updateReaderTime(ctx.channel(),System.currentTimeMillis());
         }
 
