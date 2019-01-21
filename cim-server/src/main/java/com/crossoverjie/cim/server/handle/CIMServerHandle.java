@@ -61,7 +61,7 @@ public class CIMServerHandle extends SimpleChannelInboundHandler<CIMRequestProto
             IdleStateEvent idleStateEvent = (IdleStateEvent) evt;
             if (idleStateEvent.state() == IdleState.READER_IDLE) {
 
-                LOGGER.info("定时检测服务端是否存活");
+                LOGGER.info("定时检测客户端端是否存活");
 
                 HeartBeatHandler heartBeatHandler = SpringBeanFactory.getBean(ServerHeartBeatHandlerImpl.class) ;
                 heartBeatHandler.process(ctx) ;
@@ -119,7 +119,6 @@ public class CIMServerHandle extends SimpleChannelInboundHandler<CIMRequestProto
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, CIMRequestProto.CIMReqProtocol msg) throws Exception {
         LOGGER.info("收到msg={}", msg.toString());
-        Thread thread = Thread.currentThread();
 
         if (msg.getType() == Constants.CommandType.LOGIN) {
             //保存客户端与 Channel 之间的关系
