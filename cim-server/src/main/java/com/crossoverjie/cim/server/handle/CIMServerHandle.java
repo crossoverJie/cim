@@ -61,6 +61,8 @@ public class CIMServerHandle extends SimpleChannelInboundHandler<CIMRequestProto
             IdleStateEvent idleStateEvent = (IdleStateEvent) evt;
             if (idleStateEvent.state() == IdleState.READER_IDLE) {
 
+                LOGGER.info("定时检测服务端是否存活");
+
                 HeartBeatHandler heartBeatHandler = SpringBeanFactory.getBean(ServerHeartBeatHandlerImpl.class) ;
                 heartBeatHandler.process(ctx) ;
             }
