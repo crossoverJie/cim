@@ -32,7 +32,7 @@ public class HeartBeatJob implements Runnable {
         try {
             heartBeatHandler.process(context);
         } catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.error("Exception",e);
         }
     }
 }

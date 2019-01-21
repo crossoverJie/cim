@@ -183,6 +183,9 @@ public class CIMClient {
 
 
     public void reconnect() throws Exception {
+        if (channel != null && channel.isActive()) {
+            return;
+        }
         start();
     }
 

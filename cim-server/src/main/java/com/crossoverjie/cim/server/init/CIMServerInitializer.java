@@ -26,7 +26,7 @@ public class CIMServerInitializer extends ChannelInitializer<Channel> {
 
         ch.pipeline()
                 //30 秒没有向客户端发送消息就发生心跳
-                .addLast(new IdleStateHandler(15, 0, 0))
+                .addLast(new IdleStateHandler(11, 0, 0))
                 // google Protobuf 编解码
                 .addLast(new ProtobufVarint32FrameDecoder())
                 .addLast(new ProtobufDecoder(CIMRequestProto.CIMReqProtocol.getDefaultInstance()))

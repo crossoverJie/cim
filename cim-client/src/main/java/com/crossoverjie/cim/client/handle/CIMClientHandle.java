@@ -1,5 +1,6 @@
 package com.crossoverjie.cim.client.handle;
 
+import com.crossoverjie.cim.client.thread.HeartBeatJob;
 import com.crossoverjie.cim.client.util.SpringBeanFactory;
 import com.crossoverjie.cim.common.constant.Constants;
 import com.crossoverjie.cim.common.protocol.CIMRequestProto;
@@ -16,6 +17,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Function:
@@ -66,6 +68,15 @@ public class CIMClientHandle extends SimpleChannelInboundHandler<CIMResponseProt
     }
 
     @Override
+    public void channelInactive(ChannelHandlerContext ctx) throws Exception {
+        LOGGER.info("客户端断开了！");
+        if (scheduledExecutorService == null){
+            scheduledExecutorService = SpringBeanFactory.getBean("scheduledTask",ScheduledExecutorService.class) ;
+        }
+        scheduledExecutorService.scheduleAtFixedRate(new HeartBeatJob(ctx),0,10, TimeUnit.SECONDS) ;
+    }
+
+    @Override
     protected void channelRead0(ChannelHandlerContext ctx, CIMResponseProto.CIMResProtocol msg) throws Exception {
 
         //心跳更新时间
@@ -81,12 +92,9 @@ public class CIMClientHandle extends SimpleChannelInboundHandler<CIMResponseProt
             LOGGER.info(msg.getResMsg());
         }
 
-        if (scheduledExecutorService == null){
-            scheduledExecutorService = SpringBeanFactory.getBean("scheduledTask",ScheduledExecutorService.class) ;
-        }
 
 
-        //scheduledExecutorService.scheduleAtFixedRate(new HeartBeatJob(ctx),60,60, TimeUnit.SECONDS) ;
+
 
     }
 
