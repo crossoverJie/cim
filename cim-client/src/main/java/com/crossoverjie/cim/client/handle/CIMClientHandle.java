@@ -69,7 +69,8 @@ public class CIMClientHandle extends SimpleChannelInboundHandler<CIMResponseProt
 
     @Override
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
-        LOGGER.info("客户端断开了！");
+        LOGGER.info("客户端断开了，重新连接！");
+
         if (scheduledExecutorService == null){
             scheduledExecutorService = SpringBeanFactory.getBean("scheduledTask",ScheduledExecutorService.class) ;
         }

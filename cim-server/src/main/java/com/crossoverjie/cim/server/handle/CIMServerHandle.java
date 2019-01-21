@@ -61,18 +61,6 @@ public class CIMServerHandle extends SimpleChannelInboundHandler<CIMRequestProto
             IdleStateEvent idleStateEvent = (IdleStateEvent) evt;
             if (idleStateEvent.state() == IdleState.READER_IDLE) {
 
-                LOGGER.info("服务端没有收到消息，向客户端发送心跳！");
-
-                //向客户端发送消息
-                CIMRequestProto.CIMReqProtocol heartBeat = SpringBeanFactory.getBean("heartBeat",
-                        CIMRequestProto.CIMReqProtocol.class);
-                ctx.writeAndFlush(heartBeat).addListeners((ChannelFutureListener) future -> {
-                    if (!future.isSuccess()) {
-                        LOGGER.error("IO error,close Channel");
-                        future.channel().close();
-                    }
-                }) ;
-
                 HeartBeatHandler heartBeatHandler = SpringBeanFactory.getBean(ServerHeartBeatHandlerImpl.class) ;
                 heartBeatHandler.process(ctx) ;
             }
@@ -140,6 +128,15 @@ public class CIMServerHandle extends SimpleChannelInboundHandler<CIMRequestProto
         //心跳更新时间
         if (msg.getType() == Constants.CommandType.PING){
             NettyAttrUtil.updateReaderTime(ctx.channel(),System.currentTimeMillis());
+            //向客户端响应 pong 消息
+            CIMRequestProto.CIMReqProtocol heartBeat = SpringBeanFactory.getBean("heartBeat",
+                    CIMRequestProto.CIMReqProtocol.class);
+            ctx.writeAndFlush(heartBeat).addListeners((ChannelFutureListener) future -> {
+                if (!future.isSuccess()) {
+                    LOGGER.error("IO error,close Channel");
+                    future.channel().close();
+                }
+            }) ;
         }
 
     }

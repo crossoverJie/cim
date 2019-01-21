@@ -186,6 +186,10 @@ public class CIMClient {
         if (channel != null && channel.isActive()) {
             return;
         }
+        //首先清除路由信息，下线
+        routeRequest.offLine();
+
+        LOGGER.info("开始重连。。");
         start();
     }
 

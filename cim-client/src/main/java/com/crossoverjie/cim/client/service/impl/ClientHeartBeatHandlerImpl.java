@@ -1,11 +1,9 @@
 package com.crossoverjie.cim.client.service.impl;
 
 import com.crossoverjie.cim.client.client.CIMClient;
-import com.crossoverjie.cim.client.config.AppConfiguration;
 import com.crossoverjie.cim.client.service.RouteRequest;
 import com.crossoverjie.cim.common.kit.HeartBeatHandler;
 import io.netty.channel.ChannelHandlerContext;
-import okhttp3.MediaType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,10 +20,6 @@ import org.springframework.stereotype.Service;
 public class ClientHeartBeatHandlerImpl implements HeartBeatHandler {
 
     private final static Logger LOGGER = LoggerFactory.getLogger(ClientHeartBeatHandlerImpl.class);
-    private final MediaType mediaType = MediaType.parse("application/json");
-
-    @Autowired
-    private AppConfiguration appConfiguration;
 
     @Autowired
     private CIMClient cimClient;
@@ -35,9 +29,6 @@ public class ClientHeartBeatHandlerImpl implements HeartBeatHandler {
 
     @Override
     public void process(ChannelHandlerContext ctx) throws Exception {
-
-        //首先清除路由信息，下线
-        routeRequest.offLine();
 
         //重连
         cimClient.reconnect();
