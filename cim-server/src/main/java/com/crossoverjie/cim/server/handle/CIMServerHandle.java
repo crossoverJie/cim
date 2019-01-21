@@ -1,5 +1,6 @@
 package com.crossoverjie.cim.server.handle;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.crossoverjie.cim.common.constant.Constants;
 import com.crossoverjie.cim.common.exception.CIMException;
@@ -62,6 +63,9 @@ public class CIMServerHandle extends SimpleChannelInboundHandler<CIMRequestProto
             if (idleStateEvent.state() == IdleState.READER_IDLE) {
 
                 LOGGER.info("定时检测服务端是否存活");
+
+                Thread thread = Thread.currentThread();
+                LOGGER.info("当前线程信息={}===={}",thread.getClass(), JSON.toJSONString(thread));
 
                 HeartBeatHandler heartBeatHandler = SpringBeanFactory.getBean(ServerHeartBeatHandlerImpl.class) ;
                 heartBeatHandler.process(ctx) ;
