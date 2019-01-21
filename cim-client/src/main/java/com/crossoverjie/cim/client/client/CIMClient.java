@@ -4,6 +4,7 @@ import com.crossoverjie.cim.client.config.AppConfiguration;
 import com.crossoverjie.cim.client.init.CIMClientHandleInitializer;
 import com.crossoverjie.cim.client.service.MsgHandle;
 import com.crossoverjie.cim.client.service.RouteRequest;
+import com.crossoverjie.cim.client.service.impl.ClientInfo;
 import com.crossoverjie.cim.client.vo.req.GoogleProtocolVO;
 import com.crossoverjie.cim.client.vo.req.LoginReqVO;
 import com.crossoverjie.cim.client.vo.res.CIMServerResVO;
@@ -57,6 +58,9 @@ public class CIMClient {
 
     @Autowired
     private MsgHandle msgHandle;
+
+    @Autowired
+    private ClientInfo clientInfo;
 
     /**
      * 重试次数
@@ -120,6 +124,11 @@ public class CIMClient {
         CIMServerResVO.ServerInfo cimServer = null;
         try {
             cimServer = routeRequest.getCIMServer(loginReqVO);
+
+            //保存系统信息
+            clientInfo.saveServiceInfo(cimServer.getIp() + ":" + cimServer.getCimServerPort())
+                    .saveUserInfo(userId, userName);
+
             LOGGER.info("cimServer=[{}]", cimServer.toString());
         } catch (Exception e) {
             errorCount++;
