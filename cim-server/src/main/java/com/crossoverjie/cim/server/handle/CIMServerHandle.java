@@ -123,6 +123,8 @@ public class CIMServerHandle extends SimpleChannelInboundHandler<CIMRequestProto
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, CIMRequestProto.CIMReqProtocol msg) throws Exception {
         LOGGER.info("收到msg={}", msg.toString());
+        Thread thread = Thread.currentThread();
+        LOGGER.info("正常当前线程信息={}===={}",thread.getClass(), JSON.toJSONString(thread));
 
         if (msg.getType() == Constants.CommandType.LOGIN) {
             //保存客户端与 Channel 之间的关系
