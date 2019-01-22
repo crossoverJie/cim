@@ -45,7 +45,7 @@ public class RouteRequestImpl implements RouteRequest {
     private String p2pRouteRequestUrl;
 
     @Value("${cim.server.route.request.url}")
-    private String serverRouteRequestUrl;
+    private String serverRouteLoginUrl;
 
     @Value("${cim.server.online.user.url}")
     private String onlineUserUrl;
@@ -120,7 +120,7 @@ public class RouteRequestImpl implements RouteRequest {
         RequestBody requestBody = RequestBody.create(mediaType,jsonObject.toString());
 
         Request request = new Request.Builder()
-                .url(serverRouteRequestUrl)
+                .url(serverRouteLoginUrl)
                 .post(requestBody)
                 .build();
 

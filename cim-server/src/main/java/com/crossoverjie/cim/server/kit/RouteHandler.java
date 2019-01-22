@@ -37,11 +37,11 @@ public class RouteHandler {
         if (userInfo != null){
             LOGGER.info("用户[{}]下线", userInfo.getUserName());
             SessionSocketHolder.removeSession(userInfo.getUserId());
+            //清除路由关系
+            clearRouteInfo(userInfo);
         }
         SessionSocketHolder.remove(channel);
 
-        //清除路由关系
-        clearRouteInfo(userInfo);
     }
 
 
