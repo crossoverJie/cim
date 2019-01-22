@@ -200,6 +200,7 @@ public class CIMClient {
 
         LOGGER.info("开始重连。。");
         start();
+        LOGGER.info("重连成功！！");
     }
 
     /**

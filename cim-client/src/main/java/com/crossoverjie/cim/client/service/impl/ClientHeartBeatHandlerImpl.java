@@ -1,7 +1,6 @@
 package com.crossoverjie.cim.client.service.impl;
 
 import com.crossoverjie.cim.client.client.CIMClient;
-import com.crossoverjie.cim.client.service.RouteRequest;
 import com.crossoverjie.cim.common.kit.HeartBeatHandler;
 import io.netty.channel.ChannelHandlerContext;
 import org.slf4j.Logger;
@@ -24,8 +23,6 @@ public class ClientHeartBeatHandlerImpl implements HeartBeatHandler {
     @Autowired
     private CIMClient cimClient;
 
-    @Autowired
-    private RouteRequest routeRequest;
 
     @Override
     public void process(ChannelHandlerContext ctx) throws Exception {
