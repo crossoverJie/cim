@@ -1,6 +1,6 @@
 package com.crossoverjie.cim.client.handle;
 
-import com.crossoverjie.cim.client.thread.HeartBeatJob;
+import com.crossoverjie.cim.client.thread.ReConnectJob;
 import com.crossoverjie.cim.client.util.SpringBeanFactory;
 import com.crossoverjie.cim.common.constant.Constants;
 import com.crossoverjie.cim.common.protocol.CIMRequestProto;
@@ -76,7 +76,7 @@ public class CIMClientHandle extends SimpleChannelInboundHandler<CIMResponseProt
         if (scheduledExecutorService == null){
             scheduledExecutorService = SpringBeanFactory.getBean("scheduledTask",ScheduledExecutorService.class) ;
         }
-        scheduledExecutorService.scheduleAtFixedRate(new HeartBeatJob(ctx),0,10, TimeUnit.SECONDS) ;
+        scheduledExecutorService.scheduleAtFixedRate(new ReConnectJob(ctx),0,10, TimeUnit.SECONDS) ;
     }
 
     @Override
