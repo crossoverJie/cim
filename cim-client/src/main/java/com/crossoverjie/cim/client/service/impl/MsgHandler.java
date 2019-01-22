@@ -130,6 +130,7 @@ public class MsgHandler implements MsgHandle {
     @Override
     public boolean innerCommand(String msg) {
 
+        // TODO: 2019-01-22 判断逻辑过多，需要重构。
         if (msg.startsWith(":")) {
             Map<String, String> allStatusCode = SystemCommandEnumType.getAllStatusCode();
 
