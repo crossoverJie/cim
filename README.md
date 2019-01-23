@@ -49,7 +49,7 @@
 * [x] 根据实际情况灵活的水平扩容、缩容。
 * [x] 路由(`cim-forward-route`)服务自身是无状态，可用 `Nginx` 代理支持高可用。
 * [x] 服务端自动剔除离线客户端。
-* [ ] 客户端自动重连。
+* [x] 客户端自动重连。
 * [ ] 分组群聊。
 * [ ] Android SDK。
 * [ ] 离线消息。
@@ -180,6 +180,7 @@ java -jar cim-client-1.0.0-SNAPSHOT.jar --server.port=8084 --cim.user.id=上方�
 | `:ai` | 开启 AI 模式 | 
 | `:qai` | 关闭 AI 模式 | 
 | `:pu` | 模糊匹配用户 | 
+| `:info` | 获取客户端信息 | 
 | `:` | 更多命令正在开发中。。 | 
 
 ![](https://ws3.sinaimg.cn/large/006tNbRwly1fylh7bdlo6g30go01shdt.gif)
