@@ -58,12 +58,6 @@ public class CIMServerHandle extends SimpleChannelInboundHandler<CIMRequestProto
                 AppConfiguration configuration = SpringBeanFactory.getBean(AppConfiguration.class);
                 long heartBeatTime = configuration.getHeartBeatTime() * 1000;
 
-
-                //向客户端发送消息
-                CIMRequestProto.CIMReqProtocol heartBeat = SpringBeanFactory.getBean("heartBeat",
-                        CIMRequestProto.CIMReqProtocol.class);
-                ctx.writeAndFlush(heartBeat).addListeners(ChannelFutureListener.CLOSE_ON_FAILURE);
-
                 Long lastReadTime = NettyAttrUtil.getReaderTime(ctx.channel());
                 long now = System.currentTimeMillis();
                 if (lastReadTime != null && now - lastReadTime > heartBeatTime){
@@ -72,6 +66,11 @@ public class CIMServerHandle extends SimpleChannelInboundHandler<CIMRequestProto
                     userOffLine(userInfo, (NioSocketChannel) ctx.channel());
                     ctx.channel().close();
                 }
+
+                //向客户端发送消息
+                CIMRequestProto.CIMReqProtocol heartBeat = SpringBeanFactory.getBean("heartBeat",
+                        CIMRequestProto.CIMReqProtocol.class);
+                ctx.writeAndFlush(heartBeat).addListeners(ChannelFutureListener.CLOSE_ON_FAILURE);
             }
         }
         super.userEventTriggered(ctx, evt);
