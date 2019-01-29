@@ -26,6 +26,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
+
 /**
  * Function:
  *
@@ -65,7 +67,7 @@ public class CIMClient {
      */
     private int errorCount;
 
-    //@PostConstruct
+    @PostConstruct
     public void start() throws Exception {
 
         //登录 + 获取可以使用的服务器 ip+port
@@ -207,6 +209,8 @@ public class CIMClient {
      * @throws InterruptedException
      */
     public void close() throws InterruptedException {
-        channel.close();
+        if (channel != null){
+            channel.close();
+        }
     }
 }

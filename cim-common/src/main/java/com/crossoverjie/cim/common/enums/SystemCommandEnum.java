@@ -10,16 +10,16 @@ import java.util.Map;
  *         Date: 2018/12/26 18:38
  * @since JDK 1.8
  */
-public enum SystemCommandEnumType {
+public enum SystemCommandEnum {
 
             ALL(":all       ","获取所有命令","PrintAllCommand"),
-    ONLINE_USER(":olu       ","获取所有在线用户",""),
+    ONLINE_USER(":olu       ","获取所有在线用户","PrintOnlineUsersCommand"),
            QUIT(":q!        ","退出程序","ShutDownCommand"),
-          QUERY(":q         ","【:q 关键字】查询聊天记录",""),
-             AI(":ai        ","开启 AI 模式",""),
-            QAI(":qai       ","关闭 AI 模式",""),
-         PREFIX(":pu        ","模糊匹配用户",""),
-           INFO(":info      ","获取客户端信息","")
+          QUERY(":q         ","【:q 关键字】查询聊天记录","QueryHistoryCommand"),
+             AI(":ai        ","开启 AI 模式","OpenAIModelCommand"),
+            QAI(":qai       ","关闭 AI 模式","CloseAIModelCommand"),
+         PREFIX(":pu        ","模糊匹配用户","PrefixSearchCommand"),
+           INFO(":info      ","获取客户端信息","EchoInfoCommand")
 
     ;
 
@@ -29,6 +29,9 @@ public enum SystemCommandEnumType {
     /** 枚举描述 */
     private final String desc;
 
+    /**
+     * 实现类
+     */
     private final String clazz ;
 
 
@@ -37,7 +40,7 @@ public enum SystemCommandEnumType {
      * @param commandType 枚举值码。
      * @param desc 枚举描述。
      */
-    private SystemCommandEnumType(String commandType, String desc,String clazz) {
+    private SystemCommandEnum(String commandType, String desc, String clazz) {
         this.commandType = commandType;
         this.desc = desc;
         this.clazz = clazz ;
@@ -89,7 +92,7 @@ public enum SystemCommandEnumType {
      */
     public static Map<String,String> getAllStatusCode() {
         Map<String,String> map = new HashMap<String, String>(16) ;
-        for (SystemCommandEnumType status : values()) {
+        for (SystemCommandEnum status : values()) {
             map.put(status.getCommandType(),status.getDesc()) ;
         }
         return map;
@@ -97,7 +100,7 @@ public enum SystemCommandEnumType {
 
     public static Map<String,String> getAllClazz() {
         Map<String,String> map = new HashMap<String, String>(16) ;
-        for (SystemCommandEnumType status : values()) {
+        for (SystemCommandEnum status : values()) {
             map.put(status.getCommandType().trim(),"com.crossoverjie.cim.client.service.impl.command." + status.getClazz()) ;
         }
         return map;

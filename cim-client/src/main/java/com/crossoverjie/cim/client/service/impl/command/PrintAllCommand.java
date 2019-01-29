@@ -1,7 +1,7 @@
 package com.crossoverjie.cim.client.service.impl.command;
 
 import com.crossoverjie.cim.client.service.InnerCommand;
-import com.crossoverjie.cim.common.enums.SystemCommandEnumType;
+import com.crossoverjie.cim.common.enums.SystemCommandEnum;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -21,7 +21,7 @@ public class PrintAllCommand implements InnerCommand {
 
     @Override
     public void process(String msg) {
-        Map<String, String> allStatusCode = SystemCommandEnumType.getAllStatusCode();
+        Map<String, String> allStatusCode = SystemCommandEnum.getAllStatusCode();
         LOGGER.warn("====================================");
         for (Map.Entry<String, String> stringStringEntry : allStatusCode.entrySet()) {
             String key = stringStringEntry.getKey();

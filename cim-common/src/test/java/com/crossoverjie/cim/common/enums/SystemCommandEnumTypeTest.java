@@ -9,7 +9,7 @@ public class SystemCommandEnumTypeTest {
 
     @Test
     public void getAllStatusCode() throws Exception {
-        Map<String, String> allStatusCode = SystemCommandEnumType.getAllStatusCode();
+        Map<String, String> allStatusCode = SystemCommandEnum.getAllStatusCode();
         for (Map.Entry<String, String> stringStringEntry : allStatusCode.entrySet()) {
             String key = stringStringEntry.getKey();
             String value = stringStringEntry.getValue();
