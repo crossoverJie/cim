@@ -3,6 +3,7 @@ package com.crossoverjie.cim.client.service.impl;
 import com.alibaba.fastjson.JSON;
 import com.crossoverjie.cim.client.client.CIMClient;
 import com.crossoverjie.cim.client.config.AppConfiguration;
+import com.crossoverjie.cim.client.service.InnerCommandContext;
 import com.crossoverjie.cim.client.service.MsgHandle;
 import com.crossoverjie.cim.client.service.MsgLogger;
 import com.crossoverjie.cim.client.service.RouteRequest;
@@ -49,7 +50,10 @@ public class MsgHandler implements MsgHandle {
     private MsgLogger msgLogger;
 
     @Autowired
-    private ClientInfo clientInfo ;
+    private ClientInfo clientInfo;
+
+    @Autowired
+    private InnerCommandContext innerCommandContext ;
 
     private boolean aiModel = false;
 
@@ -134,6 +138,8 @@ public class MsgHandler implements MsgHandle {
         if (msg.startsWith(":")) {
             Map<String, String> allStatusCode = SystemCommandEnumType.getAllStatusCode();
 
+            innerCommandContext.execute(msg);
+
             if (SystemCommandEnumType.QUIT.getCommandType().trim().equals(msg)) {
                 //关闭系统
                 shutdown();
@@ -158,7 +164,7 @@ public class MsgHandler implements MsgHandle {
             } else if (msg.startsWith(SystemCommandEnumType.PREFIX.getCommandType().trim() + " ")) {
                 //模糊匹配
                 prefixSearch(msg);
-            }  else if (SystemCommandEnumType.INFO.getCommandType().trim().equals(msg.toLowerCase())) {
+            } else if (SystemCommandEnumType.INFO.getCommandType().trim().equals(msg.toLowerCase())) {
                 LOGGER.info("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
                 LOGGER.info("client info=[{}]", JSON.toJSONString(clientInfo.get()));
                 LOGGER.info("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
