@@ -81,7 +81,6 @@ public class RouteController {
         return res;
     }
 
-    // TODO: 2018/12/26 这些基于 HTTP 接口的远程通信都可以换为 SpringCloud
 
     /**
      * 私聊路由

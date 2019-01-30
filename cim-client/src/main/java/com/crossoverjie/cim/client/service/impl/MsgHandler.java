@@ -1,16 +1,13 @@
 package com.crossoverjie.cim.client.service.impl;
 
-import com.alibaba.fastjson.JSON;
 import com.crossoverjie.cim.client.client.CIMClient;
 import com.crossoverjie.cim.client.config.AppConfiguration;
-import com.crossoverjie.cim.client.service.MsgHandle;
-import com.crossoverjie.cim.client.service.MsgLogger;
-import com.crossoverjie.cim.client.service.RouteRequest;
+import com.crossoverjie.cim.client.service.*;
 import com.crossoverjie.cim.client.vo.req.GroupReqVO;
 import com.crossoverjie.cim.client.vo.req.P2PReqVO;
 import com.crossoverjie.cim.client.vo.res.OnlineUsersResVO;
 import com.crossoverjie.cim.common.data.construct.TrieTree;
-import com.crossoverjie.cim.common.enums.SystemCommandEnumType;
+import com.crossoverjie.cim.common.enums.SystemCommandEnum;
 import com.crossoverjie.cim.common.util.StringUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -49,7 +46,10 @@ public class MsgHandler implements MsgHandle {
     private MsgLogger msgLogger;
 
     @Autowired
-    private ClientInfo clientInfo ;
+    private ClientInfo clientInfo;
+
+    @Autowired
+    private InnerCommandContext innerCommandContext ;
 
     private boolean aiModel = false;
 
@@ -130,42 +130,10 @@ public class MsgHandler implements MsgHandle {
     @Override
     public boolean innerCommand(String msg) {
 
-        // TODO: 2019-01-22 判断逻辑过多，需要重构。
         if (msg.startsWith(":")) {
-            Map<String, String> allStatusCode = SystemCommandEnumType.getAllStatusCode();
 
-            if (SystemCommandEnumType.QUIT.getCommandType().trim().equals(msg)) {
-                //关闭系统
-                shutdown();
-            } else if (SystemCommandEnumType.ALL.getCommandType().trim().equals(msg)) {
-                printAllCommand(allStatusCode);
-
-            } else if (SystemCommandEnumType.ONLINE_USER.getCommandType().toLowerCase().trim().equals(msg.toLowerCase())) {
-                //打印在线用户
-                printOnlineUsers();
-
-            } else if (msg.startsWith(SystemCommandEnumType.QUERY.getCommandType().trim() + " ")) {
-                //查询聊天记录
-                queryChatHistory(msg);
-            } else if (SystemCommandEnumType.AI.getCommandType().trim().equals(msg.toLowerCase())) {
-                //开启 AI 模式
-                aiModel = true;
-                System.out.println("\033[31;4m" + "Hello,我是估值两亿的 AI 机器人！" + "\033[0m");
-            } else if (SystemCommandEnumType.QAI.getCommandType().trim().equals(msg.toLowerCase())) {
-                //关闭 AI 模式
-                aiModel = false;
-                System.out.println("\033[31;4m" + "｡ﾟ(ﾟ´ω`ﾟ)ﾟ｡  AI 下线了！" + "\033[0m");
-            } else if (msg.startsWith(SystemCommandEnumType.PREFIX.getCommandType().trim() + " ")) {
-                //模糊匹配
-                prefixSearch(msg);
-            }  else if (SystemCommandEnumType.INFO.getCommandType().trim().equals(msg.toLowerCase())) {
-                LOGGER.info("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
-                LOGGER.info("client info=[{}]", JSON.toJSONString(clientInfo.get()));
-                LOGGER.info("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
-
-            } else {
-                printAllCommand(allStatusCode);
-            }
+            InnerCommand instance = innerCommandContext.getInstance(msg);
+            instance.process(msg) ;
 
             return true;
 
@@ -251,6 +219,16 @@ public class MsgHandler implements MsgHandle {
             LOGGER.error("InterruptedException", e);
         }
         System.exit(0);
+    }
+
+    @Override
+    public void openAIModel() {
+        aiModel = true;
+    }
+
+    @Override
+    public void closeAIModel() {
+        aiModel = false ;
     }
 
     private void printAllCommand(Map<String, String> allStatusCode) {

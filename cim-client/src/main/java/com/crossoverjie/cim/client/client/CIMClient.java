@@ -209,6 +209,8 @@ public class CIMClient {
      * @throws InterruptedException
      */
     public void close() throws InterruptedException {
-        channel.close();
+        if (channel != null){
+            channel.close();
+        }
     }
 }
