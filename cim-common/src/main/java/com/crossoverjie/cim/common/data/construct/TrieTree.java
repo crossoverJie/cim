@@ -18,6 +18,10 @@ public class TrieTree {
      * 大小写都可保存
      */
     private static final int CHILDREN_LENGTH = 26 * 2;
+
+    /**
+     * 存放的最大字符串长度
+     */
     private static final int MAX_CHAR_LENGTH = 16;
 
     private static final char UPPERCASE_STAR = 'A';
@@ -209,7 +213,7 @@ public class TrieTree {
         public boolean isEnd = false;
 
         /**
-         * 如果支持查询，则不需要存储数据
+         * 如果只是查询，则不需要存储数据
          */
         public char data;
 

@@ -46,6 +46,102 @@ public class TrieTreeTest {
     }
 
     @Test
+    public void prefixSea() throws Exception {
+        TrieTree trieTree = new TrieTree();
+        trieTree.insert("java");
+        trieTree.insert("jsf");
+        trieTree.insert("jsp");
+        trieTree.insert("javascript");
+        trieTree.insert("php");
+
+        String result ="";
+        List<String> ab = trieTree.prefixSearch("jav");
+        for (String s : ab) {
+            result += s+",";
+            System.out.println(s);
+        }
+
+        Assert.assertTrue(result.equals("java,javascript,"));
+
+    }
+    @Test
+    public void prefixSea2() throws Exception {
+        TrieTree trieTree = new TrieTree();
+        trieTree.insert("java");
+        trieTree.insert("jsf");
+        trieTree.insert("jsp");
+        trieTree.insert("javascript");
+        trieTree.insert("php");
+
+        String result ="";
+        List<String> ab = trieTree.prefixSearch("j");
+        for (String s : ab) {
+            result += s+",";
+            System.out.println(s);
+        }
+
+        Assert.assertTrue(result.equals("java,javascript,jsf,jsp,"));
+
+    }
+    @Test
+    public void prefixSea3() throws Exception {
+        TrieTree trieTree = new TrieTree();
+        trieTree.insert("java");
+        trieTree.insert("jsf");
+        trieTree.insert("jsp");
+        trieTree.insert("javascript");
+        trieTree.insert("php");
+
+        String result ="";
+        List<String> ab = trieTree.prefixSearch("js");
+        for (String s : ab) {
+            result += s+",";
+            System.out.println(s);
+        }
+
+        Assert.assertTrue(result.equals("jsf,jsp,"));
+
+    }
+    @Test
+    public void prefixSea4() throws Exception {
+        TrieTree trieTree = new TrieTree();
+        trieTree.insert("java");
+        trieTree.insert("jsf");
+        trieTree.insert("jsp");
+        trieTree.insert("javascript");
+        trieTree.insert("php");
+
+        String result ="";
+        List<String> ab = trieTree.prefixSearch("jav");
+        for (String s : ab) {
+            result += s+",";
+            System.out.println(s);
+        }
+
+        Assert.assertTrue(result.equals("java,javascript,"));
+
+    }
+    @Test
+    public void prefixSea5() throws Exception {
+        TrieTree trieTree = new TrieTree();
+        trieTree.insert("java");
+        trieTree.insert("jsf");
+        trieTree.insert("jsp");
+        trieTree.insert("javascript");
+        trieTree.insert("php");
+
+        String result ="";
+        List<String> ab = trieTree.prefixSearch("js");
+        for (String s : ab) {
+            result += s+",";
+            System.out.println(s);
+        }
+
+        Assert.assertTrue(result.equals("jsf,jsp,"));
+
+    }
+
+    @Test
     public void prefixSearch() throws Exception {
         TrieTree trieTree = new TrieTree();
         trieTree.insert("abc");
@@ -111,6 +207,19 @@ public class TrieTreeTest {
             System.out.println(s);
         }
         Assert.assertTrue(result.equals("Cde,"));
+    }
+    @Test
+    public void prefixSearch44() throws Exception {
+        TrieTree trieTree = new TrieTree();
+        trieTree.insert("a");
+        trieTree.insert("b");
+        trieTree.insert("c");
+        trieTree.insert("d");
+        trieTree.insert("e");
+        trieTree.insert("f");
+        trieTree.insert("g");
+        trieTree.insert("h");
+
     }
 
     @Test

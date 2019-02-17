@@ -49,8 +49,9 @@
 * [x] 根据实际情况灵活的水平扩容、缩容。
 * [x] 路由(`cim-forward-route`)服务自身是无状态，可用 `Nginx` 代理支持高可用。
 * [x] 服务端自动剔除离线客户端。
-* [ ] 弱网环境下客户端自动重连。
+* [x] 客户端自动重连。
 * [ ] 分组群聊。
+* [ ] Android SDK。
 * [ ] 离线消息。
 * [ ] 协议支持消息加密。
 * [ ] 更多的客户端路由策略。
@@ -179,6 +180,7 @@ java -jar cim-client-1.0.0-SNAPSHOT.jar --server.port=8084 --cim.user.id=上方�
 | `:ai` | 开启 AI 模式 | 
 | `:qai` | 关闭 AI 模式 | 
 | `:pu` | 模糊匹配用户 | 
+| `:info` | 获取客户端信息 | 
 | `:` | 更多命令正在开发中。。 | 
 
 ![](https://ws3.sinaimg.cn/large/006tNbRwly1fylh7bdlo6g30go01shdt.gif)
@@ -205,7 +207,7 @@ java -jar cim-client-1.0.0-SNAPSHOT.jar --server.port=8084 --cim.user.id=上方�
 
 ![](https://ws4.sinaimg.cn/large/006tNc79gy1fz3vo4tgkjj31ni09s41u.jpg)
 
-使用命令 `:qu prefix` 可以按照前缀的方式重新用户信息。
+使用命令 `:qu prefix` 可以按照前缀的方式搜索用户信息。
 
 > 该功能主要用于在移动端中的输入框中搜索用户。 
 
@@ -248,6 +250,12 @@ java -jar cim-client-1.0.0-SNAPSHOT.jar --server.port=8084 --cim.user.id=上方�
 
 ![](https://ws1.sinaimg.cn/large/006tKfTcly1ftmfdo6mhmj30760760t7.jpg)
 
-# Code Visualization
 
- [![Watch the video](https://img.youtube.com/vi/NhV_brPIG74/maxresdefault.jpg)](https://youtu.be/NhV_brPIG74)
+### Code Visualization:
+
+Here is a cool visualization of the code evolution
+
+ [![Watch the video](https://img.youtube.com/vi/NhV_brPIG74/0.jpg)](https://www.youtube.com/watch?v=NhV_brPIG74)
+
+ [https://www.youtube.com/watch?v=NhV_brPIG74](https://www.youtube.com/watch?v=NhV_brPIG74)
+

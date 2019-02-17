@@ -51,7 +51,7 @@ public class BeanConfig {
     public CIMRequestProto.CIMReqProtocol heartBeat() {
         CIMRequestProto.CIMReqProtocol heart = CIMRequestProto.CIMReqProtocol.newBuilder()
                 .setRequestId(0L)
-                .setReqMsg("ping")
+                .setReqMsg("pong")
                 .setType(Constants.CommandType.PING)
                 .build();
         return heart;

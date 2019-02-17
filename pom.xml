@@ -30,7 +30,6 @@
 		<module>cim-server</module>
 		<module>cim-client</module>
 		<module>cim-common</module>
-		<module>springboot-admin</module>
 		<module>cim-zk</module>
 		<module>cim-forward-route</module>
 	</modules>
