@@ -117,8 +117,13 @@ fabric.properties
 .idea/
 *.iml
 
+# Eclipse Project 
+bin
 *.project
 *.settings/
 *.classpath
 *.factorypath
 .vscode/
+/.metadata/
+
+

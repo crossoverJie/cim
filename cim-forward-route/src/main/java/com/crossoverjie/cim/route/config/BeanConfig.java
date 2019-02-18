@@ -30,7 +30,7 @@ public class BeanConfig {
 
     @Bean
     public ZkClient buildZKClient(){
-        return new ZkClient(appConfiguration.getZkAddr(), 5000);
+        return new ZkClient(appConfiguration.getZkAddr(), appConfiguration.getZkConnectTimeout());
     }
 
     @Bean

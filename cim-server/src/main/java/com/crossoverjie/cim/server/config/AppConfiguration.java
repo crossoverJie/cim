@@ -30,7 +30,14 @@ public class AppConfiguration {
 
     @Value("${cim.heartbeat.time}")
     private long heartBeatTime ;
-
+    
+    @Value("${app.zk.connect.timeout}")
+    private int zkConnectTimeout;
+    
+    public int getZkConnectTimeout() {
+		return zkConnectTimeout;
+	}
+    
     public String getClearRouteUrl() {
         return clearRouteUrl;
     }
