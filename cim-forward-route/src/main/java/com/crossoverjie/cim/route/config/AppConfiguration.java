@@ -23,6 +23,13 @@ public class AppConfiguration {
     @Value("${server.port}")
     private int port;
 
+    @Value("${app.zk.connect.timeout}")
+    private int zkConnectTimeout;
+    
+    public int getZkConnectTimeout() {
+		return zkConnectTimeout;
+	}
+    
     public int getPort() {
         return port;
     }
