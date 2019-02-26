@@ -21,7 +21,7 @@ public class SortArrayMap {
         buckets = new Node[DEFAULT_SIZE];
     }
 
-    public void add(int key, String value) {
+    public void add(Long key, String value) {
         checkSize(size + 1);
         Node node = new Node(key, value);
         buckets[size++] = node;
@@ -36,7 +36,7 @@ public class SortArrayMap {
         }
     }
 
-    public String firstNodeValue(int key) {
+    public String firstNodeValue(long key) {
         if (size == 0){
             return null ;
         }
@@ -86,10 +86,10 @@ public class SortArrayMap {
      * 数据节点
      */
     private class Node {
-        public int key;
+        public Long key;
         public String value;
 
-        public Node(int key, String value) {
+        public Node(Long key, String value) {
             this.key = key;
             this.value = value;
         }

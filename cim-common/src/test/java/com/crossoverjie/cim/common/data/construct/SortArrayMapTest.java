@@ -8,7 +8,7 @@ public class SortArrayMapTest {
     public void ad() {
         SortArrayMap map = new SortArrayMap() ;
         for (int i = 0; i < 9; i++) {
-            map.add(i ,"127.0.0." + i);
+            map.add(Long.valueOf(i) ,"127.0.0." + i);
         }
         map.print();
         System.out.println(map.size());
@@ -18,7 +18,7 @@ public class SortArrayMapTest {
     public void add() {
         SortArrayMap map = new SortArrayMap() ;
         for (int i = 0; i < 10; i++) {
-            map.add(i ,"127.0.0." + i);
+            map.add(Long.valueOf(i) ,"127.0.0." + i);
         }
         map.print();
         System.out.println(map.size());
@@ -28,7 +28,7 @@ public class SortArrayMapTest {
     public void add2() {
         SortArrayMap map = new SortArrayMap() ;
         for (int i = 0; i < 20; i++) {
-            map.add(i ,"127.0.0." + i);
+            map.add(Long.valueOf(i) ,"127.0.0." + i);
         }
         map.sort();
         map.print();
@@ -39,10 +39,10 @@ public class SortArrayMapTest {
     public void add3() {
         SortArrayMap map = new SortArrayMap() ;
 
-        map.add(100,"127.0.0.100");
-        map.add(10,"127.0.0.10");
-        map.add(8,"127.0.0.8");
-        map.add(1000,"127.0.0.1000");
+        map.add(100L,"127.0.0.100");
+        map.add(10L,"127.0.0.10");
+        map.add(8L,"127.0.0.8");
+        map.add(1000L,"127.0.0.1000");
 
         map.print();
         System.out.println(map.size());
@@ -52,10 +52,10 @@ public class SortArrayMapTest {
     public void firstNode() {
         SortArrayMap map = new SortArrayMap() ;
 
-        map.add(100,"127.0.0.100");
-        map.add(10,"127.0.0.10");
-        map.add(8,"127.0.0.8");
-        map.add(1000,"127.0.0.1000");
+        map.add(100L,"127.0.0.100");
+        map.add(10L,"127.0.0.10");
+        map.add(8L,"127.0.0.8");
+        map.add(1000L,"127.0.0.1000");
 
         map.sort();
         map.print();
@@ -66,10 +66,10 @@ public class SortArrayMapTest {
     public void firstNode2() {
         SortArrayMap map = new SortArrayMap() ;
 
-        map.add(100,"127.0.0.100");
-        map.add(10,"127.0.0.10");
-        map.add(8,"127.0.0.8");
-        map.add(1000,"127.0.0.1000");
+        map.add(100L,"127.0.0.100");
+        map.add(10L,"127.0.0.10");
+        map.add(8L,"127.0.0.8");
+        map.add(1000L,"127.0.0.1000");
 
         map.sort();
         map.print();
@@ -80,10 +80,10 @@ public class SortArrayMapTest {
     public void firstNode3() {
         SortArrayMap map = new SortArrayMap() ;
 
-        map.add(100,"127.0.0.100");
-        map.add(10,"127.0.0.10");
-        map.add(8,"127.0.0.8");
-        map.add(1000,"127.0.0.1000");
+        map.add(100L,"127.0.0.100");
+        map.add(10L,"127.0.0.10");
+        map.add(8L,"127.0.0.8");
+        map.add(1000L,"127.0.0.1000");
 
         map.sort();
         map.print();
@@ -94,10 +94,10 @@ public class SortArrayMapTest {
     public void firstNode4() {
         SortArrayMap map = new SortArrayMap() ;
 
-        map.add(100,"127.0.0.100");
-        map.add(10,"127.0.0.10");
-        map.add(8,"127.0.0.8");
-        map.add(1000,"127.0.0.1000");
+        map.add(100L,"127.0.0.100");
+        map.add(10L,"127.0.0.10");
+        map.add(8L,"127.0.0.8");
+        map.add(1000L,"127.0.0.1000");
 
         map.sort();
         map.print();
@@ -109,10 +109,10 @@ public class SortArrayMapTest {
     public void add4() {
         SortArrayMap map = new SortArrayMap() ;
 
-        map.add(100,"127.0.0.100");
-        map.add(10,"127.0.0.10");
-        map.add(8,"127.0.0.8");
-        map.add(1000,"127.0.0.1000");
+        map.add(100L,"127.0.0.100");
+        map.add(10L,"127.0.0.10");
+        map.add(8L,"127.0.0.8");
+        map.add(1000L,"127.0.0.1000");
 
         map.sort();
         map.print();
@@ -129,7 +129,7 @@ public class SortArrayMapTest {
         for (int i = 0; i < count; i++) {
             double d = Math.random();
             int ran = (int)(d*100);
-            map.add(i + ran ,"127.0.0." + i);
+            map.add(Long.valueOf(i + ran) ,"127.0.0." + i);
         }
         map.sort();
         long end = System.currentTimeMillis() ;
@@ -148,7 +148,7 @@ public class SortArrayMapTest {
         for (int i = 0; i < count; i++) {
             double d = Math.random();
             int ran = (int)(d*100);
-            map.add(i + ran ,"127.0.0." + i);
+            map.add(Long.valueOf(i + ran) ,"127.0.0." + i);
         }
         long end = System.currentTimeMillis() ;
         System.out.println("不排耗时 " + (end -star));
