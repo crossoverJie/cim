@@ -2,8 +2,6 @@ package com.crossoverjie.cim.common.data.construct;
 
 import java.util.Arrays;
 import java.util.Comparator;
-import java.util.SortedMap;
-import java.util.TreeMap;
 
 /**
  * Function:根据 key 排序的 Map
@@ -38,13 +36,33 @@ public class SortArrayMap {
         }
     }
 
-    public void sort(){
+    public String firstNodeValue(int key) {
+        if (size == 0){
+            return null ;
+        }
+        for (Node bucket : buckets) {
+            if (bucket == null){
+                continue;
+            }
+            if (bucket.key >= key) {
+                return bucket.value;
+            }
+        }
+
+        return buckets[0].value;
+
+    }
+
+    /**
+     * 排序
+     */
+    public void sort() {
         Arrays.sort(buckets, 0, size, new Comparator<Node>() {
             @Override
             public int compare(Node o1, Node o2) {
-                if (o1.key > o2.key){
-                    return 1 ;
-                }else {
+                if (o1.key > o2.key) {
+                    return 1;
+                } else {
                     return -1;
                 }
             }
@@ -53,7 +71,7 @@ public class SortArrayMap {
 
     public void print() {
         for (Node bucket : buckets) {
-            if (bucket == null){
+            if (bucket == null) {
                 continue;
             }
             System.out.println(bucket.toString());
@@ -86,20 +104,4 @@ public class SortArrayMap {
 
     }
 
-
-    public static void main(String[] args) {
-        TreeMap<Integer, String> addressRing = new TreeMap<Integer, String>();
-        for (int i = 0; i < 10; i++) {
-            addressRing.put(i, "192.168.1." + i);
-        }
-        Integer jobHash = 0;
-        SortedMap<Integer, String> lastRing = addressRing.tailMap(jobHash);
-        if (!lastRing.isEmpty()) {
-            System.out.println("result= " + lastRing.get(lastRing.firstKey()));
-        } else {
-            System.out.println("result=" + addressRing.firstEntry().getValue());
-        }
-
-
-    }
 }

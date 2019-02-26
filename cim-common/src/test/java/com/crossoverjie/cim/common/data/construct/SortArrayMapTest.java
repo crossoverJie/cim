@@ -49,6 +49,63 @@ public class SortArrayMapTest {
     }
 
     @Test
+    public void firstNode() {
+        SortArrayMap map = new SortArrayMap() ;
+
+        map.add(100,"127.0.0.100");
+        map.add(10,"127.0.0.10");
+        map.add(8,"127.0.0.8");
+        map.add(1000,"127.0.0.1000");
+
+        map.sort();
+        map.print();
+        String value = map.firstNodeValue(101);
+        System.out.println(value);
+    }
+    @Test
+    public void firstNode2() {
+        SortArrayMap map = new SortArrayMap() ;
+
+        map.add(100,"127.0.0.100");
+        map.add(10,"127.0.0.10");
+        map.add(8,"127.0.0.8");
+        map.add(1000,"127.0.0.1000");
+
+        map.sort();
+        map.print();
+        String value = map.firstNodeValue(1);
+        System.out.println(value);
+    }
+    @Test
+    public void firstNode3() {
+        SortArrayMap map = new SortArrayMap() ;
+
+        map.add(100,"127.0.0.100");
+        map.add(10,"127.0.0.10");
+        map.add(8,"127.0.0.8");
+        map.add(1000,"127.0.0.1000");
+
+        map.sort();
+        map.print();
+        String value = map.firstNodeValue(1001);
+        System.out.println(value);
+    }
+    @Test
+    public void firstNode4() {
+        SortArrayMap map = new SortArrayMap() ;
+
+        map.add(100,"127.0.0.100");
+        map.add(10,"127.0.0.10");
+        map.add(8,"127.0.0.8");
+        map.add(1000,"127.0.0.1000");
+
+        map.sort();
+        map.print();
+        String value = map.firstNodeValue(9);
+        System.out.println(value);
+    }
+
+    @Test
     public void add4() {
         SortArrayMap map = new SortArrayMap() ;
 
