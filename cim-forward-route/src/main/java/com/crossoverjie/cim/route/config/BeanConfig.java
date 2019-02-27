@@ -1,7 +1,7 @@
 package com.crossoverjie.cim.route.config;
 
 import com.crossoverjie.cim.common.route.algorithm.RouteHandle;
-import com.crossoverjie.cim.common.route.algorithm.loop.LoopHandle;
+import com.crossoverjie.cim.common.route.algorithm.consistenthash.ConsistentHashHandle;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
@@ -78,6 +78,6 @@ public class BeanConfig {
 
     @Bean
     public RouteHandle buildRouteHandle(){
-        return new LoopHandle() ;
+        return new ConsistentHashHandle() ;
     }
 }

@@ -12,13 +12,10 @@ import java.util.List;
  * @since JDK 1.8
  */
 public class ConsistentHashHandle implements RouteHandle {
-    private AbstractConsistentHash hash = new SortArrayMapConsistentHash() ;
+    private AbstractConsistentHash hash = new SortArrayMapConsistentHash();
 
     @Override
     public String routeServer(List<String> values) {
-        String key = values.get(0);
-        values.remove(0) ;
-        hash.process(values);
-        return "";
+        return hash.process(values);
     }
 }
