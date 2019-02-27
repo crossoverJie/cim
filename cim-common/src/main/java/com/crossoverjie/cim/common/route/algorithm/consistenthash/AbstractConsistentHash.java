@@ -33,11 +33,16 @@ public abstract class AbstractConsistentHash {
      */
     protected abstract String getFirstNodeValue(String value);
 
-    public void process(List<String> values){
+    public String process(List<String> values){
+        String key = values.get(0);
+        values.remove(0) ;
+
         for (String value : values) {
             add(hash(value), value);
         }
         sort();
+
+        return getFirstNodeValue(key) ;
     }
 
     /**

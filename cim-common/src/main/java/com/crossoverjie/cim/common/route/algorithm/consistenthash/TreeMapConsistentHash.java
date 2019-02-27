@@ -14,12 +14,12 @@ public class TreeMapConsistentHash extends AbstractConsistentHash {
     private TreeMap<Long,String> treeMap = new TreeMap<Long, String>() ;
 
     @Override
-    protected void add(long key, String value) {
+    public void add(long key, String value) {
         treeMap.put(key, value);
     }
 
     @Override
-    protected String getFirstNodeValue(String value) {
+    public String getFirstNodeValue(String value) {
         long hash = super.hash(value);
         System.out.println("value=" + value + " hash = " + hash);
         SortedMap<Long, String> last = treeMap.tailMap(hash);

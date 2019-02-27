@@ -14,18 +14,18 @@ public class SortArrayMapConsistentHash extends AbstractConsistentHash {
     private SortArrayMap sortArrayMap = new SortArrayMap();
 
     @Override
-    protected void add(long key, String value) {
+    public void add(long key, String value) {
         sortArrayMap.add(key, value);
     }
 
     @Override
-    protected void sort() {
+    public void sort() {
         sortArrayMap.sort();
         sortArrayMap.print();
     }
 
     @Override
-    protected String getFirstNodeValue(String value) {
+    public String getFirstNodeValue(String value) {
         long hash = super.hash(value);
         System.out.println("value=" + value + " hash = " + hash);
         return sortArrayMap.firstNodeValue(hash);
