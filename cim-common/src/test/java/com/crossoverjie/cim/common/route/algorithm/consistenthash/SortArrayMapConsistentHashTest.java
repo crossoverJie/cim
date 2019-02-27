@@ -54,4 +54,68 @@ public class SortArrayMapConsistentHashTest {
         System.out.println(process);
         Assert.assertEquals("127.0.0.6",process);
     }
+
+
+    @Test
+    public void getFirstNodeValue4() {
+        AbstractConsistentHash map = new SortArrayMapConsistentHash() ;
+
+        List<String> strings = new ArrayList<String>();
+        strings.add("1551253899106") ;
+        strings.add("45.78.28.220:9000:8081") ;
+        strings.add("45.78.28.220:9100:9081") ;
+
+        String process = map.process(strings);
+
+        System.out.println(process);
+        Assert.assertEquals("45.78.28.220:9000:8081",process);
+    }
+    @Test
+    public void getFirstNodeValue5() {
+        AbstractConsistentHash map = new SortArrayMapConsistentHash() ;
+
+        List<String> strings = new ArrayList<String>();
+        strings.add("1551253899106") ;
+        strings.add("45.78.28.220:9000:8081") ;
+        strings.add("45.78.28.220:9100:9081") ;
+        strings.add("45.78.28.220:9100:10081") ;
+
+        String process = map.process(strings);
+
+        System.out.println(process);
+        Assert.assertEquals("45.78.28.220:9100:10081",process);
+    }
+
+    @Test
+    public void getFirstNodeValue6() {
+        AbstractConsistentHash map = new SortArrayMapConsistentHash() ;
+
+        List<String> strings = new ArrayList<String>();
+        strings.add("1551253899106") ;
+        strings.add("45.78.28.220:9000:8081") ;
+        strings.add("45.78.28.220:9100:9081") ;
+        strings.add("45.78.28.220:9100:10081") ;
+
+        String process = map.process(strings);
+
+        System.out.println(process);
+        Assert.assertEquals("45.78.28.220:9100:10081",process);
+    }
+    @Test
+    public void getFirstNodeValue7() {
+        AbstractConsistentHash map = new SortArrayMapConsistentHash() ;
+
+        List<String> strings = new ArrayList<String>();
+        strings.add("1551253899106") ;
+        strings.add("45.78.28.220:9000:8081") ;
+        strings.add("45.78.28.220:9100:9081") ;
+        strings.add("45.78.28.220:9100:10081") ;
+        strings.add("45.78.28.220:9100:00081") ;
+
+        String process = map.process(strings);
+
+        System.out.println(process);
+        Assert.assertEquals("45.78.28.220:9100:10081",process);
+    }
+
 }
