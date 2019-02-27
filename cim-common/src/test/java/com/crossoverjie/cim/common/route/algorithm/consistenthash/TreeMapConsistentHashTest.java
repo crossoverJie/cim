@@ -18,7 +18,7 @@ public class TreeMapConsistentHashTest {
         }
         String process = map.process(strings,"zhangsan");
         System.out.println(process);
-        Assert.assertEquals("127.0.0.8",process);
+        Assert.assertEquals("127.0.0.2",process);
     }
 
 
@@ -34,7 +34,7 @@ public class TreeMapConsistentHashTest {
         String process = map.process(strings,"zhangsan2");
         System.out.println(process);
 
-        Assert.assertEquals("127.0.0.4",process);
+        Assert.assertEquals("127.0.0.3",process);
     }
 
 

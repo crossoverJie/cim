@@ -6,8 +6,6 @@ import org.junit.Test;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.Assert.*;
-
 public class SortArrayMapConsistentHashTest {
 
     @Test
@@ -15,13 +13,12 @@ public class SortArrayMapConsistentHashTest {
         AbstractConsistentHash map = new SortArrayMapConsistentHash() ;
 
         List<String> strings = new ArrayList<String>();
-        strings.add("") ;
         for (int i = 0; i < 10; i++) {
             strings.add("127.0.0." + i) ;
         }
         String process = map.process(strings,"zhangsan");
         System.out.println(process);
-        Assert.assertEquals("127.0.0.8",process);
+        Assert.assertEquals("127.0.0.2",process);
 
     }
 
@@ -36,7 +33,7 @@ public class SortArrayMapConsistentHashTest {
         String process = map.process(strings,"zhangsan2");
         System.out.println(process);
 
-        Assert.assertEquals("127.0.0.4",process);
+        Assert.assertEquals("127.0.0.3",process);
     }
 
     @Test
@@ -79,7 +76,7 @@ public class SortArrayMapConsistentHashTest {
         String process = map.process(strings,"1551253899106");
 
         System.out.println(process);
-        Assert.assertEquals("45.78.28.220:9100:10081",process);
+        Assert.assertEquals("45.78.28.220:9000:8081",process);
     }
 
     @Test
@@ -94,7 +91,7 @@ public class SortArrayMapConsistentHashTest {
         String process = map.process(strings,"1551253899106");
 
         System.out.println(process);
-        Assert.assertEquals("45.78.28.220:9100:10081",process);
+        Assert.assertEquals("45.78.28.220:9000:8081",process);
     }
     @Test
     public void getFirstNodeValue7() {
@@ -109,7 +106,7 @@ public class SortArrayMapConsistentHashTest {
         String process = map.process(strings,"1551253899106");
 
         System.out.println(process);
-        Assert.assertEquals("45.78.28.220:9100:10081",process);
+        Assert.assertEquals("45.78.28.220:9000:8081",process);
     }
 
 
