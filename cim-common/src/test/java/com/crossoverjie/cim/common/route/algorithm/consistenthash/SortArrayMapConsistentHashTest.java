@@ -117,5 +117,4 @@ public class SortArrayMapConsistentHashTest {
         System.out.println(process);
         Assert.assertEquals("45.78.28.220:9100:10081",process);
     }
-
 }
