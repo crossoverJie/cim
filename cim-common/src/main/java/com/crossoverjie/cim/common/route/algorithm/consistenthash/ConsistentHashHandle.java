@@ -17,7 +17,7 @@ public class ConsistentHashHandle implements RouteHandle {
 
 
     @Override
-    public String selectServer(List<String> values) {
+    public String routeServer(List<String> values) {
         return null;
     }
 }

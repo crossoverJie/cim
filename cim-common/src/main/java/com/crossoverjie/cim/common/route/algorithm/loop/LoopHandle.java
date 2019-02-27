@@ -16,7 +16,7 @@ public class LoopHandle implements RouteHandle {
     private AtomicLong index = new AtomicLong();
 
     @Override
-    public String selectServer(List<String> values) {
+    public String routeServer(List<String> values) {
         if (values.size() == 0) {
             throw new RuntimeException("CIM 服务器可用服务列表为空");
         }

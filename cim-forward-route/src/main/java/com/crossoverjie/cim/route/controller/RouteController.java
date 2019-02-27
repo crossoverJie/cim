@@ -151,7 +151,7 @@ public class RouteController {
         StatusEnum status = accountService.login(loginReqVO);
         if (status == StatusEnum.SUCCESS) {
 
-            String server = routeHandle.selectServer(serverCache.getAll());
+            String server = routeHandle.routeServer(serverCache.getAll());
             String[] serverInfo = server.split(":");
             CIMServerResVO vo = new CIMServerResVO(serverInfo[0], Integer.parseInt(serverInfo[1]),Integer.parseInt(serverInfo[2]));
 

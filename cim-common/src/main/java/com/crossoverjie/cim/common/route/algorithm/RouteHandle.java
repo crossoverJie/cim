@@ -11,5 +11,10 @@ import java.util.List;
  */
 public interface RouteHandle {
 
-    String selectServer(List<String> values) ;
+    /**
+     * 再一批服务器里进行路由
+     * @param values
+     * @return
+     */
+    String routeServer(List<String> values) ;
 }
