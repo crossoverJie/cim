@@ -33,9 +33,7 @@ public abstract class AbstractConsistentHash {
      */
     protected abstract String getFirstNodeValue(String value);
 
-    public String process(List<String> values){
-        String key = values.get(0);
-        values.remove(0) ;
+    public String process(List<String> values,String key){
 
         for (String value : values) {
             add(hash(value), value);

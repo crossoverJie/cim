@@ -15,7 +15,7 @@ public class ConsistentHashHandle implements RouteHandle {
     private AbstractConsistentHash hash = new SortArrayMapConsistentHash();
 
     @Override
-    public String routeServer(List<String> values) {
-        return hash.process(values);
+    public String routeServer(List<String> values, String key) {
+        return hash.process(values, key);
     }
 }
