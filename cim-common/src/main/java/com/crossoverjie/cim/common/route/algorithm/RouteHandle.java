@@ -1,5 +1,7 @@
 package com.crossoverjie.cim.common.route.algorithm;
 
+import java.util.List;
+
 /**
  * Function:
  *
@@ -9,5 +11,5 @@ package com.crossoverjie.cim.common.route.algorithm;
  */
 public interface RouteHandle {
 
-    String selectServer() ;
+    String selectServer(List<String> values) ;
 }

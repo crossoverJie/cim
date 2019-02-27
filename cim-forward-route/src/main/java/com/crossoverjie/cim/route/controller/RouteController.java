@@ -5,6 +5,7 @@ import com.crossoverjie.cim.common.exception.CIMException;
 import com.crossoverjie.cim.common.pojo.CIMUserInfo;
 import com.crossoverjie.cim.common.res.BaseResponse;
 import com.crossoverjie.cim.common.res.NULLBody;
+import com.crossoverjie.cim.common.route.algorithm.RouteHandle;
 import com.crossoverjie.cim.route.cache.ServerCache;
 import com.crossoverjie.cim.route.service.AccountService;
 import com.crossoverjie.cim.route.service.UserInfoCacheService;
@@ -47,6 +48,10 @@ public class RouteController {
 
     @Autowired
     private UserInfoCacheService userInfoCacheService ;
+
+
+    @Autowired
+    private RouteHandle routeHandle ;
 
     @ApiOperation("群聊 API")
     @RequestMapping(value = "groupRoute", method = RequestMethod.POST)
@@ -145,7 +150,8 @@ public class RouteController {
         //登录校验
         StatusEnum status = accountService.login(loginReqVO);
         if (status == StatusEnum.SUCCESS) {
-            String server = serverCache.selectServer();
+
+            String server = routeHandle.selectServer(serverCache.getAll());
             String[] serverInfo = server.split(":");
             CIMServerResVO vo = new CIMServerResVO(serverInfo[0], Integer.parseInt(serverInfo[1]),Integer.parseInt(serverInfo[2]));
 

@@ -2,6 +2,8 @@ package com.crossoverjie.cim.common.route.algorithm.consistenthash;
 
 import com.crossoverjie.cim.common.route.algorithm.RouteHandle;
 
+import java.util.List;
+
 /**
  * Function:
  *
@@ -15,7 +17,7 @@ public class ConsistentHashHandle implements RouteHandle {
 
 
     @Override
-    public String selectServer() {
+    public String selectServer(List<String> values) {
         return null;
     }
 }
