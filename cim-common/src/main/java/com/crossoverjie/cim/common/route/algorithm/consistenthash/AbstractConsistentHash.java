@@ -14,8 +14,16 @@ import java.util.List;
  */
 public abstract class AbstractConsistentHash {
 
-    protected void add(long key,String value){}
+    /**
+     * 新增节点
+     * @param key
+     * @param value
+     */
+    protected abstract void add(long key,String value);
 
+    /**
+     * 排序节点，数据结构自身支持排序可以不用重写
+     */
     protected void sort(){}
 
     /**
@@ -23,9 +31,7 @@ public abstract class AbstractConsistentHash {
      * @param value
      * @return
      */
-    protected String getFirstNodeValue(String value){
-        return null ;
-    }
+    protected abstract String getFirstNodeValue(String value);
 
     public void process(List<String> values){
         for (String value : values) {

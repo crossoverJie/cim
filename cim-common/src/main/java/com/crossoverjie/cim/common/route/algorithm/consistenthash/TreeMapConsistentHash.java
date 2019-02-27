@@ -19,10 +19,6 @@ public class TreeMapConsistentHash extends AbstractConsistentHash {
     }
 
     @Override
-    protected void sort() {
-    }
-
-    @Override
     protected String getFirstNodeValue(String value) {
         long hash = super.hash(value);
         System.out.println("value=" + value + " hash = " + hash);
