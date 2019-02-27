@@ -3,7 +3,7 @@ package com.crossoverjie.cim.common.route.algorithm.consistenthash;
 import com.crossoverjie.cim.common.data.construct.SortArrayMap;
 
 /**
- * Function:
+ * Function:自定义排序 Map 实现
  *
  * @author crossoverJie
  * Date: 2019-02-27 00:38
@@ -21,7 +21,6 @@ public class SortArrayMapConsistentHash extends AbstractConsistentHash {
     @Override
     public void sort() {
         sortArrayMap.sort();
-        sortArrayMap.print();
     }
 
     @Override

@@ -2,6 +2,8 @@ package com.crossoverjie.cim.common.data.construct;
 
 import org.junit.Test;
 
+import java.util.TreeMap;
+
 public class SortArrayMapTest {
 
     @Test
@@ -153,5 +155,19 @@ public class SortArrayMapTest {
         long end = System.currentTimeMillis() ;
         System.out.println("不排耗时 " + (end -star));
         System.out.println(map.size());
+    }
+    @Test
+    public void add7(){
+
+        TreeMap<Long,String> treeMap = new TreeMap<Long, String>() ;
+        long star = System.currentTimeMillis() ;
+        for (int i = 0; i < count; i++) {
+            double d = Math.random();
+            int ran = (int)(d*100);
+            treeMap.put(Long.valueOf(i + ran) ,"127.0.0." + i);
+        }
+        long end = System.currentTimeMillis() ;
+        System.out.println("耗时 " + (end -star));
+        System.out.println(treeMap.size());
     }
 }
