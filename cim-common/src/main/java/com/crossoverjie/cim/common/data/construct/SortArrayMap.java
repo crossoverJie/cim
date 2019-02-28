@@ -52,6 +52,11 @@ public class SortArrayMap {
         }
     }
 
+    /**
+     * 顺时针取出数据
+     * @param key
+     * @return
+     */
     public String firstNodeValue(long key) {
         if (size == 0){
             return null ;
