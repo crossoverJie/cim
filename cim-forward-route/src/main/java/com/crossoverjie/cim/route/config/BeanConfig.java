@@ -86,7 +86,8 @@ public class BeanConfig {
         if (routeWay.contains("ConsistentHash")) {
             //一致性 hash 算法
             Method method = Class.forName(routeWay).getMethod("setHash", AbstractConsistentHash.class);
-            AbstractConsistentHash consistentHash = (AbstractConsistentHash) Class.forName(appConfiguration.getConsistentHashWay()).newInstance();
+            AbstractConsistentHash consistentHash = (AbstractConsistentHash)
+                    Class.forName(appConfiguration.getConsistentHashWay()).newInstance();
             method.invoke(routeHandle,consistentHash) ;
             return routeHandle ;
         } else {
