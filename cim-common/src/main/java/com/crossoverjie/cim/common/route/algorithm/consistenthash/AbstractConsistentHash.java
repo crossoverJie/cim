@@ -33,6 +33,12 @@ public abstract class AbstractConsistentHash {
      */
     protected abstract String getFirstNodeValue(String value);
 
+    /**
+     * 传入节点列表以及客户端信息获取一个服务节点
+     * @param values
+     * @param key
+     * @return
+     */
     public String process(List<String> values,String key){
 
         for (String value : values) {
