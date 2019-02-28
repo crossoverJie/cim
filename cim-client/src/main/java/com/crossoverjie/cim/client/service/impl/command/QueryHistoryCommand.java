@@ -25,6 +25,9 @@ public class QueryHistoryCommand implements InnerCommand {
     @Override
     public void process(String msg) {
         String[] split = msg.split(" ");
+        if (split.length < 2){
+            return;
+        }
         String res = msgLogger.query(split[1]);
         System.out.println(res);
     }

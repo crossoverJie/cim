@@ -4,6 +4,7 @@ import com.crossoverjie.cim.client.client.CIMClient;
 import com.crossoverjie.cim.client.service.InnerCommand;
 import com.crossoverjie.cim.client.service.MsgLogger;
 import com.crossoverjie.cim.client.service.RouteRequest;
+import com.crossoverjie.cim.client.service.ShutDownMsg;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,9 +37,14 @@ public class ShutDownCommand implements InnerCommand {
     @Resource(name = "callBackThreadPool")
     private ThreadPoolExecutor executor;
 
+
+    @Autowired
+    private ShutDownMsg shutDownMsg ;
+
     @Override
     public void process(String msg) {
         LOGGER.info("系统关闭中。。。。");
+        shutDownMsg.shutdown();
         routeRequest.offLine();
         msgLogger.stop();
         executor.shutdown();

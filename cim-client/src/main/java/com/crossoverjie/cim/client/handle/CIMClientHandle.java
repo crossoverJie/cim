@@ -1,5 +1,6 @@
 package com.crossoverjie.cim.client.handle;
 
+import com.crossoverjie.cim.client.service.ShutDownMsg;
 import com.crossoverjie.cim.client.thread.ReConnectJob;
 import com.crossoverjie.cim.client.util.SpringBeanFactory;
 import com.crossoverjie.cim.common.constant.Constants;
@@ -37,6 +38,8 @@ public class CIMClientHandle extends SimpleChannelInboundHandler<CIMResponseProt
 
     private ScheduledExecutorService scheduledExecutorService ;
 
+    private ShutDownMsg shutDownMsg ;
+
 
     @Override
     public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
@@ -71,11 +74,20 @@ public class CIMClientHandle extends SimpleChannelInboundHandler<CIMResponseProt
 
     @Override
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
-        LOGGER.info("客户端断开了，重新连接！");
+
+        if (shutDownMsg == null){
+            shutDownMsg = SpringBeanFactory.getBean(ShutDownMsg.class) ;
+        }
+
+        //用户主动退出，不执行重连逻辑
+        if (shutDownMsg.checkStatus()){
+            return;
+        }
 
         if (scheduledExecutorService == null){
             scheduledExecutorService = SpringBeanFactory.getBean("scheduledTask",ScheduledExecutorService.class) ;
         }
+        LOGGER.info("客户端断开了，重新连接！");
         // TODO: 2019-01-22 后期可以改为不用定时任务，连上后就关闭任务 节省性能。
         scheduledExecutorService.scheduleAtFixedRate(new ReConnectJob(ctx),0,10, TimeUnit.SECONDS) ;
     }
