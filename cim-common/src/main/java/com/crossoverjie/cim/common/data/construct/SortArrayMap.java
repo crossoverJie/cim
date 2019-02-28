@@ -28,12 +28,21 @@ public class SortArrayMap {
         buckets = new Node[DEFAULT_SIZE];
     }
 
+    /**
+     * 写入数据
+     * @param key
+     * @param value
+     */
     public void add(Long key, String value) {
         checkSize(size + 1);
         Node node = new Node(key, value);
         buckets[size++] = node;
     }
 
+    /**
+     * 校验是否需要扩容
+     * @param size
+     */
     private void checkSize(int size) {
         if (size >= buckets.length) {
             //扩容自身的 3/2
