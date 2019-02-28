@@ -27,7 +27,7 @@ public abstract class AbstractConsistentHash {
     protected void sort(){}
 
     /**
-     * 根据当前的
+     * 根据当前的 key 通过一致性 hash 算法的规则取出一个节点
      * @param value
      * @return
      */
