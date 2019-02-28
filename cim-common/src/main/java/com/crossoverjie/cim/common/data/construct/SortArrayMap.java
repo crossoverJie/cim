@@ -12,9 +12,16 @@ import java.util.Comparator;
  */
 public class SortArrayMap {
 
+    /**
+     * 核心数组
+     */
     private Node[] buckets;
 
     private static final int DEFAULT_SIZE = 10;
+
+    /**
+     * 数组大小
+     */
     private int size = 0;
 
     public SortArrayMap() {
