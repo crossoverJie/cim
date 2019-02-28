@@ -2,6 +2,7 @@ package com.crossoverjie.cim.common.data.construct;
 
 import org.junit.Test;
 
+import java.util.SortedMap;
 import java.util.TreeMap;
 
 public class SortArrayMapTest {
@@ -169,5 +170,22 @@ public class SortArrayMapTest {
         long end = System.currentTimeMillis() ;
         System.out.println("耗时 " + (end -star));
         System.out.println(treeMap.size());
+    }
+
+    @Test
+    public void add8(){
+
+        TreeMap<Long,String> map = new TreeMap<Long, String>() ;
+        map.put(100L,"127.0.0.100");
+        map.put(10L,"127.0.0.10");
+        map.put(8L,"127.0.0.8");
+        map.put(1000L,"127.0.0.1000");
+
+        SortedMap<Long, String> last = map.tailMap(101L);
+        if (!last.isEmpty()) {
+            System.out.println(last.get(last.firstKey()));
+        }else {
+            System.out.println(map.firstEntry().getValue());
+        }
     }
 }
