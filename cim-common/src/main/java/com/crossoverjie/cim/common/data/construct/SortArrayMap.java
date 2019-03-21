@@ -63,7 +63,7 @@ public class SortArrayMap {
         }
         for (Node bucket : buckets) {
             if (bucket == null){
-                continue;
+                break;
             }
             if (bucket.key >= key) {
                 return bucket.value;
