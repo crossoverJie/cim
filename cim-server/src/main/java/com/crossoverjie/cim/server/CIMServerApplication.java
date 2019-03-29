@@ -25,6 +25,8 @@ public class CIMServerApplication implements CommandLineRunner{
 
 	@Value("${server.port}")
 	private int httpPort ;
+	@Value("${cim.server.weight}")
+	private int weight;
 
 	public static void main(String[] args) {
         SpringApplication.run(CIMServerApplication.class, args);
@@ -35,7 +37,7 @@ public class CIMServerApplication implements CommandLineRunner{
 	public void run(String... args) throws Exception {
 		//获得本机IP
 		String addr = InetAddress.getLocalHost().getHostAddress();
-		Thread thread = new Thread(new RegistryZK(addr, appConfiguration.getCimServerPort(),httpPort));
+		Thread thread = new Thread(new RegistryZK(addr, appConfiguration.getCimServerPort(),httpPort,weight));
 		thread.setName("registry-zk");
 		thread.start() ;
 	}
