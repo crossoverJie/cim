@@ -35,7 +35,37 @@
 | YouTube | Bilibili|
 | :------:| :------: | 
 | [群聊](https://youtu.be/_9a4lIkQ5_o) [私聊](https://youtu.be/kfEfQFPLBTQ) | [群聊](https://www.bilibili.com/video/av39405501) [私聊](https://www.bilibili.com/video/av39405821) | 
-| ![](https://ws4.sinaimg.cn/large/006tNbRwly1fylq36zy83j31ga0n71ky.jpg)| ![](https://ws4.sinaimg.cn/large/006tNbRwly1fylq36zy83j31ga0n71ky.jpg)
+| <img src="https://ws3.sinaimg.cn/large/006tNbRwly1fys8flaofrj315e0ose81.jpg"  height="295px" />  | <img src="https://ws4.sinaimg.cn/large/006tNbRwly1fys8mpa6wij31240lghdt.jpg" height="295px" />
+
+
+## TODO LIST
+
+* [x] [群聊](#群聊)。
+* [x] [私聊](#私聊)。
+* [x] [内置命令](#客户端内置命令)。
+* [x] [聊天记录查询](#聊天记录查询)。
+* [x] [一键开启价值 2 亿的 `AI` 模式](#ai-模式)。
+* [x] 使用 `Google Protocol Buffer` 高效编解码。
+* [x] 根据实际情况灵活的水平扩容、缩容。
+* [x] 路由(`cim-forward-route`)服务自身是无状态，可用 `Nginx` 代理支持高可用。
+* [x] 服务端自动剔除离线客户端。
+* [x] 客户端自动重连。
+* [ ] 分组群聊。
+* [ ] Android SDK。
+* [ ] 离线消息。
+* [ ] 协议支持消息加密。
+* [ ] 更多的客户端路由策略。
+
+
+
+## 系统架构
+
+![](https://ws1.sinaimg.cn/large/006tNbRwly1fyldgiizhuj315o0r4n0k.jpg)
+
+- `CIM` 中的各个组件均采用 `SpringBoot` 构建。
+-  采用 `Netty` 构建底层通信。
+-  `Redis` 存放各个客户端的路由信息、账号信息、在线状态等。
+-  `Zookeeper` 用于 `IM-server` 服务的注册与发现。
 
 
 ### cim-server
@@ -51,34 +81,6 @@
 ### cim-client
 
 `IM` 客户端；给用户使用的消息终端，一个命令即可启动并向其他人发起通讯（群聊、私聊）。
-
-
-
-## TODO LIST
-
-* [x] 群聊。
-* [x] 私聊。
-* [x] 内置命令。
-* [x] 使用 `Google Protocol Buffer` 高效编解码。
-* [x] 根据实际情况灵活的水平扩容、缩容。
-* [x] 路由(`cim-forward-route`)服务自身是无状态，可用 `Nginx` 代理支持高可用。
-* [ ] 聊天记录查询。
-* [ ] 离线消息。
-* [ ] 路由服务自动分配。
-* [ ] 协议支持消息加密。
-* [ ] 弱网情况下客户端自动上线。
-* [ ] 更多的客户端路由策略。
-
-
-
-## 系统架构
-
-![](https://ws1.sinaimg.cn/large/006tNbRwly1fyldgiizhuj315o0r4n0k.jpg)
-
-- `CIM` 中的各个组件均采用 `SpringBoot` 构建。
--  采用 `Netty` 构建底层通信。
--  `Redis` 存放各个客户端的路由信息、账号信息、在线状态等。
--  `Zookeeper` 用于 `IM-server` 服务的注册与发现。
 
 ## 流程图
 
@@ -134,18 +136,80 @@ java -jar cim-client-1.0.0-SNAPSHOT.jar --server.port=8084 --cim.user.id=唯一�
 
 如上图，启动两个客户端可以互相通信即可。
 
+### 本地启动客户端
 
+#### 注册账号
+```shell
+curl -X POST --header 'Content-Type: application/json' --header 'Accept: application/json' -d '{
+  "reqNo": "1234567890",
+  "timeStamp": 0,
+  "userName": "zhangsan"
+}' 'http://路由服务器:8083/registerAccount'
+```
+
+从返回结果中获取 `userId`
+
+```json
+{
+    "code":"9000",
+    "message":"成功",
+    "reqNo":null,
+    "dataBody":{
+        "userId":1547028929407,
+        "userName":"test"
+    }
+}
+```
+
+#### 启动本地客户端
+```shell
+# 启动本地客户端
+cp /cim/cim-client/target/cim-client-1.0.0-SNAPSHOT.jar /xx/work/route0/
+cd /xx/work/route0/
+java -jar cim-client-1.0.0-SNAPSHOT.jar --server.port=8084 --cim.user.id=上方返回的userId --cim.user.userName=用户名 --cim.group.route.request.url=http://路由服务器:8083/groupRoute --cim.server.route.request.url=http://路由服务器:8083/login
+```
 
 ## 客户端内置命令
 
 | 命令 | 描述|
 | ------ | ------ | 
-| `:q` | 退出客户端| 
+| `:q!` | 退出客户端| 
 | `:olu` | 获取所有在线用户信息 | 
 | `:all` | 获取所有命令 | 
+| `:q` | 【:q 关键字】查询聊天记录 | 
+| `:ai` | 开启 AI 模式 | 
+| `:qai` | 关闭 AI 模式 | 
+| `:pu` | 模糊匹配用户 | 
+| `:info` | 获取客户端信息 | 
 | `:` | 更多命令正在开发中。。 | 
 
 ![](https://ws3.sinaimg.cn/large/006tNbRwly1fylh7bdlo6g30go01shdt.gif)
+
+### 聊天记录查询
+
+![](https://ws2.sinaimg.cn/large/006tNc79gy1fz3uwmb5hsj30s8046wm3.jpg)
+
+使用命令 `:q 关键字` 即可查询与个人相关的聊天记录。
+
+> 客户端聊天记录默认存放在 `/opt/logs/cim/`，所以需要这个目录的写入权限。也可在启动命令中加入 `--cim.msg.logger.path = /自定义` 参数自定义目录。
+
+
+
+### AI 模式
+
+![](https://ws3.sinaimg.cn/large/006tNc79gy1fz3vf3nsq3j31dc0j01ky.jpg)
+
+使用命令 `:ai` 开启 AI 模式，之后所有的消息都会由 `AI` 响应。
+
+`:qai` 退出 AI 模式。
+
+### 前缀匹配用户名
+
+![](https://ws4.sinaimg.cn/large/006tNc79gy1fz3vo4tgkjj31ni09s41u.jpg)
+
+使用命令 `:qu prefix` 可以按照前缀的方式搜索用户信息。
+
+> 该功能主要用于在移动端中的输入框中搜索用户。 
 
 ## 群聊/私聊
 
@@ -172,7 +236,7 @@ java -jar cim-client-1.0.0-SNAPSHOT.jar --server.port=8084 --cim.user.id=唯一�
 ![](https://ws3.sinaimg.cn/large/006tNbRwly1fylicmjj6cj31wg07c4qp.jpg)
 ![](https://ws1.sinaimg.cn/large/006tNbRwly1fylicwhe04j31ua03ejsv.jpg)
 
-同时另一个账号是收不到消息的。
+同时另一个账号收不到消息。
 ![](https://ws3.sinaimg.cn/large/006tNbRwly1fylie727jaj31t20dq1ky.jpg)
 
 
@@ -185,4 +249,13 @@ java -jar cim-client-1.0.0-SNAPSHOT.jar --server.port=8084 --cim.user.id=唯一�
 - 微信公众号
 
 ![](https://ws1.sinaimg.cn/large/006tKfTcly1ftmfdo6mhmj30760760t7.jpg)
+
+
+### Code Visualization:
+
+Here is a cool visualization of the code evolution
+
+ [![Watch the video](https://img.youtube.com/vi/NhV_brPIG74/0.jpg)](https://www.youtube.com/watch?v=NhV_brPIG74)
+
+ [https://www.youtube.com/watch?v=NhV_brPIG74](https://www.youtube.com/watch?v=NhV_brPIG74)
 

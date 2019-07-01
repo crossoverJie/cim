@@ -48,4 +48,20 @@ public interface MsgHandle {
      * @return 是否应当跳过当前消息（包含了":" 就需要跳过）
      */
     boolean innerCommand(String msg) ;
+
+
+    /**
+     * 关闭系统
+     */
+    void shutdown() ;
+
+    /**
+     * 开启 AI 模式
+     */
+    void openAIModel() ;
+
+    /**
+     * 关闭 AI 模式
+     */
+    void closeAIModel() ;
 }

@@ -23,6 +23,19 @@ public class AppConfiguration {
     @Value("${server.port}")
     private int port;
 
+    @Value("${app.zk.connect.timeout}")
+    private int zkConnectTimeout;
+
+    @Value("${app.route.way}")
+    private String routeWay;
+
+    @Value("${app.route.way.consitenthash}")
+    private String consistentHashWay;
+
+    public int getZkConnectTimeout() {
+		return zkConnectTimeout;
+	}
+
     public int getPort() {
         return port;
     }
@@ -47,4 +60,19 @@ public class AppConfiguration {
         this.zkAddr = zkAddr;
     }
 
+    public String getRouteWay() {
+        return routeWay;
+    }
+
+    public void setRouteWay(String routeWay) {
+        this.routeWay = routeWay;
+    }
+
+    public String getConsistentHashWay() {
+        return consistentHashWay;
+    }
+
+    public void setConsistentHashWay(String consistentHashWay) {
+        this.consistentHashWay = consistentHashWay;
+    }
 }

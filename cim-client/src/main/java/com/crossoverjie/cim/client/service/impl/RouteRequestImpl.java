@@ -45,7 +45,7 @@ public class RouteRequestImpl implements RouteRequest {
     private String p2pRouteRequestUrl;
 
     @Value("${cim.server.route.request.url}")
-    private String serverRouteRequestUrl;
+    private String serverRouteLoginUrl;
 
     @Value("${cim.server.online.user.url}")
     private String onlineUserUrl;
@@ -69,8 +69,12 @@ public class RouteRequestImpl implements RouteRequest {
                 .build();
 
         Response response = okHttpClient.newCall(request).execute() ;
-        if (!response.isSuccessful()){
-            throw new IOException("Unexpected code " + response);
+        try {
+            if (!response.isSuccessful()){
+                throw new IOException("Unexpected code " + response);
+            }
+        }finally {
+            response.body().close();
         }
     }
 
@@ -92,12 +96,18 @@ public class RouteRequestImpl implements RouteRequest {
             throw new IOException("Unexpected code " + response);
         }
 
-        String json = response.body().string() ;
-        BaseResponse baseResponse = JSON.parseObject(json, BaseResponse.class);
+        ResponseBody body = response.body();
+        try {
+            String json = body.string() ;
+            BaseResponse baseResponse = JSON.parseObject(json, BaseResponse.class);
 
-        //选择的账号不存在
-        if (baseResponse.getCode().equals(StatusEnum.OFF_LINE.getCode())){
-            LOGGER.error(p2PReqVO.getReceiveUserId() + ":" + StatusEnum.OFF_LINE.getMessage());
+            //选择的账号不存在
+            if (baseResponse.getCode().equals(StatusEnum.OFF_LINE.getCode())){
+                LOGGER.error(p2PReqVO.getReceiveUserId() + ":" + StatusEnum.OFF_LINE.getMessage());
+            }
+
+        }finally {
+            body.close();
         }
     }
 
@@ -110,7 +120,7 @@ public class RouteRequestImpl implements RouteRequest {
         RequestBody requestBody = RequestBody.create(mediaType,jsonObject.toString());
 
         Request request = new Request.Builder()
-                .url(serverRouteRequestUrl)
+                .url(serverRouteLoginUrl)
                 .post(requestBody)
                 .build();
 
@@ -118,19 +128,23 @@ public class RouteRequestImpl implements RouteRequest {
         if (!response.isSuccessful()){
             throw new IOException("Unexpected code " + response);
         }
+        CIMServerResVO cimServerResVO ;
+        ResponseBody body = response.body();
+        try {
+            String json = body.string();
+            cimServerResVO = JSON.parseObject(json, CIMServerResVO.class);
 
-        String json = response.body().string();
-        CIMServerResVO cimServerResVO = JSON.parseObject(json, CIMServerResVO.class);
+            //重复失败
+            if (!cimServerResVO.getCode().equals(StatusEnum.SUCCESS.getCode())){
+                LOGGER.error(appConfiguration.getUserName() + ":" + cimServerResVO.getMessage());
+                System.exit(-1);
+            }
 
-        //重复登录
-        if (cimServerResVO.getCode().equals(StatusEnum.REPEAT_LOGIN.getCode())){
-            LOGGER.error(appConfiguration.getUserName() + ":" + StatusEnum.REPEAT_LOGIN.getMessage());
-            System.exit(-1);
+        }finally {
+            body.close();
         }
 
-        if (!cimServerResVO.getCode().equals(StatusEnum.SUCCESS.getCode())){
-            throw new RuntimeException("route server exception code=" + cimServerResVO.getCode()) ;
-        }
+
 
         return cimServerResVO.getDataBody();
     }
@@ -152,9 +166,38 @@ public class RouteRequestImpl implements RouteRequest {
         }
 
 
-        String json = response.body().string() ;
-        OnlineUsersResVO onlineUsersResVO = JSON.parseObject(json, OnlineUsersResVO.class);
+        ResponseBody body = response.body();
+        OnlineUsersResVO onlineUsersResVO ;
+        try {
+            String json = body.string() ;
+            onlineUsersResVO = JSON.parseObject(json, OnlineUsersResVO.class);
+
+        }finally {
+            body.close();
+        }
 
         return onlineUsersResVO.getDataBody();
+    }
+
+    @Override
+    public void offLine() {
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("userId", appConfiguration.getUserId());
+        jsonObject.put("msg", "offLine");
+        RequestBody requestBody = RequestBody.create(mediaType, jsonObject.toString());
+
+        Request request = new Request.Builder()
+                .url(appConfiguration.getClearRouteUrl())
+                .post(requestBody)
+                .build();
+
+        Response response = null;
+        try {
+            response = okHttpClient.newCall(request).execute();
+        } catch (IOException e) {
+            LOGGER.error("exception",e);
+        } finally {
+            response.body().close();
+        }
     }
 }

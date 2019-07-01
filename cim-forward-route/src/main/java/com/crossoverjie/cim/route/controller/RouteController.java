@@ -5,6 +5,7 @@ import com.crossoverjie.cim.common.exception.CIMException;
 import com.crossoverjie.cim.common.pojo.CIMUserInfo;
 import com.crossoverjie.cim.common.res.BaseResponse;
 import com.crossoverjie.cim.common.res.NULLBody;
+import com.crossoverjie.cim.common.route.algorithm.RouteHandle;
 import com.crossoverjie.cim.route.cache.ServerCache;
 import com.crossoverjie.cim.route.service.AccountService;
 import com.crossoverjie.cim.route.service.UserInfoCacheService;
@@ -48,6 +49,10 @@ public class RouteController {
     @Autowired
     private UserInfoCacheService userInfoCacheService ;
 
+
+    @Autowired
+    private RouteHandle routeHandle ;
+
     @ApiOperation("群聊 API")
     @RequestMapping(value = "groupRoute", method = RequestMethod.POST)
     @ResponseBody()
@@ -81,7 +86,6 @@ public class RouteController {
         return res;
     }
 
-    // TODO: 2018/12/26 这些基于 HTTP 接口的远程通信都可以换为 SpringCloud
 
     /**
      * 私聊路由
@@ -144,9 +148,10 @@ public class RouteController {
         BaseResponse<CIMServerResVO> res = new BaseResponse();
 
         //登录校验
-        boolean login = accountService.login(loginReqVO);
-        if (login) {
-            String server = serverCache.selectServer();
+        StatusEnum status = accountService.login(loginReqVO);
+        if (status == StatusEnum.SUCCESS) {
+
+            String server = routeHandle.routeServer(serverCache.getAll(),String.valueOf(loginReqVO.getUserId()));
             String[] serverInfo = server.split(":");
             CIMServerResVO vo = new CIMServerResVO(serverInfo[0], Integer.parseInt(serverInfo[1]),Integer.parseInt(serverInfo[2]));
 
@@ -154,12 +159,10 @@ public class RouteController {
             accountService.saveRouteInfo(loginReqVO,server);
 
             res.setDataBody(vo);
-            res.setCode(StatusEnum.SUCCESS.getCode());
-            res.setMessage(StatusEnum.SUCCESS.getMessage());
-        } else {
-            res.setCode(StatusEnum.REPEAT_LOGIN.getCode());
-            res.setMessage(StatusEnum.REPEAT_LOGIN.getMessage());
+
         }
+        res.setCode(status.getCode());
+        res.setMessage(status.getMessage());
 
         return res;
     }

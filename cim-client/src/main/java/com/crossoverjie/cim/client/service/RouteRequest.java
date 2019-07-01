@@ -41,10 +41,13 @@ public interface RouteRequest {
     CIMServerResVO.ServerInfo getCIMServer(LoginReqVO loginReqVO) throws Exception;
 
     /**
-     *
-     * @return 获取所有在线用户
+     * 获取所有在线用户
+     * @return
+     * @throws Exception
      */
     List<OnlineUsersResVO.DataBodyBean> onlineUsers()throws Exception ;
 
+
+    void offLine() ;
 
 }

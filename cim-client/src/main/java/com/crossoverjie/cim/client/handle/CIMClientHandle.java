@@ -1,8 +1,13 @@
 package com.crossoverjie.cim.client.handle;
 
+import com.crossoverjie.cim.client.service.ShutDownMsg;
+import com.crossoverjie.cim.client.thread.ReConnectJob;
 import com.crossoverjie.cim.client.util.SpringBeanFactory;
+import com.crossoverjie.cim.common.constant.Constants;
 import com.crossoverjie.cim.common.protocol.CIMRequestProto;
 import com.crossoverjie.cim.common.protocol.CIMResponseProto;
+import com.crossoverjie.cim.common.util.NettyAttrUtil;
+import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
@@ -11,7 +16,9 @@ import io.netty.handler.timeout.IdleStateEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Function:
@@ -29,6 +36,10 @@ public class CIMClientHandle extends SimpleChannelInboundHandler<CIMResponseProt
 
     private ThreadPoolExecutor threadPoolExecutor ;
 
+    private ScheduledExecutorService scheduledExecutorService ;
+
+    private ShutDownMsg shutDownMsg ;
+
 
     @Override
     public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
@@ -36,12 +47,18 @@ public class CIMClientHandle extends SimpleChannelInboundHandler<CIMResponseProt
         if (evt instanceof IdleStateEvent){
             IdleStateEvent idleStateEvent = (IdleStateEvent) evt ;
 
+            //LOGGER.info("定时检测服务端是否存活");
+
             if (idleStateEvent.state() == IdleState.WRITER_IDLE){
                 CIMRequestProto.CIMReqProtocol heartBeat = SpringBeanFactory.getBean("heartBeat",
                         CIMRequestProto.CIMReqProtocol.class);
-                ctx.writeAndFlush(heartBeat) ;
+                ctx.writeAndFlush(heartBeat).addListeners((ChannelFutureListener) future -> {
+                    if (!future.isSuccess()) {
+                        LOGGER.error("IO error,close Channel");
+                        future.channel().close();
+                    }
+                }) ;
             }
-
 
         }
 
@@ -56,15 +73,45 @@ public class CIMClientHandle extends SimpleChannelInboundHandler<CIMResponseProt
     }
 
     @Override
-    protected void channelRead0(ChannelHandlerContext channelHandlerContext, CIMResponseProto.CIMResProtocol responseProtocol) throws Exception {
+    public void channelInactive(ChannelHandlerContext ctx) throws Exception {
 
-        //从服务端收到消息时被调用
-        //LOGGER.info("客户端收到消息={}",in.toString(CharsetUtil.UTF_8)) ;
+        if (shutDownMsg == null){
+            shutDownMsg = SpringBeanFactory.getBean(ShutDownMsg.class) ;
+        }
 
-        //回调消息
-        callBackMsg(responseProtocol.getResMsg());
+        //用户主动退出，不执行重连逻辑
+        if (shutDownMsg.checkStatus()){
+            return;
+        }
 
-        LOGGER.info(responseProtocol.getResMsg());
+        if (scheduledExecutorService == null){
+            scheduledExecutorService = SpringBeanFactory.getBean("scheduledTask",ScheduledExecutorService.class) ;
+        }
+        LOGGER.info("客户端断开了，重新连接！");
+        // TODO: 2019-01-22 后期可以改为不用定时任务，连上后就关闭任务 节省性能。
+        scheduledExecutorService.scheduleAtFixedRate(new ReConnectJob(ctx),0,10, TimeUnit.SECONDS) ;
+    }
+
+    @Override
+    protected void channelRead0(ChannelHandlerContext ctx, CIMResponseProto.CIMResProtocol msg) throws Exception {
+
+        //心跳更新时间
+        if (msg.getType() == Constants.CommandType.PING){
+            //LOGGER.info("收到服务端心跳！！！");
+            NettyAttrUtil.updateReaderTime(ctx.channel(),System.currentTimeMillis());
+        }
+
+        if (msg.getType() != Constants.CommandType.PING) {
+            //回调消息
+            callBackMsg(msg.getResMsg());
+
+            LOGGER.info(msg.getResMsg());
+        }
+
+
+
+
+
     }
 
     /**

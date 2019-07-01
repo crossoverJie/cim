@@ -116,3 +116,14 @@ fabric.properties
 .idea/httpRequests
 .idea/
 *.iml
+
+# Eclipse Project 
+bin
+*.project
+*.settings/
+*.classpath
+*.factorypath
+.vscode/
+/.metadata/
+
+
