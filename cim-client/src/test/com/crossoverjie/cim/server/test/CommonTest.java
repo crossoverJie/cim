@@ -4,16 +4,24 @@ package com.crossoverjie.cim.server.test;
 import com.alibaba.fastjson.JSON;
 import com.crossoverjie.cim.client.vo.res.CIMServerResVO;
 import com.crossoverjie.cim.client.vo.res.OnlineUsersResVO;
+import com.vdurmont.emoji.Emoji;
+import com.vdurmont.emoji.EmojiManager;
+import com.vdurmont.emoji.EmojiParser;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
-import java.nio.file.*;
+import java.nio.file.Files;
+import java.nio.file.LinkOption;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -179,5 +187,24 @@ public class CommonTest {
         } catch (IOException e) {
             LOGGER.info("IOException", e);
         }
+
     }
+
+    @Test
+    public void emoji() throws Exception{
+        String str = "An :grinning:awesome :smiley:string &#128516;with a few :wink:emojis!";
+        String result = EmojiParser.parseToUnicode(str);
+        System.out.println(result);
+
+
+        result = EmojiParser.parseToAliases(str);
+        System.out.println(result);
+
+        Collection<Emoji> all = EmojiManager.getAll();
+        for (Emoji emoji : all) {
+            System.out.println(EmojiParser.parseToAliases(emoji.getUnicode())  + "--->" + emoji.getUnicode() );
+        }
+
+    }
+
 }
