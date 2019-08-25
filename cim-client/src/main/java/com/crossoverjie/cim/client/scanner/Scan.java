@@ -4,6 +4,7 @@ import com.crossoverjie.cim.client.config.AppConfiguration;
 import com.crossoverjie.cim.client.service.MsgHandle;
 import com.crossoverjie.cim.client.service.MsgLogger;
 import com.crossoverjie.cim.client.util.SpringBeanFactory;
+import com.vdurmont.emoji.EmojiParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -57,7 +58,7 @@ public class Scan implements Runnable {
             //写入聊天记录
             msgLogger.log(msg) ;
 
-            LOGGER.info("{}:【{}】", configuration.getUserName(), msg);
+            System.out.println(configuration.getUserName() + ":" + EmojiParser.parseToUnicode(msg));
         }
     }
 
