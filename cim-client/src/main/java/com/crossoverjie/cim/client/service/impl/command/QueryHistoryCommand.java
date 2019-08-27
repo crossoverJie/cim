@@ -1,5 +1,6 @@
 package com.crossoverjie.cim.client.service.impl.command;
 
+import com.crossoverjie.cim.client.service.EchoService;
 import com.crossoverjie.cim.client.service.InnerCommand;
 import com.crossoverjie.cim.client.service.MsgLogger;
 import org.slf4j.Logger;
@@ -22,6 +23,9 @@ public class QueryHistoryCommand implements InnerCommand {
     @Autowired
     private MsgLogger msgLogger ;
 
+    @Autowired
+    private EchoService echoService ;
+
     @Override
     public void process(String msg) {
         String[] split = msg.split(" ");
@@ -29,6 +33,6 @@ public class QueryHistoryCommand implements InnerCommand {
             return;
         }
         String res = msgLogger.query(split[1]);
-        System.out.println(res);
+        echoService.echo(res);
     }
 }

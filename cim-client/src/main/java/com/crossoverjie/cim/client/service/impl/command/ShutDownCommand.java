@@ -1,6 +1,7 @@
 package com.crossoverjie.cim.client.service.impl.command;
 
 import com.crossoverjie.cim.client.client.CIMClient;
+import com.crossoverjie.cim.client.service.EchoService;
 import com.crossoverjie.cim.client.service.InnerCommand;
 import com.crossoverjie.cim.client.service.MsgLogger;
 import com.crossoverjie.cim.client.service.RouteRequest;
@@ -37,25 +38,29 @@ public class ShutDownCommand implements InnerCommand {
     @Resource(name = "callBackThreadPool")
     private ThreadPoolExecutor executor;
 
+    @Autowired
+    private EchoService echoService ;
+
 
     @Autowired
     private ShutDownMsg shutDownMsg ;
 
     @Override
     public void process(String msg) {
-        LOGGER.info("系统关闭中。。。。");
+        echoService.echo("cim client closing...");
         shutDownMsg.shutdown();
         routeRequest.offLine();
         msgLogger.stop();
         executor.shutdown();
         try {
             while (!executor.awaitTermination(1, TimeUnit.SECONDS)) {
-                LOGGER.info("线程池关闭中。。。。");
+                echoService.echo("thread pool closing");
             }
             cimClient.close();
         } catch (InterruptedException e) {
             LOGGER.error("InterruptedException", e);
         }
+        echoService.echo("cim close success!");
         System.exit(0);
     }
 }

@@ -2,6 +2,7 @@ package com.crossoverjie.cim.client.client;
 
 import com.crossoverjie.cim.client.config.AppConfiguration;
 import com.crossoverjie.cim.client.init.CIMClientHandleInitializer;
+import com.crossoverjie.cim.client.service.EchoService;
 import com.crossoverjie.cim.client.service.MsgHandle;
 import com.crossoverjie.cim.client.service.RouteRequest;
 import com.crossoverjie.cim.client.service.impl.ClientInfo;
@@ -49,6 +50,9 @@ public class CIMClient {
     private String userName;
 
     private SocketChannel channel;
+
+    @Autowired
+    private EchoService echoService ;
 
     @Autowired
     private RouteRequest routeRequest;
@@ -108,6 +112,7 @@ public class CIMClient {
             LOGGER.error("连接失败", e);
         }
         if (future.isSuccess()) {
+            echoService.echo("start cim client success!");
             LOGGER.info("启动 cim client 成功");
         }
         channel = (SocketChannel) future.channel();
@@ -137,7 +142,7 @@ public class CIMClient {
                 LOGGER.error("重连次数达到上限[{}]次", errorCount);
                 msgHandle.shutdown();
             }
-            LOGGER.error("登录失败", e);
+            LOGGER.error("login fail", e);
         }
         return cimServer;
     }
@@ -153,7 +158,8 @@ public class CIMClient {
                 .build();
         ChannelFuture future = channel.writeAndFlush(login);
         future.addListener((ChannelFutureListener) channelFuture ->
-                LOGGER.info("注册成功={}", login.toString()));
+                        echoService.echo("registry cim server success!")
+                );
     }
 
     /**

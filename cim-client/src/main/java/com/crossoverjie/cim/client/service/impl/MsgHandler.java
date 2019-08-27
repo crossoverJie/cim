@@ -16,7 +16,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.util.Map;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
@@ -174,13 +173,4 @@ public class MsgHandler implements MsgHandle {
         aiModel = false ;
     }
 
-    private void printAllCommand(Map<String, String> allStatusCode) {
-        LOGGER.warn("====================================");
-        for (Map.Entry<String, String> stringStringEntry : allStatusCode.entrySet()) {
-            String key = stringStringEntry.getKey();
-            String value = stringStringEntry.getValue();
-            LOGGER.warn(key + "----->" + value);
-        }
-        LOGGER.warn("====================================");
-    }
 }
