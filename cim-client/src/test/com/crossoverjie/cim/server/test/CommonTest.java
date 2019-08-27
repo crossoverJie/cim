@@ -4,8 +4,6 @@ package com.crossoverjie.cim.server.test;
 import com.alibaba.fastjson.JSON;
 import com.crossoverjie.cim.client.vo.res.CIMServerResVO;
 import com.crossoverjie.cim.client.vo.res.OnlineUsersResVO;
-import com.vdurmont.emoji.Emoji;
-import com.vdurmont.emoji.EmojiManager;
 import com.vdurmont.emoji.EmojiParser;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -21,7 +19,6 @@ import java.nio.file.StandardOpenOption;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
 
 /**
@@ -199,11 +196,11 @@ public class CommonTest {
 
         result = EmojiParser.parseToAliases(str);
         System.out.println(result);
-
-        Collection<Emoji> all = EmojiManager.getAll();
-        for (Emoji emoji : all) {
-            System.out.println(EmojiParser.parseToAliases(emoji.getUnicode())  + "--->" + emoji.getUnicode() );
-        }
+//
+//        Collection<Emoji> all = EmojiManager.getAll();
+//        for (Emoji emoji : all) {
+//            System.out.println(EmojiParser.parseToAliases(emoji.getUnicode())  + "--->" + emoji.getUnicode() );
+//        }
 
     }
 
