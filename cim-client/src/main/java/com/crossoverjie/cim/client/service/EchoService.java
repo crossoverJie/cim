@@ -14,5 +14,5 @@ public interface EchoService {
      * @param msg message
      * @param replace
      */
-    void echo(String msg, String... replace) ;
+    void echo(String msg, Object... replace) ;
 }

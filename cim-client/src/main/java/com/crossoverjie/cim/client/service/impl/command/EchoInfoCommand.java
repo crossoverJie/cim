@@ -1,6 +1,6 @@
 package com.crossoverjie.cim.client.service.impl.command;
 
-import com.alibaba.fastjson.JSON;
+import com.crossoverjie.cim.client.service.EchoService;
 import com.crossoverjie.cim.client.service.InnerCommand;
 import com.crossoverjie.cim.client.service.impl.ClientInfo;
 import org.slf4j.Logger;
@@ -23,10 +23,13 @@ public class EchoInfoCommand implements InnerCommand {
     @Autowired
     private ClientInfo clientInfo;
 
+    @Autowired
+    private EchoService echoService ;
+
     @Override
     public void process(String msg) {
-        LOGGER.info("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
-        LOGGER.info("client info=[{}]", JSON.toJSONString(clientInfo.get()));
-        LOGGER.info("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+        echoService.echo("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+        echoService.echo("client info={}", clientInfo.get().getUserName());
+        echoService.echo("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
     }
 }

@@ -1,5 +1,6 @@
 package com.crossoverjie.cim.client.service.impl.command;
 
+import com.crossoverjie.cim.client.service.EchoService;
 import com.crossoverjie.cim.client.service.InnerCommand;
 import com.crossoverjie.cim.client.service.RouteRequest;
 import com.crossoverjie.cim.client.vo.res.OnlineUsersResVO;
@@ -25,6 +26,8 @@ public class PrefixSearchCommand implements InnerCommand {
 
     @Autowired
     private RouteRequest routeRequest ;
+    @Autowired
+    private EchoService echoService ;
 
     @Override
     public void process(String msg) {
@@ -41,7 +44,7 @@ public class PrefixSearchCommand implements InnerCommand {
 
             for (String res : list) {
                 res = res.replace(key, "\033[31;4m" + key + "\033[0m");
-                System.out.println(res);
+                echoService.echo(res) ;
             }
 
         } catch (Exception e) {
