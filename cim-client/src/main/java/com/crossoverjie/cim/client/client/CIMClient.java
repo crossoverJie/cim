@@ -106,7 +106,7 @@ public class CIMClient {
             errorCount++;
 
             if (errorCount >= configuration.getErrorCount()) {
-                LOGGER.error("链接失败次数达到上限[{}]次", errorCount);
+                LOGGER.error("连接失败次数达到上限[{}]次", errorCount);
                 msgHandle.shutdown();
             }
             LOGGER.error("连接失败", e);
