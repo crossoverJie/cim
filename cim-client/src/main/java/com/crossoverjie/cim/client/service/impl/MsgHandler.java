@@ -2,12 +2,13 @@ package com.crossoverjie.cim.client.service.impl;
 
 import com.crossoverjie.cim.client.client.CIMClient;
 import com.crossoverjie.cim.client.config.AppConfiguration;
-import com.crossoverjie.cim.client.service.*;
+import com.crossoverjie.cim.client.service.InnerCommand;
+import com.crossoverjie.cim.client.service.InnerCommandContext;
+import com.crossoverjie.cim.client.service.MsgHandle;
+import com.crossoverjie.cim.client.service.MsgLogger;
+import com.crossoverjie.cim.client.service.RouteRequest;
 import com.crossoverjie.cim.client.vo.req.GroupReqVO;
 import com.crossoverjie.cim.client.vo.req.P2PReqVO;
-import com.crossoverjie.cim.client.vo.res.OnlineUsersResVO;
-import com.crossoverjie.cim.common.data.construct.TrieTree;
-import com.crossoverjie.cim.common.enums.SystemCommandEnum;
 import com.crossoverjie.cim.common.util.StringUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,8 +16,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.util.List;
-import java.util.Map;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
@@ -144,63 +143,6 @@ public class MsgHandler implements MsgHandle {
 
     }
 
-
-    /**
-     * 模糊匹配
-     *
-     * @param msg
-     */
-    private void prefixSearch(String msg) {
-        try {
-            List<OnlineUsersResVO.DataBodyBean> onlineUsers = routeRequest.onlineUsers();
-            TrieTree trieTree = new TrieTree();
-            for (OnlineUsersResVO.DataBodyBean onlineUser : onlineUsers) {
-                trieTree.insert(onlineUser.getUserName());
-            }
-
-            String[] split = msg.split(" ");
-            String key = split[1];
-            List<String> list = trieTree.prefixSearch(key);
-
-            for (String res : list) {
-                res = res.replace(key, "\033[31;4m" + key + "\033[0m");
-                System.out.println(res);
-            }
-
-        } catch (Exception e) {
-            LOGGER.error("Exception", e);
-        }
-    }
-
-    /**
-     * 查询聊天记录
-     *
-     * @param msg
-     */
-    private void queryChatHistory(String msg) {
-        String[] split = msg.split(" ");
-        String res = msgLogger.query(split[1]);
-        System.out.println(res);
-    }
-
-    /**
-     * 打印在线用户
-     */
-    private void printOnlineUsers() {
-        try {
-            List<OnlineUsersResVO.DataBodyBean> onlineUsers = routeRequest.onlineUsers();
-
-            LOGGER.info("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
-            for (OnlineUsersResVO.DataBodyBean onlineUser : onlineUsers) {
-                LOGGER.info("userId={}=====userName={}", onlineUser.getUserId(), onlineUser.getUserName());
-            }
-            LOGGER.info("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
-
-        } catch (Exception e) {
-            LOGGER.error("Exception", e);
-        }
-    }
-
     /**
      * 关闭系统
      */
@@ -231,13 +173,4 @@ public class MsgHandler implements MsgHandle {
         aiModel = false ;
     }
 
-    private void printAllCommand(Map<String, String> allStatusCode) {
-        LOGGER.warn("====================================");
-        for (Map.Entry<String, String> stringStringEntry : allStatusCode.entrySet()) {
-            String key = stringStringEntry.getKey();
-            String value = stringStringEntry.getValue();
-            LOGGER.warn(key + "----->" + value);
-        }
-        LOGGER.warn("====================================");
-    }
 }

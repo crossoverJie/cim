@@ -1,9 +1,11 @@
 package com.crossoverjie.cim.client.scanner;
 
 import com.crossoverjie.cim.client.config.AppConfiguration;
+import com.crossoverjie.cim.client.service.EchoService;
 import com.crossoverjie.cim.client.service.MsgHandle;
 import com.crossoverjie.cim.client.service.MsgLogger;
 import com.crossoverjie.cim.client.util.SpringBeanFactory;
+import com.vdurmont.emoji.EmojiParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -29,10 +31,13 @@ public class Scan implements Runnable {
 
     private MsgLogger msgLogger ;
 
+    private EchoService echoService ;
+
     public Scan() {
         this.configuration = SpringBeanFactory.getBean(AppConfiguration.class);
         this.msgHandle = SpringBeanFactory.getBean(MsgHandle.class) ;
         this.msgLogger = SpringBeanFactory.getBean(MsgLogger.class) ;
+        this.echoService = SpringBeanFactory.getBean(EchoService.class) ;
     }
 
     @Override
@@ -57,7 +62,7 @@ public class Scan implements Runnable {
             //写入聊天记录
             msgLogger.log(msg) ;
 
-            LOGGER.info("{}:【{}】", configuration.getUserName(), msg);
+            echoService.echo(EmojiParser.parseToUnicode(msg));
         }
     }
 

@@ -1,5 +1,6 @@
 package com.crossoverjie.cim.client.service.impl.command;
 
+import com.crossoverjie.cim.client.service.EchoService;
 import com.crossoverjie.cim.client.service.InnerCommand;
 import com.crossoverjie.cim.client.service.RouteRequest;
 import com.crossoverjie.cim.client.vo.res.OnlineUsersResVO;
@@ -25,16 +26,19 @@ public class PrintOnlineUsersCommand implements InnerCommand {
     @Autowired
     private RouteRequest routeRequest ;
 
+    @Autowired
+    private EchoService echoService ;
+
     @Override
     public void process(String msg) {
         try {
             List<OnlineUsersResVO.DataBodyBean> onlineUsers = routeRequest.onlineUsers();
 
-            LOGGER.info("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+            echoService.echo("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
             for (OnlineUsersResVO.DataBodyBean onlineUser : onlineUsers) {
-                LOGGER.info("userId={}=====userName={}", onlineUser.getUserId(), onlineUser.getUserName());
+                echoService.echo("userId={}=====userName={}",onlineUser.getUserId(),onlineUser.getUserName());
             }
-            LOGGER.info("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+            echoService.echo("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
 
         } catch (Exception e) {
             LOGGER.error("Exception", e);

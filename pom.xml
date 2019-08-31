@@ -30,7 +30,6 @@
 		<module>cim-server</module>
 		<module>cim-client</module>
 		<module>cim-common</module>
-		<module>cim-zk</module>
 		<module>cim-forward-route</module>
 	</modules>
 
@@ -107,4 +106,17 @@
 		</dependencies>
 	</dependencyManagement>
 
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<source>1.8</source>
+					<target>1.8</target>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
 </project>

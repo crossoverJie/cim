@@ -153,7 +153,7 @@ public class AccountServiceRedisImpl implements AccountService {
         CIMUserInfo cimUserInfo = userInfoCacheService.loadUserInfoByUserId(sendUserId);
 
         JSONObject jsonObject = new JSONObject();
-        jsonObject.put("msg", cimUserInfo.getUserName() + ":【" + groupReqVO.getMsg() + "】");
+        jsonObject.put("msg", cimUserInfo.getUserName() + ":" + groupReqVO.getMsg());
         jsonObject.put("userId", groupReqVO.getUserId());
         RequestBody requestBody = RequestBody.create(mediaType, jsonObject.toString());
 

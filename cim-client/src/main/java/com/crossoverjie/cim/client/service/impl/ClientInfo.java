@@ -38,7 +38,7 @@ public class ClientInfo {
         return this;
     }
 
-    private class Info{
+    public class Info{
         private String userName;
         private long userId ;
         private String serviceInfo ;

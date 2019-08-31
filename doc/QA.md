@@ -13,7 +13,8 @@
 
 
 ```
-spring.redis.host=47.98.194.60 spring.redis.port=6379
+spring.redis.host=xx 
+ spring.redis.port=6379
 ```
 
 其实所有的配置都是通过 `SpringBoot` 来加载的，看这个配置就知道了。
