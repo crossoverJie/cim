@@ -204,4 +204,12 @@ public class CommonTest {
 
     }
 
+    @Test
+    public void emoji2(){
+        String emostring ="😂";
+        System.out.println(emostring.length());
+        System.out.println(new StringBuilder().appendCodePoint(
+                emostring.codePointAt(emostring.offsetByCodePoints(0, 1))).toString());
+    }
+
 }
