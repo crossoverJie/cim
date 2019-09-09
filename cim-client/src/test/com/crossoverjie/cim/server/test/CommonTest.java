@@ -207,9 +207,11 @@ public class CommonTest {
     @Test
     public void emoji2(){
         String emostring ="😂";
-        System.out.println(emostring.length());
-        System.out.println(new StringBuilder().appendCodePoint(
-                emostring.codePointAt(emostring.offsetByCodePoints(0, 1))).toString());
+
+        String face_with_tears_of_joy = emostring.replaceAll("\uD83D\uDE02", "face with tears of joy");
+        System.out.println(face_with_tears_of_joy);
+
+        System.out.println("======" + face_with_tears_of_joy.replaceAll("face with tears of joy","\uD83D\uDE02"));
     }
 
 }
