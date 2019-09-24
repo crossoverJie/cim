@@ -24,28 +24,60 @@ public final class RingBufferWheel {
     private Logger logger = LoggerFactory.getLogger(RingBufferWheel.class);
 
 
+    /**
+     * default ring buffer size
+     */
     private static final int STATIC_RING_SIZE = 64;
 
     private Object[] ringBuffer;
 
     private int bufferSize;
 
+    /**
+     * business thread pool
+     */
     private ExecutorService executorService;
 
     private AtomicInteger taskSize = new AtomicInteger();
 
+    /***
+     * task running sign
+     */
     private volatile boolean stop = false;
 
     private Lock lock = new ReentrantLock();
     private Condition condition = lock.newCondition();
 
+    /**
+     * Create a new delay task ring buffer by default size
+     * @param executorService the business thread pool
+     */
     public RingBufferWheel(ExecutorService executorService) {
         this.executorService = executorService;
-        bufferSize = STATIC_RING_SIZE;
-        ringBuffer = new Object[bufferSize];
+        this.bufferSize = STATIC_RING_SIZE;
+        this.ringBuffer = new Object[bufferSize];
     }
 
 
+    /**
+     * Create a new delay task ring buffer by custom buffer size
+     * @param executorService the business thread pool
+     * @param bufferSize custom buffer size
+     */
+    public RingBufferWheel(ExecutorService executorService, int bufferSize) {
+        this(executorService);
+
+        if (!powerOf2(bufferSize)) {
+            throw new RuntimeException("bufferSize=[" + bufferSize + "] must be a power of 2");
+        }
+        this.bufferSize = bufferSize;
+        this.ringBuffer = new Object[bufferSize];
+    }
+
+    /**
+     * Add a task into the ring buffer
+     * @param task business task extends RingBufferWheel.Task
+     */
     public void addTask(Task task) {
         int key = task.getKey();
         Set<Task> tasks = get(key);
@@ -68,10 +100,17 @@ public final class RingBufferWheel {
 
     }
 
+    /**
+     * thread safe
+     * @return the size of ring buffer
+     */
     public int taskSize() {
         return taskSize.get();
     }
 
+    /**
+     * Start background thread to consumer wheel timer, it will run until you call method {@link #stop}
+     */
     public void start() {
         logger.info("delay task is starting");
         Thread job = new Thread(new TriggerJob());
@@ -79,6 +118,11 @@ public final class RingBufferWheel {
         job.start();
     }
 
+    /**
+     * Stop consumer ring buffer thread
+     * @param force True will force close consumer thread and discard all pending tasks
+     *              otherwise the consumer thread waits for all tasks to completes before closing.
+     */
     public void stop(boolean force) {
         if (force) {
             logger.info("delay task is forced stop");
@@ -148,6 +192,18 @@ public final class RingBufferWheel {
         lock.unlock();
     }
 
+    private boolean powerOf2(int target) {
+        if (target < 0) {
+            return false;
+        }
+        int value = target & (target - 1);
+        if (value != 0) {
+            return false;
+        }
+
+        return true;
+    }
+
     private int mod(int target, int mod) {
         // equals target % mod
         return target & (mod - 1);
@@ -158,6 +214,9 @@ public final class RingBufferWheel {
         return target >> Integer.bitCount(mod - 1);
     }
 
+    /**
+     * An abstract class used to implement business.
+     */
     public abstract static class Task extends Thread {
 
 

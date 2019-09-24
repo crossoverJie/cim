@@ -13,7 +13,7 @@ public class RingBufferWheelTest {
     private static Logger logger = LoggerFactory.getLogger(RingBufferWheelTest.class) ;
 
     public static void main(String[] args) throws InterruptedException {
-        test4();
+        test5();
 
         return;
     }
@@ -91,6 +91,25 @@ public class RingBufferWheelTest {
         ExecutorService executorService = Executors.newFixedThreadPool(2) ;
 
         RingBufferWheel wheel = new RingBufferWheel(executorService) ;
+
+        for (int i = 0; i < 65; i++) {
+            Job task = new Job(i) ;
+            task.setKey(i);
+            wheel.addTask(task);
+        }
+
+        wheel.start();
+
+        logger.info("task size={}",wheel.taskSize());
+
+        wheel.stop(false);
+
+
+    }
+    private static void test5() throws InterruptedException {
+        ExecutorService executorService = Executors.newFixedThreadPool(2) ;
+
+        RingBufferWheel wheel = new RingBufferWheel(executorService,512) ;
 
         for (int i = 0; i < 65; i++) {
             Job task = new Job(i) ;
