@@ -2,6 +2,8 @@ package com.crossoverjie.cim.common;
 
 import org.junit.Test;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -12,6 +14,13 @@ import java.util.concurrent.TimeUnit;
  * @since JDK 1.8
  */
 public class CommonTest {
+
+
+    @Test
+    public void test2(){
+        System.out.println(LocalDate.now().toString());
+        System.out.println(LocalTime.now().withNano(0).toString());
+    }
 
     @Test
     public void test() throws InterruptedException {

@@ -130,14 +130,16 @@ public final class RingBufferWheel {
             executorService.shutdownNow();
         } else {
             logger.info("delay task is stopping");
-            try {
-                lock.lock();
-                condition.await();
-                stop = true;
-            } catch (InterruptedException e) {
-                logger.error("InterruptedException", e);
-            } finally {
-                lock.unlock();
+            if (taskSize() > 0){
+                try {
+                    lock.lock();
+                    condition.await();
+                    stop = true;
+                } catch (InterruptedException e) {
+                    logger.error("InterruptedException", e);
+                } finally {
+                    lock.unlock();
+                }
             }
             executorService.shutdown();
         }

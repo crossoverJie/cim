@@ -5,6 +5,9 @@ import com.crossoverjie.cim.client.service.EchoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
+
 /**
  * Function:
  *
@@ -21,8 +24,10 @@ public class EchoServiceImpl implements EchoService {
     private AppConfiguration appConfiguration;
 
     @Override
-    public void echo(String msg,Object... replace) {
-        msg = "\033[31;4m" + appConfiguration.getUserName() + PREFIX + "\033[0m" + " " + msg;
+    public void echo(String msg, Object... replace) {
+        String date = LocalDate.now().toString() + " " + LocalTime.now().withNano(0).toString();
+
+        msg = "[" + date + "] \033[31;4m" + appConfiguration.getUserName() + PREFIX + "\033[0m" + " " + msg;
 
         String log = print(msg, replace);
 
@@ -32,6 +37,7 @@ public class EchoServiceImpl implements EchoService {
 
     /**
      * print msg
+     *
      * @param msg
      * @param place
      * @return
@@ -42,7 +48,7 @@ public class EchoServiceImpl implements EchoService {
         for (int i = 0; i < place.length; i++) {
             int index = msg.indexOf("{}", k);
 
-            if (index == -1){
+            if (index == -1) {
                 return msg;
             }
 
@@ -63,9 +69,9 @@ public class EchoServiceImpl implements EchoService {
 
             k = index + 2;
         }
-        if (sb.toString().equals("")){
-            return msg ;
-        }else {
+        if (sb.toString().equals("")) {
+            return msg;
+        } else {
             return sb.toString();
         }
     }
