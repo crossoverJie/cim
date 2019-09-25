@@ -50,7 +50,7 @@
 * [x] 路由(`cim-forward-route`)服务自身是无状态，可用 `Nginx` 代理支持高可用。
 * [x] 服务端自动剔除离线客户端。
 * [x] 客户端自动重连。
-* [x] 延时消息
+* [x] [延时消息](#延时消息)
 * [ ] 分组群聊。
 * [ ] SDK 开发包。
 * [ ] 离线消息。
@@ -183,6 +183,7 @@ java -jar cim-client-1.0.0-SNAPSHOT.jar --server.port=8084 --cim.user.id=上方�
 | `:pu` | 模糊匹配用户 | 
 | `:info` | 获取客户端信息 | 
 | `:emoji [option]` | 查询表情包 [option:页码] | 
+| `:delay [msg] [delayTime]` | 发送延时消息 | 
 | `:` | 更多命令正在开发中。。 | 
 
 ![](https://ws3.sinaimg.cn/large/006tNbRwly1fylh7bdlo6g30go01shdt.gif)
@@ -250,7 +251,15 @@ java -jar cim-client-1.0.0-SNAPSHOT.jar --server.port=8084 --cim.user.id=上方�
 ![](https://tva1.sinaimg.cn/large/006y8mN6ly1g6j910cqrzj30dn05qjw9.jpg)
 ![](https://tva1.sinaimg.cn/large/006y8mN6ly1g6j99hazg6j30ax03hq35.jpg)
  
+### 延时消息
 
+发送 10s 的延时消息：
+
+```shell
+:delay delayMsg 10
+```
+
+![](https://tva1.sinaimg.cn/large/006y8mN6ly1g7brppmokqg30gn07gafj.gif)
 
 ## 联系作者
 - [crossoverJie@gmail.com](mailto:crossoverJie@gmail.com)
