@@ -6,6 +6,7 @@ import com.crossoverjie.cim.client.service.InnerCommand;
 import com.crossoverjie.cim.client.service.MsgLogger;
 import com.crossoverjie.cim.client.service.RouteRequest;
 import com.crossoverjie.cim.client.service.ShutDownMsg;
+import com.crossoverjie.cim.common.data.construct.RingBufferWheel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,6 +46,9 @@ public class ShutDownCommand implements InnerCommand {
     @Autowired
     private ShutDownMsg shutDownMsg ;
 
+    @Autowired
+    private RingBufferWheel ringBufferWheel ;
+
     @Override
     public void process(String msg) {
         echoService.echo("cim client closing...");
@@ -52,6 +56,7 @@ public class ShutDownCommand implements InnerCommand {
         routeRequest.offLine();
         msgLogger.stop();
         executor.shutdown();
+        ringBufferWheel.stop(false);
         try {
             while (!executor.awaitTermination(1, TimeUnit.SECONDS)) {
                 echoService.echo("thread pool closing");
