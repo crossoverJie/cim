@@ -1,6 +1,5 @@
 package com.crossoverjie.cim.common.data.construct;
 
-import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -21,7 +20,7 @@ public class RingBufferWheelTest {
     private static void test1() throws InterruptedException {
         ExecutorService executorService = Executors.newFixedThreadPool(2) ;
 
-        Task task = new Task() ;
+        RingBufferWheel.Task task = new Task() ;
         task.setKey(10);
         RingBufferWheel wheel = new RingBufferWheel(executorService) ;
         wheel.addTask(task) ;
@@ -40,7 +39,7 @@ public class RingBufferWheelTest {
     private static void test2() throws InterruptedException {
         ExecutorService executorService = Executors.newFixedThreadPool(2) ;
 
-        Task task = new Task() ;
+        RingBufferWheel.Task task = new Task() ;
         task.setKey(10);
         RingBufferWheel wheel = new RingBufferWheel(executorService) ;
         wheel.addTask(task) ;
@@ -70,7 +69,7 @@ public class RingBufferWheelTest {
     private static void test3() throws InterruptedException {
         ExecutorService executorService = Executors.newFixedThreadPool(2) ;
 
-        Task task = new Task() ;
+        RingBufferWheel.Task task = new Task() ;
         task.setKey(10);
         RingBufferWheel wheel = new RingBufferWheel(executorService) ;
         wheel.addTask(task) ;
@@ -93,7 +92,7 @@ public class RingBufferWheelTest {
         RingBufferWheel wheel = new RingBufferWheel(executorService) ;
 
         for (int i = 0; i < 65; i++) {
-            Job task = new Job(i) ;
+            RingBufferWheel.Task task = new Job(i) ;
             task.setKey(i);
             wheel.addTask(task);
         }
@@ -112,7 +111,7 @@ public class RingBufferWheelTest {
         RingBufferWheel wheel = new RingBufferWheel(executorService,512) ;
 
         for (int i = 0; i < 65; i++) {
-            Job task = new Job(i) ;
+            RingBufferWheel.Task task = new Job(i) ;
             task.setKey(i);
             wheel.addTask(task);
         }

@@ -186,12 +186,15 @@ public final class RingBufferWheel {
     }
 
     private void size2Notify() {
-        lock.lock();
-        int size = taskSize.decrementAndGet();
-        if (size == 0) {
-            condition.signal();
+        try {
+            lock.lock();
+            int size = taskSize.decrementAndGet();
+            if (size == 0) {
+                condition.signal();
+            }
+        }finally {
+            lock.unlock();
         }
-        lock.unlock();
     }
 
     private boolean powerOf2(int target) {
