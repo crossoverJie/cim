@@ -109,7 +109,7 @@ public final class RingBufferWheel {
     }
 
     /**
-     * Start background thread to consumer wheel timer, it will run until you call method {@link #stop}
+     * Start background thread to consumer wheel timer, it will always run until you call method {@link #stop}
      */
     public void start() {
         logger.info("delay task is starting");
