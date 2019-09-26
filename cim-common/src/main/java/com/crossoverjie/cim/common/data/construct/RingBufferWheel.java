@@ -45,6 +45,13 @@ public final class RingBufferWheel {
      */
     private volatile boolean stop = false;
 
+    private volatile boolean start = false ;
+
+    /**
+     * total tick times
+     */
+    private AtomicInteger tick = new AtomicInteger() ;
+
     private Lock lock = new ReentrantLock();
     private Condition condition = lock.newCondition();
 
@@ -112,10 +119,15 @@ public final class RingBufferWheel {
      * Start background thread to consumer wheel timer, it will always run until you call method {@link #stop}
      */
     public void start() {
-        logger.info("delay task is starting");
-        Thread job = new Thread(new TriggerJob());
-        job.setName("consumer RingBuffer thread");
-        job.start();
+
+        if (!start){
+            logger.info("delay task is starting");
+            Thread job = new Thread(new TriggerJob());
+            job.setName("consumer RingBuffer thread");
+            job.start();
+            start = true ;
+        }
+
     }
 
     /**
@@ -211,6 +223,7 @@ public final class RingBufferWheel {
 
     private int mod(int target, int mod) {
         // equals target % mod
+        target = target + tick.get() ;
         return target & (mod - 1);
     }
 
@@ -267,6 +280,8 @@ public final class RingBufferWheel {
                     index = 0;
                 }
 
+                //Total tick number of records
+                tick.incrementAndGet();
                 try {
                     TimeUnit.SECONDS.sleep(1);
                 } catch (InterruptedException e) {
