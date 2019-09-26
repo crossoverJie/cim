@@ -125,15 +125,6 @@ public class RingBufferWheelTest {
 
     }
 
-
-    private static class Task extends RingBufferWheel.Task{
-
-        @Override
-        public void run() {
-            logger.info("================");
-        }
-    }
-
     private static class Job extends RingBufferWheel.Task{
 
         private int num ;
@@ -146,5 +137,14 @@ public class RingBufferWheelTest {
         public void run() {
             logger.info("number={}" , num);
         }
+    }
+
+    private static class Task extends RingBufferWheel.Task{
+
+        @Override
+        public void run() {
+            logger.info("================");
+        }
+
     }
 }
