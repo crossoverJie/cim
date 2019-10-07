@@ -1,10 +1,15 @@
 package com.crossoverjie.cim.common.data.construct;
 
+import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 public class RingBufferWheelTest {
@@ -130,24 +135,34 @@ public class RingBufferWheelTest {
         }
     }
     private static void cuncrrentTest6() throws InterruptedException {
-        ExecutorService executorService = Executors.newFixedThreadPool(10) ;
+        BlockingQueue<Runnable> queue = new LinkedBlockingQueue(10);
+        ThreadFactory product = new ThreadFactoryBuilder()
+                .setNameFormat("msg-callback-%d")
+                .setDaemon(true)
+                .build();
+        ThreadPoolExecutor business = new ThreadPoolExecutor(4, 4, 1, TimeUnit.MILLISECONDS, queue,product);
 
+        ExecutorService executorService = Executors.newFixedThreadPool(10) ;
         RingBufferWheel wheel = new RingBufferWheel(executorService) ;
 
-        for (int i = 0; i < 10; i++) {
+        business.execute(new Runnable() {
+            @Override
+            public void run() {
 
+            }
+        });
+
+        for (int i = 0; i < 10; i++) {
             RingBufferWheel.Task task = new Job(i) ;
             task.setKey(i);
             wheel.addTask(task);
         }
 
-        wheel.start();
 
         TimeUnit.SECONDS.sleep(10);
         RingBufferWheel.Task task = new Job(15) ;
         task.setKey(15);
         wheel.addTask(task);
-        wheel.start();
 
         logger.info("task size={}",wheel.taskSize());
 
