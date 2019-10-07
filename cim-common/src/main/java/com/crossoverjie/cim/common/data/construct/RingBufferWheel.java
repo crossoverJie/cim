@@ -41,9 +41,14 @@ public final class RingBufferWheel {
     private AtomicInteger taskSize = new AtomicInteger();
 
     /***
-     * task running sign
+     * task stop sign
      */
     private volatile boolean stop = false;
+
+    /**
+     * task start sign
+     */
+    private volatile boolean start = false ;
 
     private Lock lock = new ReentrantLock();
     private Condition condition = lock.newCondition();
@@ -98,6 +103,7 @@ public final class RingBufferWheel {
 
         taskSize.incrementAndGet();
 
+        start();
     }
 
     /**
@@ -112,10 +118,13 @@ public final class RingBufferWheel {
      * Start background thread to consumer wheel timer, it will run until you call method {@link #stop}
      */
     public void start() {
-        logger.info("delay task is starting");
-        Thread job = new Thread(new TriggerJob());
-        job.setName("consumer RingBuffer thread");
-        job.start();
+        if (!start){
+            logger.info("delay task is starting");
+            Thread job = new Thread(new TriggerJob());
+            job.setName("consumer RingBuffer thread");
+            job.start();
+            start = true ;
+        }
     }
 
     /**

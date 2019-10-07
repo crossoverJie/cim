@@ -1,6 +1,5 @@
 package com.crossoverjie.cim.common.data.construct;
 
-import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -13,7 +12,7 @@ public class RingBufferWheelTest {
     private static Logger logger = LoggerFactory.getLogger(RingBufferWheelTest.class) ;
 
     public static void main(String[] args) throws InterruptedException {
-        test5();
+        test1();
 
         return;
     }
@@ -29,8 +28,6 @@ public class RingBufferWheelTest {
         task = new Task() ;
         task.setKey(74);
         wheel.addTask(task) ;
-
-        wheel.start();
 
         while (true){
             logger.info("task size={}" , wheel.taskSize());
@@ -117,8 +114,6 @@ public class RingBufferWheelTest {
             wheel.addTask(task);
         }
 
-        wheel.start();
-
         logger.info("task size={}",wheel.taskSize());
 
         wheel.stop(false);
@@ -133,6 +128,32 @@ public class RingBufferWheelTest {
         public void run() {
             logger.info("================");
         }
+    }
+    private static void cuncrrentTest6() throws InterruptedException {
+        ExecutorService executorService = Executors.newFixedThreadPool(10) ;
+
+        RingBufferWheel wheel = new RingBufferWheel(executorService) ;
+
+        for (int i = 0; i < 10; i++) {
+
+            RingBufferWheel.Task task = new Job(i) ;
+            task.setKey(i);
+            wheel.addTask(task);
+        }
+
+        wheel.start();
+
+        TimeUnit.SECONDS.sleep(10);
+        RingBufferWheel.Task task = new Job(15) ;
+        task.setKey(15);
+        wheel.addTask(task);
+        wheel.start();
+
+        logger.info("task size={}",wheel.taskSize());
+
+        wheel.stop(false);
+
+
     }
 
     private static class Job extends RingBufferWheel.Task{
