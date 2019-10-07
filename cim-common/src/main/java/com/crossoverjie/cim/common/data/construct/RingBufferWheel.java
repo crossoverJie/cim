@@ -50,6 +50,11 @@ public final class RingBufferWheel {
      */
     private volatile boolean start = false ;
 
+    /**
+     * total tick times
+     */
+    private AtomicInteger tick = new AtomicInteger() ;
+
     private Lock lock = new ReentrantLock();
     private Condition condition = lock.newCondition();
 
@@ -115,7 +120,7 @@ public final class RingBufferWheel {
     }
 
     /**
-     * Start background thread to consumer wheel timer, it will run until you call method {@link #stop}
+     * Start background thread to consumer wheel timer, it will always run until you call method {@link #stop}
      */
     public void start() {
         if (!start){
@@ -195,12 +200,15 @@ public final class RingBufferWheel {
     }
 
     private void size2Notify() {
-        lock.lock();
-        int size = taskSize.decrementAndGet();
-        if (size == 0) {
-            condition.signal();
+        try {
+            lock.lock();
+            int size = taskSize.decrementAndGet();
+            if (size == 0) {
+                condition.signal();
+            }
+        }finally {
+            lock.unlock();
         }
-        lock.unlock();
     }
 
     private boolean powerOf2(int target) {
@@ -217,6 +225,7 @@ public final class RingBufferWheel {
 
     private int mod(int target, int mod) {
         // equals target % mod
+        target = target + tick.get() ;
         return target & (mod - 1);
     }
 
@@ -273,6 +282,8 @@ public final class RingBufferWheel {
                     index = 0;
                 }
 
+                //Total tick number of records
+                tick.incrementAndGet();
                 try {
                     TimeUnit.SECONDS.sleep(1);
                 } catch (InterruptedException e) {
