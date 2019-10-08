@@ -40,7 +40,6 @@ public class DelayMsgCommand implements InnerCommand {
         RingBufferWheel.Task task = new DelayMsgJob(message) ;
         task.setKey(delayTime);
         ringBufferWheel.addTask(task);
-        ringBufferWheel.start();
         echoService.echo(EmojiParser.parseToUnicode(msg));
     }
 
