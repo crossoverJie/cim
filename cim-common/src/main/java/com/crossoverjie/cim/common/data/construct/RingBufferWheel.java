@@ -7,6 +7,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
@@ -38,7 +39,7 @@ public final class RingBufferWheel {
      */
     private ExecutorService executorService;
 
-    private AtomicInteger taskSize = new AtomicInteger();
+    private volatile int size = 0 ;
 
     /***
      * task stop sign
@@ -48,18 +49,19 @@ public final class RingBufferWheel {
     /**
      * task start sign
      */
-    private volatile boolean start = false ;
+    private volatile AtomicBoolean start = new AtomicBoolean(false);
 
     /**
      * total tick times
      */
-    private AtomicInteger tick = new AtomicInteger() ;
+    private AtomicInteger tick = new AtomicInteger();
 
     private Lock lock = new ReentrantLock();
     private Condition condition = lock.newCondition();
 
     /**
      * Create a new delay task ring buffer by default size
+     *
      * @param executorService the business thread pool
      */
     public RingBufferWheel(ExecutorService executorService) {
@@ -71,8 +73,9 @@ public final class RingBufferWheel {
 
     /**
      * Create a new delay task ring buffer by custom buffer size
+     *
      * @param executorService the business thread pool
-     * @param bufferSize custom buffer size
+     * @param bufferSize      custom buffer size
      */
     public RingBufferWheel(ExecutorService executorService, int bufferSize) {
         this(executorService);
@@ -86,54 +89,68 @@ public final class RingBufferWheel {
 
     /**
      * Add a task into the ring buffer
+     *
      * @param task business task extends RingBufferWheel.Task
      */
     public void addTask(Task task) {
         int key = task.getKey();
-        Set<Task> tasks = get(key);
 
-        if (tasks != null) {
-            int cycleNum = cycleNum(key, bufferSize);
-            task.setCycleNum(cycleNum);
-            tasks.add(task);
-        } else {
-            int index = mod(key, bufferSize);
-            int cycleNum = cycleNum(key, bufferSize);
-            task.setCycleNum(index);
-            task.setCycleNum(cycleNum);
-            Set<Task> sets = new HashSet<>();
-            sets.add(task);
-            put(key, sets);
+        try {
+            lock.lock();
+            Set<Task> tasks = get(key);
+
+            if (tasks != null) {
+                int cycleNum = cycleNum(key, bufferSize);
+                task.setCycleNum(cycleNum);
+                tasks.add(task);
+            } else {
+                int index = mod(key, bufferSize);
+                int cycleNum = cycleNum(key, bufferSize);
+                task.setCycleNum(index);
+                task.setCycleNum(cycleNum);
+                Set<Task> sets = new HashSet<>();
+                sets.add(task);
+                put(key, sets);
+            }
+            size ++ ;
+        }finally {
+            lock.unlock();
         }
 
-        taskSize.incrementAndGet();
-
         start();
+
+
     }
 
     /**
      * thread safe
+     *
      * @return the size of ring buffer
      */
     public int taskSize() {
-        return taskSize.get();
+        return size;
     }
 
     /**
      * Start background thread to consumer wheel timer, it will always run until you call method {@link #stop}
      */
     public void start() {
-        if (!start){
-            logger.info("delay task is starting");
-            Thread job = new Thread(new TriggerJob());
-            job.setName("consumer RingBuffer thread");
-            job.start();
-            start = true ;
+        if (!start.get()) {
+
+            if (start.compareAndSet(start.get(), true)) {
+                logger.info("delay task is starting");
+                Thread job = new Thread(new TriggerJob());
+                job.setName("consumer RingBuffer thread");
+                job.start();
+                start.set(true);
+            }
+
         }
     }
 
     /**
      * Stop consumer ring buffer thread
+     *
      * @param force True will force close consumer thread and discard all pending tasks
      *              otherwise the consumer thread waits for all tasks to completes before closing.
      */
@@ -144,7 +161,7 @@ public final class RingBufferWheel {
             executorService.shutdownNow();
         } else {
             logger.info("delay task is stopping");
-            if (taskSize() > 0){
+            if (taskSize() > 0) {
                 try {
                     lock.lock();
                     condition.await();
@@ -202,11 +219,11 @@ public final class RingBufferWheel {
     private void size2Notify() {
         try {
             lock.lock();
-            int size = taskSize.decrementAndGet();
+            size -- ;
             if (size == 0) {
                 condition.signal();
             }
-        }finally {
+        } finally {
             lock.unlock();
         }
     }
@@ -225,7 +242,7 @@ public final class RingBufferWheel {
 
     private int mod(int target, int mod) {
         // equals target % mod
-        target = target + tick.get() ;
+        target = target + tick.get();
         return target & (mod - 1);
     }
 
@@ -272,23 +289,24 @@ public final class RingBufferWheel {
         public void run() {
             int index = 0;
             while (!stop) {
-
-                Set<Task> tasks = remove(index);
-                for (Task task : tasks) {
-                    executorService.submit(task);
-                }
-
-                if (++index > bufferSize - 1) {
-                    index = 0;
-                }
-
-                //Total tick number of records
-                tick.incrementAndGet();
                 try {
+                    Set<Task> tasks = remove(index);
+                    for (Task task : tasks) {
+                        executorService.submit(task);
+                    }
+
+                    if (++index > bufferSize - 1) {
+                        index = 0;
+                    }
+
+                    //Total tick number of records
+                    tick.incrementAndGet();
                     TimeUnit.SECONDS.sleep(1);
-                } catch (InterruptedException e) {
-                    logger.error("InterruptedException", e);
+
+                } catch (Exception e) {
+                    logger.error("Exception", e);
                 }
+
             }
 
             logger.info("delay task is stopped");

@@ -3,6 +3,9 @@ package com.crossoverjie.cim.common.data.construct;
 
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 
+import io.netty.util.HashedWheelTimer;
+import io.netty.util.Timeout;
+import io.netty.util.TimerTask;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -18,10 +21,10 @@ public class RingBufferWheelTest {
 
     private static Logger logger = LoggerFactory.getLogger(RingBufferWheelTest.class) ;
 
-    public static void main(String[] args) throws InterruptedException {
-        test5();
+    public static void main(String[] args) throws Exception {
 
-        return;
+        concurrentTest();
+
     }
 
     private static void test1() throws InterruptedException {
@@ -150,7 +153,7 @@ public class RingBufferWheelTest {
 
 
     }
-    private static void cuncrrentTest6() throws InterruptedException {
+    private static void concurrentTest() throws Exception {
         BlockingQueue<Runnable> queue = new LinkedBlockingQueue(10);
         ThreadFactory product = new ThreadFactoryBuilder()
                 .setNameFormat("msg-callback-%d")
@@ -161,24 +164,18 @@ public class RingBufferWheelTest {
         ExecutorService executorService = Executors.newFixedThreadPool(10) ;
         RingBufferWheel wheel = new RingBufferWheel(executorService) ;
 
-        business.execute(new Runnable() {
-            @Override
-            public void run() {
-
-            }
-        });
-
         for (int i = 0; i < 10; i++) {
-            RingBufferWheel.Task task = new Job(i) ;
-            task.setKey(i);
-            wheel.addTask(task);
+            business.execute(new Runnable() {
+                @Override
+                public void run() {
+                    for (int i1 = 0; i1 < 30; i1++) {
+                        RingBufferWheel.Task task = new Job(i1) ;
+                        task.setKey(i1);
+                        wheel.addTask(task);
+                    }
+                }
+            });
         }
-
-
-        TimeUnit.SECONDS.sleep(10);
-        RingBufferWheel.Task task = new Job(15) ;
-        task.setKey(15);
-        wheel.addTask(task);
 
         logger.info("task size={}",wheel.taskSize());
 
@@ -207,6 +204,39 @@ public class RingBufferWheelTest {
         public void run() {
             logger.info("================");
         }
+
+    }
+
+
+    public static void hashTimerTest(){
+
+        BlockingQueue<Runnable> queue = new LinkedBlockingQueue(10);
+        ThreadFactory product = new ThreadFactoryBuilder()
+                .setNameFormat("msg-callback-%d")
+                .setDaemon(true)
+                .build();
+        ThreadPoolExecutor business = new ThreadPoolExecutor(4, 4, 1, TimeUnit.MILLISECONDS, queue,product);
+        HashedWheelTimer hashedWheelTimer = new HashedWheelTimer() ;
+
+        for (int i = 0; i < 10; i++) {
+            int finalI = i;
+            business.execute(new Runnable() {
+                @Override
+                public void run() {
+
+                    for (int i1 = 0; i1 < 10; i1++) {
+                        hashedWheelTimer.newTimeout(new TimerTask() {
+                            @Override
+                            public void run(Timeout timeout) throws Exception {
+                                logger.info("====" + finalI);
+                            }
+                        }, finalI,TimeUnit.SECONDS) ;
+                    }
+                }
+            });
+        }
+
+
 
     }
 }
