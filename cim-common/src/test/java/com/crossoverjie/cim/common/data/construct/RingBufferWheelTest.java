@@ -23,7 +23,7 @@ public class RingBufferWheelTest {
 
     public static void main(String[] args) throws Exception {
 
-        concurrentTest();
+        test6();
 
     }
 
@@ -83,10 +83,8 @@ public class RingBufferWheelTest {
         wheel.addTask(task) ;
 
         task = new Task() ;
-        task.setKey(74);
+        task.setKey(60);
         wheel.addTask(task) ;
-
-        wheel.start();
 
 
         TimeUnit.SECONDS.sleep(2);
@@ -141,8 +139,7 @@ public class RingBufferWheelTest {
             wheel.addTask(task);
         }
 
-
-        TimeUnit.SECONDS.sleep(10);
+        TimeUnit.SECONDS.sleep(5);
         RingBufferWheel.Task task = new Job(15) ;
         task.setKey(15);
         wheel.addTask(task);
