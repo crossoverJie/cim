@@ -2,7 +2,6 @@ package com.crossoverjie.cim.common.data.construct;
 
 
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
-
 import io.netty.util.HashedWheelTimer;
 import io.netty.util.Timeout;
 import io.netty.util.TimerTask;
@@ -23,7 +22,7 @@ public class RingBufferWheelTest {
 
     public static void main(String[] args) throws Exception {
 
-        test6();
+        test7();
 
     }
 
@@ -147,9 +146,38 @@ public class RingBufferWheelTest {
         logger.info("task size={}",wheel.taskSize());
 
         wheel.stop(false);
-
-
     }
+
+    private static void test7() throws InterruptedException {
+        ExecutorService executorService = Executors.newFixedThreadPool(2) ;
+
+        RingBufferWheel wheel = new RingBufferWheel(executorService,512) ;
+
+        for (int i = 0; i < 10; i++) {
+            RingBufferWheel.Task task = new Job(i) ;
+            task.setKey(i);
+            wheel.addTask(task);
+        }
+
+        RingBufferWheel.Task task = new Job(15) ;
+        task.setKey(15);
+        int cancel = wheel.addTask(task);
+
+        new Thread(() -> {
+            boolean flag = wheel.cancel(cancel);
+            logger.info("cancel task={}",flag) ;
+        }).start();
+
+        RingBufferWheel.Task task1 = new Job(20) ;
+        task1.setKey(20);
+        wheel.addTask(task1) ;
+
+        logger.info("task size={}",wheel.taskSize());
+
+        wheel.stop(false);
+    }
+
+
     private static void concurrentTest() throws Exception {
         BlockingQueue<Runnable> queue = new LinkedBlockingQueue(10);
         ThreadFactory product = new ThreadFactoryBuilder()

@@ -3,7 +3,9 @@ package com.crossoverjie.cim.common.data.construct;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -39,7 +41,7 @@ public final class RingBufferWheel {
      */
     private ExecutorService executorService;
 
-    private volatile int size = 0 ;
+    private volatile int size = 0;
 
     /***
      * task stop sign
@@ -58,6 +60,9 @@ public final class RingBufferWheel {
 
     private Lock lock = new ReentrantLock();
     private Condition condition = lock.newCondition();
+
+    private AtomicInteger taskId = new AtomicInteger();
+    private Map<Integer, Task> taskMap = new HashMap<>(16);
 
     /**
      * Create a new delay task ring buffer by default size
@@ -88,23 +93,25 @@ public final class RingBufferWheel {
     }
 
     /**
-     * Add a task into the ring buffer
+     * Add a task into the ring buffer(thread safe)
      *
-     * @param task business task extends RingBufferWheel.Task
+     * @param task business task extends {@link Task}
      */
-    public void addTask(Task task) {
+    public int addTask(Task task) {
         int key = task.getKey();
+        int id;
 
         try {
             lock.lock();
-            Set<Task> tasks = get(key);
+            int index = mod(key, bufferSize);
+            task.setIndex(index);
+            Set<Task> tasks = get(index);
 
             if (tasks != null) {
                 int cycleNum = cycleNum(key, bufferSize);
                 task.setCycleNum(cycleNum);
                 tasks.add(task);
             } else {
-                int index = mod(key, bufferSize);
                 int cycleNum = cycleNum(key, bufferSize);
                 task.setCycleNum(index);
                 task.setCycleNum(cycleNum);
@@ -112,18 +119,57 @@ public final class RingBufferWheel {
                 sets.add(task);
                 put(key, sets);
             }
-            size ++ ;
-        }finally {
+            id = taskId.incrementAndGet();
+            taskMap.put(id, task);
+            size++;
+        } finally {
             lock.unlock();
         }
 
         start();
 
+        return id;
+    }
 
+
+    /**
+     * Cancel task by taskId
+     * @param id unique id through {@link #addTask(Task)}
+     * @return
+     */
+    public boolean cancel(int id) {
+
+        boolean flag = false;
+        Set<Task> tempTask = new HashSet<>();
+
+        try {
+            lock.lock();
+            Task task = taskMap.get(id);
+            if (task == null) {
+                return false;
+            }
+
+            Set<Task> tasks = get(task.getIndex());
+            for (Task tk : tasks) {
+                if (tk.getKey() == task.getKey() && tk.getCycleNum() == task.getCycleNum()) {
+                    size--;
+                    flag = true;
+                } else {
+                    tempTask.add(tk);
+                }
+
+            }
+            //update origin data
+            ringBuffer[task.getIndex()] = tempTask;
+        } finally {
+            lock.unlock();
+        }
+
+        return flag;
     }
 
     /**
-     * thread safe
+     * Thread safe
      *
      * @return the size of ring buffer
      */
@@ -179,8 +225,7 @@ public final class RingBufferWheel {
     }
 
 
-    private Set<Task> get(int key) {
-        int index = mod(key, bufferSize);
+    private Set<Task> get(int index) {
         return (Set<Task>) ringBuffer[index];
     }
 
@@ -219,7 +264,7 @@ public final class RingBufferWheel {
     private void size2Notify() {
         try {
             lock.lock();
-            size -- ;
+            size--;
             if (size == 0) {
                 condition.signal();
             }
@@ -256,6 +301,7 @@ public final class RingBufferWheel {
      */
     public abstract static class Task extends Thread {
 
+        private int index;
 
         private int cycleNum;
 
@@ -279,6 +325,14 @@ public final class RingBufferWheel {
 
         private void setCycleNum(int cycleNum) {
             this.cycleNum = cycleNum;
+        }
+
+        public int getIndex() {
+            return index;
+        }
+
+        private void setIndex(int index) {
+            this.index = index;
         }
     }
 
