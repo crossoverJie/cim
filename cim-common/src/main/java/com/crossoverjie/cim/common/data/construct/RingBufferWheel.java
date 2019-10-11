@@ -113,7 +113,7 @@ public final class RingBufferWheel {
                 tasks.add(task);
             } else {
                 int cycleNum = cycleNum(key, bufferSize);
-                task.setCycleNum(index);
+                task.setIndex(index);
                 task.setCycleNum(cycleNum);
                 Set<Task> sets = new HashSet<>();
                 sets.add(task);
