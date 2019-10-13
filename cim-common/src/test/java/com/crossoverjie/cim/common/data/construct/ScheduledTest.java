@@ -25,7 +25,7 @@ public class ScheduledTest {
                 .setNameFormat("scheduled-%d")
                 .setDaemon(true)
                 .build();
-        ScheduledThreadPoolExecutor scheduledExecutorService = new ScheduledThreadPoolExecutor(1,scheduled) ;
+        ScheduledThreadPoolExecutor scheduledExecutorService = new ScheduledThreadPoolExecutor(2,scheduled) ;
         scheduledExecutorService.schedule(() -> logger.info("scheduled........."),3, TimeUnit.SECONDS) ;
     }
 }
