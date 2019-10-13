@@ -23,7 +23,6 @@ public class ScheduledTest {
         logger.info("start.....");
         ThreadFactory scheduled = new ThreadFactoryBuilder()
                 .setNameFormat("scheduled-%d")
-                .setDaemon(true)
                 .build();
         ScheduledThreadPoolExecutor scheduledExecutorService = new ScheduledThreadPoolExecutor(2,scheduled) ;
         scheduledExecutorService.schedule(() -> logger.info("scheduled........."),3, TimeUnit.SECONDS) ;
