@@ -23,6 +23,7 @@ public enum StatusEnum {
 
     /** 账号不在线 */
     OFF_LINE("7000", "你选择的账号不在线，请重新选择！"),
+    REGIESRED("7001", "账号已经被注册！"),
 
     /** 登录信息不匹配 */
     ACCOUNT_NOT_MATCH("9100", "登录信息不匹配！"),

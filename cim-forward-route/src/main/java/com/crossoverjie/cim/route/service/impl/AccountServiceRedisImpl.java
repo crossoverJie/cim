@@ -61,9 +61,7 @@ public class AccountServiceRedisImpl implements AccountService {
             redisTemplate.opsForValue().set(key, info.getUserName());
             redisTemplate.opsForValue().set(info.getUserName(), key);
         } else {
-            long userId = Long.parseLong(name.split(":")[1]);
-            info.setUserId(userId);
-            info.setUserName(info.getUserName());
+           throw new CIMException(StatusEnum.REGIESRED);
         }
 
         return info;
