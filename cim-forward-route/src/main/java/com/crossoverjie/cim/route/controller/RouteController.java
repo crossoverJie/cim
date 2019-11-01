@@ -8,11 +8,9 @@ import com.crossoverjie.cim.common.res.NULLBody;
 import com.crossoverjie.cim.common.route.algorithm.RouteHandle;
 import com.crossoverjie.cim.route.cache.ServerCache;
 import com.crossoverjie.cim.route.service.AccountService;
+import com.crossoverjie.cim.route.service.ChatGroupService;
 import com.crossoverjie.cim.route.service.UserInfoCacheService;
-import com.crossoverjie.cim.route.vo.req.ChatReqVO;
-import com.crossoverjie.cim.route.vo.req.LoginReqVO;
-import com.crossoverjie.cim.route.vo.req.P2PReqVO;
-import com.crossoverjie.cim.route.vo.req.RegisterInfoReqVO;
+import com.crossoverjie.cim.route.vo.req.*;
 import com.crossoverjie.cim.route.vo.res.CIMServerResVO;
 import com.crossoverjie.cim.route.vo.res.RegisterInfoResVO;
 import io.swagger.annotations.ApiOperation;
@@ -25,14 +23,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Function:
  *
  * @author crossoverJie
- *         Date: 22/05/2018 14:46
+ * Date: 22/05/2018 14:46
  * @since JDK 1.8
  */
 @Controller
@@ -49,6 +46,8 @@ public class RouteController {
     @Autowired
     private UserInfoCacheService userInfoCacheService ;
 
+    @Autowired
+    private ChatGroupService chatGroupService;
 
     @Autowired
     private RouteHandle routeHandle ;
@@ -84,6 +83,59 @@ public class RouteController {
         res.setCode(StatusEnum.SUCCESS.getCode());
         res.setMessage(StatusEnum.SUCCESS.getMessage());
         return res;
+    }
+
+    @ApiOperation("创建群组 API")
+    @RequestMapping(value = "createChatGroup", method = RequestMethod.POST)
+    @ResponseBody()
+    public BaseResponse createChatGroup(@RequestBody CreateGroupReqVo createGroupReqVo) throws Exception {
+        if (createGroupReqVo.getUserId() == null || createGroupReqVo.getChatGroupName() == null || createGroupReqVo.getChatGroupName().isEmpty())
+            return BaseResponse.create(NULLBody.create(), StatusEnum.FAIL);
+
+        String[] members = createGroupReqVo.getMembers().split(",");
+        List<Long> memberIds = new LinkedList<>();
+        for (String id : members) {
+            memberIds.add(Long.valueOf(id));
+        }
+        Long chatGroupId = chatGroupService.createChatGroup(createGroupReqVo.getChatGroupName(), createGroupReqVo.getUserId(), memberIds);
+        if (chatGroupId == null || chatGroupId <= 0)
+            return BaseResponse.create(NULLBody.create(), StatusEnum.FAIL);
+
+        return BaseResponse.create(String.valueOf(chatGroupId), StatusEnum.SUCCESS);
+    }
+
+    @ApiOperation("指定群发送聊天 API")
+    @RequestMapping(value = "groupChatRoute", method = RequestMethod.POST)
+    @ResponseBody()
+    public BaseResponse groupChatRoute(@RequestBody ChatReqVO chatReqVO) throws Exception {
+        if (chatReqVO.getUserId() == null || chatReqVO.getMsg() == null || chatReqVO.getMsg().isEmpty())
+            return BaseResponse.create(null, StatusEnum.FAIL);
+
+        boolean isExist = chatGroupService.isChatGroupExist(chatReqVO.getUserId());
+        if (!isExist)
+            return BaseResponse.create(null, StatusEnum.CHAT_GROUP_NO_EXIST);
+
+        Integer receivedCount = chatGroupService.sendGroupMessage(chatReqVO.getUserId(), chatReqVO.getMsg());
+
+        return BaseResponse.create("收到消息人数:" + receivedCount, StatusEnum.SUCCESS);
+    }
+
+    @ApiOperation("群组加入成员 API")
+    @RequestMapping(value = "addGroupMemberRoute", method = RequestMethod.POST)
+    @ResponseBody()
+    public BaseResponse addGroupMemberRoute(@RequestBody AddGroupMemberReqVo addGroupMemberReqVo) throws Exception {
+        if (addGroupMemberReqVo.getUserId() == null || addGroupMemberReqVo.getChatGroupId() == null)
+            return BaseResponse.create(null, StatusEnum.FAIL);
+
+        boolean isExist = chatGroupService.isChatGroupExist(addGroupMemberReqVo.getChatGroupId());
+        if (!isExist)
+            return BaseResponse.create(null, StatusEnum.CHAT_GROUP_NO_EXIST);
+
+        boolean success = chatGroupService.addGroupMember(addGroupMemberReqVo.getChatGroupId(), addGroupMemberReqVo.getUserId());
+        if (!success)
+            return BaseResponse.create(null, StatusEnum.FAIL);
+
+        return BaseResponse.create(null, StatusEnum.SUCCESS);
     }
 
 

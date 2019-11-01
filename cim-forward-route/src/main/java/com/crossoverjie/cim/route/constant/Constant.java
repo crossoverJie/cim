@@ -21,6 +21,11 @@ public final class Constant {
     public final static String ROUTE_PREFIX = "cim-route:";
 
     /**
+     * 群组前缀
+     */
+    public final static String GROUP_PREFIX = "cim-group:";
+
+    /**
      * 登录状态前缀
      */
     public final static String LOGIN_STATUS_PREFIX = "login-status";

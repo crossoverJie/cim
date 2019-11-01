@@ -21,6 +21,9 @@ public enum StatusEnum {
     /** 重复登录 */
     REPEAT_LOGIN("5000", "账号重复登录，请退出一个账号！"),
 
+    /** 账号重复 */
+    ACCOUNT_EXIST("5001", "账号已被注册，请重新选择！"),
+
     /** 账号不在线 */
     OFF_LINE("7000", "你选择的账号不在线，请重新选择！"),
 
@@ -29,6 +32,9 @@ public enum StatusEnum {
 
     /** 请求限流 */
     REQUEST_LIMIT("6000", "请求限流"),
+
+    /** 群组不存在 */
+    CHAT_GROUP_NO_EXIST("6050", "群组不存在！"),
     ;
 
 
