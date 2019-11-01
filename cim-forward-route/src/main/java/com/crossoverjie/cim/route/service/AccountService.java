@@ -1,6 +1,7 @@
 package com.crossoverjie.cim.route.service;
 
 import com.crossoverjie.cim.common.enums.StatusEnum;
+import com.crossoverjie.cim.common.res.BaseResponse;
 import com.crossoverjie.cim.route.vo.req.ChatReqVO;
 import com.crossoverjie.cim.route.vo.req.LoginReqVO;
 import com.crossoverjie.cim.route.vo.res.CIMServerResVO;
@@ -62,7 +63,7 @@ public interface AccountService {
      * @param sendUserId 发送者的ID
      * @throws Exception
      */
-    void pushMsg(String url,long sendUserId ,ChatReqVO groupReqVO) throws Exception;
+    BaseResponse pushMsg(String url, long sendUserId , ChatReqVO groupReqVO) throws Exception;
 
     /**
      * 用户下线

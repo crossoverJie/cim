@@ -25,5 +25,13 @@ public final class Constant {
      */
     public final static String LOGIN_STATUS_PREFIX = "login-status";
 
+    /**
+     * 消息详情前缀
+     */
+    public final static String MESSAGE_PREFIX = "cim-msg:";
 
+    /**
+     * 用户离线消息列表
+     */
+    public final static String OFFLINE_MESSAGE_PREFIX = "cim-offline-msg:";
 }

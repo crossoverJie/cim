@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.crossoverjie.cim.common.enums.StatusEnum;
 import com.crossoverjie.cim.common.exception.CIMException;
 import com.crossoverjie.cim.common.pojo.CIMUserInfo;
+import com.crossoverjie.cim.common.res.BaseResponse;
 import com.crossoverjie.cim.route.service.AccountService;
 import com.crossoverjie.cim.route.service.UserInfoCacheService;
 import com.crossoverjie.cim.route.vo.req.ChatReqVO;
@@ -149,7 +150,7 @@ public class AccountServiceRedisImpl implements AccountService {
 
 
     @Override
-    public void pushMsg(String url, long sendUserId, ChatReqVO groupReqVO) throws Exception {
+    public BaseResponse pushMsg(String url, long sendUserId, ChatReqVO groupReqVO) throws Exception {
         CIMUserInfo cimUserInfo = userInfoCacheService.loadUserInfoByUserId(sendUserId);
 
         JSONObject jsonObject = new JSONObject();
@@ -167,6 +168,7 @@ public class AccountServiceRedisImpl implements AccountService {
             if (!response.isSuccessful()) {
                 throw new IOException("Unexpected code " + response);
             }
+            return JSONObject.parseObject(response.body().string(),BaseResponse.class);
         }finally {
             response.body().close();
         }

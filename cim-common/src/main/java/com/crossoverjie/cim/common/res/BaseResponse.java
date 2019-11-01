@@ -97,5 +97,7 @@ public class BaseResponse<T> implements Serializable{
 		this.reqNo = reqNo;
 	}
 
-
+	public boolean isSuccess() {
+		return StatusEnum.SUCCESS.code().equals(this.code);
+	}
 }
