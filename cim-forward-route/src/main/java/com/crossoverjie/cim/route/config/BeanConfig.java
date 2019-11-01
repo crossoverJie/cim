@@ -121,12 +121,12 @@ public class BeanConfig {
     }
 
     /**
-     * 创建回调线程池
+     * 创建发送离线消息线程
      *
      * @return
      */
     @Bean("loopSendOfflineMsg")
-    public Thread buildCallerThread() {
+    public Thread buildLoopSendOfflineMsgThread() {
         Thread loopSendOfflineThread = new Thread() {
             @Override
             public void run() {
