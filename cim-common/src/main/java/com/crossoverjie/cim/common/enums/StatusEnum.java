@@ -25,6 +25,9 @@ public enum StatusEnum {
     OFF_LINE("7000", "你选择的账号不在线，请重新选择！"),
     REGIESRED("7001", "账号已经被注册！"),
 
+    /** 消息错误码 */
+    SUCCESS_OFFLINE("9000", "发送离线消息成功"),
+
     /** 登录信息不匹配 */
     ACCOUNT_NOT_MATCH("9100", "登录信息不匹配！"),
 

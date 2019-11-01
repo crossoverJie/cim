@@ -8,6 +8,7 @@ import com.crossoverjie.cim.common.res.NULLBody;
 import com.crossoverjie.cim.common.route.algorithm.RouteHandle;
 import com.crossoverjie.cim.route.cache.ServerCache;
 import com.crossoverjie.cim.route.service.AccountService;
+import com.crossoverjie.cim.route.service.MsgStoreService;
 import com.crossoverjie.cim.route.service.UserInfoCacheService;
 import com.crossoverjie.cim.route.vo.req.ChatReqVO;
 import com.crossoverjie.cim.route.vo.req.LoginReqVO;
@@ -27,6 +28,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 
 /**
  * Function:
@@ -49,6 +51,8 @@ public class RouteController {
     @Autowired
     private UserInfoCacheService userInfoCacheService ;
 
+    @Autowired
+    private MsgStoreService msgStoreService;
 
     @Autowired
     private RouteHandle routeHandle ;
@@ -119,6 +123,46 @@ public class RouteController {
         return res;
     }
 
+    /**
+     * 私聊路由,支持离线
+     *
+     * @param p2pRequest
+     * @return
+     */
+    @ApiOperation("私聊,支持离线 API")
+    @RequestMapping(value = "p2pRouteStore", method = RequestMethod.POST)
+    @ResponseBody()
+    public BaseResponse<NULLBody> p2pRouteStore (@RequestBody P2PReqVO p2pRequest) throws Exception {
+        String msgUUID = UUID.randomUUID().toString();
+        //先存一份消息详情
+        boolean putMsgSuccess = msgStoreService.putMessage(msgUUID,p2pRequest.getUserId(),p2pRequest.getReceiveUserId(),p2pRequest.getMsg());
+        if (!putMsgSuccess) {
+            return BaseResponse.create(null,StatusEnum.FAIL);
+        }
+
+        BaseResponse<NULLBody> returnResponse = new BaseResponse();
+
+        try {
+            //尝试获取接收消息用户的路由信息
+            CIMServerResVO cimServerResVO = accountService.loadRouteRelatedByUserId(p2pRequest.getReceiveUserId());
+            //推送消息
+            String url = "http://" + cimServerResVO.getIp() + ":" + cimServerResVO.getHttpPort() + "/sendMsg" ;
+            ChatReqVO chatVO = new ChatReqVO(p2pRequest.getReceiveUserId(),p2pRequest.getMsg()) ;
+            returnResponse = accountService.pushMsg(url,p2pRequest.getUserId(),chatVO);
+        }catch (Exception e){
+        }
+
+        if (returnResponse == null || !returnResponse.isSuccess()) {
+            //用户不在线或发送失败，记录离线消息
+            boolean addUserOffLineMessage = msgStoreService.addUserOffLineMessage(p2pRequest.getReceiveUserId(),msgUUID);
+            if (!addUserOffLineMessage) {
+                return BaseResponse.create(null,StatusEnum.FAIL);
+            }
+            return BaseResponse.create(null,StatusEnum.SUCCESS_OFFLINE);
+        }
+
+        return BaseResponse.create(null,StatusEnum.SUCCESS);
+    }
 
     @ApiOperation("客户端下线")
     @RequestMapping(value = "offLine", method = RequestMethod.POST)
