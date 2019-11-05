@@ -2,6 +2,7 @@ package com.crossoverjie.cim.server.config;
 
 import com.crossoverjie.cim.common.constant.Constants;
 import com.crossoverjie.cim.common.protocol.CIMRequestProto;
+import com.crossoverjie.cim.common.req.WebSocketRequest;
 import okhttp3.OkHttpClient;
 import org.I0Itec.zkclient.ZkClient;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,5 +56,18 @@ public class BeanConfig {
                 .setType(Constants.CommandType.PING)
                 .build();
         return heart;
+    }
+
+    /**
+     * 创建ws心跳单例
+     * @return
+     */
+    @Bean(value = "heartBeatWs")
+    public WebSocketRequest heartBeatWs() {
+        WebSocketRequest webSocketRequest = new WebSocketRequest();
+        webSocketRequest.setReqMsg("pong");
+        webSocketRequest.setRequestId(0L);
+        webSocketRequest.setType(Constants.CommandType.PING);
+        return webSocketRequest;
     }
 }

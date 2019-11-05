@@ -3,6 +3,7 @@ package com.crossoverjie.cim.server.kit;
 import com.alibaba.fastjson.JSONObject;
 import com.crossoverjie.cim.common.pojo.CIMUserInfo;
 import com.crossoverjie.cim.server.config.AppConfiguration;
+import com.crossoverjie.cim.server.util.SeesionWebSocketHolder;
 import com.crossoverjie.cim.server.util.SessionSocketHolder;
 import com.crossoverjie.cim.server.util.SpringBeanFactory;
 import io.netty.channel.socket.nio.NioSocketChannel;
@@ -37,10 +38,12 @@ public class RouteHandler {
         if (userInfo != null){
             LOGGER.info("用户[{}]下线", userInfo.getUserName());
             SessionSocketHolder.removeSession(userInfo.getUserId());
+            SeesionWebSocketHolder.removeSession(userInfo.getUserId());
             //清除路由关系
             clearRouteInfo(userInfo);
         }
         SessionSocketHolder.remove(channel);
+        SeesionWebSocketHolder.remove(channel);
 
     }
 
@@ -51,7 +54,7 @@ public class RouteHandler {
      * @param userInfo
      * @throws IOException
      */
-    private void clearRouteInfo(CIMUserInfo userInfo) throws IOException {
+    public void clearRouteInfo(CIMUserInfo userInfo) throws IOException {
         OkHttpClient okHttpClient = SpringBeanFactory.getBean(OkHttpClient.class);
         AppConfiguration configuration = SpringBeanFactory.getBean(AppConfiguration.class);
         JSONObject jsonObject = new JSONObject();

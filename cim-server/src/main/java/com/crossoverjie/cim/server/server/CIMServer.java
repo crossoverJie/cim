@@ -1,18 +1,19 @@
 package com.crossoverjie.cim.server.server;
 
+import com.alibaba.fastjson.JSONObject;
 import com.crossoverjie.cim.common.constant.Constants;
 import com.crossoverjie.cim.common.protocol.CIMRequestProto;
+import com.crossoverjie.cim.common.req.WebSocketRequest;
 import com.crossoverjie.cim.server.init.CIMServerInitializer;
+import com.crossoverjie.cim.server.util.SeesionWebSocketHolder;
 import com.crossoverjie.cim.server.util.SessionSocketHolder;
 import com.crossoverjie.cim.server.vo.req.SendMsgReqVO;
 import io.netty.bootstrap.ServerBootstrap;
-import io.netty.channel.ChannelFuture;
-import io.netty.channel.ChannelFutureListener;
-import io.netty.channel.ChannelOption;
-import io.netty.channel.EventLoopGroup;
+import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
+import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -56,7 +57,10 @@ public class CIMServer {
                 .channel(NioServerSocketChannel.class)
                 .localAddress(new InetSocketAddress(nettyPort))
                 //保持长连接
-                .childOption(ChannelOption.SO_KEEPALIVE, true)
+                .option(ChannelOption.SO_BACKLOG, 1024) //配置TCP参数，握手字符串长度设置
+                .option(ChannelOption.TCP_NODELAY, true) //TCP_NODELAY算法，尽可能发送大块数据，减少充斥的小块数据
+                .childOption(ChannelOption.RCVBUF_ALLOCATOR, new FixedRecvByteBufAllocator(592048))//配置固定长度接收缓存区分配器
+                .childOption(ChannelOption.SO_KEEPALIVE, true)//开启心跳包活机制，就是客户端、服务端建立连接处于ESTABLISHED状态，超过2小时没有交流，机制会被启动
                 .childHandler(new CIMServerInitializer());
 
         ChannelFuture future = bootstrap.bind().sync();
@@ -82,6 +86,18 @@ public class CIMServer {
      * @param sendMsgReqVO 消息
      */
     public void sendMsg(SendMsgReqVO sendMsgReqVO){
+        //处理ws，发送消息
+        NioSocketChannel wsocketChannel = SeesionWebSocketHolder.get(sendMsgReqVO.getUserId());
+        if (null != wsocketChannel) {
+            WebSocketRequest msg = new WebSocketRequest(sendMsgReqVO.getUserId(),sendMsgReqVO.getMsg(),Constants.CommandType.MSG);
+            String msgJson = JSONObject.toJSONString(msg);
+            ChannelFuture future = wsocketChannel.writeAndFlush(new TextWebSocketFrame(msgJson));
+            future.addListener((ChannelFutureListener) channelFuture ->
+                    LOGGER.info("服务端手动发送 json数据 成功={}", sendMsgReqVO.toString()));
+            return;
+        }
+
+
         NioSocketChannel socketChannel = SessionSocketHolder.get(sendMsgReqVO.getUserId());
 
         if (null == socketChannel) {
