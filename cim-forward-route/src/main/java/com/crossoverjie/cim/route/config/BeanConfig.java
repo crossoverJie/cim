@@ -16,6 +16,8 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 import java.lang.reflect.Method;
+import java.util.concurrent.LinkedBlockingDeque;
+import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -77,6 +79,12 @@ public class BeanConfig {
                 .writeTimeout(10, TimeUnit.SECONDS)
                 .retryOnConnectionFailure(true);
         return builder.build();
+    }
+
+    @Bean
+    public ThreadPoolExecutor taskExecutor() {
+        ThreadPoolExecutor taskExecutor = new ThreadPoolExecutor(0, 20, 1L, TimeUnit.MINUTES, new LinkedBlockingDeque(1000));
+        return taskExecutor;
     }
 
     @Bean

@@ -9,10 +9,7 @@ import com.crossoverjie.cim.common.route.algorithm.RouteHandle;
 import com.crossoverjie.cim.route.cache.ServerCache;
 import com.crossoverjie.cim.route.service.AccountService;
 import com.crossoverjie.cim.route.service.UserInfoCacheService;
-import com.crossoverjie.cim.route.vo.req.ChatReqVO;
-import com.crossoverjie.cim.route.vo.req.LoginReqVO;
-import com.crossoverjie.cim.route.vo.req.P2PReqVO;
-import com.crossoverjie.cim.route.vo.req.RegisterInfoReqVO;
+import com.crossoverjie.cim.route.vo.req.*;
 import com.crossoverjie.cim.route.vo.res.CIMServerResVO;
 import com.crossoverjie.cim.route.vo.res.RegisterInfoResVO;
 import io.swagger.annotations.ApiOperation;
@@ -119,6 +116,13 @@ public class RouteController {
         return res;
     }
 
+    @ApiOperation("默认 消息回调 API")
+    @RequestMapping(value = "msgCallBack", method = RequestMethod.POST)
+    @ResponseBody()
+    public BaseResponse<NULLBody> msgCallBack(@RequestBody MsgCallBackReqVo msgCallBackReqVo) throws Exception {
+        LOGGER.info("回调消息[{}]", msgCallBackReqVo.toString());
+        return BaseResponse.create(null,StatusEnum.SUCCESS);
+    }
 
     @ApiOperation("客户端下线")
     @RequestMapping(value = "offLine", method = RequestMethod.POST)

@@ -19,6 +19,9 @@ public class AppConfiguration {
     @Value("${app.zk.addr}")
     private String zkAddr;
 
+    @Value("${app.msgcallback.url}")
+    private String msgCallBackUrl;
+
 
     @Value("${server.port}")
     private int port;
@@ -74,5 +77,13 @@ public class AppConfiguration {
 
     public void setConsistentHashWay(String consistentHashWay) {
         this.consistentHashWay = consistentHashWay;
+    }
+
+    public String getMsgCallBackUrl() {
+        return msgCallBackUrl;
+    }
+
+    public void setMsgCallBackUrl(String msgCallBackUrl) {
+        this.msgCallBackUrl = msgCallBackUrl;
     }
 }
