@@ -20,10 +20,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisConnection;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
-import org.springframework.data.redis.core.Cursor;
-import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.core.ScanOptions;
-import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.data.redis.core.*;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 import java.lang.reflect.Method;
@@ -121,12 +118,12 @@ public class BeanConfig {
     }
 
     /**
-     * 创建回调线程池
+     * 创建发送离线消息线程
      *
      * @return
      */
     @Bean("loopSendOfflineMsg")
-    public Thread buildCallerThread() {
+    public Thread buildLoopSendOfflineMsgThread() {
         Thread loopSendOfflineThread = new Thread() {
             @Override
             public void run() {
@@ -142,20 +139,30 @@ public class BeanConfig {
                         continue;
                     }
 
-                    RedisConnection connection = redisTemplate.getConnectionFactory().getConnection();
-                    ScanOptions options = ScanOptions.scanOptions()
-                            .match(OFFLINE_MESSAGE_PREFIX + "*")
-                            .build();
-                    Cursor<byte[]> scan = connection.scan(options);
+                    RedisConnectionFactory redisConnectionFactory = redisTemplate.getConnectionFactory();
+                    RedisConnection connection = null;
+                    try {
+                        connection = redisConnectionFactory.getConnection();
 
-                    while (scan.hasNext()) {
-                        byte[] next = scan.next();
-                        String key = new String(next, StandardCharsets.UTF_8);
-                        String userIdStr = key.replaceFirst(OFFLINE_MESSAGE_PREFIX, "");
-                        Long userId = Long.valueOf(userIdStr);
-                        sendUserOfflineMsg(userId);
+                        ScanOptions options = ScanOptions.scanOptions()
+                                .match(OFFLINE_MESSAGE_PREFIX + "*")
+                                .build();
+                        Cursor<byte[]> scan = connection.scan(options);
+
+                        while (scan.hasNext()) {
+                            byte[] next = scan.next();
+                            String key = new String(next, StandardCharsets.UTF_8);
+                            String userIdStr = key.replaceFirst(OFFLINE_MESSAGE_PREFIX, "");
+                            Long userId = Long.valueOf(userIdStr);
+                            sendUserOfflineMsg(userId);
+                        }
+
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    } finally {
+                        distributionLock.unlock("distributionLock");
+                        RedisConnectionUtils.releaseConnection(connection,redisConnectionFactory);
                     }
-                    distributionLock.unlock("distributionLock");
                 }
             }
         };
