@@ -2,8 +2,10 @@ package com.crossoverjie.cim.route.service.impl;
 
 import com.crossoverjie.cim.common.enums.StatusEnum;
 import com.crossoverjie.cim.common.exception.CIMException;
+import com.crossoverjie.cim.common.res.BaseResponse;
 import com.crossoverjie.cim.route.service.AccountService;
 import com.crossoverjie.cim.route.service.ChatGroupService;
+import com.crossoverjie.cim.route.service.MsgStoreService;
 import com.crossoverjie.cim.route.vo.req.ChatReqVO;
 import com.crossoverjie.cim.route.vo.res.CIMServerResVO;
 import com.crossoverjie.cim.route.vo.res.RegisterInfoResVO;
@@ -37,6 +39,9 @@ public class ChatGroupServiceImpl implements ChatGroupService {
 
     @Autowired
     private AccountService accountService;
+
+    @Autowired
+    private MsgStoreService msgStoreService;
 
 
     @Override
@@ -133,24 +138,51 @@ public class ChatGroupServiceImpl implements ChatGroupService {
     }
 
     @Override
-    public Integer sendGroupMessage(Long chatGroupId, String message) {
+    public Integer sendGroupMessage(Long chatGroupId, Long senderId, String message) {
+        return this.sendGroupMessageStore(false, chatGroupId, senderId, message);
+    }
+
+    @Override
+    public Integer sendGroupMessageStore(boolean supportStore, Long chatGroupId, Long senderId, String message) {
+        String msgUUID = "";
+        if (supportStore) {
+            msgUUID = UUID.randomUUID().toString();
+            //先存一份消息详情,群发给群
+            boolean putMsgSuccess = msgStoreService.putMessage(msgUUID, chatGroupId,chatGroupId, message);
+            if (!putMsgSuccess) {
+                return -1;
+            }
+        }
+
         if (chatGroupId == null || message == null)
             return -1;
+
         AtomicInteger receiveCount = new AtomicInteger();
         BoundZSetOperations<String, String> zSetOperations = redisTemplate.boundZSetOps(GROUP_PREFIX + chatGroupId);
         Set<String> sort = zSetOperations.range(0, -1);
+        String finalMsgUUID = msgUUID;
         sort.forEach((item) -> {
+            BaseResponse returnResponse = null;
+            Long receiveUserId = Long.valueOf(item);
             try {
-                Long receiveUserId = Long.valueOf(item);
                 //获取接收消息用户的路由信息
                 CIMServerResVO cimServerResVO = accountService.loadRouteRelatedByUserId(receiveUserId);
                 //推送消息
                 String url = "http://" + cimServerResVO.getIp() + ":" + cimServerResVO.getHttpPort() + "/sendMsg";
                 ChatReqVO chatVO = new ChatReqVO(receiveUserId, message);
-                accountService.pushMsg(url, chatGroupId, chatVO);
+                returnResponse = accountService.pushMsg(url, chatGroupId, chatVO);
                 receiveCount.addAndGet(1);
             } catch (Exception e) {
                 LOGGER.warn("发送失败:{}", item);
+            }
+            if (returnResponse == null || !returnResponse.isSuccess()) {
+                if (supportStore) {
+                    //用户不在线或发送失败，记录离线消息
+                    boolean addUserOffLineMessage = msgStoreService.addUserOffLineMessage(receiveUserId, finalMsgUUID);
+                    if (addUserOffLineMessage) {
+                        receiveCount.addAndGet(1);
+                    }
+                }
             }
         });
         return receiveCount.get();

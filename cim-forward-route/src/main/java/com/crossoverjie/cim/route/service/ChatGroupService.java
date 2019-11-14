@@ -87,8 +87,20 @@ public interface ChatGroupService {
      * 向群发消息
      *
      * @param chatGroupId
+     * @param senderId
      * @param message
      * @return 马上收到消息的总人数
      */
-    Integer sendGroupMessage(Long chatGroupId, String message);
+    Integer sendGroupMessage(Long chatGroupId,Long senderId, String message);
+
+    /**
+     * 向群发消息
+     *
+     * @param supportStore 支付消息存储，离线消息
+     * @param chatGroupId
+     * @param senderId
+     * @param message
+     * @return 马上收到消息的总人数
+     */
+    Integer sendGroupMessageStore(boolean supportStore,Long chatGroupId, Long senderId, String message);
 }

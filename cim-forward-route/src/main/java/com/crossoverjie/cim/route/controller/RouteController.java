@@ -111,15 +111,33 @@ public class RouteController {
     @ApiOperation("指定群发送聊天 API")
     @RequestMapping(value = "groupChatRoute", method = RequestMethod.POST)
     @ResponseBody()
-    public BaseResponse groupChatRoute(@RequestBody ChatReqVO chatReqVO) throws Exception {
-        if (chatReqVO.getUserId() == null || chatReqVO.getMsg() == null || chatReqVO.getMsg().isEmpty())
+    public BaseResponse groupChatRoute(@RequestBody GroupReqVo chatReqVO) throws Exception {
+        if (chatReqVO.getGroupId() == null || chatReqVO.getSenderId() == null || chatReqVO.getMsg() == null || chatReqVO.getMsg().isEmpty())
             return BaseResponse.create(null, StatusEnum.FAIL);
 
-        boolean isExist = chatGroupService.isChatGroupExist(chatReqVO.getUserId());
+        boolean isExist = chatGroupService.isChatGroupExist(chatReqVO.getGroupId());
         if (!isExist)
             return BaseResponse.create(null, StatusEnum.CHAT_GROUP_NO_EXIST);
 
-        Integer receivedCount = chatGroupService.sendGroupMessage(chatReqVO.getUserId(), chatReqVO.getMsg());
+        Integer receivedCount = chatGroupService.sendGroupMessage(chatReqVO.getGroupId(),chatReqVO.getSenderId(), chatReqVO.getMsg());
+
+        return BaseResponse.create("收到消息人数:" + receivedCount, StatusEnum.SUCCESS);
+    }
+
+    @ApiOperation("指定群发送聊天 API 支持离线")
+    @RequestMapping(value = "groupChatRouteStore", method = RequestMethod.POST)
+    @ResponseBody()
+    public BaseResponse groupChatRouteStore(@RequestBody GroupReqVo chatReqVO) throws Exception {
+        if (chatReqVO.getGroupId() == null || chatReqVO.getSenderId() == null || chatReqVO.getMsg() == null || chatReqVO.getMsg().isEmpty())
+            return BaseResponse.create(null, StatusEnum.FAIL);
+
+        boolean isExist = chatGroupService.isChatGroupExist(chatReqVO.getGroupId());
+        if (!isExist)
+            return BaseResponse.create(null, StatusEnum.CHAT_GROUP_NO_EXIST);
+
+        Integer receivedCount = chatGroupService.sendGroupMessageStore(true,chatReqVO.getGroupId(),chatReqVO.getSenderId(), chatReqVO.getMsg());
+        if (receivedCount == null || receivedCount <= 0)
+            return BaseResponse.create(null, StatusEnum.FAIL);
 
         return BaseResponse.create("收到消息人数:" + receivedCount, StatusEnum.SUCCESS);
     }

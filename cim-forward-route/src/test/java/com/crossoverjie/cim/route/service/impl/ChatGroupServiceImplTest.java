@@ -53,6 +53,7 @@ public class ChatGroupServiceImplTest {
 
         //增加新成员(在线)
         List<Long> uids = loadOnlineUser();
+        assert uids != null && !uids.isEmpty();
         for (Long id : uids) {
             assert chatGroupService.addGroupMember(chatGroupId, id);
         }
@@ -70,7 +71,7 @@ public class ChatGroupServiceImplTest {
         assert !chatGroupService.isGroupMemberExist(chatGroupId, -123L);
 
         //群发信息，有在线成员，一定能发出去
-        assert chatGroupService.sendGroupMessage(chatGroupId, "大家好呀") > 0;
+        assert chatGroupService.sendGroupMessage(chatGroupId, uids.get(0), "大家好呀") > 0;
 
         //解散群
         assert chatGroupService.dismissGroup(chatGroupId);
