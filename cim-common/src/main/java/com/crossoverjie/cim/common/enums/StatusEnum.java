@@ -27,6 +27,9 @@ public enum StatusEnum {
     /** 账号不在线 */
     OFF_LINE("7000", "你选择的账号不在线，请重新选择！"),
 
+    /** 消息错误码 */
+    SUCCESS_OFFLINE("9000", "发送离线消息成功"),
+
     /** 登录信息不匹配 */
     ACCOUNT_NOT_MATCH("9100", "登录信息不匹配！"),
 
