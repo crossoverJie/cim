@@ -160,6 +160,75 @@ public class RouteController {
         return BaseResponse.create(null, StatusEnum.SUCCESS);
     }
 
+    @ApiOperation("批量移除群组成员 API")
+    @RequestMapping(value = "remoteGroupMembersRoute", method = RequestMethod.POST)
+    @ResponseBody()
+    public BaseResponse remoteGroupMembersRoute(@RequestBody RemoveGroupMembersReqVo addGroupMemberReqVo) throws Exception {
+        if (addGroupMemberReqVo.getUserIds() == null || addGroupMemberReqVo.getUserIds().isEmpty() || addGroupMemberReqVo.getChatGroupId() == null)
+            return BaseResponse.create(null, StatusEnum.FAIL);
+
+        boolean isExist = chatGroupService.isChatGroupExist(addGroupMemberReqVo.getChatGroupId());
+        if (!isExist)
+            return BaseResponse.create(null, StatusEnum.CHAT_GROUP_NO_EXIST);
+
+        String[] memberList = addGroupMemberReqVo.getUserIds().split(",");
+        boolean hasRemove = false;
+        for (String memberId : memberList) {
+            try {
+                Long chatId = Long.valueOf(memberId);
+                boolean success = chatGroupService.deleteGroupMember(addGroupMemberReqVo.getChatGroupId(), chatId);
+                if (success) {
+                    hasRemove = true;
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+        if (!hasRemove)
+            return BaseResponse.create(null, StatusEnum.FAIL);
+
+        return BaseResponse.create(null, StatusEnum.SUCCESS);
+    }
+
+    @ApiOperation("解散群 API")
+    @RequestMapping(value = "dismissGroup", method = RequestMethod.POST)
+    @ResponseBody()
+    public BaseResponse dismissGroup(@RequestBody GroupIdReqVo groupIdReqVo) throws Exception {
+        if (groupIdReqVo.getChatGroupId() == null)
+            return BaseResponse.create(null, StatusEnum.FAIL);
+
+        boolean isExist = chatGroupService.isChatGroupExist(groupIdReqVo.getChatGroupId());
+        if (!isExist)
+            return BaseResponse.create(null, StatusEnum.CHAT_GROUP_NO_EXIST);
+
+        boolean success = chatGroupService.dismissGroup(groupIdReqVo.getChatGroupId());
+
+        if (!success)
+            return BaseResponse.create(null, StatusEnum.FAIL);
+
+        return BaseResponse.create(null, StatusEnum.SUCCESS);
+    }
+
+    @ApiOperation("获取群成员 API")
+    @RequestMapping(value = "getGroupMemberList", method = RequestMethod.POST)
+    @ResponseBody()
+    public BaseResponse getGroupMemberList(@RequestBody GroupIdReqVo groupIdReqVo) throws Exception {
+        if (groupIdReqVo.getChatGroupId() == null)
+            return BaseResponse.create(null, StatusEnum.FAIL);
+
+        boolean isExist = chatGroupService.isChatGroupExist(groupIdReqVo.getChatGroupId());
+        if (!isExist)
+            return BaseResponse.create(null, StatusEnum.CHAT_GROUP_NO_EXIST);
+
+        List<Long> memberList = chatGroupService.getGroupMemberList(groupIdReqVo.getChatGroupId());
+
+        if (memberList == null || memberList.isEmpty())
+            return BaseResponse.create(null, StatusEnum.FAIL);
+
+        return BaseResponse.create(memberList, StatusEnum.SUCCESS);
+    }
+
 
     /**
      * 私聊路由
