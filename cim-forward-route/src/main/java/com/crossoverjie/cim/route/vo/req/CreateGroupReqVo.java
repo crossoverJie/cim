@@ -1,5 +1,6 @@
 package com.crossoverjie.cim.route.vo.req;
 
+import com.crossoverjie.cim.common.req.BaseRequest;
 import io.swagger.annotations.ApiModelProperty;
 
 import javax.validation.constraints.NotNull;
@@ -11,7 +12,7 @@ import javax.validation.constraints.NotNull;
  *         Date: 2019/11/01 15:56
  * @since JDK 1.8
  */
-public class CreateGroupReqVo {
+public class CreateGroupReqVo extends BaseRequest {
     @NotNull(message = "创建人 userId 不能为空")
     @ApiModelProperty(required = true, value = "userId", example = "1545574049323")
     private Long userId ;

@@ -20,6 +20,7 @@ import java.security.InvalidParameterException;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import static com.crossoverjie.cim.route.constant.Constant.ACCOUNT_PREFIX;
 import static com.crossoverjie.cim.route.constant.Constant.GROUP_PREFIX;
 
 /**
@@ -132,9 +133,18 @@ public class ChatGroupServiceImpl implements ChatGroupService {
     @Override
     public boolean dismissGroup(Long chatGroupId) {
         boolean hasKey = redisTemplate.hasKey(GROUP_PREFIX + chatGroupId);
-        if (hasKey)
-            redisTemplate.delete(GROUP_PREFIX + chatGroupId);
-        return hasKey;
+        if (!hasKey) {
+            return false;
+        }
+        redisTemplate.delete(GROUP_PREFIX + chatGroupId);
+
+        String key = ACCOUNT_PREFIX + chatGroupId;
+        String value = redisTemplate.opsForValue().get(key);
+
+        redisTemplate.delete(key);
+        redisTemplate.delete(value);
+
+        return true;
     }
 
     @Override

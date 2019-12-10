@@ -71,6 +71,19 @@ public class AccountServiceRedisImpl implements AccountService {
     }
 
     @Override
+    public boolean unregister(RegisterInfoResVO info) throws Exception {
+        String key = ACCOUNT_PREFIX + info.getUserId();
+
+        String name = redisTemplate.opsForValue().get(info.getUserName());
+        if (null == name) {
+            return false;
+        }
+        redisTemplate.delete(key);
+        redisTemplate.delete(info.getUserName());
+        return true;
+    }
+
+    @Override
     public StatusEnum login(LoginReqVO loginReqVO) throws Exception {
         //再去Redis里查询
         String key = ACCOUNT_PREFIX + loginReqVO.getUserId();

@@ -27,6 +27,13 @@ public interface AccountService {
     RegisterInfoResVO register(RegisterInfoResVO info) throws Exception;
 
     /**
+     * 反注册用户
+     * @param info 用户信息
+     * @throws Exception
+     */
+    boolean unregister(RegisterInfoResVO info) throws Exception;
+
+    /**
      * 登录服务
      * @param loginReqVO 登录信息
      * @return true 成功 false 失败
