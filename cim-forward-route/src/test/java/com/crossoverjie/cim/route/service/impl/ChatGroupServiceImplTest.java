@@ -71,7 +71,7 @@ public class ChatGroupServiceImplTest {
         assert !chatGroupService.isGroupMemberExist(chatGroupId, -123L);
 
         //群发信息，有在线成员，一定能发出去
-        assert chatGroupService.sendGroupMessage(chatGroupId, uids.get(0), "大家好呀") > 0;
+        assert !chatGroupService.sendGroupMessage(chatGroupId, uids.get(0), "大家好呀").isEmpty();
 
         //解散群
         assert chatGroupService.dismissGroup(chatGroupId);

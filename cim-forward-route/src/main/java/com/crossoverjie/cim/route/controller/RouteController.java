@@ -119,9 +119,9 @@ public class RouteController {
         if (!isExist)
             return BaseResponse.create(null, StatusEnum.CHAT_GROUP_NO_EXIST);
 
-        Integer receivedCount = chatGroupService.sendGroupMessage(chatReqVO.getGroupId(),chatReqVO.getSenderId(), chatReqVO.getMsg());
+        Map<Long,Integer> sendMap = chatGroupService.sendGroupMessage(chatReqVO.getGroupId(),chatReqVO.getSenderId(), chatReqVO.getMsg());
 
-        return BaseResponse.create("收到消息人数:" + receivedCount, StatusEnum.SUCCESS);
+        return BaseResponse.create(sendMap, StatusEnum.SUCCESS);
     }
 
     @ApiOperation("指定群发送聊天 API 支持离线")
@@ -135,11 +135,11 @@ public class RouteController {
         if (!isExist)
             return BaseResponse.create(null, StatusEnum.CHAT_GROUP_NO_EXIST);
 
-        Integer receivedCount = chatGroupService.sendGroupMessageStore(true,chatReqVO.getGroupId(),chatReqVO.getSenderId(), chatReqVO.getMsg());
-        if (receivedCount == null || receivedCount <= 0)
+        Map<Long,Integer> sendMap = chatGroupService.sendGroupMessageStore(true,chatReqVO.getGroupId(),chatReqVO.getSenderId(), chatReqVO.getMsg());
+        if (sendMap == null || sendMap.isEmpty())
             return BaseResponse.create(null, StatusEnum.FAIL);
 
-        return BaseResponse.create("收到消息人数:" + receivedCount, StatusEnum.SUCCESS);
+        return BaseResponse.create(sendMap, StatusEnum.SUCCESS);
     }
 
     @ApiOperation("群组加入成员 API")

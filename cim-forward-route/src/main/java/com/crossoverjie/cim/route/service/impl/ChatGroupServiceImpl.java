@@ -148,26 +148,26 @@ public class ChatGroupServiceImpl implements ChatGroupService {
     }
 
     @Override
-    public Integer sendGroupMessage(Long chatGroupId, Long senderId, String message) {
+    public Map<Long,Integer> sendGroupMessage(Long chatGroupId, Long senderId, String message) {
         return this.sendGroupMessageStore(false, chatGroupId, senderId, message);
     }
 
     @Override
-    public Integer sendGroupMessageStore(boolean supportStore, Long chatGroupId, Long senderId, String message) {
+    public Map<Long,Integer> sendGroupMessageStore(boolean supportStore, Long chatGroupId, Long senderId, String message) {
         String msgUUID = "";
+        Map<Long,Integer> retMap = new HashMap<>();
         if (supportStore) {
             msgUUID = UUID.randomUUID().toString();
             //先存一份消息详情,群发给群
             boolean putMsgSuccess = msgStoreService.putMessage(msgUUID, chatGroupId,chatGroupId, message);
             if (!putMsgSuccess) {
-                return -1;
+                return retMap;
             }
         }
 
         if (chatGroupId == null || message == null)
-            return -1;
+            return retMap;
 
-        AtomicInteger receiveCount = new AtomicInteger();
         BoundZSetOperations<String, String> zSetOperations = redisTemplate.boundZSetOps(GROUP_PREFIX + chatGroupId);
         Set<String> sort = zSetOperations.range(0, -1);
         String finalMsgUUID = msgUUID;
@@ -181,20 +181,21 @@ public class ChatGroupServiceImpl implements ChatGroupService {
                 String url = "http://" + cimServerResVO.getIp() + ":" + cimServerResVO.getHttpPort() + "/sendMsg";
                 ChatReqVO chatVO = new ChatReqVO(receiveUserId, message);
                 returnResponse = accountService.pushMsg(url, chatGroupId, chatVO);
-                receiveCount.addAndGet(1);
+                retMap.put(receiveUserId,1);
             } catch (Exception e) {
                 LOGGER.warn("发送失败:{}", item);
+                retMap.put(receiveUserId,0);
             }
             if (returnResponse == null || !returnResponse.isSuccess()) {
                 if (supportStore) {
                     //用户不在线或发送失败，记录离线消息
                     boolean addUserOffLineMessage = msgStoreService.addUserOffLineMessage(receiveUserId, finalMsgUUID);
                     if (addUserOffLineMessage) {
-                        receiveCount.addAndGet(1);
+                        retMap.put(receiveUserId,2);//离线消息成功
                     }
                 }
             }
         });
-        return receiveCount.get();
+        return retMap;
     }
 }

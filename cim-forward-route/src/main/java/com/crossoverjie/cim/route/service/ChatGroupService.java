@@ -1,6 +1,7 @@
 package com.crossoverjie.cim.route.service;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Function: 群组服务
@@ -89,9 +90,9 @@ public interface ChatGroupService {
      * @param chatGroupId
      * @param senderId
      * @param message
-     * @return 马上收到消息的总人数
+     * @return chatId-是否成功，消息结果map
      */
-    Integer sendGroupMessage(Long chatGroupId,Long senderId, String message);
+    Map<Long,Integer> sendGroupMessage(Long chatGroupId, Long senderId, String message);
 
     /**
      * 向群发消息
@@ -100,7 +101,7 @@ public interface ChatGroupService {
      * @param chatGroupId
      * @param senderId
      * @param message
-     * @return 马上收到消息的总人数
+     * @return chatId-是否成功，消息结果map
      */
-    Integer sendGroupMessageStore(boolean supportStore,Long chatGroupId, Long senderId, String message);
+    Map<Long,Integer> sendGroupMessageStore(boolean supportStore,Long chatGroupId, Long senderId, String message);
 }
