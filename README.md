@@ -2,7 +2,7 @@
 
 <div align="center">  
 
-<img src="https://ws4.sinaimg.cn/large/006tNbRwly1fylahz0rrgj30p008ca9x.jpg"  /> 
+<img src="https://i.loli.net/2020/02/21/rfOGvKlTcHCmM92.png"  /> 
 <br/>
 
 [![Build Status](https://img.shields.io/badge/cim-cross--im-brightgreen.svg)](https://github.com/crossoverJie/cim)
