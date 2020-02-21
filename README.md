@@ -61,7 +61,7 @@
 
 ## 系统架构
 
-![](https://ws1.sinaimg.cn/large/006tNbRwly1fyldgiizhuj315o0r4n0k.jpg)
+![](https://i.loli.net/2019/05/08/5cd1d45a156f1.jpg)
 
 - `CIM` 中的各个组件均采用 `SpringBoot` 构建。
 -  采用 `Netty` 构建底层通信。
@@ -85,7 +85,7 @@
 
 ## 流程图
 
-![](https://ws1.sinaimg.cn/large/006tNbRwly1fylfxevl2ij30it0etaau.jpg)
+![](https://i.loli.net/2019/05/08/5cd1d45b982b3.jpg)
 
 - 客户端向 `route` 发起登录。
 - 登录成功从 `Zookeeper` 中选择可用 `IM-server` 返回给客户端，并保存登录、路由信息到 `Redis`。
