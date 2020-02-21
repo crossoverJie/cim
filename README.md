@@ -208,7 +208,7 @@ java -jar cim-client-1.0.0-SNAPSHOT.jar --server.port=8084 --cim.user.id=上方�
 
 ### 前缀匹配用户名
 
-![](https://ws4.sinaimg.cn/large/006tNc79gy1fz3vo4tgkjj31ni09s41u.jpg)
+![](https://i.loli.net/2019/05/08/5cd1c32ac3397.jpg)
 
 使用命令 `:qu prefix` 可以按照前缀的方式搜索用户信息。
 
