@@ -190,7 +190,7 @@ java -jar cim-client-1.0.0-SNAPSHOT.jar --server.port=8084 --cim.user.id=上方�
 
 ### 聊天记录查询
 
-![](https://ws2.sinaimg.cn/large/006tNc79gy1fz3uwmb5hsj30s8046wm3.jpg)
+![](https://i.loli.net/2019/05/08/5cd1c310cb796.jpg)
 
 使用命令 `:q 关键字` 即可查询与个人相关的聊天记录。
 
@@ -200,7 +200,7 @@ java -jar cim-client-1.0.0-SNAPSHOT.jar --server.port=8084 --cim.user.id=上方�
 
 ### AI 模式
 
-![](https://ws3.sinaimg.cn/large/006tNc79gy1fz3vf3nsq3j31dc0j01ky.jpg)
+![](https://i.loli.net/2019/05/08/5cd1c30e47d95.jpg)
 
 使用命令 `:ai` 开启 AI 模式，之后所有的消息都会由 `AI` 响应。
 
