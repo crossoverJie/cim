@@ -49,7 +49,7 @@ public class CIMServerHandle extends SimpleChannelInboundHandler<CIMRequestProto
         //可能出现业务判断离线后再次触发 channelInactive
         CIMUserInfo userInfo = SessionSocketHolder.getUserId((NioSocketChannel) ctx.channel());
         if (userInfo != null){
-            LOGGER.warn("[{}]触发 channelInactive 掉线!",userInfo.getUserName());
+            LOGGER.warn("[{}] trigger channelInactive offline!",userInfo.getUserName());
             userOffLine(userInfo, (NioSocketChannel) ctx.channel());
             ctx.channel().close();
         }
@@ -77,7 +77,7 @@ public class CIMServerHandle extends SimpleChannelInboundHandler<CIMRequestProto
      * @throws IOException
      */
     private void userOffLine(CIMUserInfo userInfo, NioSocketChannel channel) throws IOException {
-        LOGGER.info("用户[{}]下线", userInfo.getUserName());
+        LOGGER.info("account [{}] offline!", userInfo.getUserName());
         SessionSocketHolder.remove(channel);
         SessionSocketHolder.removeSession(userInfo.getUserId());
 
