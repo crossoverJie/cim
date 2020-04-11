@@ -19,13 +19,13 @@ public enum StatusEnum {
     FAIL("4000", "失败"),
 
     /** 重复登录 */
-    REPEAT_LOGIN("5000", "账号重复登录，请退出一个账号！"),
+    REPEAT_LOGIN("5000", "Repeat login, log out an account please!"),
 
     /** 账号不在线 */
     OFF_LINE("7000", "你选择的账号不在线，请重新选择！"),
 
     /** 登录信息不匹配 */
-    ACCOUNT_NOT_MATCH("9100", "登录信息不匹配！"),
+    ACCOUNT_NOT_MATCH("9100", "The User information you have used is incorrect!"),
 
     /** 请求限流 */
     REQUEST_LIMIT("6000", "请求限流"),

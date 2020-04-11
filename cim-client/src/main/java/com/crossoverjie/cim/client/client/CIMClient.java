@@ -158,7 +158,7 @@ public class CIMClient {
                 .build();
         ChannelFuture future = channel.writeAndFlush(login);
         future.addListener((ChannelFutureListener) channelFuture ->
-                        echoService.echo("registry cim server success!")
+                        echoService.echo("Registry cim server success!")
                 );
     }
 

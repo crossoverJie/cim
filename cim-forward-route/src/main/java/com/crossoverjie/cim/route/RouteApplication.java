@@ -17,7 +17,7 @@ public class RouteApplication implements CommandLineRunner{
 
 	public static void main(String[] args) {
         SpringApplication.run(RouteApplication.class, args);
-		LOGGER.info("启动 route 成功");
+		LOGGER.info("Start cim route success!!!");
 	}
 
 	@Override

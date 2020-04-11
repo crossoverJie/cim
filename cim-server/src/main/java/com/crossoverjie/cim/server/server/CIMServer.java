@@ -73,7 +73,7 @@ public class CIMServer {
     public void destroy() {
         boss.shutdownGracefully().syncUninterruptibly();
         work.shutdownGracefully().syncUninterruptibly();
-        LOGGER.info("关闭 cim server 成功");
+        LOGGER.info("Close cim server success!!!");
     }
 
 

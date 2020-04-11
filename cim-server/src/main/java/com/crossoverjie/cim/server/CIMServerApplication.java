@@ -28,7 +28,7 @@ public class CIMServerApplication implements CommandLineRunner{
 
 	public static void main(String[] args) {
         SpringApplication.run(CIMServerApplication.class, args);
-		LOGGER.info("启动 Server 成功");
+		LOGGER.info("Start cim server success!!!");
 	}
 
 	@Override
