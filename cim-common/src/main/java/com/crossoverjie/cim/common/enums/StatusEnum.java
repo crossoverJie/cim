@@ -14,7 +14,7 @@ public enum StatusEnum {
     /** 成功 */
     FALLBACK("8000", "FALL_BACK"),
     /** 参数校验失败**/
-    VALIDATION_FAIL("3000", "参数校验失败"),
+    VALIDATION_FAIL("3000", "invalid argument"),
     /** 失败 */
     FAIL("4000", "失败"),
 
