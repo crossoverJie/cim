@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.crossoverjie.cim.common.enums.StatusEnum;
 import com.crossoverjie.cim.common.exception.CIMException;
 import com.crossoverjie.cim.common.pojo.CIMUserInfo;
+import com.crossoverjie.cim.common.util.RouteInfoParseUtil;
 import com.crossoverjie.cim.route.service.AccountService;
 import com.crossoverjie.cim.route.service.UserInfoCacheService;
 import com.crossoverjie.cim.route.vo.req.ChatReqVO;
@@ -33,7 +34,7 @@ import static com.crossoverjie.cim.route.constant.Constant.ROUTE_PREFIX;
  * Function:
  *
  * @author crossoverJie
- *         Date: 2018/12/23 21:58
+ * Date: 2018/12/23 21:58
  * @since JDK 1.8
  */
 @Service
@@ -44,7 +45,7 @@ public class AccountServiceRedisImpl implements AccountService {
     private RedisTemplate<String, String> redisTemplate;
 
     @Autowired
-    private UserInfoCacheService userInfoCacheService ;
+    private UserInfoCacheService userInfoCacheService;
 
     @Autowired
     private OkHttpClient okHttpClient;
@@ -84,9 +85,9 @@ public class AccountServiceRedisImpl implements AccountService {
 
         //登录成功，保存登录状态
         boolean status = userInfoCacheService.saveAndCheckUserLoginStatus(loginReqVO.getUserId());
-        if (status == false){
+        if (status == false) {
             //重复登录
-            return StatusEnum.REPEAT_LOGIN ;
+            return StatusEnum.REPEAT_LOGIN;
         }
 
         return StatusEnum.SUCCESS;
@@ -120,7 +121,7 @@ public class AccountServiceRedisImpl implements AccountService {
         try {
             scan.close();
         } catch (IOException e) {
-            LOGGER.error("IOException",e);
+            LOGGER.error("IOException", e);
         }
 
         return routes;
@@ -130,20 +131,18 @@ public class AccountServiceRedisImpl implements AccountService {
     public CIMServerResVO loadRouteRelatedByUserId(Long userId) {
         String value = redisTemplate.opsForValue().get(ROUTE_PREFIX + userId);
 
-        if (value == null){
-            throw new CIMException(OFF_LINE) ;
+        if (value == null) {
+            throw new CIMException(OFF_LINE);
         }
 
-        String[] server = value.split(":");
-        CIMServerResVO cimServerResVO = new CIMServerResVO(server[0], Integer.parseInt(server[1]), Integer.parseInt(server[2]));
+        CIMServerResVO cimServerResVO = new CIMServerResVO(RouteInfoParseUtil.parse(value));
         return cimServerResVO;
     }
 
     private void parseServerInfo(Map<Long, CIMServerResVO> routes, String key) {
         long userId = Long.valueOf(key.split(":")[1]);
         String value = redisTemplate.opsForValue().get(key);
-        String[] server = value.split(":");
-        CIMServerResVO cimServerResVO = new CIMServerResVO(server[0], Integer.parseInt(server[1]), Integer.parseInt(server[2]));
+        CIMServerResVO cimServerResVO = new CIMServerResVO(RouteInfoParseUtil.parse(value));
         routes.put(userId, cimServerResVO);
     }
 
@@ -167,7 +166,7 @@ public class AccountServiceRedisImpl implements AccountService {
             if (!response.isSuccessful()) {
                 throw new IOException("Unexpected code " + response);
             }
-        }finally {
+        } finally {
             response.body().close();
         }
     }
@@ -178,7 +177,7 @@ public class AccountServiceRedisImpl implements AccountService {
         // TODO: 2019-01-21 改为一个原子命令，以防数据一致性
 
         //删除路由
-        redisTemplate.delete(ROUTE_PREFIX + userId) ;
+        redisTemplate.delete(ROUTE_PREFIX + userId);
 
         //删除登录状态
         userInfoCacheService.removeLoginStatus(userId);

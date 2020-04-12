@@ -40,7 +40,7 @@ public class ZKit {
         zkClient.subscribeChildChanges(path, new IZkChildListener() {
             @Override
             public void handleChildChange(String parentPath, List<String> currentChilds) throws Exception {
-                logger.info("清除/更新本地缓存 parentPath=【{}】,currentChilds=【{}】", parentPath,currentChilds.toString());
+                logger.info("Clear or update local cache parentPath=[{}],currentChilds=[{}]", parentPath,currentChilds.toString());
 
                 //更新所有缓存/先删除 再新增
                 serverCache.updateCache(currentChilds) ;

@@ -42,7 +42,7 @@ public class RegistryZK implements Runnable {
         if (appConfiguration.isZkSwitch()){
             String path = appConfiguration.getZkRoot() + "/ip-" + ip + ":" + cimServerPort + ":" + httpPort;
             zKit.createNode(path);
-            logger.info("注册 zookeeper 成功，msg=[{}]", path);
+            logger.info("Registry zookeeper success, msg=[{}]", path);
         }
 
 

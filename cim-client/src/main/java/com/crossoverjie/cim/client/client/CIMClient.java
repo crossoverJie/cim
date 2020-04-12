@@ -112,7 +112,7 @@ public class CIMClient {
             LOGGER.error("连接失败", e);
         }
         if (future.isSuccess()) {
-            echoService.echo("start cim client success!");
+            echoService.echo("Start cim client success!");
             LOGGER.info("启动 cim client 成功");
         }
         channel = (SocketChannel) future.channel();
@@ -158,7 +158,7 @@ public class CIMClient {
                 .build();
         ChannelFuture future = channel.writeAndFlush(login);
         future.addListener((ChannelFutureListener) channelFuture ->
-                        echoService.echo("registry cim server success!")
+                        echoService.echo("Registry cim server success!")
                 );
     }
 

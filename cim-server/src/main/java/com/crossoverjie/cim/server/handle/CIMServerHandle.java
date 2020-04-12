@@ -49,7 +49,7 @@ public class CIMServerHandle extends SimpleChannelInboundHandler<CIMRequestProto
         //可能出现业务判断离线后再次触发 channelInactive
         CIMUserInfo userInfo = SessionSocketHolder.getUserId((NioSocketChannel) ctx.channel());
         if (userInfo != null){
-            LOGGER.warn("[{}]触发 channelInactive 掉线!",userInfo.getUserName());
+            LOGGER.warn("[{}] trigger channelInactive offline!",userInfo.getUserName());
             userOffLine(userInfo, (NioSocketChannel) ctx.channel());
             ctx.channel().close();
         }
@@ -77,7 +77,7 @@ public class CIMServerHandle extends SimpleChannelInboundHandler<CIMRequestProto
      * @throws IOException
      */
     private void userOffLine(CIMUserInfo userInfo, NioSocketChannel channel) throws IOException {
-        LOGGER.info("用户[{}]下线", userInfo.getUserName());
+        LOGGER.info("account [{}] offline!", userInfo.getUserName());
         SessionSocketHolder.remove(channel);
         SessionSocketHolder.removeSession(userInfo.getUserId());
 
@@ -118,13 +118,13 @@ public class CIMServerHandle extends SimpleChannelInboundHandler<CIMRequestProto
 
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, CIMRequestProto.CIMReqProtocol msg) throws Exception {
-        LOGGER.info("收到msg={}", msg.toString());
+        LOGGER.info("received msg=[{}]", msg.toString());
 
         if (msg.getType() == Constants.CommandType.LOGIN) {
             //保存客户端与 Channel 之间的关系
             SessionSocketHolder.put(msg.getRequestId(), (NioSocketChannel) ctx.channel());
             SessionSocketHolder.saveSession(msg.getRequestId(), msg.getReqMsg());
-            LOGGER.info("客户端[{}]上线成功", msg.getReqMsg());
+            LOGGER.info("client [{}] online success!!", msg.getReqMsg());
         }
 
         //心跳更新时间

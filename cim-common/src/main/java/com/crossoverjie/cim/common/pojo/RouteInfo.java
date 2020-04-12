@@ -1,26 +1,22 @@
-package com.crossoverjie.cim.route.vo.res;
-
-import com.crossoverjie.cim.common.pojo.RouteInfo;
-
-import java.io.Serializable;
+package com.crossoverjie.cim.common.pojo;
 
 /**
  * Function:
  *
  * @author crossoverJie
- *         Date: 2018/12/23 00:43
+ * Date: 2020-04-12 20:48
  * @since JDK 1.8
  */
-public class CIMServerResVO implements Serializable {
+public final class RouteInfo {
 
     private String ip ;
     private Integer cimServerPort;
     private Integer httpPort;
 
-    public CIMServerResVO(RouteInfo routeInfo) {
-        this.ip = routeInfo.getIp();
-        this.cimServerPort = routeInfo.getCimServerPort();
-        this.httpPort = routeInfo.getHttpPort();
+    public RouteInfo(String ip, Integer cimServerPort, Integer httpPort) {
+        this.ip = ip;
+        this.cimServerPort = cimServerPort;
+        this.httpPort = httpPort;
     }
 
     public String getIp() {
