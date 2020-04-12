@@ -1,5 +1,8 @@
 package com.crossoverjie.cim.common.route.algorithm.consistenthash;
 
+import com.crossoverjie.cim.common.enums.StatusEnum;
+import com.crossoverjie.cim.common.exception.CIMException;
+
 import java.util.SortedMap;
 import java.util.TreeMap;
 
@@ -34,6 +37,9 @@ public class TreeMapConsistentHash extends AbstractConsistentHash {
         SortedMap<Long, String> last = treeMap.tailMap(hash);
         if (!last.isEmpty()) {
             return last.get(last.firstKey());
+        }
+        if (treeMap.size() == 0){
+            throw new CIMException(StatusEnum.SERVER_NOT_AVAILABLE) ;
         }
         return treeMap.firstEntry().getValue();
     }

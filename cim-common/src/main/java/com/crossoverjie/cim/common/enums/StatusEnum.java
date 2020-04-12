@@ -21,14 +21,19 @@ public enum StatusEnum {
     /** 重复登录 */
     REPEAT_LOGIN("5000", "Repeat login, log out an account please!"),
 
+    /** 请求限流 */
+    REQUEST_LIMIT("6000", "请求限流"),
+
     /** 账号不在线 */
     OFF_LINE("7000", "你选择的账号不在线，请重新选择！"),
+
+    SERVER_NOT_AVAILABLE("7100", "CIM server is not available, please try again later!"),
 
     /** 登录信息不匹配 */
     ACCOUNT_NOT_MATCH("9100", "The User information you have used is incorrect!"),
 
-    /** 请求限流 */
-    REQUEST_LIMIT("6000", "请求限流"),
+
+
     ;
 
 

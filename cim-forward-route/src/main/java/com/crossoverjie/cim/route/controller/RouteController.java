@@ -3,12 +3,14 @@ package com.crossoverjie.cim.route.controller;
 import com.crossoverjie.cim.common.enums.StatusEnum;
 import com.crossoverjie.cim.common.exception.CIMException;
 import com.crossoverjie.cim.common.pojo.CIMUserInfo;
+import com.crossoverjie.cim.common.pojo.RouteInfo;
 import com.crossoverjie.cim.common.res.BaseResponse;
 import com.crossoverjie.cim.common.res.NULLBody;
 import com.crossoverjie.cim.common.route.algorithm.RouteHandle;
 import com.crossoverjie.cim.common.util.RouteInfoParseUtil;
 import com.crossoverjie.cim.route.cache.ServerCache;
 import com.crossoverjie.cim.route.service.AccountService;
+import com.crossoverjie.cim.route.service.CommonBizService;
 import com.crossoverjie.cim.route.service.UserInfoCacheService;
 import com.crossoverjie.cim.route.vo.req.ChatReqVO;
 import com.crossoverjie.cim.route.vo.req.LoginReqVO;
@@ -50,6 +52,8 @@ public class RouteController {
     @Autowired
     private UserInfoCacheService userInfoCacheService ;
 
+    @Autowired
+    private CommonBizService commonBizService ;
 
     @Autowired
     private RouteHandle routeHandle ;
@@ -148,17 +152,19 @@ public class RouteController {
     public BaseResponse<CIMServerResVO> login(@RequestBody LoginReqVO loginReqVO) throws Exception {
         BaseResponse<CIMServerResVO> res = new BaseResponse();
 
+        // check server available
+        String server = routeHandle.routeServer(serverCache.getAll(),String.valueOf(loginReqVO.getUserId()));
+        RouteInfo routeInfo = RouteInfoParseUtil.parse(server);
+        commonBizService.checkServerAvailable(routeInfo);
+
         //登录校验
         StatusEnum status = accountService.login(loginReqVO);
         if (status == StatusEnum.SUCCESS) {
 
-            String server = routeHandle.routeServer(serverCache.getAll(),String.valueOf(loginReqVO.getUserId()));
-            String[] serverInfo = server.split(":");
-            CIMServerResVO vo = new CIMServerResVO(RouteInfoParseUtil.parse(server));
-
             //保存路由信息
             accountService.saveRouteInfo(loginReqVO,server);
 
+            CIMServerResVO vo = new CIMServerResVO(routeInfo);
             res.setDataBody(vo);
 
         }
