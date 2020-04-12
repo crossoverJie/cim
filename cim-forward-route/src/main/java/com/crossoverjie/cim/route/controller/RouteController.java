@@ -153,7 +153,7 @@ public class RouteController {
         BaseResponse<CIMServerResVO> res = new BaseResponse();
 
         // check server available
-        String server = routeHandle.routeServer(serverCache.getAll(),String.valueOf(loginReqVO.getUserId()));
+        String server = routeHandle.routeServer(serverCache.getServerList(),String.valueOf(loginReqVO.getUserId()));
         RouteInfo routeInfo = RouteInfoParseUtil.parse(server);
         commonBizService.checkServerAvailable(routeInfo);
 

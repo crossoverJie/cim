@@ -6,6 +6,7 @@ import com.crossoverjie.cim.client.service.EchoService;
 import com.crossoverjie.cim.client.service.MsgHandle;
 import com.crossoverjie.cim.client.service.RouteRequest;
 import com.crossoverjie.cim.client.service.impl.ClientInfo;
+import com.crossoverjie.cim.client.thread.ContextHolder;
 import com.crossoverjie.cim.client.vo.req.GoogleProtocolVO;
 import com.crossoverjie.cim.client.vo.req.LoginReqVO;
 import com.crossoverjie.cim.client.vo.res.CIMServerResVO;
@@ -90,7 +91,7 @@ public class CIMClient {
      * 启动客户端
      *
      * @param cimServer
-     * @throws InterruptedException
+     * @throws Exception
      */
     private void startClient(CIMServerResVO.ServerInfo cimServer) {
         Bootstrap bootstrap = new Bootstrap();
@@ -102,7 +103,7 @@ public class CIMClient {
         ChannelFuture future = null;
         try {
             future = bootstrap.connect(cimServer.getIp(), cimServer.getCimServerPort()).sync();
-        } catch (InterruptedException e) {
+        } catch (Exception e) {
             errorCount++;
 
             if (errorCount >= configuration.getErrorCount()) {
@@ -204,9 +205,10 @@ public class CIMClient {
         //首先清除路由信息，下线
         routeRequest.offLine();
 
-        LOGGER.info("reconnect....");
+        echoService.echo("cim server shutdown, reconnecting....");
         start();
-        LOGGER.info("reconnect success");
+        echoService.echo("Great! reconnect success!!!");
+        ContextHolder.clear();
     }
 
     /**

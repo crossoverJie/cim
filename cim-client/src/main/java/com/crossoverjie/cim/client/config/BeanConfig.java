@@ -87,7 +87,7 @@ public class BeanConfig {
     @Bean("scheduledTask")
     public ScheduledExecutorService buildSchedule(){
         ThreadFactory sche = new ThreadFactoryBuilder()
-                .setNameFormat("scheduled-%d")
+                .setNameFormat("reconnect-job-%d")
                 .setDaemon(true)
                 .build();
         ScheduledExecutorService scheduledExecutorService = new ScheduledThreadPoolExecutor(1,sche) ;
