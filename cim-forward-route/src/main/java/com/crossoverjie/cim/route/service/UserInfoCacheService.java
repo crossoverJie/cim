@@ -38,8 +38,8 @@ public interface UserInfoCacheService {
 
 
     /**
-     *
-     * @return 获取所有在线用户
+     * query all online user
+     * @return online user
      */
     Set<CIMUserInfo> onlineUser() ;
 }
