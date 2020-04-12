@@ -1,5 +1,7 @@
 package com.crossoverjie.cim.common.route.algorithm.loop;
 
+import com.crossoverjie.cim.common.enums.StatusEnum;
+import com.crossoverjie.cim.common.exception.CIMException;
 import com.crossoverjie.cim.common.route.algorithm.RouteHandle;
 
 import java.util.List;
@@ -18,7 +20,7 @@ public class LoopHandle implements RouteHandle {
     @Override
     public String routeServer(List<String> values,String key) {
         if (values.size() == 0) {
-            throw new RuntimeException("CIM 服务器可用服务列表为空");
+            throw new CIMException(StatusEnum.SERVER_NOT_AVAILABLE) ;
         }
         Long position = index.incrementAndGet() % values.size();
         if (position < 0) {
