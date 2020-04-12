@@ -1,9 +1,11 @@
 package com.crossoverjie.cim.common.route.algorithm.random;
 
+import com.crossoverjie.cim.common.enums.StatusEnum;
+import com.crossoverjie.cim.common.exception.CIMException;
 import com.crossoverjie.cim.common.route.algorithm.RouteHandle;
-import java.util.concurrent.ThreadLocalRandom;
 
 import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * Function: 路由策略， 随机
@@ -18,7 +20,7 @@ public class RandomHandle implements RouteHandle {
     public String routeServer(List<String> values, String key) {
         int size = values.size();
         if (size == 0) {
-            throw new RuntimeException("CIM 服务器可用服务列表为空");
+            throw new CIMException(StatusEnum.SERVER_NOT_AVAILABLE) ;
         }
         int offset = ThreadLocalRandom.current().nextInt(size);
 
