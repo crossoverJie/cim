@@ -128,7 +128,7 @@ public class RouteController {
 
         CIMUserInfo cimUserInfo = userInfoCacheService.loadUserInfoByUserId(groupReqVO.getUserId());
 
-        LOGGER.info("下线用户[{}]", cimUserInfo.toString());
+        LOGGER.info("user [{}] offline!", cimUserInfo.toString());
         accountService.offLine(groupReqVO.getUserId());
 
         res.setCode(StatusEnum.SUCCESS.getCode());
