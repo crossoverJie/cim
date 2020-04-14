@@ -4,6 +4,7 @@ import com.crossoverjie.cim.client.config.AppConfiguration;
 import com.crossoverjie.cim.client.init.CIMClientHandleInitializer;
 import com.crossoverjie.cim.client.service.EchoService;
 import com.crossoverjie.cim.client.service.MsgHandle;
+import com.crossoverjie.cim.client.service.ReConnectManager;
 import com.crossoverjie.cim.client.service.RouteRequest;
 import com.crossoverjie.cim.client.service.impl.ClientInfo;
 import com.crossoverjie.cim.client.thread.ContextHolder;
@@ -67,6 +68,9 @@ public class CIMClient {
     @Autowired
     private ClientInfo clientInfo;
 
+    @Autowired
+    private ReConnectManager reConnectManager ;
+
     /**
      * 重试次数
      */
@@ -110,7 +114,7 @@ public class CIMClient {
                 LOGGER.error("连接失败次数达到上限[{}]次", errorCount);
                 msgHandle.shutdown();
             }
-            LOGGER.error("连接失败", e);
+            LOGGER.error("Connect fail!", e);
         }
         if (future.isSuccess()) {
             echoService.echo("Start cim client success!");
@@ -140,7 +144,7 @@ public class CIMClient {
             errorCount++;
 
             if (errorCount >= configuration.getErrorCount()) {
-                LOGGER.error("重连次数达到上限[{}]次", errorCount);
+                echoService.echo("The maximum number of reconnections has been reached[{}]times, close cim client!", errorCount);
                 msgHandle.shutdown();
             }
             LOGGER.error("login fail", e);
@@ -198,6 +202,13 @@ public class CIMClient {
     }
 
 
+    /**
+     * 1. clear route information.
+     * 2. reconnect.
+     * 3. shutdown reconnect job.
+     * 4. reset reconnect state.
+     * @throws Exception
+     */
     public void reconnect() throws Exception {
         if (channel != null && channel.isActive()) {
             return;
@@ -207,7 +218,8 @@ public class CIMClient {
 
         echoService.echo("cim server shutdown, reconnecting....");
         start();
-        echoService.echo("Great! reconnect success!!!");
+        echoService.echo("Great! reConnect success!!!");
+        reConnectManager.reConnectSuccess();
         ContextHolder.clear();
     }
 

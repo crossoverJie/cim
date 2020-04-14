@@ -143,7 +143,7 @@ public class RouteRequestImpl implements RouteRequest {
             if (!cimServerResVO.getCode().equals(StatusEnum.SUCCESS.getCode())){
                 echoService.echo(cimServerResVO.getMessage());
 
-                // when client in reconnect state, could not exit.
+                // when client in reConnect state, could not exit.
                 if (ContextHolder.getReconnect()){
                     echoService.echo("###{}###", StatusEnum.RECONNECT_FAIL.getMessage());
                     throw new CIMException(StatusEnum.RECONNECT_FAIL);
