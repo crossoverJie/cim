@@ -5,12 +5,14 @@ import com.alibaba.fastjson.JSONObject;
 import com.crossoverjie.cim.client.config.AppConfiguration;
 import com.crossoverjie.cim.client.service.EchoService;
 import com.crossoverjie.cim.client.service.RouteRequest;
+import com.crossoverjie.cim.client.thread.ContextHolder;
 import com.crossoverjie.cim.client.vo.req.GroupReqVO;
 import com.crossoverjie.cim.client.vo.req.LoginReqVO;
 import com.crossoverjie.cim.client.vo.req.P2PReqVO;
 import com.crossoverjie.cim.client.vo.res.CIMServerResVO;
 import com.crossoverjie.cim.client.vo.res.OnlineUsersResVO;
 import com.crossoverjie.cim.common.enums.StatusEnum;
+import com.crossoverjie.cim.common.exception.CIMException;
 import com.crossoverjie.cim.common.res.BaseResponse;
 import okhttp3.*;
 import org.slf4j.Logger;
@@ -140,6 +142,13 @@ public class RouteRequestImpl implements RouteRequest {
             //重复失败
             if (!cimServerResVO.getCode().equals(StatusEnum.SUCCESS.getCode())){
                 echoService.echo(cimServerResVO.getMessage());
+
+                // when client in reConnect state, could not exit.
+                if (ContextHolder.getReconnect()){
+                    echoService.echo("###{}###", StatusEnum.RECONNECT_FAIL.getMessage());
+                    throw new CIMException(StatusEnum.RECONNECT_FAIL);
+                }
+
                 System.exit(-1);
             }
 

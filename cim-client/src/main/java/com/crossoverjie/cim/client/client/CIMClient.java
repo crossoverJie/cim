@@ -4,8 +4,10 @@ import com.crossoverjie.cim.client.config.AppConfiguration;
 import com.crossoverjie.cim.client.init.CIMClientHandleInitializer;
 import com.crossoverjie.cim.client.service.EchoService;
 import com.crossoverjie.cim.client.service.MsgHandle;
+import com.crossoverjie.cim.client.service.ReConnectManager;
 import com.crossoverjie.cim.client.service.RouteRequest;
 import com.crossoverjie.cim.client.service.impl.ClientInfo;
+import com.crossoverjie.cim.client.thread.ContextHolder;
 import com.crossoverjie.cim.client.vo.req.GoogleProtocolVO;
 import com.crossoverjie.cim.client.vo.req.LoginReqVO;
 import com.crossoverjie.cim.client.vo.res.CIMServerResVO;
@@ -66,6 +68,9 @@ public class CIMClient {
     @Autowired
     private ClientInfo clientInfo;
 
+    @Autowired
+    private ReConnectManager reConnectManager ;
+
     /**
      * 重试次数
      */
@@ -90,7 +95,7 @@ public class CIMClient {
      * 启动客户端
      *
      * @param cimServer
-     * @throws InterruptedException
+     * @throws Exception
      */
     private void startClient(CIMServerResVO.ServerInfo cimServer) {
         Bootstrap bootstrap = new Bootstrap();
@@ -102,14 +107,14 @@ public class CIMClient {
         ChannelFuture future = null;
         try {
             future = bootstrap.connect(cimServer.getIp(), cimServer.getCimServerPort()).sync();
-        } catch (InterruptedException e) {
+        } catch (Exception e) {
             errorCount++;
 
             if (errorCount >= configuration.getErrorCount()) {
                 LOGGER.error("连接失败次数达到上限[{}]次", errorCount);
                 msgHandle.shutdown();
             }
-            LOGGER.error("连接失败", e);
+            LOGGER.error("Connect fail!", e);
         }
         if (future.isSuccess()) {
             echoService.echo("Start cim client success!");
@@ -139,7 +144,7 @@ public class CIMClient {
             errorCount++;
 
             if (errorCount >= configuration.getErrorCount()) {
-                LOGGER.error("重连次数达到上限[{}]次", errorCount);
+                echoService.echo("The maximum number of reconnections has been reached[{}]times, close cim client!", errorCount);
                 msgHandle.shutdown();
             }
             LOGGER.error("login fail", e);
@@ -197,6 +202,13 @@ public class CIMClient {
     }
 
 
+    /**
+     * 1. clear route information.
+     * 2. reconnect.
+     * 3. shutdown reconnect job.
+     * 4. reset reconnect state.
+     * @throws Exception
+     */
     public void reconnect() throws Exception {
         if (channel != null && channel.isActive()) {
             return;
@@ -204,9 +216,11 @@ public class CIMClient {
         //首先清除路由信息，下线
         routeRequest.offLine();
 
-        LOGGER.info("reconnect....");
+        echoService.echo("cim server shutdown, reconnecting....");
         start();
-        LOGGER.info("reconnect success");
+        echoService.echo("Great! reConnect success!!!");
+        reConnectManager.reConnectSuccess();
+        ContextHolder.clear();
     }
 
     /**

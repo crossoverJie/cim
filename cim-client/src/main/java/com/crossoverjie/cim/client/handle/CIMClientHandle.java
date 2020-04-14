@@ -1,9 +1,9 @@
 package com.crossoverjie.cim.client.handle;
 
 import com.crossoverjie.cim.client.service.EchoService;
+import com.crossoverjie.cim.client.service.ReConnectManager;
 import com.crossoverjie.cim.client.service.ShutDownMsg;
 import com.crossoverjie.cim.client.service.impl.EchoServiceImpl;
-import com.crossoverjie.cim.client.thread.ReConnectJob;
 import com.crossoverjie.cim.client.util.SpringBeanFactory;
 import com.crossoverjie.cim.common.constant.Constants;
 import com.crossoverjie.cim.common.protocol.CIMRequestProto;
@@ -21,7 +21,6 @@ import org.slf4j.LoggerFactory;
 
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
 
 /**
  * Function:
@@ -41,6 +40,8 @@ public class CIMClientHandle extends SimpleChannelInboundHandler<CIMResponseProt
 
     private ScheduledExecutorService scheduledExecutorService ;
 
+    private ReConnectManager reConnectManager ;
+
     private ShutDownMsg shutDownMsg ;
 
     private EchoService echoService ;
@@ -51,8 +52,6 @@ public class CIMClientHandle extends SimpleChannelInboundHandler<CIMResponseProt
 
         if (evt instanceof IdleStateEvent){
             IdleStateEvent idleStateEvent = (IdleStateEvent) evt ;
-
-            //LOGGER.info("定时检测服务端是否存活");
 
             if (idleStateEvent.state() == IdleState.WRITER_IDLE){
                 CIMRequestProto.CIMReqProtocol heartBeat = SpringBeanFactory.getBean("heartBeat",
@@ -90,10 +89,11 @@ public class CIMClientHandle extends SimpleChannelInboundHandler<CIMResponseProt
 
         if (scheduledExecutorService == null){
             scheduledExecutorService = SpringBeanFactory.getBean("scheduledTask",ScheduledExecutorService.class) ;
+            reConnectManager = SpringBeanFactory.getBean(ReConnectManager.class) ;
         }
         LOGGER.info("客户端断开了，重新连接！");
         // TODO: 2019-01-22 后期可以改为不用定时任务，连上后就关闭任务 节省性能。
-        scheduledExecutorService.scheduleAtFixedRate(new ReConnectJob(ctx),0,10, TimeUnit.SECONDS) ;
+        reConnectManager.reConnect(ctx);
     }
 
     @Override

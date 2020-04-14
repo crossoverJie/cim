@@ -2,6 +2,8 @@ package com.crossoverjie.cim.route.cache;
 
 import com.crossoverjie.cim.route.kit.ZKit;
 import com.google.common.cache.LoadingCache;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -20,6 +22,7 @@ import java.util.concurrent.atomic.AtomicLong;
 @Component
 public class ServerCache {
 
+    private static Logger logger = LoggerFactory.getLogger(ServerCache.class) ;
 
     @Autowired
     private LoadingCache<String, String> cache;
@@ -43,7 +46,13 @@ public class ServerCache {
     public void updateCache(List<String> currentChilds) {
         cache.invalidateAll();
         for (String currentChild : currentChilds) {
-            String key = currentChild.split("-")[1];
+            // currentChild=ip-127.0.0.1:11212:9082 or 127.0.0.1:11212:9082
+            String key ;
+            if (currentChild.split("-").length == 2){
+                key = currentChild.split("-")[1];
+            }else {
+                key = currentChild ;
+            }
             addCache(key);
         }
     }
@@ -54,7 +63,7 @@ public class ServerCache {
      *
      * @return
      */
-    public List<String> getAll() {
+    public List<String> getServerList() {
 
         List<String> list = new ArrayList<>();
 
@@ -70,6 +79,13 @@ public class ServerCache {
         }
         return list;
 
+    }
+
+    /**
+     * rebuild cache list
+     */
+    public void rebuildCacheList(){
+        updateCache(getServerList()) ;
     }
 
 }
