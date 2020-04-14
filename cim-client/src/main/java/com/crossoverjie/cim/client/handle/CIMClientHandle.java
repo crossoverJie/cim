@@ -92,7 +92,6 @@ public class CIMClientHandle extends SimpleChannelInboundHandler<CIMResponseProt
             reConnectManager = SpringBeanFactory.getBean(ReConnectManager.class) ;
         }
         LOGGER.info("客户端断开了，重新连接！");
-        // TODO: 2019-01-22 后期可以改为不用定时任务，连上后就关闭任务 节省性能。
         reConnectManager.reConnect(ctx);
     }
 
