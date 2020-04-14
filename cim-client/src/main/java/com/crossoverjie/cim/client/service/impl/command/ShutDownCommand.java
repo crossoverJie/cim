@@ -37,7 +37,7 @@ public class ShutDownCommand implements InnerCommand {
     private MsgLogger msgLogger;
 
     @Resource(name = "callBackThreadPool")
-    private ThreadPoolExecutor executor;
+    private ThreadPoolExecutor callBackExecutor;
 
     @Autowired
     private EchoService echoService ;
@@ -55,10 +55,10 @@ public class ShutDownCommand implements InnerCommand {
         shutDownMsg.shutdown();
         routeRequest.offLine();
         msgLogger.stop();
-        executor.shutdown();
+        callBackExecutor.shutdown();
         ringBufferWheel.stop(false);
         try {
-            while (!executor.awaitTermination(1, TimeUnit.SECONDS)) {
+            while (!callBackExecutor.awaitTermination(1, TimeUnit.SECONDS)) {
                 echoService.echo("thread pool closing");
             }
             cimClient.close();
