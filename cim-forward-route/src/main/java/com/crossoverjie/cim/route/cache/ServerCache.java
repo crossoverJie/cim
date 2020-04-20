@@ -41,11 +41,11 @@ public class ServerCache {
     /**
      * 更新所有缓存/先删除 再新增
      *
-     * @param currentChilds
+     * @param currentChildren
      */
-    public void updateCache(List<String> currentChilds) {
+    public void updateCache(List<String> currentChildren) {
         cache.invalidateAll();
-        for (String currentChild : currentChilds) {
+        for (String currentChild : currentChildren) {
             // currentChild=ip-127.0.0.1:11212:9082 or 127.0.0.1:11212:9082
             String key ;
             if (currentChild.split("-").length == 2){
