@@ -154,6 +154,8 @@ public class RouteController {
 
         // check server available
         String server = routeHandle.routeServer(serverCache.getServerList(),String.valueOf(loginReqVO.getUserId()));
+        LOGGER.info("userName=[{}] route server info=[{}]", loginReqVO.getUserName(), server);
+
         RouteInfo routeInfo = RouteInfoParseUtil.parse(server);
         commonBizService.checkServerAvailable(routeInfo);
 

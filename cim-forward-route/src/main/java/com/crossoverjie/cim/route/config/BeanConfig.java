@@ -7,6 +7,8 @@ import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import okhttp3.OkHttpClient;
 import org.I0Itec.zkclient.ZkClient;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -27,6 +29,8 @@ import java.util.concurrent.TimeUnit;
  */
 @Configuration
 public class BeanConfig {
+
+    private static Logger logger = LoggerFactory.getLogger(BeanConfig.class);
 
     @Autowired
     private AppConfiguration appConfiguration;
@@ -83,6 +87,7 @@ public class BeanConfig {
     public RouteHandle buildRouteHandle() throws Exception {
         String routeWay = appConfiguration.getRouteWay();
         RouteHandle routeHandle = (RouteHandle) Class.forName(routeWay).newInstance();
+        logger.info("Current route algorithm is [{}]", routeHandle.getClass().getSimpleName());
         if (routeWay.contains("ConsistentHash")) {
             //一致性 hash 算法
             Method method = Class.forName(routeWay).getMethod("setHash", AbstractConsistentHash.class);

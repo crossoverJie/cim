@@ -103,6 +103,11 @@ public class SortArrayMap {
         return size;
     }
 
+    public void clear(){
+        buckets = new Node[DEFAULT_SIZE];
+        size = 0 ;
+    }
+
     /**
      * 数据节点
      */

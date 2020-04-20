@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 
 /**
- * Function: Zookeeper 工具
+ * Function: Zookeeper kit
  *
  * @author crossoverJie
  *         Date: 2018/8/19 00:33
@@ -39,11 +39,11 @@ public class ZKit {
     public void subscribeEvent(String path) {
         zkClient.subscribeChildChanges(path, new IZkChildListener() {
             @Override
-            public void handleChildChange(String parentPath, List<String> currentChilds) throws Exception {
-                logger.info("Clear or update local cache parentPath=[{}],currentChilds=[{}]", parentPath,currentChilds.toString());
+            public void handleChildChange(String parentPath, List<String> currentChildren) throws Exception {
+                logger.info("Clear and update local cache parentPath=[{}],currentChildren=[{}]", parentPath,currentChildren.toString());
 
-                //更新所有缓存/先删除 再新增
-                serverCache.updateCache(currentChilds) ;
+                //update local cache, delete and save.
+                serverCache.updateCache(currentChildren) ;
             }
         });
 
@@ -52,12 +52,12 @@ public class ZKit {
 
 
     /**
-     * 获取所有注册节点
+     * get all server node from zookeeper
      * @return
      */
     public List<String> getAllNode(){
         List<String> children = zkClient.getChildren("/route");
-        logger.info("查询所有节点成功=【{}】", JSON.toJSONString(children));
+        logger.info("Query all node =[{}] success.", JSON.toJSONString(children));
        return children;
     }
 
