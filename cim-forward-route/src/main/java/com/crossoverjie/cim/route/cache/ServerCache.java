@@ -10,7 +10,6 @@ import org.springframework.stereotype.Component;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * Function: 服务器节点缓存
@@ -30,9 +29,6 @@ public class ServerCache {
     @Autowired
     private ZKit zkUtil;
 
-    private AtomicLong index = new AtomicLong();
-
-
     public void addCache(String key) {
         cache.put(key, key);
     }
@@ -41,12 +37,12 @@ public class ServerCache {
     /**
      * 更新所有缓存/先删除 再新增
      *
-     * @param currentChilds
+     * @param currentChildren
      */
-    public void updateCache(List<String> currentChilds) {
+    public void updateCache(List<String> currentChildren) {
         cache.invalidateAll();
-        for (String currentChild : currentChilds) {
-            // currentChild=ip-127.0.0.1:11212:9082 or 127.0.0.1:11212:9082
+        for (String currentChild : currentChildren) {
+            // currentChildren=ip-127.0.0.1:11212:9082 or 127.0.0.1:11212:9082
             String key ;
             if (currentChild.split("-").length == 2){
                 key = currentChild.split("-")[1];
