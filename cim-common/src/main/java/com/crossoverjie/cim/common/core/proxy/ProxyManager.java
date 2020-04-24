@@ -56,7 +56,6 @@ public final class ProxyManager<T> {
                 throw new CIMException(VALIDATION_FAIL);
             }
 
-
             if (method.getParameterTypes().length > 0){
                 Object para = args[0];
                 Class<?> parameterType = method.getParameterTypes()[0];
