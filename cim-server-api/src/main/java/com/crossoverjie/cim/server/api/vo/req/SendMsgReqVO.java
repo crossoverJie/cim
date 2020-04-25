@@ -1,4 +1,4 @@
-package com.crossoverjie.cim.route.vo.req;
+package com.crossoverjie.cim.server.api.vo.req;
 
 import com.crossoverjie.cim.common.req.BaseRequest;
 import io.swagger.annotations.ApiModelProperty;
@@ -6,29 +6,28 @@ import io.swagger.annotations.ApiModelProperty;
 import javax.validation.constraints.NotNull;
 
 /**
- * Function: Google Protocol 编解码发送
+ * Function:
  *
  * @author crossoverJie
  *         Date: 2018/05/21 15:56
  * @since JDK 1.8
  */
-public class ChatReqVO extends BaseRequest {
-
-    @NotNull(message = "userId 不能为空")
-    @ApiModelProperty(required = true, value = "userId", example = "1545574049323")
-    private Long userId ;
-
+public class SendMsgReqVO extends BaseRequest {
 
     @NotNull(message = "msg 不能为空")
     @ApiModelProperty(required = true, value = "msg", example = "hello")
     private String msg ;
 
-    public ChatReqVO() {
+    @NotNull(message = "userId 不能为空")
+    @ApiModelProperty(required = true, value = "userId", example = "11")
+    private Long userId ;
+
+    public SendMsgReqVO() {
     }
 
-    public ChatReqVO(Long userId, String msg) {
-        this.userId = userId;
+    public SendMsgReqVO(String msg, Long userId) {
         this.msg = msg;
+        this.userId = userId;
     }
 
     public String getMsg() {
@@ -39,19 +38,19 @@ public class ChatReqVO extends BaseRequest {
         this.msg = msg;
     }
 
-    public Long getUserId() {
+    public long getUserId() {
         return userId;
     }
 
-    public void setUserId(Long userId) {
+    public void setUserId(long userId) {
         this.userId = userId;
     }
 
     @Override
     public String toString() {
-        return "GroupReqVO{" +
-                "userId=" + userId +
-                ", msg='" + msg + '\'' +
+        return "SendMsgReqVO{" +
+                "msg='" + msg + '\'' +
+                ", userId=" + userId +
                 "} " + super.toString();
     }
 }

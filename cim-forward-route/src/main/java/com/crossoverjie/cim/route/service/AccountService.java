@@ -57,12 +57,12 @@ public interface AccountService {
 
     /**
      * 推送消息
-     * @param url url
+     * @param cimServerResVO
      * @param groupReqVO 消息
      * @param sendUserId 发送者的ID
      * @throws Exception
      */
-    void pushMsg(String url, long sendUserId , ChatReqVO groupReqVO) throws Exception;
+    void pushMsg(CIMServerResVO cimServerResVO, long sendUserId , ChatReqVO groupReqVO) throws Exception;
 
     /**
      * 用户下线

@@ -51,6 +51,7 @@ public final class ProxyManager<T> {
         @Override
         public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
             JSONObject jsonObject = new JSONObject();
+            String serverUrl = url + "/" + method.getName() ;
 
             if (args != null && args.length > 1) {
                 throw new CIMException(VALIDATION_FAIL);
@@ -64,8 +65,7 @@ public final class ProxyManager<T> {
                     jsonObject.put(field.getName(), field.get(para));
                 }
             }
-            url = url + "/" + method.getName();
-            return HttpClient.call(okHttpClient, jsonObject.toString(), url);
+            return HttpClient.call(okHttpClient, jsonObject.toString(), serverUrl);
         }
     }
 }

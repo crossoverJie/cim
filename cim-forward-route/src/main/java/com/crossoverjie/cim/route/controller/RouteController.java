@@ -72,7 +72,7 @@ public class RouteController implements RouteApi {
         Map<Long, CIMServerResVO> serverResVOMap = accountService.loadRouteRelated();
         for (Map.Entry<Long, CIMServerResVO> cimServerResVOEntry : serverResVOMap.entrySet()) {
             Long userId = cimServerResVOEntry.getKey();
-            CIMServerResVO value = cimServerResVOEntry.getValue();
+            CIMServerResVO cimServerResVO = cimServerResVOEntry.getValue();
             if (userId.equals(groupReqVO.getUserId())){
                 //过滤掉自己
                 CIMUserInfo cimUserInfo = userInfoCacheService.loadUserInfoByUserId(groupReqVO.getUserId());
@@ -81,10 +81,8 @@ public class RouteController implements RouteApi {
             }
 
             //推送消息
-            String url = "http://" + value.getIp() + ":" + value.getHttpPort() + "/sendMsg" ;
             ChatReqVO chatVO = new ChatReqVO(userId,groupReqVO.getMsg()) ;
-
-            accountService.pushMsg(url,groupReqVO.getUserId(),chatVO);
+            accountService.pushMsg(cimServerResVO ,groupReqVO.getUserId(),chatVO);
 
         }
 
@@ -110,12 +108,10 @@ public class RouteController implements RouteApi {
         try {
             //获取接收消息用户的路由信息
             CIMServerResVO cimServerResVO = accountService.loadRouteRelatedByUserId(p2pRequest.getReceiveUserId());
-            //推送消息
-            String url = "http://" + cimServerResVO.getIp() + ":" + cimServerResVO.getHttpPort() + "/sendMsg" ;
 
             //p2pRequest.getReceiveUserId()==>消息接收者的 userID
             ChatReqVO chatVO = new ChatReqVO(p2pRequest.getReceiveUserId(),p2pRequest.getMsg()) ;
-            accountService.pushMsg(url,p2pRequest.getUserId(),chatVO);
+            accountService.pushMsg(cimServerResVO ,p2pRequest.getUserId(),chatVO);
 
             res.setCode(StatusEnum.SUCCESS.getCode());
             res.setMessage(StatusEnum.SUCCESS.getMessage());
