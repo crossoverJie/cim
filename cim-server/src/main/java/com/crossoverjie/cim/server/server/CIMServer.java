@@ -2,9 +2,9 @@ package com.crossoverjie.cim.server.server;
 
 import com.crossoverjie.cim.common.constant.Constants;
 import com.crossoverjie.cim.common.protocol.CIMRequestProto;
+import com.crossoverjie.cim.server.api.vo.req.SendMsgReqVO;
 import com.crossoverjie.cim.server.init.CIMServerInitializer;
 import com.crossoverjie.cim.server.util.SessionSocketHolder;
-import com.crossoverjie.cim.server.vo.req.SendMsgReqVO;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
@@ -78,7 +78,7 @@ public class CIMServer {
 
 
     /**
-     * 发送 Google Protocol 编码消息
+     * Push msg to client.
      * @param sendMsgReqVO 消息
      */
     public void sendMsg(SendMsgReqVO sendMsgReqVO){

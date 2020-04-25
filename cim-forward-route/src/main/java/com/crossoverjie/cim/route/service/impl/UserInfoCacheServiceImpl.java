@@ -25,7 +25,7 @@ import static com.crossoverjie.cim.route.constant.Constant.LOGIN_STATUS_PREFIX;
 public class UserInfoCacheServiceImpl implements UserInfoCacheService {
 
     /**
-     * 本地缓存，为了防止内存撑爆，后期可换为 LRU。
+     * todo 本地缓存，为了防止内存撑爆，后期可换为 LRU。
      */
     private final static Map<Long,CIMUserInfo> USER_INFO_MAP = new ConcurrentHashMap<>(64) ;
 

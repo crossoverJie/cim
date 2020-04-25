@@ -1,10 +1,10 @@
 package com.crossoverjie.cim.route.service;
 
 import com.crossoverjie.cim.common.enums.StatusEnum;
-import com.crossoverjie.cim.route.vo.req.ChatReqVO;
-import com.crossoverjie.cim.route.vo.req.LoginReqVO;
-import com.crossoverjie.cim.route.vo.res.CIMServerResVO;
-import com.crossoverjie.cim.route.vo.res.RegisterInfoResVO;
+import com.crossoverjie.cim.route.api.vo.req.ChatReqVO;
+import com.crossoverjie.cim.route.api.vo.req.LoginReqVO;
+import com.crossoverjie.cim.route.api.vo.res.CIMServerResVO;
+import com.crossoverjie.cim.route.api.vo.res.RegisterInfoResVO;
 
 import java.util.Map;
 
@@ -45,7 +45,7 @@ public interface AccountService {
      * 加载所有用户的路有关系
      * @return 所有的路由关系
      */
-    Map<Long,CIMServerResVO> loadRouteRelated() ;
+    Map<Long, CIMServerResVO> loadRouteRelated() ;
 
     /**
      * 获取某个用户的路有关系
@@ -57,12 +57,12 @@ public interface AccountService {
 
     /**
      * 推送消息
-     * @param url url
+     * @param cimServerResVO
      * @param groupReqVO 消息
      * @param sendUserId 发送者的ID
      * @throws Exception
      */
-    void pushMsg(String url,long sendUserId ,ChatReqVO groupReqVO) throws Exception;
+    void pushMsg(CIMServerResVO cimServerResVO, long sendUserId , ChatReqVO groupReqVO) throws Exception;
 
     /**
      * 用户下线

@@ -31,7 +31,9 @@
 		<module>cim-client</module>
 		<module>cim-common</module>
 		<module>cim-forward-route</module>
-	</modules>
+        <module>cim-rout-api</module>
+        <module>cim-server-api</module>
+    </modules>
 
 
 	<dependencyManagement>
@@ -51,6 +53,18 @@
 			<dependency>
 				<groupId>com.crossoverjie.netty</groupId>
 				<artifactId>cim-common</artifactId>
+				<version>1.0.1-SNAPSHOT</version>
+			</dependency>
+
+			<dependency>
+				<groupId>com.crossoverjie.netty</groupId>
+				<artifactId>cim-rout-api</artifactId>
+				<version>1.0.1-SNAPSHOT</version>
+			</dependency>
+
+			<dependency>
+				<groupId>com.crossoverjie.netty</groupId>
+				<artifactId>cim-server-api</artifactId>
 				<version>1.0.1-SNAPSHOT</version>
 			</dependency>
 

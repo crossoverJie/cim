@@ -16,7 +16,7 @@ public enum StatusEnum {
     /** 参数校验失败**/
     VALIDATION_FAIL("3000", "invalid argument"),
     /** 失败 */
-    FAIL("4000", "失败"),
+    FAIL("4000", "Failure"),
 
     /** 重复登录 */
     REPEAT_LOGIN("5000", "Repeat login, log out an account please!"),
@@ -30,7 +30,6 @@ public enum StatusEnum {
     SERVER_NOT_AVAILABLE("7100", "cim server is not available, please try again later!"),
 
     RECONNECT_FAIL("7200", "Reconnect fail, continue to retry!"),
-
     /** 登录信息不匹配 */
     ACCOUNT_NOT_MATCH("9100", "The User information you have used is incorrect!"),
 

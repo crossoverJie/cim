@@ -1,17 +1,22 @@
-package com.crossoverjie.cim.route.vo.req;
+package com.crossoverjie.cim.route.api.vo.res;
 
-import com.crossoverjie.cim.common.req.BaseRequest;
+import java.io.Serializable;
 
 /**
  * Function:
  *
  * @author crossoverJie
- *         Date: 2018/12/23 22:30
+ *         Date: 2018/12/23 21:54
  * @since JDK 1.8
  */
-public class LoginReqVO extends BaseRequest{
+public class RegisterInfoResVO implements Serializable{
     private Long userId ;
     private String userName ;
+
+    public RegisterInfoResVO(Long userId, String userName) {
+        this.userId = userId;
+        this.userName = userName;
+    }
 
     public Long getUserId() {
         return userId;
@@ -31,9 +36,9 @@ public class LoginReqVO extends BaseRequest{
 
     @Override
     public String toString() {
-        return "LoginReqVO{" +
+        return "RegisterInfo{" +
                 "userId=" + userId +
                 ", userName='" + userName + '\'' +
-                "} " + super.toString();
+                '}';
     }
 }

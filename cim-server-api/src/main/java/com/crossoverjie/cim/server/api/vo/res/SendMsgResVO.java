@@ -1,4 +1,4 @@
-package com.crossoverjie.cim.route.vo.res;
+package com.crossoverjie.cim.server.api.vo.res;
 
 /**
  * Function:

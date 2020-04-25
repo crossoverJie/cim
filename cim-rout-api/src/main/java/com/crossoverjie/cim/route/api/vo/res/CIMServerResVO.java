@@ -1,4 +1,4 @@
-package com.crossoverjie.cim.route.vo.res;
+package com.crossoverjie.cim.route.api.vo.res;
 
 import com.crossoverjie.cim.common.pojo.RouteInfo;
 
