@@ -45,9 +45,9 @@ public interface RouteApi {
 
     /**
      * Login account
-     *
      * @param loginReqVO
      * @return
+     * @throws Exception
      */
     Object login(LoginReqVO loginReqVO) throws Exception;
 

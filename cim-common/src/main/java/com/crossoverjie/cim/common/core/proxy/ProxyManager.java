@@ -31,6 +31,12 @@ public final class ProxyManager<T> {
 
     private OkHttpClient okHttpClient;
 
+    /**
+     *
+     * @param clazz Proxied interface
+     * @param url server provider url
+     * @param okHttpClient http client
+     */
     public ProxyManager(Class<T> clazz, String url, OkHttpClient okHttpClient) {
         this.clazz = clazz;
         this.url = url;
