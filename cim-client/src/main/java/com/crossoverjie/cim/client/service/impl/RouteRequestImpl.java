@@ -54,9 +54,7 @@ public class RouteRequestImpl implements RouteRequest {
     @Override
     public void sendGroupMsg(GroupReqVO groupReqVO) throws Exception {
         RouteApi routeApi = new ProxyManager<>(RouteApi.class, routeUrl, okHttpClient).getInstance();
-        ChatReqVO chatReqVO = new ChatReqVO() ;
-        chatReqVO.setUserId(groupReqVO.getUserId());
-        chatReqVO.setMsg(groupReqVO.getMsg());
+        ChatReqVO chatReqVO = new ChatReqVO(groupReqVO.getUserId(), groupReqVO.getMsg()) ;
         Response response = null;
         try {
             response = (Response)routeApi.groupRoute(chatReqVO);
@@ -153,9 +151,7 @@ public class RouteRequestImpl implements RouteRequest {
     @Override
     public void offLine() {
         RouteApi routeApi = new ProxyManager<>(RouteApi.class, routeUrl, okHttpClient).getInstance();
-        ChatReqVO vo = new ChatReqVO() ;
-        vo.setMsg("offLine");
-        vo.setUserId(appConfiguration.getUserId());
+        ChatReqVO vo = new ChatReqVO(appConfiguration.getUserId(), "offLine") ;
         Response response = null;
         try {
             response = (Response) routeApi.offLine(vo);

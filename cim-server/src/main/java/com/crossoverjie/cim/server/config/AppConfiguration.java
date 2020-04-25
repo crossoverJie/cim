@@ -25,8 +25,16 @@ public class AppConfiguration {
     @Value("${cim.server.port}")
     private int cimServerPort;
 
-    @Value("${cim.clear.route.request.url}")
-    private String clearRouteUrl ;
+    @Value("${cim.route.url}")
+    private String routeUrl ;
+
+    public String getRouteUrl() {
+        return routeUrl;
+    }
+
+    public void setRouteUrl(String routeUrl) {
+        this.routeUrl = routeUrl;
+    }
 
     @Value("${cim.heartbeat.time}")
     private long heartBeatTime ;
@@ -37,14 +45,6 @@ public class AppConfiguration {
     public int getZkConnectTimeout() {
 		return zkConnectTimeout;
 	}
-    
-    public String getClearRouteUrl() {
-        return clearRouteUrl;
-    }
-
-    public void setClearRouteUrl(String clearRouteUrl) {
-        this.clearRouteUrl = clearRouteUrl;
-    }
 
     public String getZkRoot() {
         return zkRoot;

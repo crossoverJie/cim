@@ -1,13 +1,12 @@
 package com.crossoverjie.cim.server.handle;
 
-import com.alibaba.fastjson.JSONObject;
 import com.crossoverjie.cim.common.constant.Constants;
 import com.crossoverjie.cim.common.exception.CIMException;
 import com.crossoverjie.cim.common.kit.HeartBeatHandler;
 import com.crossoverjie.cim.common.pojo.CIMUserInfo;
 import com.crossoverjie.cim.common.protocol.CIMRequestProto;
 import com.crossoverjie.cim.common.util.NettyAttrUtil;
-import com.crossoverjie.cim.server.config.AppConfiguration;
+import com.crossoverjie.cim.server.kit.RouteHandler;
 import com.crossoverjie.cim.server.kit.ServerHeartBeatHandlerImpl;
 import com.crossoverjie.cim.server.util.SessionSocketHolder;
 import com.crossoverjie.cim.server.util.SpringBeanFactory;
@@ -18,11 +17,8 @@ import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.handler.timeout.IdleState;
 import io.netty.handler.timeout.IdleStateEvent;
-import okhttp3.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.io.IOException;
 
 /**
  * Function:
@@ -36,7 +32,6 @@ public class CIMServerHandle extends SimpleChannelInboundHandler<CIMRequestProto
 
     private final static Logger LOGGER = LoggerFactory.getLogger(CIMServerHandle.class);
 
-    private final MediaType mediaType = MediaType.parse("application/json");
 
     /**
      * 取消绑定
@@ -50,7 +45,11 @@ public class CIMServerHandle extends SimpleChannelInboundHandler<CIMRequestProto
         CIMUserInfo userInfo = SessionSocketHolder.getUserId((NioSocketChannel) ctx.channel());
         if (userInfo != null){
             LOGGER.warn("[{}] trigger channelInactive offline!",userInfo.getUserName());
-            userOffLine(userInfo, (NioSocketChannel) ctx.channel());
+
+            //Clear route info and offline.
+            RouteHandler routeHandler = SpringBeanFactory.getBean(RouteHandler.class);
+            routeHandler.userOffLine(userInfo,(NioSocketChannel) ctx.channel());
+
             ctx.channel().close();
         }
     }
@@ -70,50 +69,6 @@ public class CIMServerHandle extends SimpleChannelInboundHandler<CIMRequestProto
         super.userEventTriggered(ctx, evt);
     }
 
-    /**
-     * 用户下线
-     * @param userInfo
-     * @param channel
-     * @throws IOException
-     */
-    private void userOffLine(CIMUserInfo userInfo, NioSocketChannel channel) throws IOException {
-        LOGGER.info("account [{}] offline!", userInfo.getUserName());
-        SessionSocketHolder.remove(channel);
-        SessionSocketHolder.removeSession(userInfo.getUserId());
-
-        //清除路由关系
-        clearRouteInfo(userInfo);
-    }
-
-    /**
-     * 下线，清除路由关系
-     *
-     * @param userInfo
-     * @throws IOException
-     */
-    private void clearRouteInfo(CIMUserInfo userInfo) throws IOException {
-        OkHttpClient okHttpClient = SpringBeanFactory.getBean(OkHttpClient.class);
-        AppConfiguration configuration = SpringBeanFactory.getBean(AppConfiguration.class);
-        JSONObject jsonObject = new JSONObject();
-        jsonObject.put("userId", userInfo.getUserId());
-        jsonObject.put("msg", "offLine");
-        RequestBody requestBody = RequestBody.create(mediaType, jsonObject.toString());
-
-        Request request = new Request.Builder()
-                .url(configuration.getClearRouteUrl())
-                .post(requestBody)
-                .build();
-
-        Response response = null;
-        try {
-            response = okHttpClient.newCall(request).execute();
-            if (!response.isSuccessful()) {
-                throw new IOException("Unexpected code " + response);
-            }
-        } finally {
-            response.body().close();
-        }
-    }
 
 
     @Override
