@@ -25,6 +25,11 @@ public class SessionSocketHolder {
         SESSION_MAP.remove(userId) ;
     }
 
+    /**
+     * Save the relationship between the userId and the channel.
+     * @param id
+     * @param socketChannel
+     */
     public static void put(Long id, NioSocketChannel socketChannel) {
         CHANNEL_MAP.put(id, socketChannel);
     }
@@ -33,7 +38,7 @@ public class SessionSocketHolder {
         return CHANNEL_MAP.get(id);
     }
 
-    public static Map<Long, NioSocketChannel> getMAP() {
+    public static Map<Long, NioSocketChannel> getRelationShip() {
         return CHANNEL_MAP;
     }
 

@@ -27,6 +27,6 @@ public class CustomEndpoint extends AbstractEndpoint<Map<Long,NioSocketChannel>>
 
     @Override
     public Map<Long, NioSocketChannel> invoke() {
-        return SessionSocketHolder.getMAP();
+        return SessionSocketHolder.getRelationShip();
     }
 }
