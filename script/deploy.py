@@ -1,3 +1,4 @@
+import os
 from time import sleep
 from tqdm import trange, tqdm
 
@@ -20,9 +21,10 @@ def __build_server():
 
     pbar.update(10)
     subprocess.call(['pwd'])
-    subprocess.call(['mvn', '-Dmaven.test.skip=true', 'clean', 'package'])
+    FNULL = open(os.devnull, 'w')
+    subprocess.call(['mvn', '-Dmaven.test.skip=true', 'clean', 'package'], stdout=FNULL, stderr=subprocess.STDOUT)
     pbar.update(30)
-    subprocess.call(['cp', 'cim-server/target/cim-server-1.0.0-SNAPSHOT.jar', '/data/work/cim'])
+    subprocess.call(['cp', 'cim-server/target/cim-server-1.0.0-SNAPSHOT.jar', '/data/work/cim/server'])
 
     click.echo('build cim server success!!!')
     pbar.close()
