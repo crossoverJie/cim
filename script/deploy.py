@@ -1,21 +1,37 @@
 from time import sleep
-from tqdm import trange
+from tqdm import trange, tqdm
 
 import click
+import subprocess
+
+pbar = tqdm(total=100)
+pbar.set_description('building')
 
 
 @click.command()
-@click.option("--count", default=1, help="Number of greetings.")
-@click.option("--name", prompt="Your name", help="The person to greet.")
-def hello(count, name):
-    """Simple program that greets NAME for a total of COUNT times."""
-    for _ in range(count):
-        click.echo(u"Hello".format(name))
+@click.option("--model", prompt="build model", help="build model[s:server,r:route]")
+def hello(model):
+    if model == 's':
+        __build_server()
+
+
+def __build_server():
+    click.echo('build cim server.....')
+
+    pbar.update(10)
+    subprocess.call(['pwd'])
+    subprocess.call(['mvn', '-Dmaven.test.skip=true', 'clean', 'package'])
+    pbar.update(30)
+    subprocess.call(['cp', 'cim-server/target/cim-server-1.0.0-SNAPSHOT.jar', '/data/work/cim'])
+
+    click.echo('build cim server success!!!')
+    pbar.close()
+
 
 def progress():
-    for i in trange(100):
-        sleep(0.01)
+    pbar.update(10)
+
+
 
 if __name__ == '__main__':
-    # hello()
-    progress()
+    hello()
