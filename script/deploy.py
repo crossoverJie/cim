@@ -20,7 +20,6 @@ def __build_server():
     click.echo('build cim server.....')
 
     pbar.update(10)
-    subprocess.call(['pwd'])
     FNULL = open(os.devnull, 'w')
     subprocess.call(['mvn', '-Dmaven.test.skip=true', 'clean', 'package'], stdout=FNULL, stderr=subprocess.STDOUT)
     pbar.update(30)
