@@ -42,7 +42,7 @@ def __package():
 def __build_route():
     click.echo('build cim route.....')
     pbar.update(10)
-    subprocess.call(['cp', 'cim/cim-forward-route/target/cim-forward-route-1.0.0-SNAPSHOT.jar', '/data/work/cim/route'])
+    subprocess.call(['cp', 'cim-forward-route/target/cim-forward-route-1.0.0-SNAPSHOT.jar', '/data/work/cim/route'])
     subprocess.call(['sh', 'script/route-startup.sh'])
 
     pbar.update(60)
