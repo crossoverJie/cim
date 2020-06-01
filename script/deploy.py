@@ -24,6 +24,7 @@ def __build_server():
     subprocess.call(['mvn', '-Dmaven.test.skip=true', 'clean', 'package'], stdout=FNULL, stderr=subprocess.STDOUT)
     pbar.update(30)
     subprocess.call(['cp', 'cim-server/target/cim-server-1.0.0-SNAPSHOT.jar', '/data/work/cim/server'])
+    subprocess.call(['sh', 'script/server-startup.sh'])
 
     click.echo('build cim server success!!!')
     pbar.close()
