@@ -1,2 +1,2 @@
 #!/usr/bin/env bash
-nohup java -jar  /root/work/route/cim-forward-route-1.0.0-SNAPSHOT.jar  > /root/work/route/log.file 2>&1 &
+nohup java -jar  /data/work/cim/route/cim-forward-route-1.0.0-SNAPSHOT.jar --spring.redis.password=tiger --app.zk.addr=127.0.0.1:2182 --spring.redis.host=127.0.0.1  > /data/work/cim/server/log.file 2>&1 &
