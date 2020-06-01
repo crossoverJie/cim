@@ -1,5 +1,6 @@
 package com.crossoverjie.cim.server;
 
+import com.crossoverjie.cim.common.util.StringUtil;
 import com.crossoverjie.cim.server.config.AppConfiguration;
 import com.crossoverjie.cim.server.kit.RegistryZK;
 import org.slf4j.Logger;
@@ -33,9 +34,15 @@ public class CIMServerApplication implements CommandLineRunner{
 
 	@Override
 	public void run(String... args) throws Exception {
-		//获得本机IP
-		String addr = InetAddress.getLocalHost().getHostAddress();
-		Thread thread = new Thread(new RegistryZK(addr, appConfiguration.getCimServerPort(),httpPort));
+		String localIp ;
+		if (StringUtil.isValidIPAddress(appConfiguration.getServerIp())){
+			localIp = appConfiguration.getServerIp() ;
+		}else {
+			//获得本机IP
+			localIp = InetAddress.getLocalHost().getHostAddress();
+		}
+
+		Thread thread = new Thread(new RegistryZK(localIp, appConfiguration.getCimServerPort(),httpPort));
 		thread.setName("registry-zk");
 		thread.start() ;
 	}

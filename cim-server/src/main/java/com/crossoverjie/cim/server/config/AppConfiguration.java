@@ -28,6 +28,9 @@ public class AppConfiguration {
     @Value("${cim.route.url}")
     private String routeUrl ;
 
+    @Value("${cim.server.ip}")
+    private String serverIp ;
+
     public String getRouteUrl() {
         return routeUrl;
     }
@@ -84,5 +87,13 @@ public class AppConfiguration {
 
     public void setHeartBeatTime(long heartBeatTime) {
         this.heartBeatTime = heartBeatTime;
+    }
+
+    public String getServerIp() {
+        return serverIp;
+    }
+
+    public void setServerIp(String serverIp) {
+        this.serverIp = serverIp;
     }
 }
