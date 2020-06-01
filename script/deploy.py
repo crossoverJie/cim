@@ -26,6 +26,8 @@ def __build_server():
     subprocess.call(['cp', 'cim-server/target/cim-server-1.0.0-SNAPSHOT.jar', '/data/work/cim/server'])
     subprocess.call(['sh', 'script/server-startup.sh'])
 
+    pbar.update(60)
+
     click.echo('build cim server success!!!')
     pbar.close()
 
