@@ -5,8 +5,10 @@ import com.crossoverjie.cim.common.enums.StatusEnum;
 import com.crossoverjie.cim.common.res.BaseResponse;
 import com.crossoverjie.cim.server.api.ServerApi;
 import com.crossoverjie.cim.server.api.vo.req.SendMsgReqVO;
+import com.crossoverjie.cim.server.api.vo.res.OnlineUserCount;
 import com.crossoverjie.cim.server.api.vo.res.SendMsgResVO;
 import com.crossoverjie.cim.server.server.CIMServer;
+import com.crossoverjie.cim.server.util.SessionSocketHolder;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.actuate.metrics.CounterService;
@@ -57,6 +59,24 @@ public class IndexController implements ServerApi {
         res.setCode(StatusEnum.SUCCESS.getCode()) ;
         res.setMessage(StatusEnum.SUCCESS.getMessage()) ;
         res.setDataBody(sendMsgResVO) ;
+        return res ;
+    }
+
+
+    /**
+     * Count of online user
+     * @return
+     */
+    @ApiOperation("Count of online user")
+    @RequestMapping(value = "getOnlineCount",method = RequestMethod.GET)
+    @ResponseBody
+    public BaseResponse getOnlineCount() throws Exception {
+        BaseResponse<OnlineUserCount> res = new BaseResponse();
+        int count = SessionSocketHolder.getOnlineCount();
+        OnlineUserCount onlineUserCount = new OnlineUserCount(count) ;
+        res.setDataBody(onlineUserCount);
+        res.setCode(StatusEnum.SUCCESS.getCode()) ;
+        res.setMessage(StatusEnum.SUCCESS.getMessage()) ;
         return res ;
     }
 

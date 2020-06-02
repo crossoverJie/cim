@@ -65,6 +65,12 @@ public class SessionSocketHolder {
         return null;
     }
 
-
+    /**
+     *
+     * @return Count of online user.
+     */
+    public static int getOnlineCount(){
+        return SESSION_MAP.size() ;
+    }
 
 }
