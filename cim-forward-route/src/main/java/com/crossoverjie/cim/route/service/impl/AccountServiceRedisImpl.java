@@ -18,6 +18,7 @@ import okhttp3.Response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.connection.RedisConnection;
 import org.springframework.data.redis.core.Cursor;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -53,6 +54,9 @@ public class AccountServiceRedisImpl implements AccountService {
     @Autowired
     private OkHttpClient okHttpClient;
 
+    @Value("${app.test.model}")
+    private boolean testModel ;
+
     @Override
     public RegisterInfoResVO register(RegisterInfoResVO info) {
         String key = ACCOUNT_PREFIX + info.getUserId();
@@ -73,6 +77,9 @@ public class AccountServiceRedisImpl implements AccountService {
 
     @Override
     public StatusEnum login(LoginReqVO loginReqVO) throws Exception {
+        if (testModel){
+            return StatusEnum.SUCCESS;
+        }
         //再去Redis里查询
         String key = ACCOUNT_PREFIX + loginReqVO.getUserId();
         String userName = redisTemplate.opsForValue().get(key);
