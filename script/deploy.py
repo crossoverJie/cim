@@ -72,7 +72,6 @@ def __build_client(count):
                    '>', '/dev/null', '&']
 
         click.echo(' '.join(command))
-        # subprocess.call(command, stdout=FNULL, stderr=subprocess.STDOUT)
         pbar.update(process)
         Popen(command)
 
