@@ -73,11 +73,9 @@ def __build_client(count):
 
         click.echo(' '.join(command))
         # subprocess.call(command, stdout=FNULL, stderr=subprocess.STDOUT)
-        p = Popen(command)  # something long running
-        # ... do other stuff while subprocess is running
         pbar.update(process)
+        Popen(command)
 
-    p.terminate()
     click.echo('build cim {} client success!!!'.format(count))
 
 
