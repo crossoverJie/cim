@@ -74,6 +74,7 @@ def __build_client(count):
         click.echo(' '.join(command))
         pbar.update(process)
         Popen(command)
+        sleep(2)
 
     click.echo('build cim {} client success!!!'.format(count))
 
