@@ -4,6 +4,7 @@ import com.crossoverjie.cim.common.core.proxy.ProxyManager;
 import com.crossoverjie.cim.common.enums.StatusEnum;
 import com.crossoverjie.cim.common.exception.CIMException;
 import com.crossoverjie.cim.common.pojo.CIMUserInfo;
+import com.crossoverjie.cim.common.util.HttpClient;
 import com.crossoverjie.cim.common.util.RouteInfoParseUtil;
 import com.crossoverjie.cim.route.api.vo.req.ChatReqVO;
 import com.crossoverjie.cim.route.api.vo.req.LoginReqVO;
@@ -168,7 +169,7 @@ public class AccountServiceRedisImpl implements AccountService {
         } catch (Exception e) {
             LOGGER.error("Exception", e);
         } finally {
-            response.body().close();
+            HttpClient.closeBody(response);
         }
     }
 

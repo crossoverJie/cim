@@ -34,4 +34,10 @@ public final class HttpClient {
 
         return response;
     }
+
+    public static void closeBody(Response response) {
+        if (response.body() != null) {
+            response.body().close();
+        }
+    }
 }

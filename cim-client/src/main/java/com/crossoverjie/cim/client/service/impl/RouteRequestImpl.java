@@ -14,6 +14,7 @@ import com.crossoverjie.cim.common.core.proxy.ProxyManager;
 import com.crossoverjie.cim.common.enums.StatusEnum;
 import com.crossoverjie.cim.common.exception.CIMException;
 import com.crossoverjie.cim.common.res.BaseResponse;
+import com.crossoverjie.cim.common.util.HttpClient;
 import com.crossoverjie.cim.route.api.RouteApi;
 import com.crossoverjie.cim.route.api.vo.req.ChatReqVO;
 import okhttp3.OkHttpClient;
@@ -61,7 +62,7 @@ public class RouteRequestImpl implements RouteRequest {
         } catch (Exception e) {
             LOGGER.error("exception", e);
         } finally {
-            closeBody(response);
+            HttpClient.closeBody(response);
         }
     }
 
@@ -87,7 +88,7 @@ public class RouteRequestImpl implements RouteRequest {
         } catch (Exception e) {
             LOGGER.error("exception", e);
         } finally {
-            closeBody(response);
+            HttpClient.closeBody(response);
         }
     }
 
@@ -122,7 +123,7 @@ public class RouteRequestImpl implements RouteRequest {
         } catch (Exception e) {
             LOGGER.error("exception", e);
         } finally {
-            closeBody(response);
+            HttpClient.closeBody(response);
         }
 
         return cimServerResVO.getDataBody();
@@ -142,7 +143,7 @@ public class RouteRequestImpl implements RouteRequest {
         } catch (Exception e) {
             LOGGER.error("exception", e);
         } finally {
-            closeBody(response);
+            HttpClient.closeBody(response);
         }
 
         return onlineUsersResVO.getDataBody();
@@ -158,13 +159,8 @@ public class RouteRequestImpl implements RouteRequest {
         } catch (Exception e) {
             LOGGER.error("exception", e);
         } finally {
-            closeBody(response);
+            HttpClient.closeBody(response);
         }
     }
 
-    private void closeBody(Response response) {
-        if (response.body() != null) {
-            response.body().close();
-        }
-    }
 }
