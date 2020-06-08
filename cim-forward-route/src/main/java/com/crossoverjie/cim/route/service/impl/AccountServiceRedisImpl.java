@@ -167,7 +167,7 @@ public class AccountServiceRedisImpl implements AccountService {
         try {
             response = (Response) serverApi.sendMsg(vo);
         } catch (Exception e) {
-            LOGGER.error("Exception", e);
+            LOGGER.error("PushException", e);
         } finally {
             HttpClient.closeBody(response);
         }
