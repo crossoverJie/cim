@@ -7,6 +7,7 @@ import subprocess
 
 pbar = tqdm(total=100)
 pbar.set_description('building')
+FNULL = open(os.devnull, 'w')
 
 
 # pip install tqdm
@@ -39,7 +40,6 @@ def __build_server():
 
 def __package():
     pbar.update(30)
-    FNULL = open(os.devnull, 'w')
     subprocess.call(['mvn', '-Dmaven.test.skip=true', 'clean', 'package'], stdout=FNULL, stderr=subprocess.STDOUT)
 
 
@@ -67,7 +67,7 @@ def __build_client(count):
                    '--server.port={}'.format(port), '--cim.user.id={}'.format(count),
                    '--cim.user.userName={}'.format(count), '--cim.route.url=http://47.98.194.60:8083']
         click.echo(' '.join(command))
-        subprocess.call(command)
+        subprocess.call(command, stdout=FNULL, stderr=subprocess.STDOUT)
         pbar.update(process)
 
     click.echo('build cim {} client success!!!'.format(count))
