@@ -39,6 +39,7 @@ def __build_server():
 
 
 def __package():
+    subprocess.call(['git', 'pull'])
     pbar.update(30)
     subprocess.call(['mvn', '-Dmaven.test.skip=true', 'clean', 'package'], stdout=FNULL, stderr=subprocess.STDOUT)
 
