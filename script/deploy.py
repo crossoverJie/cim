@@ -66,7 +66,7 @@ def __build_client(count):
     for i in range(count):
         port = port + 1
         process = process + count
-        command = ['nohup', 'java', '-jar', '-Xmx128M', '-Xms128M', '/data/work/cim/client/cim-client-1.0.0-SNAPSHOT.jar',
+        command = ['nohup', 'java', '-jar', '-Xmx32M', '-Xms32M', '/data/work/cim/client/cim-client-1.0.0-SNAPSHOT.jar',
                    '--server.port={}'.format(port), '--cim.user.id={}'.format(i),
                    '--cim.user.userName={}'.format(i), '--cim.route.url=http://47.98.194.60:8083',
                    '>', '/dev/null', '&']
