@@ -2,6 +2,7 @@ package com.crossoverjie.cim.server.kit;
 
 import com.crossoverjie.cim.common.core.proxy.ProxyManager;
 import com.crossoverjie.cim.common.pojo.CIMUserInfo;
+import com.crossoverjie.cim.common.util.HttpClient;
 import com.crossoverjie.cim.route.api.RouteApi;
 import com.crossoverjie.cim.route.api.vo.req.ChatReqVO;
 import com.crossoverjie.cim.server.config.AppConfiguration;
@@ -67,7 +68,7 @@ public class RouteHandler {
         } catch (Exception e){
             LOGGER.error("Exception",e);
         }finally {
-            response.body().close();
+            HttpClient.closeBody(response);
         }
     }
 
