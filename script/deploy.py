@@ -72,7 +72,7 @@ def __build_client(count):
                    '>', '/dev/null', '&']
 
         click.echo(' '.join(command))
-        subprocess.call(command, stdout=FNULL, stderr=subprocess.STDOUT)
+        # subprocess.call(command, stdout=FNULL, stderr=subprocess.STDOUT)
         p = Popen(command)  # something long running
         # ... do other stuff while subprocess is running
         p.terminate()
