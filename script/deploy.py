@@ -4,6 +4,8 @@ from tqdm import trange, tqdm
 
 import click
 import subprocess
+from subprocess import Popen
+
 
 pbar = tqdm(total=100)
 pbar.set_description('building')
@@ -71,6 +73,9 @@ def __build_client(count):
 
         click.echo(' '.join(command))
         subprocess.call(command, stdout=FNULL, stderr=subprocess.STDOUT)
+        p = Popen(command)  # something long running
+        # ... do other stuff while subprocess is running
+        p.terminate()
         pbar.update(process)
 
     click.echo('build cim {} client success!!!'.format(count))
