@@ -8,6 +8,8 @@ import subprocess
 pbar = tqdm(total=100)
 pbar.set_description('building')
 
+# pip install tqdm
+# pip install click
 
 @click.command()
 @click.option("--model", prompt="build model", help="build model[s:server,r:route]")
