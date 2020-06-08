@@ -12,7 +12,7 @@ pbar.set_description('building')
 # pip install click
 
 @click.command()
-@click.option("--model", prompt="build model", help="build model[s:server,r:route]")
+@click.option("--model", prompt="build model", help="build model[s:server, r:route, c:client]")
 def run(model):
 
     __package()
@@ -21,6 +21,8 @@ def run(model):
         __build_server()
     elif model == 'r':
         __build_route()
+    else:
+        __build_client(model.split(' ')[1])
 
 
 def __build_server():
@@ -50,6 +52,23 @@ def __build_route():
     pbar.update(60)
 
     click.echo('build cim route success!!!')
+
+
+def __build_client(count):
+    count = int(count)
+    process = 30
+    click.echo('build cim {} client.....'.format(count))
+    subprocess.call(['cp', 'cim-client/target/cim-client-1.0.0-SNAPSHOT.jar', '/data/work/cim/client'])
+    port = 8084
+    for i in range(count):
+        port = port + 1
+        process = process + count
+        subprocess.call(['java', '-jar', '-Xmx128M', 'Xms128M', '/data/work/cim/clientcim-client-1.0.0-SNAPSHOT.jar',
+                         '--server.port='.format(port), '--cim.user.id=1',
+                         '--cim.user.userName=1', '--cim.route.url=http://47.98.194.60:8083/'])
+        pbar.update(process)
+
+    click.echo('build cim {} client success!!!'.format(count))
 
 
 def progress():
