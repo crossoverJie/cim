@@ -30,7 +30,7 @@ import java.util.List;
  * Function:
  *
  * @author crossoverJie
- *         Date: 2018/12/22 22:27
+ * Date: 2018/12/22 22:27
  * @since JDK 1.8
  */
 @Service
@@ -39,36 +39,36 @@ public class RouteRequestImpl implements RouteRequest {
     private final static Logger LOGGER = LoggerFactory.getLogger(RouteRequestImpl.class);
 
     @Autowired
-    private OkHttpClient okHttpClient ;
+    private OkHttpClient okHttpClient;
 
     @Value("${cim.route.url}")
-    private String routeUrl ;
+    private String routeUrl;
 
     @Autowired
-    private EchoService echoService ;
+    private EchoService echoService;
 
 
     @Autowired
-    private AppConfiguration appConfiguration ;
+    private AppConfiguration appConfiguration;
 
     @Override
     public void sendGroupMsg(GroupReqVO groupReqVO) throws Exception {
         RouteApi routeApi = new ProxyManager<>(RouteApi.class, routeUrl, okHttpClient).getInstance();
-        ChatReqVO chatReqVO = new ChatReqVO(groupReqVO.getUserId(), groupReqVO.getMsg()) ;
+        ChatReqVO chatReqVO = new ChatReqVO(groupReqVO.getUserId(), groupReqVO.getMsg());
         Response response = null;
         try {
-            response = (Response)routeApi.groupRoute(chatReqVO);
-        }catch (Exception e){
-            LOGGER.error("exception",e);
-        }finally {
-            response.body().close();
+            response = (Response) routeApi.groupRoute(chatReqVO);
+        } catch (Exception e) {
+            LOGGER.error("exception", e);
+        } finally {
+            closeBody(response);
         }
     }
 
     @Override
     public void sendP2PMsg(P2PReqVO p2PReqVO) throws Exception {
         RouteApi routeApi = new ProxyManager<>(RouteApi.class, routeUrl, okHttpClient).getInstance();
-        com.crossoverjie.cim.route.api.vo.req.P2PReqVO vo = new com.crossoverjie.cim.route.api.vo.req.P2PReqVO() ;
+        com.crossoverjie.cim.route.api.vo.req.P2PReqVO vo = new com.crossoverjie.cim.route.api.vo.req.P2PReqVO();
         vo.setMsg(p2PReqVO.getMsg());
         vo.setReceiveUserId(p2PReqVO.getReceiveUserId());
         vo.setUserId(p2PReqVO.getUserId());
@@ -76,18 +76,18 @@ public class RouteRequestImpl implements RouteRequest {
         Response response = null;
         try {
             response = (Response) routeApi.p2pRoute(vo);
-            String json = response.body().string() ;
+            String json = response.body().string();
             BaseResponse baseResponse = JSON.parseObject(json, BaseResponse.class);
 
             // account offline.
-            if (baseResponse.getCode().equals(StatusEnum.OFF_LINE.getCode())){
+            if (baseResponse.getCode().equals(StatusEnum.OFF_LINE.getCode())) {
                 LOGGER.error(p2PReqVO.getReceiveUserId() + ":" + StatusEnum.OFF_LINE.getMessage());
             }
 
-        }catch (Exception e){
-            LOGGER.error("exception",e);
-        }finally {
-            response.body().close();
+        } catch (Exception e) {
+            LOGGER.error("exception", e);
+        } finally {
+            closeBody(response);
         }
     }
 
@@ -95,7 +95,7 @@ public class RouteRequestImpl implements RouteRequest {
     public CIMServerResVO.ServerInfo getCIMServer(LoginReqVO loginReqVO) throws Exception {
 
         RouteApi routeApi = new ProxyManager<>(RouteApi.class, routeUrl, okHttpClient).getInstance();
-        com.crossoverjie.cim.route.api.vo.req.LoginReqVO vo = new com.crossoverjie.cim.route.api.vo.req.LoginReqVO() ;
+        com.crossoverjie.cim.route.api.vo.req.LoginReqVO vo = new com.crossoverjie.cim.route.api.vo.req.LoginReqVO();
         vo.setUserId(loginReqVO.getUserId());
         vo.setUserName(loginReqVO.getUserName());
 
@@ -107,11 +107,11 @@ public class RouteRequestImpl implements RouteRequest {
             cimServerResVO = JSON.parseObject(json, CIMServerResVO.class);
 
             //重复失败
-            if (!cimServerResVO.getCode().equals(StatusEnum.SUCCESS.getCode())){
+            if (!cimServerResVO.getCode().equals(StatusEnum.SUCCESS.getCode())) {
                 echoService.echo(cimServerResVO.getMessage());
 
                 // when client in reConnect state, could not exit.
-                if (ContextHolder.getReconnect()){
+                if (ContextHolder.getReconnect()) {
                     echoService.echo("###{}###", StatusEnum.RECONNECT_FAIL.getMessage());
                     throw new CIMException(StatusEnum.RECONNECT_FAIL);
                 }
@@ -119,30 +119,30 @@ public class RouteRequestImpl implements RouteRequest {
                 System.exit(-1);
             }
 
-        }catch (Exception e){
-            LOGGER.error("exception",e);
-        }finally {
-            response.body().close();
+        } catch (Exception e) {
+            LOGGER.error("exception", e);
+        } finally {
+            closeBody(response);
         }
 
         return cimServerResVO.getDataBody();
     }
 
     @Override
-    public List<OnlineUsersResVO.DataBodyBean> onlineUsers() throws Exception{
+    public List<OnlineUsersResVO.DataBodyBean> onlineUsers() throws Exception {
         RouteApi routeApi = new ProxyManager<>(RouteApi.class, routeUrl, okHttpClient).getInstance();
 
         Response response = null;
         OnlineUsersResVO onlineUsersResVO = null;
         try {
             response = (Response) routeApi.onlineUser();
-            String json = response.body().string() ;
+            String json = response.body().string();
             onlineUsersResVO = JSON.parseObject(json, OnlineUsersResVO.class);
 
-        }catch (Exception e){
-            LOGGER.error("exception",e);
-        }finally {
-            response.body().close();
+        } catch (Exception e) {
+            LOGGER.error("exception", e);
+        } finally {
+            closeBody(response);
         }
 
         return onlineUsersResVO.getDataBody();
@@ -151,13 +151,19 @@ public class RouteRequestImpl implements RouteRequest {
     @Override
     public void offLine() {
         RouteApi routeApi = new ProxyManager<>(RouteApi.class, routeUrl, okHttpClient).getInstance();
-        ChatReqVO vo = new ChatReqVO(appConfiguration.getUserId(), "offLine") ;
+        ChatReqVO vo = new ChatReqVO(appConfiguration.getUserId(), "offLine");
         Response response = null;
         try {
             response = (Response) routeApi.offLine(vo);
         } catch (Exception e) {
-            LOGGER.error("exception",e);
+            LOGGER.error("exception", e);
         } finally {
+            closeBody(response);
+        }
+    }
+
+    private void closeBody(Response response) {
+        if (response.body() != null) {
             response.body().close();
         }
     }
