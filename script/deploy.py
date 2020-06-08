@@ -8,13 +8,13 @@ import subprocess
 pbar = tqdm(total=100)
 pbar.set_description('building')
 
+
 # pip install tqdm
 # pip install click
 
 @click.command()
 @click.option("--model", prompt="build model", help="build model[s:server, r:route, c:client]")
 def run(model):
-
     __package()
 
     if model == 's':
@@ -63,9 +63,11 @@ def __build_client(count):
     for i in range(count):
         port = port + 1
         process = process + count
-        subprocess.call(['java', '-jar', '-Xmx128M', 'Xms128M', '/data/work/cim/client/cim-client-1.0.0-SNAPSHOT.jar',
-                         '--server.port='.format(port), '--cim.user.id=1',
-                         '--cim.user.userName=1', '--cim.route.url=http://47.98.194.60:8083/'])
+        command = ['java', '-jar', '-Xmx128M', 'Xms128M', '/data/work/cim/client/cim-client-1.0.0-SNAPSHOT.jar',
+                   '--server.port='.format(port), '--cim.user.id=1',
+                   '--cim.user.userName=1', '--cim.route.url=http://47.98.194.60:8083/']
+        click.echo(' '.join(command))
+        subprocess.call(command)
         pbar.update(process)
 
     click.echo('build cim {} client success!!!'.format(count))
