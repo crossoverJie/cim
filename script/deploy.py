@@ -63,7 +63,7 @@ def __build_client(count):
     for i in range(count):
         port = port + 1
         process = process + count
-        subprocess.call(['java', '-jar', '-Xmx128M', 'Xms128M', '/data/work/cim/clientcim-client-1.0.0-SNAPSHOT.jar',
+        subprocess.call(['java', '-jar', '-Xmx128M', 'Xms128M', '/data/work/cim/client/cim-client-1.0.0-SNAPSHOT.jar',
                          '--server.port='.format(port), '--cim.user.id=1',
                          '--cim.user.userName=1', '--cim.route.url=http://47.98.194.60:8083/'])
         pbar.update(process)
