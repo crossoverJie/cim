@@ -86,15 +86,16 @@ public class CIMServer {
 
         if (null == socketChannel) {
             LOGGER.error("client {} offline!", sendMsgReqVO.getUserId());
-        }
-        CIMRequestProto.CIMReqProtocol protocol = CIMRequestProto.CIMReqProtocol.newBuilder()
-                .setRequestId(sendMsgReqVO.getUserId())
-                .setReqMsg(sendMsgReqVO.getMsg())
-                .setType(Constants.CommandType.MSG)
-                .build();
+        }else {
+            CIMRequestProto.CIMReqProtocol protocol = CIMRequestProto.CIMReqProtocol.newBuilder()
+                    .setRequestId(sendMsgReqVO.getUserId())
+                    .setReqMsg(sendMsgReqVO.getMsg())
+                    .setType(Constants.CommandType.MSG)
+                    .build();
 
-        ChannelFuture future = socketChannel.writeAndFlush(protocol);
-        future.addListener((ChannelFutureListener) channelFuture ->
-                LOGGER.info("server push msg:[{}]", sendMsgReqVO.toString()));
+            ChannelFuture future = socketChannel.writeAndFlush(protocol);
+            future.addListener((ChannelFutureListener) channelFuture ->
+                    LOGGER.info("server push msg:[{}]", sendMsgReqVO.toString()));
+        }
     }
 }
