@@ -30,6 +30,5 @@ public class CIMClientApplication implements CommandLineRunner{
 		Thread thread = new Thread(scan);
 		thread.setName("scan-thread");
 		thread.start();
-		clientInfo.saveStartDate();
 	}
 }

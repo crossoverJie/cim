@@ -33,10 +33,6 @@ public class ClientInfo {
         return this;
     }
 
-    public ClientInfo saveStartDate(){
-        info.setStartDate(new Date());
-        return this;
-    }
 
     public class Info{
         private String userName;
@@ -45,6 +41,7 @@ public class ClientInfo {
         private Date startDate ;
 
         public Info() {
+            this.startDate = new Date() ;
         }
 
         public String getUserName() {
