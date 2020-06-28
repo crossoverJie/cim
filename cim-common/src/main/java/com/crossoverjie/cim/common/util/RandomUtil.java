@@ -1,8 +1,5 @@
 package com.crossoverjie.cim.common.util;
 
-import java.util.Random;
-import java.util.UUID;
-
 /**
  * Function:
  *
@@ -15,6 +12,6 @@ public class RandomUtil {
     public static int getRandom() {
 
         double random = Math.random();
-        return (int) (random * 100);
+        return (int) (random * 10000000);
     }
 }

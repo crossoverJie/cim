@@ -1,5 +1,6 @@
 package com.crossoverjie.cim;
 
+import com.crossoverjie.cim.common.util.RandomUtil;
 import com.crossoverjie.cim.service.LoginService;
 import com.crossoverjie.cim.thread.ConnectJob;
 import com.crossoverjie.cim.vo.req.LoginReqVO;
@@ -45,7 +46,7 @@ public class PressureApplication implements CommandLineRunner {
     public void run(String... args) throws Exception {
         CIMServerResVO.ServerInfo serverInfo = loginService.userLogin();
         for (int i = 0; i < clientCount; i++) {
-            ConnectJob connectJob = new ConnectJob(new LoginReqVO(Long.valueOf(i), "abc" + i), serverInfo);
+            ConnectJob connectJob = new ConnectJob(new LoginReqVO(Long.valueOf(RandomUtil.getRandom()), "abc" + i), serverInfo);
             threadPoolExecutor.execute(connectJob);
         }
     }
