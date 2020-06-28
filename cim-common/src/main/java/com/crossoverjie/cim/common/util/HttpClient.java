@@ -37,6 +37,7 @@ public final class HttpClient {
 
     public static void closeBody(Response response) {
         if (response != null && response.body() != null) {
+            System.out.println("-----close body-----");
             response.body().close();
         }
     }
