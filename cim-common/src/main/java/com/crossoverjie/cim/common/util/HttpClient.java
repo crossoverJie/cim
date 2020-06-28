@@ -5,6 +5,8 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 
@@ -16,6 +18,8 @@ import java.io.IOException;
  * @since JDK 1.8
  */
 public final class HttpClient {
+
+    private final static Logger LOGGER = LoggerFactory.getLogger(HttpClient.class);
 
     private static MediaType mediaType = MediaType.parse("application/json");
 
@@ -37,7 +41,7 @@ public final class HttpClient {
 
     public static void closeBody(Response response) {
         if (response != null && response.body() != null) {
-            System.out.println("-----close body-----");
+            LOGGER.info("-----close body-----");
             response.body().close();
         }
     }
