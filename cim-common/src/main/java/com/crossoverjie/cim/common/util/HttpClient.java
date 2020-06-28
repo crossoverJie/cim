@@ -41,7 +41,6 @@ public final class HttpClient {
 
     public static void closeBody(Response response) {
         if (response != null && response.body() != null) {
-            LOGGER.info("-----close body-----");
             response.body().close();
         }
     }
