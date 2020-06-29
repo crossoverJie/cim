@@ -53,6 +53,8 @@ public class ConnectJob implements Runnable {
         startClient(this.serverInfo);
 
         loginCIMServer();
+
+        LOGGER.info("Connection success!!");
     }
 
 
@@ -87,7 +89,7 @@ public class ConnectJob implements Runnable {
                 .build();
         ChannelFuture future = channel.writeAndFlush(login);
         future.addListener((ChannelFutureListener) channelFuture ->
-                System.out.println("Registry cim server success!")
+                LOGGER.info("Registry cim server success!")
         );
     }
 }
