@@ -16,6 +16,8 @@ import io.netty.util.concurrent.DefaultThreadFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.concurrent.TimeUnit;
+
 /**
  * Function:
  *
@@ -42,6 +44,11 @@ public class ConnectJob implements Runnable {
 
     @Override
     public void run() {
+        try {
+            TimeUnit.MILLISECONDS.sleep(100);
+        } catch (InterruptedException e) {
+            LOGGER.error("InterruptedException", e);
+        }
 
         startClient(this.serverInfo);
 
