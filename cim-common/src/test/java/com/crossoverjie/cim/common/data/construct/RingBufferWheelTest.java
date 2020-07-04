@@ -22,8 +22,38 @@ public class RingBufferWheelTest {
 
     public static void main(String[] args) throws Exception {
 
-        test7();
+        test8();
 
+    }
+
+    private static void test8() throws Exception{
+        ExecutorService executorService = Executors.newFixedThreadPool(2);
+        RingBufferWheel wheel = new RingBufferWheel(executorService);
+        while (true) {
+            logger.info("task size={}, task map size={}", wheel.taskSize(), wheel.taskMapSize());
+            TimeUnit.SECONDS.sleep(1);
+
+            for (int i = 0; i < 1000; i++) {
+                RingBufferWheel.Task task = new ByteTask(1024 * 1024);
+                task.setKey(1);
+                wheel.addTask(task);
+            }
+        }
+
+    }
+
+
+    private static class ByteTask extends RingBufferWheel.Task {
+
+        private byte[] b;
+
+        public ByteTask(int size) {
+            this.b = new byte[size];
+        }
+
+        @Override
+        public void run() {
+        }
     }
 
     private static void test1() throws InterruptedException {
@@ -165,7 +195,7 @@ public class RingBufferWheelTest {
 
         new Thread(() -> {
             boolean flag = wheel.cancel(cancel);
-            logger.info("cancel task={}",flag) ;
+            logger.info("cancel id={},key={} result={}",cancel, task.getKey(), flag) ;
         }).start();
 
         RingBufferWheel.Task task1 = new Job(20) ;

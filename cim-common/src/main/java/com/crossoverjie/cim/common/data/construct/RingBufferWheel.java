@@ -3,10 +3,10 @@ package com.crossoverjie.cim.common.data.construct;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -62,7 +62,7 @@ public final class RingBufferWheel {
     private Condition condition = lock.newCondition();
 
     private AtomicInteger taskId = new AtomicInteger();
-    private Map<Integer, Task> taskMap = new HashMap<>(16);
+    private Map<Integer, Task> taskMap = new ConcurrentHashMap<>(16);
 
     /**
      * Create a new delay task ring buffer by default size
@@ -107,12 +107,11 @@ public final class RingBufferWheel {
             task.setIndex(index);
             Set<Task> tasks = get(index);
 
+            int cycleNum = cycleNum(key, bufferSize);
             if (tasks != null) {
-                int cycleNum = cycleNum(key, bufferSize);
                 task.setCycleNum(cycleNum);
                 tasks.add(task);
             } else {
-                int cycleNum = cycleNum(key, bufferSize);
                 task.setIndex(index);
                 task.setCycleNum(cycleNum);
                 Set<Task> sets = new HashSet<>();
@@ -120,6 +119,7 @@ public final class RingBufferWheel {
                 put(key, sets);
             }
             id = taskId.incrementAndGet();
+            task.setTaskId(id);
             taskMap.put(id, task);
             size++;
         } finally {
@@ -154,6 +154,7 @@ public final class RingBufferWheel {
                 if (tk.getKey() == task.getKey() && tk.getCycleNum() == task.getCycleNum()) {
                     size--;
                     flag = true;
+                    taskMap.remove(id);
                 } else {
                     tempTask.add(tk);
                 }
@@ -178,13 +179,21 @@ public final class RingBufferWheel {
     }
 
     /**
+     * Same with method {@link #taskSize}
+     * @return
+     */
+    public int taskMapSize(){
+        return taskMap.size();
+    }
+
+    /**
      * Start background thread to consumer wheel timer, it will always run until you call method {@link #stop}
      */
     public void start() {
         if (!start.get()) {
 
             if (start.compareAndSet(start.get(), true)) {
-                logger.info("delay task is starting");
+                logger.info("Delay task is starting");
                 Thread job = new Thread(new TriggerJob());
                 job.setName("consumer RingBuffer thread");
                 job.start();
@@ -202,11 +211,11 @@ public final class RingBufferWheel {
      */
     public void stop(boolean force) {
         if (force) {
-            logger.info("delay task is forced stop");
+            logger.info("Delay task is forced stop");
             stop = true;
             executorService.shutdownNow();
         } else {
-            logger.info("delay task is stopping");
+            logger.info("Delay task is stopping");
             if (taskSize() > 0) {
                 try {
                     lock.lock();
@@ -234,6 +243,11 @@ public final class RingBufferWheel {
         ringBuffer[index] = tasks;
     }
 
+    /**
+     * Remove and get task list.
+     * @param key
+     * @return task list
+     */
     private Set<Task> remove(int key) {
         Set<Task> tempTask = new HashSet<>();
         Set<Task> result = new HashSet<>();
@@ -253,6 +267,8 @@ public final class RingBufferWheel {
                 task.setCycleNum(task.getCycleNum() - 1);
                 tempTask.add(task);
             }
+            // remove task, and free the memory.
+            taskMap.remove(task.getTaskId());
         }
 
         //update origin data
@@ -307,6 +323,11 @@ public final class RingBufferWheel {
 
         private int key;
 
+        /**
+         * The unique ID of the task
+         */
+        private int taskId ;
+
         @Override
         public void run() {
         }
@@ -315,6 +336,10 @@ public final class RingBufferWheel {
             return key;
         }
 
+        /**
+         *
+         * @param key Delay time(seconds)
+         */
         public void setKey(int key) {
             this.key = key;
         }
@@ -333,6 +358,14 @@ public final class RingBufferWheel {
 
         private void setIndex(int index) {
             this.index = index;
+        }
+
+        public int getTaskId() {
+            return taskId;
+        }
+
+        public void setTaskId(int taskId) {
+            this.taskId = taskId;
         }
     }
 
@@ -363,7 +396,7 @@ public final class RingBufferWheel {
 
             }
 
-            logger.info("delay task is stopped");
+            logger.info("Delay task has stopped");
         }
     }
 }
