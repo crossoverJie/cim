@@ -86,6 +86,7 @@ public class CIMServer {
 
         if (null == socketChannel) {
             LOGGER.error("client {} offline!", sendMsgReqVO.getUserId());
+            return;
         }
         CIMRequestProto.CIMReqProtocol protocol = CIMRequestProto.CIMReqProtocol.newBuilder()
                 .setRequestId(sendMsgReqVO.getUserId())
