@@ -33,7 +33,8 @@
 		<module>cim-forward-route</module>
         <module>cim-rout-api</module>
         <module>cim-server-api</module>
-    </modules>
+		<module>cim-search</module>
+	</modules>
 
 
 	<dependencyManagement>
