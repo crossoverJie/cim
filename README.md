@@ -14,6 +14,15 @@
 </div>
 <br/>
 
+---
+<div align="center">  
+
+<a href="https://t.zsxq.com/odQDJ" target="_blank"><img src="https://s2.loli.net/2024/05/17/zRkabDu2SKfChLX.png" alt="202405171520366.png"></a>
+</div>
+
+最近开通了知识星球，感谢大家对 CIM 的支持，为大家提供 100 份 10 元优惠券，也就是 69-10=59 元的加个，具体福利大家可以扫码参考再决定是否加入。
+
+> PS: 后续会在星球开始 V2.0 版本的重构，感兴趣的可以加入星球当面催更（当然代码依然会开源）。
 
 ## 介绍
 
