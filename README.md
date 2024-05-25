@@ -17,6 +17,7 @@
 # V2.0
 - [ ] Upgrade to JDK17 & springboot3.0 
 - [ ] Client use [picocli](https://picocli.info/) instead of springboot.
+- [ ] Supports binary client(build with golang). 
 - [ ] Support integration testing.
 - [ ] Support single node startup(Contains no components).
 - [ ] Third-party components support replacement(Redis/Zookeeper, etc.).
