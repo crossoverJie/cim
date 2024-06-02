@@ -1,6 +1,7 @@
 package com.crossoverjie.cim.route.kit;
 
 import com.alibaba.fastjson.JSON;
+import com.crossoverjie.cim.route.config.AppConfiguration;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.I0Itec.zkclient.IZkChildListener;
@@ -24,6 +25,8 @@ public class ZKit {
     @Autowired
     private ZkClient zkClient;
 
+    @Autowired
+    private AppConfiguration appConfiguration;
 
 
 
@@ -33,7 +36,7 @@ public class ZKit {
      * @return
      */
     public List<String> getAllNode(){
-        List<String> children = zkClient.getChildren("/route");
+        List<String> children = zkClient.getChildren(appConfiguration.getZkRoot());
         log.info("Query all node =[{}] success.", JSON.toJSONString(children));
        return children;
     }
