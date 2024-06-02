@@ -19,6 +19,7 @@
 - [ ] Client use [picocli](https://picocli.info/) instead of springboot.
 - [ ] Supports binary client(build with golang). 
 - [ ] Support integration testing.
+- [ ] Integrate OpenTelemetry .
 - [ ] Support single node startup(Contains no components).
 - [ ] Third-party components support replacement(Redis/Zookeeper, etc.).
 - [ ] Support web client(websocket).

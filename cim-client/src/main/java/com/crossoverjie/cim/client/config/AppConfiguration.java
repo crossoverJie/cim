@@ -22,8 +22,6 @@ public class AppConfiguration {
     @Value("${cim.msg.logger.path}")
     private String msgLoggerPath ;
 
-    @Value("${cim.clear.route.request.url}")
-    private String clearRouteUrl ;
 
     @Value("${cim.heartbeat.time}")
     private long heartBeatTime ;
@@ -65,13 +63,7 @@ public class AppConfiguration {
     }
 
 
-    public String getClearRouteUrl() {
-        return clearRouteUrl;
-    }
 
-    public void setClearRouteUrl(String clearRouteUrl) {
-        this.clearRouteUrl = clearRouteUrl;
-    }
 
     public int getErrorCount() {
         return errorCount;

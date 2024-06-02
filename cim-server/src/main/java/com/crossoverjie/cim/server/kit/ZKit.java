@@ -1,9 +1,8 @@
 package com.crossoverjie.cim.server.kit;
 
 import com.crossoverjie.cim.server.config.AppConfiguration;
+import lombok.extern.slf4j.Slf4j;
 import org.I0Itec.zkclient.ZkClient;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -15,10 +14,8 @@ import org.springframework.stereotype.Component;
  * @since JDK 1.8
  */
 @Component
+@Slf4j
 public class ZKit {
-
-    private static Logger logger = LoggerFactory.getLogger(ZKit.class);
-
 
     @Autowired
     private ZkClient zkClient;

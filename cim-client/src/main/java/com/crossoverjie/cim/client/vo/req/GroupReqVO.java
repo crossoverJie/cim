@@ -1,9 +1,8 @@
 package com.crossoverjie.cim.client.vo.req;
 
 import com.crossoverjie.cim.common.req.BaseRequest;
-import io.swagger.annotations.ApiModelProperty;
 
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotNull;
 
 /**
  * Function: 群发请求
@@ -15,12 +14,12 @@ import javax.validation.constraints.NotNull;
 public class GroupReqVO extends BaseRequest {
 
     @NotNull(message = "userId 不能为空")
-    @ApiModelProperty(required = true, value = "消息发送者的 userId", example = "1545574049323")
+//    @ApiModelProperty(required = true, value = "消息发送者的 userId", example = "1545574049323")
     private Long userId ;
 
 
     @NotNull(message = "msg 不能为空")
-    @ApiModelProperty(required = true, value = "msg", example = "hello")
+//    @ApiModelProperty(required = true, value = "msg", example = "hello")
     private String msg ;
 
     public GroupReqVO(Long userId, String msg) {
