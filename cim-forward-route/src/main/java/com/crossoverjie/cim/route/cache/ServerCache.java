@@ -2,6 +2,7 @@ package com.crossoverjie.cim.route.cache;
 
 import com.crossoverjie.cim.route.kit.ZKit;
 import com.google.common.cache.LoadingCache;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,9 +20,9 @@ import java.util.Map;
  * @since JDK 1.8
  */
 @Component
+@Slf4j
 public class ServerCache {
 
-    private static Logger logger = LoggerFactory.getLogger(ServerCache.class) ;
 
     @Autowired
     private LoadingCache<String, String> cache;

@@ -19,7 +19,6 @@ import com.crossoverjie.cim.route.cache.ServerCache;
 import com.crossoverjie.cim.route.service.AccountService;
 import com.crossoverjie.cim.route.service.CommonBizService;
 import com.crossoverjie.cim.route.service.UserInfoCacheService;
-import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,7 +58,7 @@ public class RouteController implements RouteApi {
     @Autowired
     private RouteHandle routeHandle ;
 
-    @ApiOperation("群聊 API")
+//    @ApiOperation("群聊 API")
     @RequestMapping(value = "groupRoute", method = RequestMethod.POST)
     @ResponseBody()
     @Override
@@ -98,7 +97,7 @@ public class RouteController implements RouteApi {
      * @param p2pRequest
      * @return
      */
-    @ApiOperation("私聊 API")
+//    @ApiOperation("私聊 API")
     @RequestMapping(value = "p2pRoute", method = RequestMethod.POST)
     @ResponseBody()
     @Override
@@ -124,7 +123,7 @@ public class RouteController implements RouteApi {
     }
 
 
-    @ApiOperation("客户端下线")
+//    @ApiOperation("客户端下线")
     @RequestMapping(value = "offLine", method = RequestMethod.POST)
     @ResponseBody()
     @Override
@@ -146,7 +145,7 @@ public class RouteController implements RouteApi {
      *
      * @return
      */
-    @ApiOperation("登录并获取服务器")
+//    @ApiOperation("登录并获取服务器")
     @RequestMapping(value = "login", method = RequestMethod.POST)
     @ResponseBody()
     @Override
@@ -182,7 +181,7 @@ public class RouteController implements RouteApi {
      *
      * @return
      */
-    @ApiOperation("注册账号")
+//    @ApiOperation("注册账号")
     @RequestMapping(value = "registerAccount", method = RequestMethod.POST)
     @ResponseBody()
     @Override
@@ -204,7 +203,7 @@ public class RouteController implements RouteApi {
      *
      * @return
      */
-    @ApiOperation("获取所有在线用户")
+//    @ApiOperation("获取所有在线用户")
     @RequestMapping(value = "onlineUser", method = RequestMethod.POST)
     @ResponseBody()
     @Override

@@ -7,6 +7,7 @@ import com.crossoverjie.cim.route.api.vo.req.ChatReqVO;
 import com.crossoverjie.cim.server.config.AppConfiguration;
 import com.crossoverjie.cim.server.util.SessionSocketHolder;
 import io.netty.channel.socket.nio.NioSocketChannel;
+import lombok.extern.slf4j.Slf4j;
 import okhttp3.OkHttpClient;
 import okhttp3.Response;
 import org.slf4j.Logger;
@@ -24,8 +25,8 @@ import java.io.IOException;
  * @since JDK 1.8
  */
 @Component
+@Slf4j
 public class RouteHandler {
-    private final static Logger LOGGER = LoggerFactory.getLogger(RouteHandler.class);
 
     @Autowired
     private OkHttpClient okHttpClient;
@@ -42,7 +43,7 @@ public class RouteHandler {
      */
     public void userOffLine(CIMUserInfo userInfo, NioSocketChannel channel) throws IOException {
         if (userInfo != null) {
-            LOGGER.info("Account [{}] offline", userInfo.getUserName());
+            log.info("Account [{}] offline", userInfo.getUserName());
             SessionSocketHolder.removeSession(userInfo.getUserId());
             //清除路由关系
             clearRouteInfo(userInfo);
@@ -65,7 +66,7 @@ public class RouteHandler {
         try {
             response = (Response) routeApi.offLine(vo);
         } catch (Exception e){
-            LOGGER.error("Exception",e);
+            log.error("Exception",e);
         }finally {
             response.body().close();
         }

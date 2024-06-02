@@ -7,6 +7,7 @@ import com.crossoverjie.cim.server.config.AppConfiguration;
 import com.crossoverjie.cim.server.util.SessionSocketHolder;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.socket.nio.NioSocketChannel;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,9 +21,9 @@ import org.springframework.stereotype.Service;
  * @since JDK 1.8
  */
 @Service
+@Slf4j
 public class ServerHeartBeatHandlerImpl implements HeartBeatHandler {
 
-    private final static Logger LOGGER = LoggerFactory.getLogger(ServerHeartBeatHandlerImpl.class);
 
     @Autowired
     private RouteHandler routeHandler ;
@@ -40,7 +41,7 @@ public class ServerHeartBeatHandlerImpl implements HeartBeatHandler {
         if (lastReadTime != null && now - lastReadTime > heartBeatTime){
             CIMUserInfo userInfo = SessionSocketHolder.getUserId((NioSocketChannel) ctx.channel());
             if (userInfo != null){
-                LOGGER.warn("客户端[{}]心跳超时[{}]ms，需要关闭连接!",userInfo.getUserName(),now - lastReadTime);
+                log.warn("客户端[{}]心跳超时[{}]ms，需要关闭连接!",userInfo.getUserName(),now - lastReadTime);
             }
             routeHandler.userOffLine(userInfo, (NioSocketChannel) ctx.channel());
             ctx.channel().close();

@@ -119,11 +119,7 @@ public class AccountServiceRedisImpl implements AccountService {
             parseServerInfo(routes, key);
 
         }
-        try {
-            scan.close();
-        } catch (IOException e) {
-            LOGGER.error("IOException", e);
-        }
+        scan.close();
 
         return routes;
     }

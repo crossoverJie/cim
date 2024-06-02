@@ -2,6 +2,7 @@ package com.crossoverjie.cim.server.kit;
 
 import com.crossoverjie.cim.server.config.AppConfiguration;
 import com.crossoverjie.cim.server.util.SpringBeanFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -12,9 +13,9 @@ import org.slf4j.LoggerFactory;
  *         Date: 2018/8/24 01:37
  * @since JDK 1.8
  */
+@Slf4j
 public class RegistryZK implements Runnable {
 
-    private static Logger logger = LoggerFactory.getLogger(RegistryZK.class);
 
     private ZKit zKit;
 
@@ -42,7 +43,7 @@ public class RegistryZK implements Runnable {
         if (appConfiguration.isZkSwitch()){
             String path = appConfiguration.getZkRoot() + "/ip-" + ip + ":" + cimServerPort + ":" + httpPort;
             zKit.createNode(path);
-            logger.info("Registry zookeeper success, msg=[{}]", path);
+            log.info("Registry zookeeper success, msg=[{}]", path);
         }
 
 

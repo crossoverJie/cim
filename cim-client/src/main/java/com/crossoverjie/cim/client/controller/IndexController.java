@@ -7,13 +7,10 @@ import com.crossoverjie.cim.client.vo.req.GroupReqVO;
 import com.crossoverjie.cim.client.vo.req.SendMsgReqVO;
 import com.crossoverjie.cim.client.vo.req.StringReqVO;
 import com.crossoverjie.cim.client.vo.res.SendMsgResVO;
-import com.crossoverjie.cim.common.constant.Constants;
 import com.crossoverjie.cim.common.enums.StatusEnum;
 import com.crossoverjie.cim.common.res.BaseResponse;
 import com.crossoverjie.cim.common.res.NULLBody;
-import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.actuate.metrics.CounterService;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -31,11 +28,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @RequestMapping("/")
 public class IndexController {
 
-    /**
-     * 统计 service
-     */
-    @Autowired
-    private CounterService counterService;
 
     @Autowired
     private CIMClient heartbeatClient ;
@@ -51,7 +43,7 @@ public class IndexController {
      * @param stringReqVO
      * @return
      */
-    @ApiOperation("客户端发送消息，字符串")
+//    @ApiOperation("客户端发送消息，字符串")
     @RequestMapping(value = "sendStringMsg", method = RequestMethod.POST)
     @ResponseBody
     public BaseResponse<NULLBody> sendStringMsg(@RequestBody StringReqVO stringReqVO){
@@ -61,8 +53,7 @@ public class IndexController {
             heartbeatClient.sendStringMsg(stringReqVO.getMsg()) ;
         }
 
-        // 利用 actuator 来自增
-        counterService.increment(Constants.COUNTER_CLIENT_PUSH_COUNT);
+        // TODO: 2024/5/30 metrics
 
         SendMsgResVO sendMsgResVO = new SendMsgResVO() ;
         sendMsgResVO.setMsg("OK") ;
@@ -76,7 +67,7 @@ public class IndexController {
      * @param googleProtocolVO
      * @return
      */
-    @ApiOperation("向服务端发消息 Google ProtoBuf")
+//    @ApiOperation("向服务端发消息 Google ProtoBuf")
     @RequestMapping(value = "sendProtoBufMsg", method = RequestMethod.POST)
     @ResponseBody
     public BaseResponse<NULLBody> sendProtoBufMsg(@RequestBody GoogleProtocolVO googleProtocolVO){
@@ -86,8 +77,7 @@ public class IndexController {
             heartbeatClient.sendGoogleProtocolMsg(googleProtocolVO) ;
         }
 
-        // 利用 actuator 来自增
-        counterService.increment(Constants.COUNTER_CLIENT_PUSH_COUNT);
+        // TODO: 2024/5/30 metrics
 
         SendMsgResVO sendMsgResVO = new SendMsgResVO() ;
         sendMsgResVO.setMsg("OK") ;
@@ -103,7 +93,7 @@ public class IndexController {
      * @param sendMsgReqVO
      * @return
      */
-    @ApiOperation("群发消息")
+//    @ApiOperation("群发消息")
     @RequestMapping(value = "sendGroupMsg",method = RequestMethod.POST)
     @ResponseBody
     public BaseResponse sendGroupMsg(@RequestBody SendMsgReqVO sendMsgReqVO) throws Exception {
@@ -112,7 +102,7 @@ public class IndexController {
         GroupReqVO groupReqVO = new GroupReqVO(sendMsgReqVO.getUserId(),sendMsgReqVO.getMsg()) ;
         routeRequest.sendGroupMsg(groupReqVO) ;
 
-        counterService.increment(Constants.COUNTER_SERVER_PUSH_COUNT);
+        // TODO: 2024/5/30 metrics
 
         res.setCode(StatusEnum.SUCCESS.getCode()) ;
         res.setMessage(StatusEnum.SUCCESS.getMessage()) ;
