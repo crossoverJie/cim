@@ -14,6 +14,17 @@
 </div>
 <br/>
 
+# V2.0
+- [ ] Upgrade to JDK17 & springboot3.0 
+- [ ] Client use [picocli](https://picocli.info/) instead of springboot.
+- [ ] Supports binary client(build with golang). 
+- [ ] Support integration testing.
+- [ ] Integrate OpenTelemetry .
+- [ ] Support single node startup(Contains no components).
+- [ ] Third-party components support replacement(Redis/Zookeeper, etc.).
+- [ ] Support web client(websocket).
+- [ ] Support docker container.
+- [ ] Support kubernetes operation.
 
 ## 介绍
 
@@ -259,10 +270,20 @@ java -jar cim-client-1.0.0-SNAPSHOT.jar --server.port=8084 --cim.user.id=上方�
 ![](https://tva1.sinaimg.cn/large/006y8mN6ly1g7brppmokqg30gn07gafj.gif)
 
 ## 联系作者
+
+<div align="center">  
+
+<a href="https://t.zsxq.com/odQDJ" target="_blank"><img src="https://s2.loli.net/2024/05/17/zRkabDu2SKfChLX.png" alt="202405171520366.png"></a>
+</div>
+
+最近开通了知识星球，感谢大家对 CIM 的支持，为大家提供 100 份 10 元优惠券，也就是 69-10=59 元，具体福利大家可以扫码参考再决定是否加入。
+
+> PS: 后续会在星球开始 V2.0 版本的重构，感兴趣的可以加入星球当面催更（当然代码依然会开源）。
+
 - [crossoverJie@gmail.com](mailto:crossoverJie@gmail.com)
 - 微信公众号
 
-![](https://ws1.sinaimg.cn/large/006tKfTcly1ftmfdo6mhmj30760760t7.jpg)
+![index.jpg](https://i.loli.net/2021/10/12/ckQW9LYXSxFogJZ.jpg)
 
 
 

@@ -1,6 +1,5 @@
 package com.crossoverjie.cim.common.req;
 
-import io.swagger.annotations.ApiModelProperty;
 
 /**
  * Function:
@@ -11,10 +10,10 @@ import io.swagger.annotations.ApiModelProperty;
 public class BaseRequest {
 
 
-    @ApiModelProperty(required=false, value="唯一请求号", example = "1234567890")
+//    @ApiModelProperty(required=false, value="唯一请求号", example = "1234567890")
     private String reqNo;
 
-    @ApiModelProperty(required=false, value="当前请求的时间戳", example = "0")
+//    @ApiModelProperty(required=false, value="当前请求的时间戳", example = "0")
     private int timeStamp;
 
 

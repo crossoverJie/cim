@@ -1,6 +1,5 @@
 package com.crossoverjie.cim.client.service.impl;
 
-import com.crossoverjie.cim.client.client.CIMClient;
 import com.crossoverjie.cim.client.config.AppConfiguration;
 import com.crossoverjie.cim.client.service.InnerCommand;
 import com.crossoverjie.cim.client.service.InnerCommandContext;
@@ -15,7 +14,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.Resource;
+import jakarta.annotation.Resource;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
@@ -38,8 +37,6 @@ public class MsgHandler implements MsgHandle {
     @Resource(name = "callBackThreadPool")
     private ThreadPoolExecutor executor;
 
-    @Autowired
-    private CIMClient cimClient;
 
     @Autowired
     private MsgLogger msgLogger;
@@ -156,7 +153,7 @@ public class MsgHandler implements MsgHandle {
             while (!executor.awaitTermination(1, TimeUnit.SECONDS)) {
                 LOGGER.info("线程池关闭中。。。。");
             }
-            cimClient.close();
+//            shutdownService.closeCIMClient();
         } catch (InterruptedException e) {
             LOGGER.error("InterruptedException", e);
         }

@@ -1,9 +1,8 @@
 package com.crossoverjie.cim.client.vo.req;
 
 import com.crossoverjie.cim.common.req.BaseRequest;
-import io.swagger.annotations.ApiModelProperty;
 
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotNull;
 
 /**
  * Function:
@@ -15,11 +14,11 @@ import javax.validation.constraints.NotNull;
 public class SendMsgReqVO extends BaseRequest {
 
     @NotNull(message = "msg 不能为空")
-    @ApiModelProperty(required = true, value = "msg", example = "hello")
+//    @ApiModelProperty(required = true, value = "msg", example = "hello")
     private String msg ;
 
     @NotNull(message = "userId 不能为空")
-    @ApiModelProperty(required = true, value = "userId", example = "11")
+//    @ApiModelProperty(required = true, value = "userId", example = "11")
     private Long userId ;
 
     public String getMsg() {

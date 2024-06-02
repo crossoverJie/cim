@@ -5,6 +5,7 @@ import com.crossoverjie.cim.common.route.algorithm.consistenthash.AbstractConsis
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
+import lombok.extern.slf4j.Slf4j;
 import okhttp3.OkHttpClient;
 import org.I0Itec.zkclient.ZkClient;
 import org.slf4j.Logger;
@@ -28,9 +29,9 @@ import java.util.concurrent.TimeUnit;
  * @since JDK 1.8
  */
 @Configuration
+@Slf4j
 public class BeanConfig {
 
-    private static Logger logger = LoggerFactory.getLogger(BeanConfig.class);
 
     @Autowired
     private AppConfiguration appConfiguration;
@@ -87,7 +88,7 @@ public class BeanConfig {
     public RouteHandle buildRouteHandle() throws Exception {
         String routeWay = appConfiguration.getRouteWay();
         RouteHandle routeHandle = (RouteHandle) Class.forName(routeWay).newInstance();
-        logger.info("Current route algorithm is [{}]", routeHandle.getClass().getSimpleName());
+        log.info("Current route algorithm is [{}]", routeHandle.getClass().getSimpleName());
         if (routeWay.contains("ConsistentHash")) {
             //一致性 hash 算法
             Method method = Class.forName(routeWay).getMethod("setHash", AbstractConsistentHash.class);

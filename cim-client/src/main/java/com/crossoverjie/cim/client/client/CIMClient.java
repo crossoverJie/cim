@@ -3,7 +3,6 @@ package com.crossoverjie.cim.client.client;
 import com.crossoverjie.cim.client.config.AppConfiguration;
 import com.crossoverjie.cim.client.init.CIMClientHandleInitializer;
 import com.crossoverjie.cim.client.service.EchoService;
-import com.crossoverjie.cim.client.service.MsgHandle;
 import com.crossoverjie.cim.client.service.ReConnectManager;
 import com.crossoverjie.cim.client.service.RouteRequest;
 import com.crossoverjie.cim.client.service.impl.ClientInfo;
@@ -23,13 +22,14 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.util.concurrent.DefaultThreadFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.PostConstruct;
+import jakarta.annotation.PostConstruct;
 
 /**
  * Function:
@@ -39,9 +39,9 @@ import javax.annotation.PostConstruct;
  * @since JDK 1.8
  */
 @Component
+@Slf4j
 public class CIMClient {
 
-    private final static Logger LOGGER = LoggerFactory.getLogger(CIMClient.class);
 
     private EventLoopGroup group = new NioEventLoopGroup(0, new DefaultThreadFactory("cim-work"));
 
@@ -62,8 +62,6 @@ public class CIMClient {
     @Autowired
     private AppConfiguration configuration;
 
-    @Autowired
-    private MsgHandle msgHandle;
 
     @Autowired
     private ClientInfo clientInfo;
@@ -111,14 +109,14 @@ public class CIMClient {
             errorCount++;
 
             if (errorCount >= configuration.getErrorCount()) {
-                LOGGER.error("连接失败次数达到上限[{}]次", errorCount);
-                msgHandle.shutdown();
+                log.error("连接失败次数达到上限[{}]次", errorCount);
+//                shutdownService.closeMsgHandle();
             }
-            LOGGER.error("Connect fail!", e);
+            log.error("Connect fail!", e);
         }
         if (future.isSuccess()) {
             echoService.echo("Start cim client success!");
-            LOGGER.info("启动 cim client 成功");
+            log.info("启动 cim client 成功");
         }
         channel = (SocketChannel) future.channel();
     }
@@ -139,15 +137,15 @@ public class CIMClient {
             clientInfo.saveServiceInfo(cimServer.getIp() + ":" + cimServer.getCimServerPort())
                     .saveUserInfo(userId, userName);
 
-            LOGGER.info("cimServer=[{}]", cimServer.toString());
+            log.info("cimServer=[{}]", cimServer.toString());
         } catch (Exception e) {
             errorCount++;
 
             if (errorCount >= configuration.getErrorCount()) {
                 echoService.echo("The maximum number of reconnections has been reached[{}]times, close cim client!", errorCount);
-                msgHandle.shutdown();
+//                shutdownService.closeMsgHandle();
             }
-            LOGGER.error("login fail", e);
+            log.error("login fail", e);
         }
         return cimServer;
     }
@@ -177,7 +175,7 @@ public class CIMClient {
         message.writeBytes(msg.getBytes());
         ChannelFuture future = channel.writeAndFlush(message);
         future.addListener((ChannelFutureListener) channelFuture ->
-                LOGGER.info("客户端手动发消息成功={}", msg));
+                log.info("客户端手动发消息成功={}", msg));
 
     }
 
@@ -197,7 +195,7 @@ public class CIMClient {
 
         ChannelFuture future = channel.writeAndFlush(protocol);
         future.addListener((ChannelFutureListener) channelFuture ->
-                LOGGER.info("客户端手动发送 Google Protocol 成功={}", googleProtocolVO.toString()));
+                log.info("客户端手动发送 Google Protocol 成功={}", googleProtocolVO.toString()));
 
     }
 
