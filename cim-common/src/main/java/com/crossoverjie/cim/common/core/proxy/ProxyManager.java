@@ -11,6 +11,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
+import java.net.URI;
 
 import static com.crossoverjie.cim.common.enums.StatusEnum.VALIDATION_FAIL;
 
@@ -58,6 +59,9 @@ public final class ProxyManager<T> {
         public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
             JSONObject jsonObject = new JSONObject();
             String serverUrl = url + "/" + method.getName() ;
+
+            URI serverUri = new URI(serverUrl);
+            serverUrl = serverUri.normalize().toString();
 
             if (args != null && args.length > 1) {
                 throw new CIMException(VALIDATION_FAIL);
