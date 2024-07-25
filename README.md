@@ -106,6 +106,11 @@
 首先需要安装 `Zookeeper、Redis` 并保证网络通畅。
 
 ```shell
+docker run --name zookeeper -d -p 2181:2181 zookeeper
+docker run --rm --name redis -d -p 6379:6379 redis
+```
+
+```shell
 git clone https://github.com/crossoverJie/cim.git
 cd cim
 mvn -Dmaven.test.skip=true clean package
