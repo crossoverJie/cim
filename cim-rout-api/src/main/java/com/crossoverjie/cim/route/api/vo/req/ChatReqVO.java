@@ -2,6 +2,7 @@ package com.crossoverjie.cim.route.api.vo.req;
 
 import com.crossoverjie.cim.common.req.BaseRequest;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
 
 /**
@@ -14,12 +15,12 @@ import jakarta.validation.constraints.NotNull;
 public class ChatReqVO extends BaseRequest {
 
     @NotNull(message = "userId 不能为空")
-//    @ApiModelProperty(required = true, value = "userId", example = "1545574049323")
+    @Schema(requiredMode = Schema.RequiredMode.REQUIRED, description = "userId", example = "1545574049323")
     private Long userId ;
 
 
     @NotNull(message = "msg 不能为空")
-//    @ApiModelProperty(required = true, value = "msg", example = "hello")
+    @Schema(requiredMode = Schema.RequiredMode.REQUIRED, description = "msg", example = "hello")
     private String msg ;
 
     public ChatReqVO() {

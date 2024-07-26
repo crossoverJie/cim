@@ -2,6 +2,7 @@ package com.crossoverjie.cim.route.api.vo.req;
 
 import com.crossoverjie.cim.common.req.BaseRequest;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
 
 /**
@@ -14,7 +15,7 @@ import jakarta.validation.constraints.NotNull;
 public class RegisterInfoReqVO extends BaseRequest {
 
     @NotNull(message = "用户名不能为空")
-//    @ApiModelProperty(required = true, value = "userName", example = "zhangsan")
+    @Schema(requiredMode = Schema.RequiredMode.REQUIRED, description = "userName", example = "zhangsan")
     private String userName ;
 
     public String getUserName() {
