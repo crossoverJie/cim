@@ -16,8 +16,8 @@ public class SwaggerConfig {
 
     private Info apiInfo() {
         return new Info()
-                .title("sbc order api")
-                .description("sbc order api")
+                .title("cim server")
+                .description("cim server api")
                 .termsOfService("http://crossoverJie.top")
                 .contact(contact())
                 .version("1.0.0");

@@ -7,10 +7,10 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 
-
 @Configuration
 public class SwaggerConfig {
-	@Bean
+
+    @Bean
     public OpenAPI createRestApi() {
         return new OpenAPI()
                 .info(apiInfo());
@@ -18,8 +18,8 @@ public class SwaggerConfig {
 
     private Info apiInfo() {
         return new Info()
-                .title("sbc order api")
-                .description("sbc order api")
+                .title("cim client")
+                .description("cim client api")
                 .termsOfService("http://crossoverJie.top")
                 .contact(contact())
                 .version("1.0.0");
