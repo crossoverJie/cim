@@ -1,0 +1,34 @@
+spring:
+  application:
+    name:
+      cim-server
+  
+# web port
+server:
+  port: 8081
+  
+# enable swagger
+springdoc:
+  swagger-ui:
+    enabled: true
+
+logging:
+  level:
+    root: info
+  
+# enable zk
+app:
+  zk:
+    switch: true
+    addr: 127.0.0.1:2181
+    connect:
+      timeout: 30000
+    root: /route # zk root path
+# cim ?????
+cim:
+  server:
+    port: 11211
+  route:
+    url: http://localhost:8083/ # route url suggested that this is Nginx address
+  heartbeat:
+    time: 30 # cim heartbeat time(seconds)

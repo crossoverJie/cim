@@ -26,7 +26,7 @@ public class AppConfiguration {
     @Value("${app.zk.connect.timeout}")
     private int zkConnectTimeout;
 
-    @Value("${app.route.way}")
+    @Value("${app.route.way.handler}")
     private String routeWay;
 
     @Value("${app.route.way.consitenthash}")
