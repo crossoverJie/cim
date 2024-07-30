@@ -2,8 +2,7 @@ package com.crossoverjie.cim.client.service.impl;
 
 import com.crossoverjie.cim.client.config.AppConfiguration;
 import com.crossoverjie.cim.client.service.MsgLogger;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -25,10 +24,10 @@ import java.util.stream.Stream;
  *         Date: 2019/1/6 15:26
  * @since JDK 1.8
  */
+@Slf4j
 @Service
 public class AsyncMsgLogger implements MsgLogger {
 
-    private final static Logger LOGGER = LoggerFactory.getLogger(AsyncMsgLogger.class);
 
     /**
      * The default buffer size.
@@ -50,7 +49,7 @@ public class AsyncMsgLogger implements MsgLogger {
             // TODO: 2019/1/6 消息堆满是否阻塞线程？
             blockingQueue.put(msg);
         } catch (InterruptedException e) {
-            LOGGER.error("InterruptedException", e);
+            log.error("InterruptedException", e);
         }
     }
 
@@ -93,7 +92,7 @@ public class AsyncMsgLogger implements MsgLogger {
 
             Files.write(file, lines, Charset.forName("UTF-8"), StandardOpenOption.CREATE, StandardOpenOption.APPEND);
         } catch (IOException e) {
-            LOGGER.info("IOException", e);
+            log.info("IOException", e);
         }
 
     }
@@ -138,7 +137,7 @@ public class AsyncMsgLogger implements MsgLogger {
 
             }
         } catch (IOException e) {
-            LOGGER.info("IOException", e);
+            log.info("IOException", e);
         }
 
         return sb.toString().replace(key, "\033[31;4m" + key + "\033[0m");

@@ -5,8 +5,7 @@ import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import io.netty.util.HashedWheelTimer;
 import io.netty.util.Timeout;
 import io.netty.util.TimerTask;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutorService;
@@ -15,10 +14,8 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
-
+@Slf4j
 public class RingBufferWheelTest {
-
-    private static Logger logger = LoggerFactory.getLogger(RingBufferWheelTest.class) ;
 
     public static void main(String[] args) throws Exception {
 
@@ -30,7 +27,7 @@ public class RingBufferWheelTest {
         ExecutorService executorService = Executors.newFixedThreadPool(2);
         RingBufferWheel wheel = new RingBufferWheel(executorService);
         while (true) {
-            logger.info("task size={}, task map size={}", wheel.taskSize(), wheel.taskMapSize());
+            log.info("task size={}, task map size={}", wheel.taskSize(), wheel.taskMapSize());
             TimeUnit.SECONDS.sleep(1);
 
             for (int i = 0; i < 1000; i++) {
@@ -69,7 +66,7 @@ public class RingBufferWheelTest {
         wheel.addTask(task) ;
 
         while (true){
-            logger.info("task size={}" , wheel.taskSize());
+            log.info("task size={}" , wheel.taskSize());
             TimeUnit.SECONDS.sleep(1);
         }
     }
@@ -134,7 +131,7 @@ public class RingBufferWheelTest {
 
         wheel.start();
 
-        logger.info("task size={}",wheel.taskSize());
+        log.info("task size={}",wheel.taskSize());
 
         wheel.stop(false);
 
@@ -151,7 +148,7 @@ public class RingBufferWheelTest {
             wheel.addTask(task);
         }
 
-        logger.info("task size={}",wheel.taskSize());
+        log.info("task size={}",wheel.taskSize());
 
         wheel.stop(false);
 
@@ -173,7 +170,7 @@ public class RingBufferWheelTest {
         task.setKey(15);
         wheel.addTask(task);
 
-        logger.info("task size={}",wheel.taskSize());
+        log.info("task size={}",wheel.taskSize());
 
         wheel.stop(false);
     }
@@ -195,14 +192,14 @@ public class RingBufferWheelTest {
 
         new Thread(() -> {
             boolean flag = wheel.cancel(cancel);
-            logger.info("cancel id={},key={} result={}",cancel, task.getKey(), flag) ;
+            log.info("cancel id={},key={} result={}",cancel, task.getKey(), flag) ;
         }).start();
 
         RingBufferWheel.Task task1 = new Job(20) ;
         task1.setKey(20);
         wheel.addTask(task1) ;
 
-        logger.info("task size={}",wheel.taskSize());
+        log.info("task size={}",wheel.taskSize());
 
         wheel.stop(false);
     }
@@ -232,7 +229,7 @@ public class RingBufferWheelTest {
             });
         }
 
-        logger.info("task size={}",wheel.taskSize());
+        log.info("task size={}",wheel.taskSize());
 
         wheel.stop(false);
 
@@ -249,7 +246,7 @@ public class RingBufferWheelTest {
 
         @Override
         public void run() {
-            logger.info("number={}" , num);
+            log.info("number={}" , num);
         }
     }
 
@@ -257,7 +254,7 @@ public class RingBufferWheelTest {
 
         @Override
         public void run() {
-            logger.info("================");
+            log.info("================");
         }
 
     }
@@ -283,7 +280,7 @@ public class RingBufferWheelTest {
                         hashedWheelTimer.newTimeout(new TimerTask() {
                             @Override
                             public void run(Timeout timeout) throws Exception {
-                                logger.info("====" + finalI);
+                                log.info("====" + finalI);
                             }
                         }, finalI,TimeUnit.SECONDS) ;
                     }

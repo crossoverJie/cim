@@ -9,8 +9,7 @@ import com.crossoverjie.cim.client.service.RouteRequest;
 import com.crossoverjie.cim.client.vo.req.GroupReqVO;
 import com.crossoverjie.cim.client.vo.req.P2PReqVO;
 import com.crossoverjie.cim.common.util.StringUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -25,9 +24,9 @@ import java.util.concurrent.TimeUnit;
  * Date: 2018/12/26 11:15
  * @since JDK 1.8
  */
+@Slf4j
 @Service
 public class MsgHandler implements MsgHandle {
-    private final static Logger LOGGER = LoggerFactory.getLogger(MsgHandler.class);
     @Autowired
     private RouteRequest routeRequest;
 
@@ -74,7 +73,7 @@ public class MsgHandler implements MsgHandle {
             try {
                 p2pChat(p2PReqVO);
             } catch (Exception e) {
-                LOGGER.error("Exception", e);
+                log.error("Exception", e);
             }
 
         } else {
@@ -83,7 +82,7 @@ public class MsgHandler implements MsgHandle {
             try {
                 groupChat(groupReqVO);
             } catch (Exception e) {
-                LOGGER.error("Exception", e);
+                log.error("Exception", e);
             }
         }
     }
@@ -117,7 +116,7 @@ public class MsgHandler implements MsgHandle {
     @Override
     public boolean checkMsg(String msg) {
         if (StringUtil.isEmpty(msg)) {
-            LOGGER.warn("不能发送空消息！");
+            log.warn("不能发送空消息！");
             return true;
         }
         return false;
@@ -145,17 +144,17 @@ public class MsgHandler implements MsgHandle {
      */
     @Override
     public void shutdown() {
-        LOGGER.info("系统关闭中。。。。");
+        log.info("系统关闭中。。。。");
         routeRequest.offLine();
         msgLogger.stop();
         executor.shutdown();
         try {
             while (!executor.awaitTermination(1, TimeUnit.SECONDS)) {
-                LOGGER.info("线程池关闭中。。。。");
+                log.info("线程池关闭中。。。。");
             }
 //            shutdownService.closeCIMClient();
         } catch (InterruptedException e) {
-            LOGGER.error("InterruptedException", e);
+            log.error("InterruptedException", e);
         }
         System.exit(0);
     }

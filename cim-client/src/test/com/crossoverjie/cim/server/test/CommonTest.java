@@ -5,9 +5,9 @@ import com.alibaba.fastjson.JSON;
 import com.crossoverjie.cim.client.vo.res.CIMServerResVO;
 import com.crossoverjie.cim.client.vo.res.OnlineUsersResVO;
 import com.vdurmont.emoji.EmojiParser;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
 
 import java.io.IOException;
 import java.nio.charset.Charset;
@@ -28,9 +28,9 @@ import java.util.List;
  *         Date: 22/05/2018 18:44
  * @since JDK 1.8
  */
+@Slf4j
 public class CommonTest {
 
-    private final static Logger LOGGER = LoggerFactory.getLogger(CommonTest.class);
     @Test
     public void test() {
 
@@ -60,15 +60,15 @@ public class CommonTest {
         bodyBean.setUserName("crossoverJie");
         onlineUsers.add(bodyBean) ;
 
-        LOGGER.info("list={}",JSON.toJSONString(onlineUsers));
+        log.info("list={}",JSON.toJSONString(onlineUsers));
 
-        LOGGER.info("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+        log.info("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
 
         for (OnlineUsersResVO.DataBodyBean onlineUser : onlineUsers) {
 
-            LOGGER.info("userId={}=====userName={}",onlineUser.getUserId(),onlineUser.getUserName());
+            log.info("userId={}=====userName={}",onlineUser.getUserId(),onlineUser.getUserName());
         }
-        LOGGER.info("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+        log.info("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
     }
 
 
@@ -97,7 +97,7 @@ public class CommonTest {
         int multiple = 2 ;
         while((pos = result.indexOf(key, pos)) >= 0) {
 
-            LOGGER.info("{},{}",pos, pos + key.length());
+            log.info("{},{}",pos, pos + key.length());
 
             if (count == 1){
                 sb.insert(pos,"**");
@@ -147,7 +147,7 @@ public class CommonTest {
         int multiple = 2 ;
         while((pos = result.indexOf(key, pos)) >= 0) {
 
-            LOGGER.info("{},{}",pos, pos + key.length());
+            log.info("{},{}",pos, pos + key.length());
 
             pos += key.length();
 
@@ -169,7 +169,7 @@ public class CommonTest {
 
         String dir = "/opt/logs/cim/zhangsan" + "/";
         String fileName = dir + year + month + day + ".log";
-        LOGGER.info("fileName={}", fileName);
+        log.info("fileName={}", fileName);
 
         Path file = Paths.get(fileName);
         boolean exists = Files.exists(Paths.get(dir), LinkOption.NOFOLLOW_LINKS);
@@ -182,7 +182,7 @@ public class CommonTest {
 
             Files.write(file, lines, Charset.forName("UTF-8"), StandardOpenOption.CREATE, StandardOpenOption.APPEND);
         } catch (IOException e) {
-            LOGGER.info("IOException", e);
+            log.info("IOException", e);
         }
 
     }

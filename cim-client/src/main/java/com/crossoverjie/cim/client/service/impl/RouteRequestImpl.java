@@ -16,10 +16,9 @@ import com.crossoverjie.cim.common.exception.CIMException;
 import com.crossoverjie.cim.common.res.BaseResponse;
 import com.crossoverjie.cim.route.api.RouteApi;
 import com.crossoverjie.cim.route.api.vo.req.ChatReqVO;
+import lombok.extern.slf4j.Slf4j;
 import okhttp3.OkHttpClient;
 import okhttp3.Response;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -33,10 +32,9 @@ import java.util.List;
  *         Date: 2018/12/22 22:27
  * @since JDK 1.8
  */
+@Slf4j
 @Service
 public class RouteRequestImpl implements RouteRequest {
-
-    private final static Logger LOGGER = LoggerFactory.getLogger(RouteRequestImpl.class);
 
     @Autowired
     private OkHttpClient okHttpClient ;
@@ -59,7 +57,7 @@ public class RouteRequestImpl implements RouteRequest {
         try {
             response = (Response)routeApi.groupRoute(chatReqVO);
         }catch (Exception e){
-            LOGGER.error("exception",e);
+            log.error("exception",e);
         }finally {
             response.body().close();
         }
@@ -81,11 +79,11 @@ public class RouteRequestImpl implements RouteRequest {
 
             // account offline.
             if (baseResponse.getCode().equals(StatusEnum.OFF_LINE.getCode())){
-                LOGGER.error(p2PReqVO.getReceiveUserId() + ":" + StatusEnum.OFF_LINE.getMessage());
+                log.error(p2PReqVO.getReceiveUserId() + ":" + StatusEnum.OFF_LINE.getMessage());
             }
 
         }catch (Exception e){
-            LOGGER.error("exception",e);
+            log.error("exception",e);
         }finally {
             response.body().close();
         }
@@ -120,7 +118,7 @@ public class RouteRequestImpl implements RouteRequest {
             }
 
         }catch (Exception e){
-            LOGGER.error("exception",e);
+            log.error("exception",e);
         }finally {
             response.body().close();
         }
@@ -140,7 +138,7 @@ public class RouteRequestImpl implements RouteRequest {
             onlineUsersResVO = JSON.parseObject(json, OnlineUsersResVO.class);
 
         }catch (Exception e){
-            LOGGER.error("exception",e);
+            log.error("exception",e);
         }finally {
             response.body().close();
         }
@@ -156,7 +154,7 @@ public class RouteRequestImpl implements RouteRequest {
         try {
             response = (Response) routeApi.offLine(vo);
         } catch (Exception e) {
-            LOGGER.error("exception",e);
+            log.error("exception",e);
         } finally {
             response.body().close();
         }

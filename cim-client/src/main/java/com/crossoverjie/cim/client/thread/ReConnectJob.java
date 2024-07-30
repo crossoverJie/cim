@@ -4,8 +4,7 @@ import com.crossoverjie.cim.client.service.impl.ClientHeartBeatHandlerImpl;
 import com.crossoverjie.cim.client.util.SpringBeanFactory;
 import com.crossoverjie.cim.common.kit.HeartBeatHandler;
 import io.netty.channel.ChannelHandlerContext;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * Function:
@@ -14,9 +13,9 @@ import org.slf4j.LoggerFactory;
  * Date: 2019-01-20 21:35
  * @since JDK 1.8
  */
+@Slf4j
 public class ReConnectJob implements Runnable {
 
-    private final static Logger LOGGER = LoggerFactory.getLogger(ReConnectJob.class);
 
     private ChannelHandlerContext context ;
 
@@ -32,7 +31,7 @@ public class ReConnectJob implements Runnable {
         try {
             heartBeatHandler.process(context);
         } catch (Exception e) {
-            LOGGER.error("Exception",e);
+            log.error("Exception",e);
         }
     }
 }

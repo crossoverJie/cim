@@ -7,8 +7,7 @@ import com.crossoverjie.cim.client.service.MsgLogger;
 import com.crossoverjie.cim.client.service.RouteRequest;
 import com.crossoverjie.cim.client.service.ShutDownMsg;
 import com.crossoverjie.cim.common.data.construct.RingBufferWheel;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -23,9 +22,9 @@ import java.util.concurrent.TimeUnit;
  * Date: 2019-01-27 19:28
  * @since JDK 1.8
  */
+@Slf4j
 @Service
 public class ShutDownCommand implements InnerCommand {
-    private final static Logger LOGGER = LoggerFactory.getLogger(ShutDownCommand.class);
 
     @Autowired
     private RouteRequest routeRequest ;
@@ -63,7 +62,7 @@ public class ShutDownCommand implements InnerCommand {
             }
             cimClient.close();
         } catch (InterruptedException e) {
-            LOGGER.error("InterruptedException", e);
+            log.error("InterruptedException", e);
         }
         echoService.echo("cim close success!");
         System.exit(0);

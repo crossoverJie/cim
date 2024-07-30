@@ -7,8 +7,6 @@ import com.crossoverjie.cim.common.data.construct.RingBufferWheel;
 import com.crossoverjie.cim.common.protocol.CIMRequestProto;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import okhttp3.OkHttpClient;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -24,9 +22,6 @@ import java.util.concurrent.*;
  */
 @Configuration
 public class BeanConfig {
-
-    private final static Logger LOGGER = LoggerFactory.getLogger(BeanConfig.class);
-
 
     @Value("${cim.user.id}")
     private long userId;
