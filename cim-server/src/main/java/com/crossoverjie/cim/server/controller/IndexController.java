@@ -7,6 +7,7 @@ import com.crossoverjie.cim.server.api.ServerApi;
 import com.crossoverjie.cim.server.api.vo.req.SendMsgReqVO;
 import com.crossoverjie.cim.server.api.vo.res.SendMsgResVO;
 import com.crossoverjie.cim.server.server.CIMServer;
+import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -35,7 +36,7 @@ public class IndexController implements ServerApi {
      * @return
      */
     @Override
-//    @ApiOperation("Push msg to client")
+    @Operation(summary = "Push msg to client")
     @RequestMapping(value = "sendMsg",method = RequestMethod.POST)
     @ResponseBody
     public BaseResponse<SendMsgResVO> sendMsg(@RequestBody SendMsgReqVO sendMsgReqVO){

@@ -10,6 +10,7 @@ import com.crossoverjie.cim.client.vo.res.SendMsgResVO;
 import com.crossoverjie.cim.common.enums.StatusEnum;
 import com.crossoverjie.cim.common.res.BaseResponse;
 import com.crossoverjie.cim.common.res.NULLBody;
+import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -43,7 +44,7 @@ public class IndexController {
      * @param stringReqVO
      * @return
      */
-//    @ApiOperation("客户端发送消息，字符串")
+    @Operation(summary = "客户端发送消息，字符串")
     @RequestMapping(value = "sendStringMsg", method = RequestMethod.POST)
     @ResponseBody
     public BaseResponse<NULLBody> sendStringMsg(@RequestBody StringReqVO stringReqVO){
@@ -67,7 +68,7 @@ public class IndexController {
      * @param googleProtocolVO
      * @return
      */
-//    @ApiOperation("向服务端发消息 Google ProtoBuf")
+    @Operation(summary = "向服务端发消息 Google ProtoBuf")
     @RequestMapping(value = "sendProtoBufMsg", method = RequestMethod.POST)
     @ResponseBody
     public BaseResponse<NULLBody> sendProtoBufMsg(@RequestBody GoogleProtocolVO googleProtocolVO){
@@ -93,7 +94,7 @@ public class IndexController {
      * @param sendMsgReqVO
      * @return
      */
-//    @ApiOperation("群发消息")
+    @Operation(summary = "群发消息")
     @RequestMapping(value = "sendGroupMsg",method = RequestMethod.POST)
     @ResponseBody
     public BaseResponse sendGroupMsg(@RequestBody SendMsgReqVO sendMsgReqVO) throws Exception {
