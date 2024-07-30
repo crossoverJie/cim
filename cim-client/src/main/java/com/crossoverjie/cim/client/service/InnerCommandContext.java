@@ -4,8 +4,7 @@ import com.crossoverjie.cim.client.service.impl.command.PrintAllCommand;
 import com.crossoverjie.cim.client.util.SpringBeanFactory;
 import com.crossoverjie.cim.common.enums.SystemCommandEnum;
 import com.crossoverjie.cim.common.util.StringUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import java.util.Map;
@@ -17,9 +16,9 @@ import java.util.Map;
  * Date: 2019-01-27 19:39
  * @since JDK 1.8
  */
+@Slf4j
 @Component
 public class InnerCommandContext {
-    private final static Logger LOGGER = LoggerFactory.getLogger(InnerCommandContext.class);
 
     /**
      * 获取执行器实例
@@ -40,7 +39,7 @@ public class InnerCommandContext {
             }
             innerCommand = (InnerCommand) SpringBeanFactory.getBean(Class.forName(clazz));
         } catch (Exception e) {
-            LOGGER.error("Exception", e);
+            log.error("Exception", e);
         }
 
         return innerCommand;

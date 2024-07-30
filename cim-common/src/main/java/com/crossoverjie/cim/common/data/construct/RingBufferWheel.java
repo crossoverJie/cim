@@ -1,7 +1,6 @@
 package com.crossoverjie.cim.common.data.construct;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.HashSet;
 import java.util.Map;
@@ -14,7 +13,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
-
 /**
  * Function:Ring Queue, it can be used to delay task.
  *
@@ -22,9 +20,8 @@ import java.util.concurrent.locks.ReentrantLock;
  * Date: 2019-09-20 14:46
  * @since JDK 1.8
  */
+@Slf4j
 public final class RingBufferWheel {
-
-    private Logger logger = LoggerFactory.getLogger(RingBufferWheel.class);
 
 
     /**
@@ -193,7 +190,7 @@ public final class RingBufferWheel {
         if (!start.get()) {
 
             if (start.compareAndSet(start.get(), true)) {
-                logger.info("Delay task is starting");
+                log.info("Delay task is starting");
                 Thread job = new Thread(new TriggerJob());
                 job.setName("consumer RingBuffer thread");
                 job.start();
@@ -211,18 +208,18 @@ public final class RingBufferWheel {
      */
     public void stop(boolean force) {
         if (force) {
-            logger.info("Delay task is forced stop");
+            log.info("Delay task is forced stop");
             stop = true;
             executorService.shutdownNow();
         } else {
-            logger.info("Delay task is stopping");
+            log.info("Delay task is stopping");
             if (taskSize() > 0) {
                 try {
                     lock.lock();
                     condition.await();
                     stop = true;
                 } catch (InterruptedException e) {
-                    logger.error("InterruptedException", e);
+                    log.error("InterruptedException", e);
                 } finally {
                     lock.unlock();
                 }
@@ -391,12 +388,12 @@ public final class RingBufferWheel {
                     TimeUnit.SECONDS.sleep(1);
 
                 } catch (Exception e) {
-                    logger.error("Exception", e);
+                    log.error("Exception", e);
                 }
 
             }
 
-            logger.info("Delay task has stopped");
+            log.info("Delay task has stopped");
         }
     }
 }

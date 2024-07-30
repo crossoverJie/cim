@@ -20,8 +20,7 @@ import com.crossoverjie.cim.route.service.AccountService;
 import com.crossoverjie.cim.route.service.CommonBizService;
 import com.crossoverjie.cim.route.service.UserInfoCacheService;
 import io.swagger.v3.oas.annotations.Operation;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -39,10 +38,10 @@ import java.util.Set;
  *         Date: 22/05/2018 14:46
  * @since JDK 1.8
  */
+@Slf4j
 @Controller
 @RequestMapping("/")
 public class RouteController implements RouteApi {
-    private final static Logger LOGGER = LoggerFactory.getLogger(RouteController.class);
 
     @Autowired
     private ServerCache serverCache;
@@ -66,7 +65,7 @@ public class RouteController implements RouteApi {
     public BaseResponse<NULLBody> groupRoute(@RequestBody ChatReqVO groupReqVO) throws Exception {
         BaseResponse<NULLBody> res = new BaseResponse();
 
-        LOGGER.info("msg=[{}]", groupReqVO.toString());
+        log.info("msg=[{}]", groupReqVO.toString());
 
         //获取所有的推送列表
         Map<Long, CIMServerResVO> serverResVOMap = accountService.loadRouteRelated();
@@ -76,7 +75,7 @@ public class RouteController implements RouteApi {
             if (userId.equals(groupReqVO.getUserId())){
                 //过滤掉自己
                 CIMUserInfo cimUserInfo = userInfoCacheService.loadUserInfoByUserId(groupReqVO.getUserId());
-                LOGGER.warn("过滤掉了发送者 userId={}",cimUserInfo.toString());
+                log.warn("过滤掉了发送者 userId={}",cimUserInfo.toString());
                 continue;
             }
 
@@ -133,7 +132,7 @@ public class RouteController implements RouteApi {
 
         CIMUserInfo cimUserInfo = userInfoCacheService.loadUserInfoByUserId(groupReqVO.getUserId());
 
-        LOGGER.info("user [{}] offline!", cimUserInfo.toString());
+        log.info("user [{}] offline!", cimUserInfo.toString());
         accountService.offLine(groupReqVO.getUserId());
 
         res.setCode(StatusEnum.SUCCESS.getCode());
@@ -155,7 +154,7 @@ public class RouteController implements RouteApi {
 
         // check server available
         String server = routeHandle.routeServer(serverCache.getServerList(),String.valueOf(loginReqVO.getUserId()));
-        LOGGER.info("userName=[{}] route server info=[{}]", loginReqVO.getUserName(), server);
+        log.info("userName=[{}] route server info=[{}]", loginReqVO.getUserName(), server);
 
         RouteInfo routeInfo = RouteInfoParseUtil.parse(server);
         commonBizService.checkServerAvailable(routeInfo);
@@ -217,9 +216,4 @@ public class RouteController implements RouteApi {
         res.setMessage(StatusEnum.SUCCESS.getMessage());
         return res;
     }
-
-
-
-
-
 }

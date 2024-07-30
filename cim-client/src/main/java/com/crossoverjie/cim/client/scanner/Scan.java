@@ -6,8 +6,6 @@ import com.crossoverjie.cim.client.service.MsgHandle;
 import com.crossoverjie.cim.client.service.MsgLogger;
 import com.crossoverjie.cim.client.util.SpringBeanFactory;
 import com.vdurmont.emoji.EmojiParser;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.Scanner;
 
@@ -20,7 +18,6 @@ import java.util.Scanner;
  */
 public class Scan implements Runnable {
 
-    private final static Logger LOGGER = LoggerFactory.getLogger(Scan.class);
 
     /**
      * 系统参数

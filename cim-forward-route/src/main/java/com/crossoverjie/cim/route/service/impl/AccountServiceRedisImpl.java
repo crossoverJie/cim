@@ -13,10 +13,9 @@ import com.crossoverjie.cim.route.service.AccountService;
 import com.crossoverjie.cim.route.service.UserInfoCacheService;
 import com.crossoverjie.cim.server.api.ServerApi;
 import com.crossoverjie.cim.server.api.vo.req.SendMsgReqVO;
+import lombok.extern.slf4j.Slf4j;
 import okhttp3.OkHttpClient;
 import okhttp3.Response;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.connection.RedisConnection;
 import org.springframework.data.redis.core.Cursor;
@@ -24,7 +23,6 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ScanOptions;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
@@ -40,9 +38,9 @@ import static com.crossoverjie.cim.route.constant.Constant.ROUTE_PREFIX;
  * Date: 2018/12/23 21:58
  * @since JDK 1.8
  */
+@Slf4j
 @Service
 public class AccountServiceRedisImpl implements AccountService {
-    private final static Logger LOGGER = LoggerFactory.getLogger(AccountServiceRedisImpl.class);
 
     @Autowired
     private RedisTemplate<String, String> redisTemplate;
@@ -115,7 +113,7 @@ public class AccountServiceRedisImpl implements AccountService {
         while (scan.hasNext()) {
             byte[] next = scan.next();
             String key = new String(next, StandardCharsets.UTF_8);
-            LOGGER.info("key={}", key);
+            log.info("key={}", key);
             parseServerInfo(routes, key);
 
         }
@@ -155,7 +153,7 @@ public class AccountServiceRedisImpl implements AccountService {
         try {
             response = (Response) serverApi.sendMsg(vo);
         } catch (Exception e) {
-            LOGGER.error("Exception", e);
+            log.error("Exception", e);
         } finally {
             response.body().close();
         }

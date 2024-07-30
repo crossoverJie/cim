@@ -5,8 +5,7 @@ import com.crossoverjie.cim.client.service.InnerCommand;
 import com.crossoverjie.cim.client.service.RouteRequest;
 import com.crossoverjie.cim.client.vo.res.OnlineUsersResVO;
 import com.crossoverjie.cim.common.data.construct.TrieTree;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,9 +18,9 @@ import java.util.List;
  * Date: 2019-01-27 19:37
  * @since JDK 1.8
  */
+@Slf4j
 @Service
 public class PrefixSearchCommand implements InnerCommand {
-    private final static Logger LOGGER = LoggerFactory.getLogger(PrefixSearchCommand.class);
 
 
     @Autowired
@@ -48,7 +47,7 @@ public class PrefixSearchCommand implements InnerCommand {
             }
 
         } catch (Exception e) {
-            LOGGER.error("Exception", e);
+            log.error("Exception", e);
         }
     }
 }

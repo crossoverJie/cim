@@ -4,9 +4,6 @@ import com.alibaba.fastjson.JSONObject;
 import com.crossoverjie.cim.common.exception.CIMException;
 import com.crossoverjie.cim.common.util.HttpClient;
 import okhttp3.OkHttpClient;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
@@ -24,7 +21,6 @@ import static com.crossoverjie.cim.common.enums.StatusEnum.VALIDATION_FAIL;
  */
 public final class ProxyManager<T> {
 
-    private final static Logger LOGGER = LoggerFactory.getLogger(ProxyManager.class);
 
     private Class<T> clazz;
 
