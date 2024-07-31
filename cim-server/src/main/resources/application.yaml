@@ -24,7 +24,7 @@ app:
     connect:
       timeout: 30000
     root: /route # zk root path
-# cim ?????
+# cim server config
 cim:
   server:
     port: 11211
