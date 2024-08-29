@@ -16,6 +16,8 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<swagger.version>2.5.0</swagger.version>
+		<curator.version>5.1.0</curator.version>
+		<zookeeper.version>3.8.1</zookeeper.version>
 	</properties>
 
 	<parent>
@@ -49,10 +51,65 @@
 				<artifactId>okhttp</artifactId>
 				<version>3.3.1</version>
 			</dependency>
+			<!-- https://mvnrepository.com/artifact/com.101tec/zkclient -->
 			<dependency>
-				<groupId>com.github.sgroschupf</groupId>
+				<groupId>com.101tec</groupId>
 				<artifactId>zkclient</artifactId>
-				<version>0.1</version>
+				<version>0.11</version>
+			</dependency>
+
+
+			<dependency>
+				<groupId>org.apache.curator</groupId>
+				<artifactId>curator-recipes</artifactId>
+				<version>${curator.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.apache.curator</groupId>
+				<artifactId>curator-x-discovery</artifactId>
+				<version>${curator.version}</version>
+			</dependency>
+
+			<!-- zookeeper dependencies -->
+			<dependency>
+				<groupId>org.apache.zookeeper</groupId>
+				<artifactId>zookeeper</artifactId>
+				<version>${zookeeper.version}</version>
+				<exclusions>
+					<exclusion>
+						<groupId>net.java.dev.javacc</groupId>
+						<artifactId>javacc</artifactId>
+					</exclusion>
+					<exclusion>
+						<groupId>ch.qos.logback</groupId>
+						<artifactId>*</artifactId>
+					</exclusion>
+					<exclusion>
+						<groupId>io.netty</groupId>
+						<artifactId>*</artifactId>
+					</exclusion>
+				</exclusions>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.zookeeper</groupId>
+				<artifactId>zookeeper</artifactId>
+				<version>${zookeeper.version}</version>
+				<type>test-jar</type>
+				<exclusions>
+					<exclusion>
+						<groupId>org.slf4j</groupId>
+						<artifactId>slf4j-api</artifactId>
+					</exclusion>
+					<exclusion>
+						<groupId>ch.qos.logback</groupId>
+						<artifactId>*</artifactId>
+					</exclusion>
+					<exclusion>
+						<groupId>io.netty</groupId>
+						<artifactId>*</artifactId>
+					</exclusion>
+				</exclusions>
 			</dependency>
 
 			<dependency>

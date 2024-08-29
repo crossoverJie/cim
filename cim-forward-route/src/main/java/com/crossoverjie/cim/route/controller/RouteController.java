@@ -2,6 +2,7 @@ package com.crossoverjie.cim.route.controller;
 
 import com.crossoverjie.cim.common.enums.StatusEnum;
 import com.crossoverjie.cim.common.exception.CIMException;
+import com.crossoverjie.cim.common.metastore.MetaStore;
 import com.crossoverjie.cim.common.pojo.CIMUserInfo;
 import com.crossoverjie.cim.common.pojo.RouteInfo;
 import com.crossoverjie.cim.common.res.BaseResponse;
@@ -15,11 +16,14 @@ import com.crossoverjie.cim.route.api.vo.req.P2PReqVO;
 import com.crossoverjie.cim.route.api.vo.req.RegisterInfoReqVO;
 import com.crossoverjie.cim.route.api.vo.res.CIMServerResVO;
 import com.crossoverjie.cim.route.api.vo.res.RegisterInfoResVO;
-import com.crossoverjie.cim.route.cache.ServerCache;
 import com.crossoverjie.cim.route.service.AccountService;
 import com.crossoverjie.cim.route.service.CommonBizService;
 import com.crossoverjie.cim.route.service.UserInfoCacheService;
 import io.swagger.v3.oas.annotations.Operation;
+import jakarta.annotation.Resource;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -27,9 +31,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
-
-import java.util.Map;
-import java.util.Set;
 
 /**
  * Function:
@@ -43,8 +44,8 @@ import java.util.Set;
 @RequestMapping("/")
 public class RouteController implements RouteApi {
 
-    @Autowired
-    private ServerCache serverCache;
+    @Resource
+    private MetaStore metaStore;
 
     @Autowired
     private AccountService accountService;
@@ -153,7 +154,8 @@ public class RouteController implements RouteApi {
         BaseResponse<CIMServerResVO> res = new BaseResponse();
 
         // check server available
-        String server = routeHandle.routeServer(serverCache.getServerList(),String.valueOf(loginReqVO.getUserId()));
+        Set<String> availableServerList = metaStore.getAvailableServerList();
+        String server = routeHandle.routeServer(List.copyOf(availableServerList),String.valueOf(loginReqVO.getUserId()));
         log.info("userName=[{}] route server info=[{}]", loginReqVO.getUserName(), server);
 
         RouteInfo routeInfo = RouteInfoParseUtil.parse(server);

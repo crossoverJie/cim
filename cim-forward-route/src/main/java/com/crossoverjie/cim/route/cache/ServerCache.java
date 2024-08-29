@@ -17,7 +17,6 @@ import java.util.Map;
  *         Date: 2018/8/19 01:31
  * @since JDK 1.8
  */
-@Component
 @Slf4j
 public class ServerCache {
 

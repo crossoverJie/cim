@@ -36,4 +36,6 @@ public class NetAddressIsReachable {
             }
         }
     }
+
+    private NetAddressIsReachable(){}
 }

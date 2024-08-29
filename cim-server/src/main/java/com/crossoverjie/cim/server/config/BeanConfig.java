@@ -1,9 +1,13 @@
 package com.crossoverjie.cim.server.config;
 
 import com.crossoverjie.cim.common.constant.Constants;
+import com.crossoverjie.cim.common.metastore.MetaStore;
+import com.crossoverjie.cim.common.metastore.ZkConfiguration;
+import com.crossoverjie.cim.common.metastore.ZkMetaStoreImpl;
 import com.crossoverjie.cim.common.protocol.CIMRequestProto;
 import okhttp3.OkHttpClient;
 import org.I0Itec.zkclient.ZkClient;
+import org.apache.curator.retry.ExponentialBackoffRetry;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -40,6 +44,11 @@ public class BeanConfig {
                 .writeTimeout(10,TimeUnit.SECONDS)
                 .retryOnConnectionFailure(true);
         return builder.build();
+    }
+
+    @Bean
+    public MetaStore metaStore() throws Exception {
+        return new ZkMetaStoreImpl();
     }
 
 
