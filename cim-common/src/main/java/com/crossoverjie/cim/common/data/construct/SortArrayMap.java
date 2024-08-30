@@ -78,14 +78,11 @@ public class SortArrayMap {
      * 排序
      */
     public void sort() {
-        Arrays.sort(buckets, 0, size, new Comparator<Node>() {
-            @Override
-            public int compare(Node o1, Node o2) {
-                if (o1.key > o2.key) {
-                    return 1;
-                } else {
-                    return -1;
-                }
+        Arrays.sort(buckets, 0, size, (o1, o2) -> {
+            if (o1.key > o2.key) {
+                return 1;
+            } else {
+                return -1;
             }
         });
     }
