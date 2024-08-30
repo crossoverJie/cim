@@ -1,6 +1,8 @@
 package com.crossoverjie.cim.client.service;
 
 import com.crossoverjie.cim.client.CIMClientApplication;
+import com.crossoverjie.cim.client.service.InnerCommand;
+import com.crossoverjie.cim.client.service.InnerCommandContext;
 import com.crossoverjie.cim.common.enums.SystemCommandEnum;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -22,8 +24,9 @@ public class InnerCommandContextTest {
         execute.process(msg) ;
     }
 
-    @Test
+//    @Test
     public void execute3() {
+        // TODO: 2024/8/31 Integration test
         String msg = SystemCommandEnum.ONLINE_USER.getCommandType();
         InnerCommand execute = context.getInstance(msg);
         execute.process(msg) ;
@@ -57,8 +60,9 @@ public class InnerCommandContextTest {
         execute.process(msg) ;
     }
 
-    @Test
+//    @Test
     public void execute8() {
+        // TODO: 2024/8/31 Integration test
         String msg = ":pu cross";
         InnerCommand execute = context.getInstance(msg);
         execute.process(msg) ;

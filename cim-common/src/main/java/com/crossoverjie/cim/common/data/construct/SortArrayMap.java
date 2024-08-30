@@ -82,7 +82,7 @@ public class SortArrayMap {
             if (o1.key > o2.key) {
                 return 1;
             } else {
-                return -1;
+                return 0;
             }
         });
     }

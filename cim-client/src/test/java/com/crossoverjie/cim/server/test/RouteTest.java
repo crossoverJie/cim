@@ -19,8 +19,8 @@ import org.springframework.test.context.junit4.SpringRunner;
  *         Date: 2018/12/23 22:39
  * @since JDK 1.8
  */
-@SpringBootTest(classes = CIMClientApplication.class)
-@RunWith(SpringRunner.class)
+//@SpringBootTest(classes = CIMClientApplication.class)
+//@RunWith(SpringRunner.class)
 @Slf4j
 public class RouteTest {
 
@@ -30,10 +30,11 @@ public class RouteTest {
     @Value("${cim.user.userName}")
     private String userName;
 
-    @Autowired
+//    @Autowired
     private RouteRequest routeRequest ;
 
-    @Test
+    // TODO: 2024/8/31 Integration test
+//    @Test
     public void test() throws Exception {
         LoginReqVO vo = new LoginReqVO(userId,userName) ;
         CIMServerResVO.ServerInfo cimServer = routeRequest.getCIMServer(vo);
