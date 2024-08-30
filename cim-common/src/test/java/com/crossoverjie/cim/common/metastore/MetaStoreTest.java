@@ -18,8 +18,9 @@ public class MetaStoreTest {
 
     private static final String connectionString = "127.0.0.1:2181";
 
+    // TODO: 2024/8/30 integration test
     @SneakyThrows
-    @Test
+//    @Test
     public void testZk() {
         ExponentialBackoffRetry retryPolicy = new ExponentialBackoffRetry(1000, 3);
         CuratorFramework client = CuratorFrameworkFactory.builder()
@@ -92,7 +93,7 @@ public class MetaStoreTest {
 
 
     @SneakyThrows
-    @Test
+//    @Test
     public void zkClientTest(){
         ZkClient zkClient = new ZkClient(connectionString, 5000);
         zkClient.subscribeChildChanges("/cim", (parentPath, currentChildren) -> {

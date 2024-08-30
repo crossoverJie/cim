@@ -28,6 +28,7 @@ public class HttpClientTest {
         jsonObject.put("msg", "hello");
         jsonObject.put("userId", 1586617710861L);
 
-        HttpClient.call(okHttpClient,jsonObject.toString(),"http://127.0.0.1:8081/sendMsg") ;
+        // TODO: 2024/8/30 Integration test
+//        HttpClient.call(okHttpClient,jsonObject.toString(),"http://127.0.0.1:8081/sendMsg") ;
     }
 }

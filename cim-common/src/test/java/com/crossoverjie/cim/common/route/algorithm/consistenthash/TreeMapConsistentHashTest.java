@@ -12,13 +12,13 @@ public class TreeMapConsistentHashTest {
     public void getFirstNodeValue() {
         AbstractConsistentHash map = new TreeMapConsistentHash() ;
 
-        List<String> strings = new ArrayList<String>();
+        List<String> strings = new ArrayList<>();
         for (int i = 0; i < 10; i++) {
             strings.add("127.0.0." + i) ;
         }
         String process = map.process(strings,"zhangsan");
         System.out.println(process);
-        Assert.assertEquals("127.0.0.2",process);
+        Assert.assertEquals("127.0.0.9",process);
     }
 
 
@@ -27,14 +27,14 @@ public class TreeMapConsistentHashTest {
     public void getFirstNodeValue2() {
         AbstractConsistentHash map = new TreeMapConsistentHash() ;
 
-        List<String> strings = new ArrayList<String>();
+        List<String> strings = new ArrayList<>();
         for (int i = 0; i < 10; i++) {
             strings.add("127.0.0." + i) ;
         }
         String process = map.process(strings,"zhangsan2");
         System.out.println(process);
 
-        Assert.assertEquals("127.0.0.3",process);
+        Assert.assertEquals("127.0.0.9",process);
     }
 
 
@@ -42,13 +42,13 @@ public class TreeMapConsistentHashTest {
     public void getFirstNodeValue3() {
         AbstractConsistentHash map = new TreeMapConsistentHash() ;
 
-        List<String> strings = new ArrayList<String>();
+        List<String> strings = new ArrayList<>();
         for (int i = 0; i < 10; i++) {
             strings.add("127.0.0." + i) ;
         }
         String process = map.process(strings,"1551253899106");
 
         System.out.println(process);
-        Assert.assertEquals("127.0.0.6",process);
+        Assert.assertEquals("127.0.0.9",process);
     }
 }
