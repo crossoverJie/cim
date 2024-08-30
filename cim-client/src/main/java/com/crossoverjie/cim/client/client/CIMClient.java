@@ -25,6 +25,8 @@ import io.netty.util.concurrent.DefaultThreadFactory;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.stereotype.Component;
 
 import jakarta.annotation.PostConstruct;
@@ -38,6 +40,7 @@ import jakarta.annotation.PostConstruct;
  */
 @Component
 @Slf4j
+@ConditionalOnWebApplication
 public class CIMClient {
 
 

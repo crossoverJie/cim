@@ -5,6 +5,7 @@ import com.crossoverjie.cim.client.thread.ContextHolder;
 import com.crossoverjie.cim.common.kit.HeartBeatHandler;
 import io.netty.channel.ChannelHandlerContext;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.stereotype.Service;
 
 /**
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Service;
  * @since JDK 1.8
  */
 @Service
+@ConditionalOnWebApplication
 public class ClientHeartBeatHandlerImpl implements HeartBeatHandler {
 
     @Autowired

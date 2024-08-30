@@ -9,6 +9,7 @@ import com.crossoverjie.cim.client.service.ShutDownMsg;
 import com.crossoverjie.cim.common.data.construct.RingBufferWheel;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.stereotype.Service;
 
 import jakarta.annotation.Resource;
@@ -24,6 +25,7 @@ import java.util.concurrent.TimeUnit;
  */
 @Slf4j
 @Service
+@ConditionalOnWebApplication
 public class ShutDownCommand implements InnerCommand {
 
     @Autowired
