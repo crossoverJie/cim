@@ -45,7 +45,6 @@ public class CommonTest {
 
         System.out.println(cycleNum(256,64)) ;
 
-        cycle();
     }
 
 
@@ -85,19 +84,6 @@ public class CommonTest {
         }
     }
 
-    @Test
-    public void test3(){
-
-        List<String> coll = List.of("abc","def");
-        Set<String> set = new HashSet<>(coll);
-        System.out.println(set);
-        Map<String, Void> map = set.stream()
-                .collect(Collectors.toMap(
-                        Function.identity(), // 将Set中的元素作为键
-                        v -> null          // 每个键对应的值为null
-                ));
-        System.out.println(map);
-    }
 
 
 }
