@@ -38,10 +38,6 @@ public class BeanConfig {
     @Autowired
     private AppConfiguration appConfiguration;
 
-    @Bean
-    public ZkClient buildZKClient() {
-        return new ZkClient(appConfiguration.getZkAddr(), appConfiguration.getZkConnectTimeout());
-    }
 
     @Bean
     public MetaStore metaStore() throws Exception {

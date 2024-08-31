@@ -4,6 +4,8 @@ import com.crossoverjie.cim.common.req.BaseRequest;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
+import lombok.Builder;
+import lombok.Data;
 
 /**
  * Function:
@@ -12,6 +14,7 @@ import jakarta.validation.constraints.NotNull;
  *         Date: 2018/12/23 22:04
  * @since JDK 1.8
  */
+@Builder
 public class RegisterInfoReqVO extends BaseRequest {
 
     @NotNull(message = "用户名不能为空")

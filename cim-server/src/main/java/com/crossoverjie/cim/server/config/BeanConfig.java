@@ -24,14 +24,6 @@ import java.util.concurrent.TimeUnit;
 @Configuration
 public class BeanConfig {
 
-    @Autowired
-    private AppConfiguration appConfiguration ;
-
-    @Bean
-    public ZkClient buildZKClient(){
-        return new ZkClient(appConfiguration.getZkAddr(), appConfiguration.getZkConnectTimeout());
-    }
-
     /**
      * http client
      * @return okHttp

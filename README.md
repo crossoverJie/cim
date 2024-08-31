@@ -5,6 +5,7 @@
 <img src="https://i.loli.net/2020/02/21/rfOGvKlTcHCmM92.png"  /> 
 <br/>
 
+[![codecov](https://codecov.io/gh/crossoverJie/cim/graph/badge.svg?token=oW5Gd1oKmf)](https://codecov.io/gh/crossoverJie/cim)
 [![Build Status](https://img.shields.io/badge/cim-cross--im-brightgreen.svg)](https://github.com/crossoverJie/cim)
 [![](https://badge.juejin.im/entry/5c2c000e6fb9a049f5713e26/likes.svg?style=flat-square)](https://juejin.im/post/5c2bffdc51882509181395d7)
 
@@ -106,8 +107,8 @@
 首先需要安装 `Zookeeper、Redis` 并保证网络通畅。
 
 ```shell
-docker run --name zookeeper -d -p 2181:2181 zookeeper
-docker run --rm --name redis -d -p 6379:6379 redis
+docker run --name zookeeper -d -p 2181:2181 zookeeper:
+docker run --rm --name redis -d -p 6379:6379 redis:7.4.0
 ```
 
 ```shell
