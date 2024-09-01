@@ -9,22 +9,11 @@ import com.crossoverjie.cim.route.api.RouteApi;
 import com.crossoverjie.cim.route.api.vo.req.RegisterInfoReqVO;
 import com.crossoverjie.cim.route.api.vo.res.RegisterInfoResVO;
 import com.crossoverjie.cim.server.CIMServerApplication;
-import com.crossoverjie.cim.server.config.AppConfiguration;
 import com.redis.testcontainers.RedisContainer;
-import jakarta.annotation.Resource;
-import java.lang.reflect.Field;
 import java.time.Duration;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.CompletableFuture;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.springframework.boot.SpringApplication;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.utility.DockerImageName;
 
@@ -63,10 +52,10 @@ public class ClientTest {
         // register user
         String userName = "crossoverJie";
         RouteApi routeApi = com.crossoverjie.cim.route.util.SpringBeanFactory.getBean(RouteApi.class);
+        RegisterInfoReqVO reqVO = new RegisterInfoReqVO();
+        reqVO.setUserName(userName);
         BaseResponse<RegisterInfoResVO> account =
-                routeApi.registerAccount(RegisterInfoReqVO.builder()
-                        .userName(userName)
-                        .build());
+                routeApi.registerAccount(reqVO);
 
 
         SpringApplication client = new SpringApplication(CIMClientApplication.class);

@@ -14,7 +14,6 @@ import lombok.Data;
  *         Date: 2018/12/23 22:04
  * @since JDK 1.8
  */
-@Builder
 public class RegisterInfoReqVO extends BaseRequest {
 
     @NotNull(message = "用户名不能为空")
