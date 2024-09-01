@@ -20,8 +20,6 @@ import org.apache.curator.retry.ExponentialBackoffRetry;
 public class RegistryZK implements Runnable {
 
 
-    private ZKit zKit;
-
     private MetaStore metaStore;
 
     private AppConfiguration appConfiguration ;
@@ -33,7 +31,6 @@ public class RegistryZK implements Runnable {
         this.ip = ip;
         this.cimServerPort = cimServerPort;
         this.httpPort = httpPort ;
-        zKit = SpringBeanFactory.getBean(ZKit.class) ;
         this.metaStore = metaStore;
         appConfiguration = SpringBeanFactory.getBean(AppConfiguration.class) ;
     }

@@ -1,0 +1,37 @@
+spring:
+  application:
+    name: cim-client
+
+# web port
+server:
+  port: 8082
+
+logging:
+  level:
+    root: error
+
+# enable swagger
+springdoc:
+  swagger-ui:
+    enabled: true
+
+# log path
+cim:
+  msg:
+    logger:
+      path: /opt/logs/cim/
+  route:
+    url: http://localhost:8083 # route url suggested that this is Nginx address
+  user: # cim userId and userName
+    id: 1722343979085
+    userName: zhangsan
+  callback:
+    thread:
+      queue:
+        size: 2
+      pool:
+        size: 2
+  heartbeat:
+    time: 60 # cim heartbeat time (seconds)
+  reconnect:
+    count: 3

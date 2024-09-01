@@ -5,6 +5,7 @@
 <img src="https://i.loli.net/2020/02/21/rfOGvKlTcHCmM92.png"  /> 
 <br/>
 
+[![codecov](https://codecov.io/gh/crossoverJie/cim/graph/badge.svg?token=oW5Gd1oKmf)](https://codecov.io/gh/crossoverJie/cim)
 [![Build Status](https://img.shields.io/badge/cim-cross--im-brightgreen.svg)](https://github.com/crossoverJie/cim)
 [![](https://badge.juejin.im/entry/5c2c000e6fb9a049f5713e26/likes.svg?style=flat-square)](https://juejin.im/post/5c2bffdc51882509181395d7)
 
@@ -16,15 +17,16 @@
 
 # V2.0
 - [x] Upgrade to JDK17 & springboot3.0 
+- [x] Client SDK 
 - [ ] Client use [picocli](https://picocli.info/) instead of springboot.
-- [ ] Supports binary client(build with golang). 
-- [ ] Support integration testing.
+- [x] Support integration testing.
 - [ ] Integrate OpenTelemetry .
 - [ ] Support single node startup(Contains no components).
 - [ ] Third-party components support replacement(Redis/Zookeeper, etc.).
 - [ ] Support web client(websocket).
 - [ ] Support docker container.
 - [ ] Support kubernetes operation.
+- [ ] Supports binary client(build with golang).
 
 ## 介绍
 
@@ -106,14 +108,16 @@
 首先需要安装 `Zookeeper、Redis` 并保证网络通畅。
 
 ```shell
-docker run --name zookeeper -d -p 2181:2181 zookeeper
-docker run --rm --name redis -d -p 6379:6379 redis
+docker run --name zookeeper -d -p 2181:2181 zookeeper:
+docker run --rm --name redis -d -p 6379:6379 redis:7.4.0
 ```
 
 ```shell
 git clone https://github.com/crossoverJie/cim.git
 cd cim
-mvn -Dmaven.test.skip=true clean package
+mvn clean package -DskipTests=true
+cd cim-server && cim-client && cim-forward-route
+mvn clean package spring-boot:repackage -DskipTests=true
 ```
 
 ### 部署 IM-server(cim-server)
