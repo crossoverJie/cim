@@ -31,16 +31,8 @@ public class ClientTest extends AbstractRouteBaseTest {
         this.login("cj", 8182);
         MsgHandle msgHandle = SpringBeanFactory.getBean(MsgHandle.class);
         msgHandle.innerCommand(":olu");
-    }
-
-    @Test
-    public void groupChat() throws Exception {
-        super.startServer();
-        super.startRoute();
-        this.login("crossoverJie", 8082);
-        this.login("cj", 8182);
-        MsgHandle msgHandle = SpringBeanFactory.getBean(MsgHandle.class);
         msgHandle.sendMsg("hello");
     }
+
 
 }
