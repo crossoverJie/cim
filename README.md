@@ -17,15 +17,16 @@
 
 # V2.0
 - [x] Upgrade to JDK17 & springboot3.0 
+- [x] Client SDK 
 - [ ] Client use [picocli](https://picocli.info/) instead of springboot.
-- [ ] Supports binary client(build with golang). 
-- [ ] Support integration testing.
+- [x] Support integration testing.
 - [ ] Integrate OpenTelemetry .
 - [ ] Support single node startup(Contains no components).
 - [ ] Third-party components support replacement(Redis/Zookeeper, etc.).
 - [ ] Support web client(websocket).
 - [ ] Support docker container.
 - [ ] Support kubernetes operation.
+- [ ] Supports binary client(build with golang).
 
 ## 介绍
 
