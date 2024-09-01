@@ -17,7 +17,7 @@
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<swagger.version>2.5.0</swagger.version>
 		<curator.version>5.1.0</curator.version>
-		<zookeeper.version>3.8.1</zookeeper.version>
+		<zookeeper.version>3.8.4</zookeeper.version>
 		<jacoco-maven-plugin.version>0.8.11</jacoco-maven-plugin.version>
 	</properties>
 
