@@ -1,9 +1,9 @@
 package com.crossoverjie.cim.server.util;
 
 
-import org.junit.Test;
 
 import java.util.concurrent.TimeUnit;
+import org.junit.jupiter.api.Test;
 
 public class NettyAttrUtilTest {
 
