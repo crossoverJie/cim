@@ -134,7 +134,7 @@ public class CommonTest {
         System.out.println("======" + face_with_tears_of_joy.replaceAll("face with tears of joy","\uD83D\uDE02"));
     }
 
-    @Test
+//    @Test
     public void deSerialize() throws Exception {
         RouteApi routeApi = RpcProxyManager.create(RouteApi.class, "http://localhost:8083", new OkHttpClient());
 
