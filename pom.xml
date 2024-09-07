@@ -36,6 +36,7 @@
         <module>cim-rout-api</module>
         <module>cim-server-api</module>
     <module>cim-integration-test</module>
+    <module>cim-client-sdk</module>
   </modules>
 
 

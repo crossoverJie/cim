@@ -19,7 +19,7 @@ public final class HttpClient {
 
     private static MediaType mediaType = MediaType.parse("application/json");
 
-    public static Response call(OkHttpClient okHttpClient, String params, String url) throws IOException {
+    public static Response post(OkHttpClient okHttpClient, String params, String url) throws IOException {
         RequestBody requestBody = RequestBody.create(mediaType, params);
 
         Request request = new Request.Builder()

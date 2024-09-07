@@ -40,7 +40,7 @@ public final class ReConnectManager {
 
 
     /***
-     * build an thread executor
+     * build a thread executor
      * @return
      */
     private ScheduledExecutorService buildExecutor() {

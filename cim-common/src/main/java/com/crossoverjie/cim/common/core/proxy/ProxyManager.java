@@ -1,5 +1,6 @@
 package com.crossoverjie.cim.common.core.proxy;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.crossoverjie.cim.common.exception.CIMException;
 import com.crossoverjie.cim.common.util.HttpClient;
@@ -9,6 +10,7 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.net.URI;
+import okhttp3.Response;
 
 import static com.crossoverjie.cim.common.enums.StatusEnum.VALIDATION_FAIL;
 
@@ -19,14 +21,17 @@ import static com.crossoverjie.cim.common.enums.StatusEnum.VALIDATION_FAIL;
  * Date: 2020-04-25 00:18
  * @since JDK 1.8
  */
-public final class ProxyManager<T> {
+public final class ProxyManager<T,R> {
 
 
-    private Class<T> clazz;
+    private final Class<T> clazz;
+    private Class<R> responseClazz;
 
-    private String url;
+    private final String url;
 
-    private OkHttpClient okHttpClient;
+    private final OkHttpClient okHttpClient;
+
+
 
     /**
      *
@@ -38,6 +43,10 @@ public final class ProxyManager<T> {
         this.clazz = clazz;
         this.url = url;
         this.okHttpClient = okHttpClient;
+    }
+    public ProxyManager(Class<T> clazz, Class<R> responseClazz, String url, OkHttpClient okHttpClient) {
+        this(clazz, url, okHttpClient);
+        this.responseClazz = responseClazz;
     }
 
     /**
@@ -52,7 +61,7 @@ public final class ProxyManager<T> {
     private class ProxyInvocation implements InvocationHandler {
 
         @Override
-        public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+        public R invoke(Object proxy, Method method, Object[] args) throws Throwable {
             JSONObject jsonObject = new JSONObject();
             String serverUrl = url + "/" + method.getName() ;
 
@@ -71,7 +80,16 @@ public final class ProxyManager<T> {
                     jsonObject.put(field.getName(), field.get(para));
                 }
             }
-            return HttpClient.call(okHttpClient, jsonObject.toString(), serverUrl);
+            Response result = null;
+            try {
+                result = HttpClient.post(okHttpClient, jsonObject.toString(), serverUrl);
+                String json = result.body().string() ;
+                return JSON.parseObject(json, responseClazz);
+            }finally {
+                if (result != null) {
+                    result.body().close();
+                }
+            }
         }
     }
 }

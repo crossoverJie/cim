@@ -12,10 +12,10 @@ import io.swagger.v3.oas.annotations.media.Schema;
 public class BaseRequest {
 
 
-    @Schema(requiredMode = Schema.RequiredMode.NOT_REQUIRED, description = "唯一请求号", example = "1234567890")
+    @Schema(requiredMode = Schema.RequiredMode.NOT_REQUIRED, description = "reqNo", example = "1234567890")
     private String reqNo;
 
-    @Schema(requiredMode = Schema.RequiredMode.NOT_REQUIRED, description = "当前请求的时间戳", example = "0")
+    @Schema(requiredMode = Schema.RequiredMode.NOT_REQUIRED, description = "timestamp", example = "0")
     private int timeStamp;
 
 

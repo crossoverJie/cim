@@ -3,7 +3,6 @@ package com.crossoverjie.cim.server;
 import com.clevercloud.testcontainers.zookeeper.ZooKeeperContainer;
 import java.time.Duration;
 import lombok.Getter;
-import org.junit.Before;
 import org.springframework.boot.SpringApplication;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.utility.DockerImageName;
