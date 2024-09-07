@@ -1,5 +1,6 @@
 package com.crossoverjie.cim.route.api;
 
+import com.crossoverjie.cim.common.core.proxy.Request;
 import com.crossoverjie.cim.common.res.BaseResponse;
 import com.crossoverjie.cim.route.api.vo.req.ChatReqVO;
 import com.crossoverjie.cim.route.api.vo.req.LoginReqVO;
@@ -66,6 +67,7 @@ public interface RouteApi {
      * @return
      * @throws Exception
      */
+    @Request(method = Request.GET)
     Object onlineUser() throws Exception;
 
     // TODO: 2024/8/19  Get cache server & metastore server
