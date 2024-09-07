@@ -2,7 +2,9 @@ package com.crossoverjie.cim.client;
 
 import com.crossoverjie.cim.client.service.MsgHandle;
 import com.crossoverjie.cim.client.util.SpringBeanFactory;
+import com.crossoverjie.cim.common.pojo.CIMUserInfo;
 import com.crossoverjie.cim.route.AbstractRouteBaseTest;
+import java.util.concurrent.TimeUnit;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 import org.springframework.boot.SpringApplication;
@@ -32,6 +34,7 @@ public class ClientTest extends AbstractRouteBaseTest {
         MsgHandle msgHandle = SpringBeanFactory.getBean(MsgHandle.class);
         msgHandle.innerCommand(":olu");
         msgHandle.sendMsg("hello");
+        TimeUnit.SECONDS.sleep(1);
     }
 
 

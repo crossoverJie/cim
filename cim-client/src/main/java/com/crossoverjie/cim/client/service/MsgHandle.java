@@ -1,7 +1,7 @@
 package com.crossoverjie.cim.client.service;
 
-import com.crossoverjie.cim.client.vo.req.GroupReqVO;
-import com.crossoverjie.cim.client.vo.req.P2PReqVO;
+import com.crossoverjie.cim.route.api.vo.req.ChatReqVO;
+import com.crossoverjie.cim.route.api.vo.req.P2PReqVO;
 
 /**
  * Function:消息处理器
@@ -23,7 +23,7 @@ public interface MsgHandle {
      * @param groupReqVO 群聊消息 其中的 userId 为发送者的 userID
      * @throws Exception
      */
-    void groupChat(GroupReqVO groupReqVO) throws Exception ;
+    void groupChat(ChatReqVO groupReqVO) throws Exception ;
 
     /**
      * 私聊
@@ -47,13 +47,13 @@ public interface MsgHandle {
      * @param msg
      * @return 是否应当跳过当前消息（包含了":" 就需要跳过）
      */
-    boolean innerCommand(String msg) ;
+    boolean innerCommand(String msg) throws Exception;
 
 
     /**
      * 关闭系统
      */
-    void shutdown() ;
+    void shutdown() throws Exception;
 
     /**
      * 开启 AI 模式

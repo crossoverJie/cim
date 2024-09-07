@@ -1,6 +1,6 @@
 package com.crossoverjie.cim.server.kit;
 
-import com.crossoverjie.cim.common.core.proxy.ProxyManager;
+import com.crossoverjie.cim.common.core.proxy.RpcProxyManager;
 import com.crossoverjie.cim.common.pojo.CIMUserInfo;
 import com.crossoverjie.cim.route.api.RouteApi;
 import com.crossoverjie.cim.route.api.vo.req.ChatReqVO;
@@ -58,15 +58,12 @@ public class RouteHandler {
      * @throws IOException
      */
     public void clearRouteInfo(CIMUserInfo userInfo) {
-        RouteApi routeApi = new ProxyManager<>(RouteApi.class, configuration.getRouteUrl(), okHttpClient).getInstance();
-        Response response = null;
+        RouteApi routeApi = RpcProxyManager.create(RouteApi.class, configuration.getRouteUrl(), okHttpClient);
         ChatReqVO vo = new ChatReqVO(userInfo.getUserId(), userInfo.getUserName());
         try {
-            response = (Response) routeApi.offLine(vo);
+            routeApi.offLine(vo);
         } catch (Exception e){
             log.error("Exception",e);
-        }finally {
-            response.body().close();
         }
     }
 

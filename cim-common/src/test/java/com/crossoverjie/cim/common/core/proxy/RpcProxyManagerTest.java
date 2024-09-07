@@ -1,36 +1,35 @@
 package com.crossoverjie.cim.common.core.proxy;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import okhttp3.OkHttpClient;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-class ProxyManagerTest {
+class RpcProxyManagerTest {
 
     @Test
     public void testGet() {
         OkHttpClient client = new OkHttpClient();
-        Github github =
-                new ProxyManager<>(Github.class, "https://api.github.com/users/crossoverjie",
-                        client)
-                        .getInstance();
-        GithubResponse githubResponse = github.userInfo();
+        String url = "https://api.github.com/users";
+        Github github = RpcProxyManager.create(Github.class, url, client);
+        GithubResponse githubResponse = github.crossoverjie();
         Assertions.assertEquals(githubResponse.getName(), "crossoverJie");
 
-        github.userInfo2();
+        github.torvalds();
     }
 
     interface Github {
         @Request(method = Request.GET)
-        GithubResponse userInfo();
+        GithubResponse crossoverjie();
+
         @Request(method = Request.GET)
-        void userInfo2();
+        void torvalds();
     }
 
-    @NoArgsConstructor
     @Data
+    @JsonIgnoreProperties(ignoreUnknown = true)
     public static class GithubResponse {
         @JsonProperty("name")
         private String name;

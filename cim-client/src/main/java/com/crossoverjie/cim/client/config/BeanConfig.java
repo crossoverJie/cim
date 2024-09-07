@@ -55,9 +55,9 @@ public class BeanConfig {
     @Bean
     public OkHttpClient okHttpClient() {
         OkHttpClient.Builder builder = new OkHttpClient.Builder();
-        builder.connectTimeout(30, TimeUnit.SECONDS)
-                .readTimeout(10, TimeUnit.SECONDS)
-                .writeTimeout(10,TimeUnit.SECONDS)
+        builder.connectTimeout(3, TimeUnit.SECONDS)
+                .readTimeout(3, TimeUnit.SECONDS)
+                .writeTimeout(3,TimeUnit.SECONDS)
                 .retryOnConnectionFailure(true);
         return builder.build();
     }

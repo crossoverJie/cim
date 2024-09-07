@@ -1,12 +1,16 @@
 package com.crossoverjie.cim.route.api;
 
 import com.crossoverjie.cim.common.core.proxy.Request;
+import com.crossoverjie.cim.common.pojo.CIMUserInfo;
 import com.crossoverjie.cim.common.res.BaseResponse;
+import com.crossoverjie.cim.common.res.NULLBody;
 import com.crossoverjie.cim.route.api.vo.req.ChatReqVO;
 import com.crossoverjie.cim.route.api.vo.req.LoginReqVO;
 import com.crossoverjie.cim.route.api.vo.req.P2PReqVO;
 import com.crossoverjie.cim.route.api.vo.req.RegisterInfoReqVO;
+import com.crossoverjie.cim.route.api.vo.res.CIMServerResVO;
 import com.crossoverjie.cim.route.api.vo.res.RegisterInfoResVO;
+import java.util.Set;
 
 /**
  * Function: Route Api
@@ -24,7 +28,7 @@ public interface RouteApi {
      * @return
      * @throws Exception
      */
-    Object groupRoute(ChatReqVO groupReqVO) throws Exception;
+    BaseResponse<NULLBody> groupRoute(ChatReqVO groupReqVO) throws Exception;
 
     /**
      * Point to point chat
@@ -32,7 +36,7 @@ public interface RouteApi {
      * @return
      * @throws Exception
      */
-    Object p2pRoute(P2PReqVO p2pRequest) throws Exception;
+    BaseResponse<NULLBody> p2pRoute(P2PReqVO p2pRequest) throws Exception;
 
 
     /**
@@ -42,7 +46,7 @@ public interface RouteApi {
      * @return
      * @throws Exception
      */
-    Object offLine(ChatReqVO groupReqVO) throws Exception;
+    BaseResponse<NULLBody> offLine(ChatReqVO groupReqVO) throws Exception;
 
     /**
      * Login account
@@ -50,7 +54,7 @@ public interface RouteApi {
      * @return
      * @throws Exception
      */
-    Object login(LoginReqVO loginReqVO) throws Exception;
+    BaseResponse<CIMServerResVO> login(LoginReqVO loginReqVO) throws Exception;
 
     /**
      * Register account
@@ -68,7 +72,7 @@ public interface RouteApi {
      * @throws Exception
      */
     @Request(method = Request.GET)
-    Object onlineUser() throws Exception;
+    BaseResponse<Set<CIMUserInfo>> onlineUser() throws Exception;
 
     // TODO: 2024/8/19  Get cache server & metastore server
 }
