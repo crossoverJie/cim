@@ -96,11 +96,11 @@ public final class RpcProxyManager<T> {
             Response result = null;
             String serverUrl = url + "/" + method.getName();
             Request annotation = method.getAnnotation(Request.class);
-            if (StringUtil.isNotEmpty(annotation.url())) {
+            if (annotation != null && StringUtil.isNotEmpty(annotation.url())) {
                 serverUrl = url + "/" + annotation.url();
             }
             try {
-                if (annotation.method().equals(Request.GET)) {
+                if (annotation != null && annotation.method().equals(Request.GET)) {
                     result = HttpClient.get(okHttpClient, serverUrl);
                 } else {
                     JSONObject jsonObject = new JSONObject();
