@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.crossoverjie.cim.common.exception.CIMException;
 import com.crossoverjie.cim.common.res.BaseResponse;
 import com.crossoverjie.cim.common.util.HttpClient;
+import com.crossoverjie.cim.common.util.StringUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationHandler;
@@ -94,9 +95,12 @@ public final class RpcProxyManager<T> {
 
             Response result = null;
             String serverUrl = url + "/" + method.getName();
+            Request annotation = method.getAnnotation(Request.class);
+            if (StringUtil.isNotEmpty(annotation.url())) {
+                serverUrl = url + "/" + annotation.url();
+            }
             try {
-                Request annotation = method.getAnnotation(Request.class);
-                if (annotation != null && annotation.method().equals(Request.GET)) {
+                if (annotation.method().equals(Request.GET)) {
                     result = HttpClient.get(okHttpClient, serverUrl);
                 } else {
                     JSONObject jsonObject = new JSONObject();
