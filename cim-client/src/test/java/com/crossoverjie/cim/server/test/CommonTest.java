@@ -201,7 +201,6 @@ public class CommonTest {
         BaseResponse<Set<CIMUserInfo>> response = objectMapper.readValue(json,
                 objectMapper.getTypeFactory().constructParametricType(BaseResponse.class, objectMapper.getTypeFactory().constructType(setType)));
 
-        // 输出结果
         System.out.println("Response Code: " + response.getCode());
         System.out.println("Online Users: ");
         for (CIMUserInfo user : response.getDataBody()) {

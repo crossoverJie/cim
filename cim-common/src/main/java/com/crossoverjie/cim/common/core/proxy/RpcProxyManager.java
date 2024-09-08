@@ -164,7 +164,6 @@ public final class RpcProxyManager<T> {
      * @param declaredMethod The method whose return type is being checked
      * @return The generic type of the BaseResponse, or null if not found
      * @throws ClassNotFoundException if the class of the generic type is not found
-     */
     private Class<?> getBaseResponseGeneric(Method declaredMethod) throws ClassNotFoundException {
 
         Type returnType = declaredMethod.getGenericReturnType();
@@ -196,6 +195,6 @@ public final class RpcProxyManager<T> {
         } else {
             throw new ClassNotFoundException("无法处理的类型: " + type.toString());
         }
-    }
+    }*/
 
 }
