@@ -108,7 +108,7 @@ public final class RpcProxyManager<T> {
                     serverUrl = serverUri.normalize().toString();
 
                     if (args != null && args.length > 1) {
-                        throw new CIMException(VALIDATION_FAIL);
+                        throw new IllegalArgumentException(VALIDATION_FAIL.message());
                     }
 
                     if (method.getParameterTypes().length > 0) {
@@ -131,7 +131,7 @@ public final class RpcProxyManager<T> {
                     return objectMapper.readValue(json, method.getReturnType());
                 } else {
                     return objectMapper.readValue(json, objectMapper.getTypeFactory()
-                            .constructParametricType(BaseResponse.class, objectMapper.getTypeFactory().constructType(genericTypeOfBaseResponse)));
+                            .constructParametricType(method.getReturnType(), objectMapper.getTypeFactory().constructType(genericTypeOfBaseResponse)));
                 }
             } finally {
                 if (result != null) {

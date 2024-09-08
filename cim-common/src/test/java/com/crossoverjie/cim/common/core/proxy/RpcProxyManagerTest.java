@@ -2,12 +2,17 @@ package com.crossoverjie.cim.common.core.proxy;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import java.io.Serializable;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import okhttp3.OkHttpClient;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
 
+@ExtendWith(MockitoExtension.class)
 class RpcProxyManagerTest {
 
     @Test
@@ -35,9 +40,40 @@ class RpcProxyManagerTest {
         Assertions.assertEquals(response.getParsedBody().getCity(), "shenzhen");
     }
 
+    @Test
+    public void testFail() {
+        OkHttpClient client = new OkHttpClient();
+        String url = "http://echo.free.beeceptor.com";
+        Echo echo = RpcProxyManager.create(Echo.class, url, client);
+        EchoRequest request = new EchoRequest();
+        request.setName("crossoverJie");
+        request.setAge(18);
+        request.setCity("shenzhen");
+        Assertions.assertThrows(IllegalArgumentException.class, () -> echo.fail(request, "test"));
+    }
+
+
+    @Test
+    public void testGeneric() {
+        OkHttpClient client = new OkHttpClient();
+        String url = "http://echo.free.beeceptor.com";
+        Echo echo = RpcProxyManager.create(Echo.class, url, client);
+        EchoRequest request = new EchoRequest();
+        request.setName("crossoverJie");
+        request.setAge(18);
+        request.setCity("shenzhen");
+        EchoGeneric<EchoResponse.HeadersDTO> response = echo.echoGeneric(request);
+        Assertions.assertEquals(response.getHeaders().getHost(), "echo.free.beeceptor.com");
+    }
+
     interface Echo {
         @Request(url = "sample-request?author=beeceptor")
         EchoResponse echo(EchoRequest message);
+        @Request(url = "sample-request?author=beeceptor")
+        EchoResponse fail(EchoRequest message, String s);
+
+        @Request(url = "sample-request?author=beeceptor")
+        EchoGeneric<EchoResponse.HeadersDTO> echoGeneric(EchoRequest message);
     }
 
     @Data
@@ -45,6 +81,29 @@ class RpcProxyManagerTest {
         private String name;
         private int age;
         private String city;
+    }
+
+    @Data
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class CIMServerResVO implements Serializable {
+
+        private String ip ;
+        private Integer cimServerPort;
+        private Integer httpPort;
+
+    }
+
+    @Data
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class EchoGeneric<T> {
+        private String method;
+        private String protocol;
+        private String host;
+
+        private T headers;
     }
 
     @NoArgsConstructor
