@@ -108,7 +108,7 @@
 首先需要安装 `Zookeeper、Redis` 并保证网络通畅。
 
 ```shell
-docker run --name zookeeper -d -p 2181:2181 zookeeper:
+docker run --rm --name zookeeper -d -p 2181:2181 zookeeper:3.9.2
 docker run --rm --name redis -d -p 6379:6379 redis:7.4.0
 ```
 

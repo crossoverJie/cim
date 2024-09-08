@@ -1,16 +1,9 @@
 package com.crossoverjie.cim.server.test;
 
-import com.crossoverjie.cim.client.CIMClientApplication;
 import com.crossoverjie.cim.client.service.RouteRequest;
-import com.crossoverjie.cim.client.vo.req.LoginReqVO;
-import com.crossoverjie.cim.client.vo.res.CIMServerResVO;
+import com.crossoverjie.cim.route.api.vo.req.LoginReqVO;
 import lombok.extern.slf4j.Slf4j;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringRunner;
 
 /**
  * Function:
@@ -37,7 +30,7 @@ public class RouteTest {
 //    @Test
     public void test() throws Exception {
         LoginReqVO vo = new LoginReqVO(userId,userName) ;
-        CIMServerResVO.ServerInfo cimServer = routeRequest.getCIMServer(vo);
+        com.crossoverjie.cim.route.api.vo.res.CIMServerResVO cimServer = routeRequest.getCIMServer(vo);
         log.info("cimServer=[{}]",cimServer.toString());
     }
 }

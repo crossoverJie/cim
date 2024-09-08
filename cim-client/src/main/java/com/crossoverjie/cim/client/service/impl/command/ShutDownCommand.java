@@ -51,7 +51,7 @@ public class ShutDownCommand implements InnerCommand {
     private RingBufferWheel ringBufferWheel ;
 
     @Override
-    public void process(String msg) {
+    public void process(String msg) throws Exception {
         echoService.echo("cim client closing...");
         shutDownMsg.shutdown();
         routeRequest.offLine();
@@ -63,8 +63,8 @@ public class ShutDownCommand implements InnerCommand {
                 echoService.echo("thread pool closing");
             }
             cimClient.close();
-        } catch (InterruptedException e) {
-            log.error("InterruptedException", e);
+        } catch (Exception e) {
+            log.error("exception", e);
         }
         echoService.echo("cim close success!");
         System.exit(0);

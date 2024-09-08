@@ -6,16 +6,15 @@ import com.crossoverjie.cim.client.service.InnerCommandContext;
 import com.crossoverjie.cim.client.service.MsgHandle;
 import com.crossoverjie.cim.client.service.MsgLogger;
 import com.crossoverjie.cim.client.service.RouteRequest;
-import com.crossoverjie.cim.client.vo.req.GroupReqVO;
-import com.crossoverjie.cim.client.vo.req.P2PReqVO;
 import com.crossoverjie.cim.common.util.StringUtil;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
+import com.crossoverjie.cim.route.api.vo.req.ChatReqVO;
+import com.crossoverjie.cim.route.api.vo.req.P2PReqVO;
 import jakarta.annotation.Resource;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 /**
  * Function:
@@ -78,7 +77,7 @@ public class MsgHandler implements MsgHandle {
 
         } else {
             //群聊
-            GroupReqVO groupReqVO = new GroupReqVO(configuration.getUserId(), msg);
+            ChatReqVO groupReqVO = new ChatReqVO(configuration.getUserId(), msg);
             try {
                 groupChat(groupReqVO);
             } catch (Exception e) {
@@ -102,7 +101,7 @@ public class MsgHandler implements MsgHandle {
     }
 
     @Override
-    public void groupChat(GroupReqVO groupReqVO) throws Exception {
+    public void groupChat(ChatReqVO groupReqVO) throws Exception {
         routeRequest.sendGroupMsg(groupReqVO);
     }
 
@@ -123,7 +122,7 @@ public class MsgHandler implements MsgHandle {
     }
 
     @Override
-    public boolean innerCommand(String msg) {
+    public boolean innerCommand(String msg) throws Exception {
 
         if (msg.startsWith(":")) {
 
@@ -143,7 +142,7 @@ public class MsgHandler implements MsgHandle {
      * 关闭系统
      */
     @Override
-    public void shutdown() {
+    public void shutdown() throws Exception {
         log.info("系统关闭中。。。。");
         routeRequest.offLine();
         msgLogger.stop();

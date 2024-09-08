@@ -13,5 +13,5 @@ public interface InnerCommand {
      * 执行
      * @param msg 
      */
-    void process(String msg) ;
+    void process(String msg) throws Exception;
 }

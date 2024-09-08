@@ -1,9 +1,10 @@
 package com.crossoverjie.cim.route.service.impl;
 
-import com.crossoverjie.cim.common.core.proxy.ProxyManager;
+import com.crossoverjie.cim.common.core.proxy.RpcProxyManager;
 import com.crossoverjie.cim.common.enums.StatusEnum;
 import com.crossoverjie.cim.common.exception.CIMException;
 import com.crossoverjie.cim.common.pojo.CIMUserInfo;
+import com.crossoverjie.cim.common.pojo.RouteInfo;
 import com.crossoverjie.cim.common.util.RouteInfoParseUtil;
 import com.crossoverjie.cim.route.api.vo.req.ChatReqVO;
 import com.crossoverjie.cim.route.api.vo.req.LoginReqVO;
@@ -130,14 +131,16 @@ public class AccountServiceRedisImpl implements AccountService {
             throw new CIMException(OFF_LINE);
         }
 
-        CIMServerResVO cimServerResVO = new CIMServerResVO(RouteInfoParseUtil.parse(value));
+        RouteInfo parse = RouteInfoParseUtil.parse(value);
+        CIMServerResVO cimServerResVO = new CIMServerResVO(parse.getIp(), parse.getCimServerPort(), parse.getHttpPort());
         return cimServerResVO;
     }
 
     private void parseServerInfo(Map<Long, CIMServerResVO> routes, String key) {
         long userId = Long.valueOf(key.split(":")[1]);
         String value = redisTemplate.opsForValue().get(key);
-        CIMServerResVO cimServerResVO = new CIMServerResVO(RouteInfoParseUtil.parse(value));
+        RouteInfo parse = RouteInfoParseUtil.parse(value);
+        CIMServerResVO cimServerResVO = new CIMServerResVO(parse.getIp(), parse.getCimServerPort(), parse.getHttpPort());
         routes.put(userId, cimServerResVO);
     }
 
@@ -147,16 +150,9 @@ public class AccountServiceRedisImpl implements AccountService {
         CIMUserInfo cimUserInfo = userInfoCacheService.loadUserInfoByUserId(sendUserId);
 
         String url = "http://" + cimServerResVO.getIp() + ":" + cimServerResVO.getHttpPort();
-        ServerApi serverApi = new ProxyManager<>(ServerApi.class, url, okHttpClient).getInstance();
+        ServerApi serverApi = RpcProxyManager.create(ServerApi.class, url, okHttpClient);
         SendMsgReqVO vo = new SendMsgReqVO(cimUserInfo.getUserName() + ":" + groupReqVO.getMsg(), groupReqVO.getUserId());
-        Response response = null;
-        try {
-            response = (Response) serverApi.sendMsg(vo);
-        } catch (Exception e) {
-            log.error("Exception", e);
-        } finally {
-            response.body().close();
-        }
+        serverApi.sendMsg(vo);
     }
 
     @Override
