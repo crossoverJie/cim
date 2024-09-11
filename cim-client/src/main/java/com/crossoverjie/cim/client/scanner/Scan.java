@@ -8,6 +8,7 @@ import com.crossoverjie.cim.client.util.SpringBeanFactory;
 import com.vdurmont.emoji.EmojiParser;
 
 import java.util.Scanner;
+import lombok.SneakyThrows;
 
 /**
  * Function:
@@ -37,6 +38,7 @@ public class Scan implements Runnable {
         this.echoService = SpringBeanFactory.getBean(EchoService.class) ;
     }
 
+    @SneakyThrows
     @Override
     public void run() {
         Scanner sc = new Scanner(System.in);

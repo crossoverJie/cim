@@ -1,15 +1,20 @@
 package com.crossoverjie.cim.server.test;
 
 
-import com.alibaba.fastjson.JSON;
-import com.crossoverjie.cim.client.vo.res.CIMServerResVO;
-import com.crossoverjie.cim.client.vo.res.OnlineUsersResVO;
+import com.crossoverjie.cim.common.core.proxy.RpcProxyManager;
+import com.crossoverjie.cim.common.pojo.CIMUserInfo;
+import com.crossoverjie.cim.common.res.BaseResponse;
+import com.crossoverjie.cim.route.api.RouteApi;
+import com.crossoverjie.cim.route.api.vo.req.LoginReqVO;
+import com.crossoverjie.cim.route.api.vo.req.P2PReqVO;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.vdurmont.emoji.EmojiParser;
-import lombok.extern.slf4j.Slf4j;
-import org.junit.Test;
-
-
 import java.io.IOException;
+import java.lang.reflect.Method;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.LinkOption;
@@ -17,9 +22,12 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
+import lombok.extern.slf4j.Slf4j;
+import okhttp3.OkHttpClient;
+import org.junit.Test;
 
 /**
  * Function:
@@ -31,45 +39,7 @@ import java.util.List;
 @Slf4j
 public class CommonTest {
 
-    @Test
-    public void test() {
 
-        String json = "{\"code\":\"9000\",\"message\":\"成功\",\"reqNo\":null,\"dataBody\":{\"ip\":\"127.0.0.1\",\"port\":8081}}" ;
-
-        CIMServerResVO cimServerResVO = JSON.parseObject(json, CIMServerResVO.class);
-
-        System.out.println(cimServerResVO.toString());
-
-        String text = "nihaoaaa" ;
-        String[] split = text.split(" ");
-        System.out.println(split.length);
-    }
-
-    @Test
-    public void onlineUser(){
-        List<OnlineUsersResVO.DataBodyBean> onlineUsers = new ArrayList<>(64) ;
-
-        OnlineUsersResVO.DataBodyBean bodyBean = new OnlineUsersResVO.DataBodyBean() ;
-
-        bodyBean.setUserId(100L);
-        bodyBean.setUserName("zhangsan");
-        onlineUsers.add(bodyBean) ;
-
-        bodyBean = new OnlineUsersResVO.DataBodyBean();
-        bodyBean.setUserId(200L);
-        bodyBean.setUserName("crossoverJie");
-        onlineUsers.add(bodyBean) ;
-
-        log.info("list={}",JSON.toJSONString(onlineUsers));
-
-        log.info("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
-
-        for (OnlineUsersResVO.DataBodyBean onlineUser : onlineUsers) {
-
-            log.info("userId={}=====userName={}",onlineUser.getUserId(),onlineUser.getUserName());
-        }
-        log.info("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
-    }
 
 
     @Test
@@ -164,4 +134,89 @@ public class CommonTest {
         System.out.println("======" + face_with_tears_of_joy.replaceAll("face with tears of joy","\uD83D\uDE02"));
     }
 
+//    @Test
+    public void deSerialize() throws Exception {
+        RouteApi routeApi = RpcProxyManager.create(RouteApi.class, "http://localhost:8083", new OkHttpClient());
+
+        BaseResponse<com.crossoverjie.cim.route.api.vo.res.CIMServerResVO> login =
+                routeApi.login(new LoginReqVO(1725722966520L, "cj"));
+        System.out.println(login.getDataBody());
+
+        BaseResponse<Set<CIMUserInfo>> setBaseResponse = routeApi.onlineUser();
+        log.info("setBaseResponse={}",setBaseResponse.getDataBody());
+    }
+
+    @Test
+    public void json() throws JsonProcessingException, ClassNotFoundException {
+        String json = "{\"code\":\"9000\",\"message\":\"成功\",\"reqNo\":null,\"dataBody\":{\"ip\":\"127.0.0.1\",\"cimServerPort\":11211,\"httpPort\":8081}}";
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        Class<?> generic = null;
+        for (Method declaredMethod : RouteApi.class.getDeclaredMethods()) {
+            if (declaredMethod.getName().equals("login")){
+                Type returnType = declaredMethod.getGenericReturnType();
+
+                // check if the return type is a parameterized type
+                if (returnType instanceof ParameterizedType) {
+                    ParameterizedType parameterizedType = (ParameterizedType) returnType;
+
+                    Type[] actualTypeArguments = parameterizedType.getActualTypeArguments();
+
+                    for (Type typeArgument : actualTypeArguments) {
+                        System.out.println("generic: " + typeArgument.getTypeName());
+                        generic = Class.forName(typeArgument.getTypeName());
+                        break;
+                    }
+                } else {
+                    System.out.println("not a generic type");
+                }
+            }
+        }
+        BaseResponse<com.crossoverjie.cim.route.api.vo.res.CIMServerResVO> response = objectMapper.readValue(json,
+                objectMapper.getTypeFactory().constructParametricType(BaseResponse.class, generic));
+        System.out.println(response.getDataBody().getIp());
+    }
+
+
+    private static class Gen<T,R>{
+        private T t;
+        private R r;
+    }
+
+    interface TestInterface{
+        Gen<String, P2PReqVO> login();
+    }
+
+
+    @Test
+    public void test1() throws JsonProcessingException {
+        String json = "{\"code\":\"200\",\"message\":\"Success\",\"reqNo\":null,\"dataBody\":[{\"userId\":\"123\",\"userName\":\"Alice\"}, {\"userId\":\"456\",\"userName\":\"Bob\"}]}";
+
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        // 获取 BaseResponse<Set<CIMUserInfo>> 的泛型参数
+        Type setType = getGenericTypeOfBaseResponse();
+
+        // 将泛型类型传递给 ObjectMapper 进行反序列化
+        BaseResponse<Set<CIMUserInfo>> response = objectMapper.readValue(json,
+                objectMapper.getTypeFactory().constructParametricType(BaseResponse.class, objectMapper.getTypeFactory().constructType(setType)));
+
+        System.out.println("Response Code: " + response.getCode());
+        System.out.println("Online Users: ");
+        for (CIMUserInfo user : response.getDataBody()) {
+            System.out.println("User ID: " + user.getUserId() + ", User Name: " + user.getUserName());
+        }
+    }
+
+    // 通过反射获取 BaseResponse<Set<CIMUserInfo>> 中的泛型类型
+    public static Type getGenericTypeOfBaseResponse() {
+        // 这里模拟你需要处理的 BaseResponse<Set<CIMUserInfo>>
+        ParameterizedType baseResponseType = (ParameterizedType) new TypeReference<BaseResponse<Set<CIMUserInfo>>>() {}.getType();
+
+        // 获取 BaseResponse 的泛型参数，即 Set<CIMUserInfo>
+        Type[] actualTypeArguments = baseResponseType.getActualTypeArguments();
+
+        // 返回第一个泛型参数 (Set<CIMUserInfo>)
+        return actualTypeArguments[0];
+    }
 }

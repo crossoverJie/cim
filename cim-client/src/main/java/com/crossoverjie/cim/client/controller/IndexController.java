@@ -3,13 +3,12 @@ package com.crossoverjie.cim.client.controller;
 import com.crossoverjie.cim.client.client.CIMClient;
 import com.crossoverjie.cim.client.service.RouteRequest;
 import com.crossoverjie.cim.client.vo.req.GoogleProtocolVO;
-import com.crossoverjie.cim.client.vo.req.GroupReqVO;
-import com.crossoverjie.cim.client.vo.req.SendMsgReqVO;
 import com.crossoverjie.cim.client.vo.req.StringReqVO;
 import com.crossoverjie.cim.client.vo.res.SendMsgResVO;
 import com.crossoverjie.cim.common.enums.StatusEnum;
 import com.crossoverjie.cim.common.res.BaseResponse;
 import com.crossoverjie.cim.common.res.NULLBody;
+import com.crossoverjie.cim.route.api.vo.req.ChatReqVO;
 import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
@@ -93,17 +92,15 @@ public class IndexController {
 
     /**
      * 群发消息
-     * @param sendMsgReqVO
+     * @param chatReqVO
      * @return
      */
     @Operation(summary = "群发消息")
     @RequestMapping(value = "sendGroupMsg",method = RequestMethod.POST)
     @ResponseBody
-    public BaseResponse sendGroupMsg(@RequestBody SendMsgReqVO sendMsgReqVO) throws Exception {
+    public BaseResponse sendGroupMsg(@RequestBody ChatReqVO chatReqVO) throws Exception {
         BaseResponse<NULLBody> res = new BaseResponse();
-
-        GroupReqVO groupReqVO = new GroupReqVO(sendMsgReqVO.getUserId(),sendMsgReqVO.getMsg()) ;
-        routeRequest.sendGroupMsg(groupReqVO) ;
+        routeRequest.sendGroupMsg(chatReqVO) ;
 
         // TODO: 2024/5/30 metrics
 

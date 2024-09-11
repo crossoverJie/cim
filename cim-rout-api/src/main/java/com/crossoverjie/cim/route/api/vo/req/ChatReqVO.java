@@ -4,6 +4,10 @@ import com.crossoverjie.cim.common.req.BaseRequest;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
 /**
  * Function: Google Protocol 编解码发送
@@ -12,6 +16,10 @@ import jakarta.validation.constraints.NotNull;
  *         Date: 2018/05/21 15:56
  * @since JDK 1.8
  */
+@EqualsAndHashCode(callSuper = true)
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class ChatReqVO extends BaseRequest {
 
     @NotNull(message = "userId 不能为空")
@@ -23,29 +31,6 @@ public class ChatReqVO extends BaseRequest {
     @Schema(requiredMode = Schema.RequiredMode.REQUIRED, description = "msg", example = "hello")
     private String msg ;
 
-    public ChatReqVO() {
-    }
-
-    public ChatReqVO(Long userId, String msg) {
-        this.userId = userId;
-        this.msg = msg;
-    }
-
-    public String getMsg() {
-        return msg;
-    }
-
-    public void setMsg(String msg) {
-        this.msg = msg;
-    }
-
-    public Long getUserId() {
-        return userId;
-    }
-
-    public void setUserId(Long userId) {
-        this.userId = userId;
-    }
 
     @Override
     public String toString() {

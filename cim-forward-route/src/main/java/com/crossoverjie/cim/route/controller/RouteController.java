@@ -168,7 +168,7 @@ public class RouteController implements RouteApi {
             //保存路由信息
             accountService.saveRouteInfo(loginReqVO,server);
 
-            CIMServerResVO vo = new CIMServerResVO(routeInfo);
+            CIMServerResVO vo = new CIMServerResVO(routeInfo.getIp(), routeInfo.getCimServerPort(), routeInfo.getHttpPort());
             res.setDataBody(vo);
 
         }
@@ -206,7 +206,7 @@ public class RouteController implements RouteApi {
      * @return
      */
     @Operation(summary = "获取所有在线用户")
-    @RequestMapping(value = "onlineUser", method = RequestMethod.POST)
+    @RequestMapping(value = "onlineUser", method = RequestMethod.GET)
     @ResponseBody()
     @Override
     public BaseResponse<Set<CIMUserInfo>> onlineUser() throws Exception {

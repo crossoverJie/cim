@@ -8,8 +8,8 @@ import com.crossoverjie.cim.client.service.RouteRequest;
 import com.crossoverjie.cim.client.service.impl.ClientInfo;
 import com.crossoverjie.cim.client.thread.ContextHolder;
 import com.crossoverjie.cim.client.vo.req.GoogleProtocolVO;
-import com.crossoverjie.cim.client.vo.req.LoginReqVO;
-import com.crossoverjie.cim.client.vo.res.CIMServerResVO;
+import com.crossoverjie.cim.route.api.vo.req.LoginReqVO;
+import com.crossoverjie.cim.route.api.vo.res.CIMServerResVO;
 import com.crossoverjie.cim.common.constant.Constants;
 import com.crossoverjie.cim.common.protocol.CIMRequestProto;
 import io.netty.bootstrap.Bootstrap;
@@ -22,14 +22,12 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.util.concurrent.DefaultThreadFactory;
+import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.stereotype.Component;
-
-import jakarta.annotation.PostConstruct;
 
 /**
  * Function:
@@ -79,7 +77,7 @@ public class CIMClient {
     public void start() throws Exception {
 
         //登录 + 获取可以使用的服务器 ip+port
-        CIMServerResVO.ServerInfo cimServer = userLogin();
+        CIMServerResVO cimServer = userLogin();
 
         //启动客户端
         startClient(cimServer);
@@ -96,7 +94,7 @@ public class CIMClient {
      * @param cimServer
      * @throws Exception
      */
-    private void startClient(CIMServerResVO.ServerInfo cimServer) {
+    private void startClient(CIMServerResVO cimServer) {
         Bootstrap bootstrap = new Bootstrap();
         bootstrap.group(group)
                 .channel(NioSocketChannel.class)
@@ -128,9 +126,9 @@ public class CIMClient {
      * @return 路由服务器信息
      * @throws Exception
      */
-    private CIMServerResVO.ServerInfo userLogin() {
+    private CIMServerResVO userLogin() {
         LoginReqVO loginReqVO = new LoginReqVO(userId, userName);
-        CIMServerResVO.ServerInfo cimServer = null;
+        CIMServerResVO cimServer = null;
         try {
             cimServer = routeRequest.getCIMServer(loginReqVO);
 
@@ -138,7 +136,7 @@ public class CIMClient {
             clientInfo.saveServiceInfo(cimServer.getIp() + ":" + cimServer.getCimServerPort())
                     .saveUserInfo(userId, userName);
 
-            log.info("cimServer=[{}]", cimServer.toString());
+            log.info("cimServer=[{}]", cimServer);
         } catch (Exception e) {
             errorCount++;
 
