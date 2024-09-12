@@ -1,14 +1,12 @@
-package com.crossoverjie.cim.route;
+package com.crossoverjie.cim.client.sdk.route;
 
-import com.clevercloud.testcontainers.zookeeper.ZooKeeperContainer;
 import com.crossoverjie.cim.common.res.BaseResponse;
+import com.crossoverjie.cim.client.sdk.server.AbstractServerBaseTest;
+import com.crossoverjie.cim.route.RouteApplication;
 import com.crossoverjie.cim.route.api.RouteApi;
 import com.crossoverjie.cim.route.api.vo.req.RegisterInfoReqVO;
 import com.crossoverjie.cim.route.api.vo.res.RegisterInfoResVO;
-import com.crossoverjie.cim.server.AbstractServerBaseTest;
-import com.crossoverjie.cim.server.CIMServerApplication;
 import com.redis.testcontainers.RedisContainer;
-import org.junit.Before;
 import org.springframework.boot.SpringApplication;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.utility.DockerImageName;
@@ -28,6 +26,11 @@ public abstract class AbstractRouteBaseTest extends AbstractServerBaseTest {
         };
         route.setAdditionalProfiles("route");
         route.run(args);
+    }
+
+    public void close(){
+        super.close();
+        redis.close();
     }
 
     public Long registerAccount(String userName) throws Exception {

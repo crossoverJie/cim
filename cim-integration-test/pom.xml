@@ -55,6 +55,7 @@
     <dependency>
       <groupId>org.testcontainers</groupId>
       <artifactId>testcontainers</artifactId>
+			<scope>compile</scope>
     </dependency>
     <dependency>
       <groupId>org.testcontainers</groupId>
@@ -64,29 +65,21 @@
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-test</artifactId>
-      <scope>test</scope>
+      <scope>compile</scope>
     </dependency>
 
     <dependency>
       <groupId>com.clever-cloud</groupId>
       <artifactId>testcontainers-zookeeper</artifactId>
+      <scope>compile</scope>
     </dependency>
 
     <dependency>
       <groupId>com.redis</groupId>
       <artifactId>testcontainers-redis</artifactId>
-      <scope>test</scope>
+      <scope>compile</scope>
     </dependency>
 
 
   </dependencies>
-
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-surefire-plugin</artifactId>
-      </plugin>
-    </plugins>
-  </build>
 </project>

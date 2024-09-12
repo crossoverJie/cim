@@ -1,6 +1,7 @@
-package com.crossoverjie.cim.server;
+package com.crossoverjie.cim.client.sdk.server;
 
 import com.clevercloud.testcontainers.zookeeper.ZooKeeperContainer;
+import com.crossoverjie.cim.server.CIMServerApplication;
 import java.time.Duration;
 import lombok.Getter;
 import org.springframework.boot.SpringApplication;
@@ -8,7 +9,6 @@ import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.utility.DockerImageName;
 
 public abstract class AbstractServerBaseTest {
-
     private static final DockerImageName DEFAULT_IMAGE_NAME = DockerImageName
             .parse("zookeeper")
             .withTag("3.9.2");
@@ -29,4 +29,7 @@ public abstract class AbstractServerBaseTest {
         server.run("--app.zk.addr=" + zookeeperAddr);
     }
 
+    public void close(){
+        zooKeeperContainer.close();
+    }
 }

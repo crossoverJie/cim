@@ -3,6 +3,7 @@ package com.crossoverjie.cim.route.kit;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.Socket;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * Function:
@@ -11,6 +12,7 @@ import java.net.Socket;
  * Date: 2020-04-12 20:32
  * @since JDK 1.8
  */
+@Slf4j
 public class NetAddressIsReachable {
 
     /**
@@ -32,7 +34,7 @@ public class NetAddressIsReachable {
             try {
                 socket.close();
             } catch (IOException e) {
-                return false ;
+                log.warn("close socket error", e);
             }
         }
     }
