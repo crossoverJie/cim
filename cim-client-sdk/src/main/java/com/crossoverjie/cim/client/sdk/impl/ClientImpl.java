@@ -3,13 +3,13 @@ package com.crossoverjie.cim.client.sdk.impl;
 import static com.crossoverjie.cim.common.enums.StatusEnum.RECONNECT_FAIL;
 import com.crossoverjie.cim.client.sdk.Client;
 import com.crossoverjie.cim.client.sdk.ClientState;
-import com.crossoverjie.cim.client.sdk.Event;
-import com.crossoverjie.cim.client.sdk.RouteLookup;
+import com.crossoverjie.cim.client.sdk.RouteManager;
 import com.crossoverjie.cim.client.sdk.io.CIMClientHandleInitializer;
 import com.crossoverjie.cim.common.constant.Constants;
 import com.crossoverjie.cim.common.exception.CIMException;
 import com.crossoverjie.cim.common.protocol.CIMRequestProto;
 import com.crossoverjie.cim.common.util.StringUtil;
+import com.crossoverjie.cim.route.api.vo.req.ChatReqVO;
 import com.crossoverjie.cim.route.api.vo.req.LoginReqVO;
 import com.crossoverjie.cim.route.api.vo.res.CIMServerResVO;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
@@ -30,10 +30,9 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
-import okhttp3.OkHttpClient;
 
 @Slf4j
-public class ClientImpl extends ClientState implements Client  {
+public class ClientImpl extends ClientState implements Client {
 
     @Getter
     private final ClientConfigurationData conf;
@@ -43,6 +42,8 @@ public class ClientImpl extends ClientState implements Client  {
     // ======= private ========
     private int errorCount;
     private SocketChannel channel;
+
+    private final RouteManager routeManager;
 
     @Getter
     private static ClientImpl client;
@@ -65,9 +66,11 @@ public class ClientImpl extends ClientState implements Client  {
                     .setDaemon(true)
                     .build();
             this.conf.setCallbackThreadPool(
-                    new ThreadPoolExecutor(CALLBACK_POOL_SIZE, CALLBACK_POOL_SIZE, 1, TimeUnit.SECONDS, queue, factory));
+                    new ThreadPoolExecutor(CALLBACK_POOL_SIZE, CALLBACK_POOL_SIZE, 1, TimeUnit.SECONDS, queue,
+                            factory));
         }
 
+        routeManager = new RouteManager(conf.getRouteUrl(), conf.getOkHttpClient(), conf.getEvent());
 
         heartBeat = CIMRequestProto.CIMReqProtocol.newBuilder()
                 .setRequestId(this.conf.getUserId())
@@ -76,7 +79,7 @@ public class ClientImpl extends ClientState implements Client  {
                 .build();
         client = this;
 
-        this.userLogin().ifPresentOrElse((cimServer)->{
+        this.userLogin().ifPresentOrElse((cimServer) -> {
             this.connectServer(cimServer);
             this.loginServer();
         }, () -> {
@@ -88,11 +91,10 @@ public class ClientImpl extends ClientState implements Client  {
     private Optional<CIMServerResVO> userLogin() {
         LoginReqVO loginReqVO = new LoginReqVO(conf.getUserId(),
                 conf.getUserName());
-        RouteLookup routeLookup = new RouteLookup(conf.getRouteUrl(), conf.getOkHttpClient()
-                , conf.getEvent());
+
         CIMServerResVO cimServer = null;
         try {
-            cimServer = routeLookup.getServer(loginReqVO);
+            cimServer = routeManager.getServer(loginReqVO);
             log.info("cimServer=[{}]", cimServer);
         } catch (CIMException cimException) {
             if (cimException.getErrorCode().equals(RECONNECT_FAIL.getCode())) {
@@ -101,8 +103,9 @@ public class ClientImpl extends ClientState implements Client  {
         } catch (Exception e) {
             errorCount++;
             if (errorCount >= this.conf.getLoginRetryCount()) {
-                this.conf.getEvent().warn("The maximum number of reconnections has been reached[{}]times, exit cim client!",
-                        errorCount);
+                this.conf.getEvent()
+                        .warn("The maximum number of reconnections has been reached[{}]times, exit cim client!",
+                                errorCount);
                 this.conf.getEvent().fatal(this);
             }
             log.error("login fail", e);
@@ -127,8 +130,9 @@ public class ClientImpl extends ClientState implements Client  {
         } catch (InterruptedException e) {
             errorCount++;
             if (errorCount >= this.conf.getLoginRetryCount()) {
-                this.conf.getEvent().warn("The maximum number of reconnections has been reached[{}]times, exit cim client!",
-                        errorCount);
+                this.conf.getEvent()
+                        .warn("The maximum number of reconnections has been reached[{}]times, exit cim client!",
+                                errorCount);
                 this.conf.getEvent().fatal(this);
             }
         }
@@ -158,13 +162,14 @@ public class ClientImpl extends ClientState implements Client  {
     }
 
     @Override
-    public void send(String msg) throws Exception{
-        sendAync(msg).get();
+    public void sendGroup(String msg) throws Exception {
+        sendGroupeAsync(msg).get();
     }
 
     @Override
-    public CompletableFuture<Void> sendAync(String msg) {
-        return null;
+    public CompletableFuture<Void> sendGroupeAsync(String msg) {
+        // TODO: 2024/9/12 return messageId
+        return this.routeManager.sendGroupMsg(new ChatReqVO(this.conf.getUserId(), msg));
     }
 
     @Override

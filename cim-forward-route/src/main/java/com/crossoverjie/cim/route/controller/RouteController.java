@@ -164,7 +164,7 @@ public class RouteController implements RouteApi {
         Set<String> availableServerList = metaStore.getAvailableServerList();
         String server =
                 routeHandle.routeServer(List.copyOf(availableServerList), String.valueOf(loginReqVO.getUserId()));
-        log.info("userName=[{}] route server info=[{}]", loginReqVO.getUserName(), server);
+        log.info("userInfo=[{}] route server info=[{}]", loginReqVO, server);
 
         RouteInfo routeInfo = RouteInfoParseUtil.parse(server);
         commonBizService.checkServerAvailable(routeInfo);

@@ -5,17 +5,19 @@ import com.crossoverjie.cim.common.enums.StatusEnum;
 import com.crossoverjie.cim.common.exception.CIMException;
 import com.crossoverjie.cim.common.res.BaseResponse;
 import com.crossoverjie.cim.route.api.RouteApi;
+import com.crossoverjie.cim.route.api.vo.req.ChatReqVO;
 import com.crossoverjie.cim.route.api.vo.req.LoginReqVO;
 import com.crossoverjie.cim.route.api.vo.res.CIMServerResVO;
+import java.util.concurrent.CompletableFuture;
 import okhttp3.OkHttpClient;
 
-public class RouteLookup {
+public class RouteManager {
 
 
     private final RouteApi routeApi;
     private final Event event;
 
-    public RouteLookup(String routeUrl, OkHttpClient okHttpClient, Event event) {
+    public RouteManager(String routeUrl, OkHttpClient okHttpClient, Event event) {
         routeApi = RpcProxyManager.create(RouteApi.class, routeUrl, okHttpClient);
         this.event = event;
     }
@@ -36,5 +38,15 @@ public class RouteLookup {
 
 
         return cimServerResVO.getDataBody();
+    }
+
+    public CompletableFuture<Void> sendGroupMsg(ChatReqVO chatReqVO) {
+        return CompletableFuture.runAsync(() -> {
+            try {
+                routeApi.groupRoute(chatReqVO);
+            } catch (Exception e) {
+                event.error("send group msg error", e);
+            }
+        });
     }
 }

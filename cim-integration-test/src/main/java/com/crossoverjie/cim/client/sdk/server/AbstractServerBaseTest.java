@@ -5,6 +5,7 @@ import com.crossoverjie.cim.server.CIMServerApplication;
 import java.time.Duration;
 import lombok.Getter;
 import org.springframework.boot.SpringApplication;
+import org.springframework.context.ConfigurableApplicationContext;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.utility.DockerImageName;
 

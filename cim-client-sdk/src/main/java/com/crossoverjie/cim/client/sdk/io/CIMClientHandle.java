@@ -1,6 +1,5 @@
 package com.crossoverjie.cim.client.sdk.io;
 
-import com.crossoverjie.cim.client.sdk.Client;
 import com.crossoverjie.cim.client.sdk.ClientState;
 import com.crossoverjie.cim.client.sdk.impl.ClientImpl;
 import com.crossoverjie.cim.common.constant.Constants;

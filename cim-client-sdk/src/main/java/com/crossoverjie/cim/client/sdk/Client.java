@@ -10,13 +10,12 @@ public interface Client extends Closeable {
         return new ClientBuilderImpl();
     }
 
-    void send(String msg) throws Exception;
+    void sendGroup(String msg) throws Exception;
 
-    // TODO: 2024/9/12 messageId
-    CompletableFuture<Void> sendAync(String msg);
+    CompletableFuture<Void> sendGroupeAsync(String msg);
 
     ClientState.State getState();
 
     Long getUserId();
-    
+
 }
