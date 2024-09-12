@@ -48,7 +48,7 @@ public class CIMClientHandle extends SimpleChannelInboundHandler<CIMResponseProt
     @Override
     public void channelInactive(ChannelHandlerContext ctx) {
 
-        if (ClientImpl.getClient().getConf().getReconnectCheck().isNeedReconnect(ClientImpl.getClient())) {
+        if (!ClientImpl.getClient().getConf().getReconnectCheck().isNeedReconnect(ClientImpl.getClient())) {
             return;
         }
         ClientImpl.getClient().setState(ClientState.State.Closed);
