@@ -137,7 +137,7 @@ public class SortArrayMapConsistentHashTest {
 
     @Test
     public void testVirtualNode() throws NoSuchFieldException, IllegalAccessException {
-        AbstractConsistentHash map = new SortArrayMapConsistentHash();
+        SortArrayMapConsistentHash map = new SortArrayMapConsistentHash();
 
         List<String> strings = new ArrayList<>();
         for (int i = 0; i < 10; i++) {
@@ -145,13 +145,9 @@ public class SortArrayMapConsistentHashTest {
         }
 
         String process = map.process(strings,"zhangsan");
-        Field sortArrayMapField = SortArrayMapConsistentHash.class.getDeclaredField("sortArrayMap");
-        sortArrayMapField.setAccessible(true);
-        Field virtualNodeSizeField = SortArrayMapConsistentHash.class.getDeclaredField("VIRTUAL_NODE_SIZE");
-        virtualNodeSizeField.setAccessible(true);
 
-        SortArrayMap sortArrayMap = (SortArrayMap) sortArrayMapField.get(map);
-        int virtualNodeSize = (int) virtualNodeSizeField.get(map);
+        SortArrayMap sortArrayMap = map.getSortArrayMap();
+        int virtualNodeSize = 2;
 
         System.out.println("sortArrayMapSize = " + sortArrayMap.size() + "\n" + "virtualNodeSize = " + virtualNodeSize);
         Assert.assertEquals(sortArrayMap.size(), (virtualNodeSize + 1) * 10);

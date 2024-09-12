@@ -1,6 +1,9 @@
 package com.crossoverjie.cim.common.route.algorithm.consistenthash;
 
 import com.crossoverjie.cim.common.data.construct.SortArrayMap;
+import com.google.common.annotations.VisibleForTesting;
+
+import java.util.TreeMap;
 
 /**
  * Function:自定义排序 Map 实现
@@ -30,6 +33,15 @@ public class SortArrayMapConsistentHash extends AbstractConsistentHash {
     @Override
     public void sort() {
         sortArrayMap.sort();
+    }
+
+    /**
+     * Used only in test.
+     * @return Return the data structure of the current algorithm.
+     */
+    @VisibleForTesting
+    public SortArrayMap getSortArrayMap() {
+        return sortArrayMap;
     }
 
     @Override

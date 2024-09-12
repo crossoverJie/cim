@@ -2,6 +2,7 @@ package com.crossoverjie.cim.common.route.algorithm.consistenthash;
 
 import com.crossoverjie.cim.common.enums.StatusEnum;
 import com.crossoverjie.cim.common.exception.CIMException;
+import com.google.common.annotations.VisibleForTesting;
 
 import java.util.SortedMap;
 import java.util.TreeMap;
@@ -35,6 +36,15 @@ public class TreeMapConsistentHash extends AbstractConsistentHash {
         treeMap.clear();
     }
 
+    /**
+     * Used only in test.
+     * @return Return the data structure of the current algorithm.
+     */
+    @VisibleForTesting
+    public TreeMap getTreeMap() {
+        return treeMap;
+    }
+
     @Override
     public String getFirstNodeValue(String value) {
         long hash = super.hash(value);
@@ -48,4 +58,5 @@ public class TreeMapConsistentHash extends AbstractConsistentHash {
         }
         return treeMap.firstEntry().getValue();
     }
+
 }

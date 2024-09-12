@@ -45,7 +45,7 @@ public abstract class AbstractConsistentHash {
      * @return
      */
     public String process(List<String> values,String key){
-
+        // fix https://github.com/crossoverJie/cim/issues/79
         clear();
         for (String value : values) {
             add(hash(value), value);
