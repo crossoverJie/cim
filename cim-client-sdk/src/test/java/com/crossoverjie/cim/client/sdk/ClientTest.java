@@ -34,6 +34,7 @@ public class ClientTest extends AbstractRouteBaseTest {
                 .userId(id)
                 .routeUrl(routeUrl)
                 .build();
+        TimeUnit.SECONDS.sleep(3);
         ClientState.State state = client.getState();
         Awaitility.await().atMost(10, TimeUnit.SECONDS)
                 .untilAsserted(() -> Assertions.assertEquals(ClientState.State.Ready, state));
