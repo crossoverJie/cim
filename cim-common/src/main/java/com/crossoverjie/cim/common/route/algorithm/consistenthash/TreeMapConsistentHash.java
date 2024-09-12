@@ -14,7 +14,7 @@ import java.util.TreeMap;
  * @since JDK 1.8
  */
 public class TreeMapConsistentHash extends AbstractConsistentHash {
-    private TreeMap<Long,String> treeMap = new TreeMap<Long, String>() ;
+    private final TreeMap<Long,String> treeMap = new TreeMap<Long, String>() ;
 
     /**
      * 虚拟节点数量
@@ -36,7 +36,6 @@ public class TreeMapConsistentHash extends AbstractConsistentHash {
     @Override
     public String getFirstNodeValue(String value) {
         long hash = super.hash(value);
-        System.out.println("value=" + value + " hash = " + hash);
         SortedMap<Long, String> last = treeMap.tailMap(hash);
         if (!last.isEmpty()) {
             return last.get(last.firstKey());
