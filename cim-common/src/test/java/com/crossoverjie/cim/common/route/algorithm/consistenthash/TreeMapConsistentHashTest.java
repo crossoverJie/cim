@@ -3,10 +3,12 @@ package com.crossoverjie.cim.common.route.algorithm.consistenthash;
 import org.junit.Assert;
 import org.junit.Test;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.lang.reflect.Field;
+import java.util.*;
 
 public class TreeMapConsistentHashTest {
+
+
 
     @Test
     public void getFirstNodeValue() {
@@ -16,9 +18,11 @@ public class TreeMapConsistentHashTest {
         for (int i = 0; i < 10; i++) {
             strings.add("127.0.0." + i) ;
         }
-        String process = map.process(strings,"zhangsan");
-        System.out.println(process);
-        Assert.assertEquals("127.0.0.9",process);
+        String PROCESS = map.process(strings, "zhangsan");
+        for (int i = 0; i < 100; i++) {
+            String process = map.process(strings, "zhangsan");
+            Assert.assertEquals(PROCESS, process);
+        }
     }
 
 
@@ -31,10 +35,14 @@ public class TreeMapConsistentHashTest {
         for (int i = 0; i < 10; i++) {
             strings.add("127.0.0." + i) ;
         }
-        String process = map.process(strings,"zhangsan2");
-        System.out.println(process);
+        String PROCESS = map.process(strings,"zhangsan2");
+        for (int i = 0; i < 100; i++) {
+            String process = map.process(strings, "zhangsan2");
+            Assert.assertEquals(PROCESS, process);
+        }
 
-        Assert.assertEquals("127.0.0.9",process);
+
+//        Assert.assertEquals("127.0.0.9",process);
     }
 
 
@@ -46,9 +54,48 @@ public class TreeMapConsistentHashTest {
         for (int i = 0; i < 10; i++) {
             strings.add("127.0.0." + i) ;
         }
-        String process = map.process(strings,"1551253899106");
+        String PROCESS = map.process(strings,"1551253899106");
+        for (int i = 0; i < 100; i++) {
+            String process = map.process(strings, "1551253899106");
+            Assert.assertEquals(PROCESS, process);
+        }
+    }
 
-        System.out.println(process);
-        Assert.assertEquals("127.0.0.9",process);
+    @Test
+    public void getFirstNodeValue4() {
+        AbstractConsistentHash map = new TreeMapConsistentHash() ;
+
+        List<String> strings = new ArrayList<>();
+        for (int i = 0; i < 10; i++) {
+            strings.add("127.0.0." + i);
+        }
+        Set<String> processes = new HashSet<>();
+        for (int i = 0; i < 10; i++) {
+            String process = map.process(strings,"zhangsan" + i);
+            processes.add(process);
+        }
+        RangeCheckTestUtil.assertInRange(processes.size(), 2, 10);
+    }
+
+    @Test
+    public void testVirtualNode() throws NoSuchFieldException, IllegalAccessException {
+        AbstractConsistentHash map = new TreeMapConsistentHash();
+
+        List<String> strings = new ArrayList<>();
+        for (int i = 0; i < 10; i++) {
+            strings.add("127.0.0." + i);
+        }
+
+        String process = map.process(strings,"zhangsan");
+        Field treeMapField = TreeMapConsistentHash.class.getDeclaredField("treeMap");
+        treeMapField.setAccessible(true);
+        Field virtualNodeSizeField = TreeMapConsistentHash.class.getDeclaredField("VIRTUAL_NODE_SIZE");
+        virtualNodeSizeField.setAccessible(true);
+
+        TreeMap treeMap = (TreeMap) treeMapField.get(map);
+        int virtualNodeSize = (int) virtualNodeSizeField.get(map);
+
+        System.out.println("treeMapSize = " + treeMap.size() + "\n" + "virtualNodeSize = " + virtualNodeSize);
+        Assert.assertEquals(treeMap.size(), (virtualNodeSize + 1) * 10);
     }
 }

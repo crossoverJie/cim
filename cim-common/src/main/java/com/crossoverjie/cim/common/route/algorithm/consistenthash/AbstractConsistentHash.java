@@ -22,6 +22,11 @@ public abstract class AbstractConsistentHash {
     protected abstract void add(long key,String value);
 
     /**
+     * Clear old data in the structure
+     */
+    protected abstract void clear();
+
+    /**
      * 排序节点，数据结构自身支持排序可以不用重写
      */
     protected void sort(){}
@@ -41,6 +46,7 @@ public abstract class AbstractConsistentHash {
      */
     public String process(List<String> values,String key){
 
+        clear();
         for (String value : values) {
             add(hash(value), value);
         }

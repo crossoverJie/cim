@@ -23,14 +23,16 @@ public class TreeMapConsistentHash extends AbstractConsistentHash {
 
     @Override
     public void add(long key, String value) {
-
-        // fix https://github.com/crossoverJie/cim/issues/79
-        treeMap.clear();
         for (int i = 0; i < VIRTUAL_NODE_SIZE; i++) {
             Long hash = super.hash("vir" + key + i);
             treeMap.put(hash,value);
         }
         treeMap.put(key, value);
+    }
+
+    @Override
+    protected void clear() {
+        treeMap.clear();
     }
 
     @Override
