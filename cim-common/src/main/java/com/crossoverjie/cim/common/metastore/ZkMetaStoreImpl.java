@@ -74,7 +74,7 @@ public class ZkMetaStoreImpl implements MetaStore {
     @Override
     public void listenServerList(ChildListener childListener) throws Exception {
         client.subscribeChildChanges(ROOT, (parentPath, currentChildren) -> {
-            log.info("Clear and update local cache parentPath=[{}],currentChildren=[{}]", parentPath, currentChildren.toString());
+            log.info("Clear and update local cache parentPath=[{}],current server list=[{}]", parentPath, currentChildren.toString());
             childListener.childChanged(parentPath, currentChildren);
 
             // TODO: 2024/8/19 maybe can reuse currentChildren.

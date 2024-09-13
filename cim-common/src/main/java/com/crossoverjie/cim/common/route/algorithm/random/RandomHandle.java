@@ -2,8 +2,10 @@ package com.crossoverjie.cim.common.route.algorithm.random;
 
 import com.crossoverjie.cim.common.enums.StatusEnum;
 import com.crossoverjie.cim.common.exception.CIMException;
+import com.crossoverjie.cim.common.pojo.RouteInfo;
 import com.crossoverjie.cim.common.route.algorithm.RouteHandle;
 
+import com.crossoverjie.cim.common.util.RouteInfoParseUtil;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -16,14 +18,23 @@ import java.util.concurrent.ThreadLocalRandom;
  */
 public class RandomHandle implements RouteHandle {
 
+    private List<String> values;
     @Override
     public String routeServer(List<String> values, String key) {
         int size = values.size();
         if (size == 0) {
             throw new CIMException(StatusEnum.SERVER_NOT_AVAILABLE) ;
         }
+        this.values = values;
         int offset = ThreadLocalRandom.current().nextInt(size);
 
         return values.get(offset);
+    }
+
+    @Override
+    public List<String> removeExpireServer(RouteInfo routeInfo) {
+        String parse = RouteInfoParseUtil.parse(routeInfo);
+        values.removeIf(next -> next.equals(parse));
+        return values;
     }
 }

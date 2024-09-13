@@ -24,7 +24,7 @@ public class CIMClientHandle extends SimpleChannelInboundHandler<CIMResponseProt
 
             if (idleStateEvent.state() == IdleState.WRITER_IDLE) {
 
-                ctx.writeAndFlush(ClientImpl.getClient().getHeartBeat()).addListeners((ChannelFutureListener) future -> {
+                ctx.writeAndFlush(ClientImpl.getClient().getHeartBeatPacket()).addListeners((ChannelFutureListener) future -> {
                     if (!future.isSuccess()) {
                         log.error("heart beat error,close Channel");
                         ClientImpl.getClient().getConf().getEvent().warn("heart beat error,close Channel");
@@ -40,7 +40,7 @@ public class CIMClientHandle extends SimpleChannelInboundHandler<CIMResponseProt
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) {
-        ClientImpl.getClient().getConf().getEvent().info("channelActive");
+        ClientImpl.getClient().getConf().getEvent().info("ChannelActive");
         ClientImpl.getClient().setState(ClientState.State.Ready);
     }
 
@@ -53,7 +53,7 @@ public class CIMClientHandle extends SimpleChannelInboundHandler<CIMResponseProt
         ClientImpl.getClient().setState(ClientState.State.Closed);
 
         ClientImpl.getClient().getConf().getEvent().warn("Client inactive, let's reconnect");
-//        reConnectManager.reConnect(ctx);
+        ClientImpl.getClient().getReConnectManager().reConnect(ctx);
     }
 
     @Override

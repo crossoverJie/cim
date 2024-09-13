@@ -1,7 +1,9 @@
 package com.crossoverjie.cim.client.sdk;
 
 import com.crossoverjie.cim.client.sdk.impl.ClientBuilderImpl;
+import com.crossoverjie.cim.route.api.vo.res.CIMServerResVO;
 import java.io.Closeable;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
 public interface Client extends Closeable {
@@ -17,5 +19,7 @@ public interface Client extends Closeable {
     ClientState.State getState();
 
     Long getUserId();
+
+    Optional<CIMServerResVO> getServerInfo();
 
 }

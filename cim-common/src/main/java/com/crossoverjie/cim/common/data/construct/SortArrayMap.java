@@ -1,7 +1,13 @@
 package com.crossoverjie.cim.common.data.construct;
 
+import java.util.AbstractMap;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
+import org.apache.curator.shaded.com.google.common.collect.Sets;
 
 /**
  * Function:根据 key 排序的 Map
@@ -10,7 +16,7 @@ import java.util.Comparator;
  * Date: 2019-02-25 18:17
  * @since JDK 1.8
  */
-public class SortArrayMap {
+public class SortArrayMap extends AbstractMap<String, String> {
 
     /**
      * 核心数组
@@ -37,6 +43,13 @@ public class SortArrayMap {
         checkSize(size + 1);
         Node node = new Node(key, value);
         buckets[size++] = node;
+    }
+
+    public SortArrayMap remove(String value){
+        List<Node> list = new ArrayList<>(Arrays.asList(buckets));
+        list.removeIf(next -> next != null && next.value.equals(value));
+        buckets = list.toArray(new Node[0]);
+        return this;
     }
 
     /**
@@ -103,6 +116,27 @@ public class SortArrayMap {
     public void clear(){
         buckets = new Node[DEFAULT_SIZE];
         size = 0 ;
+    }
+
+    @Override
+    public Set<Entry<String, String>> entrySet() {
+        Set<Entry<String, String>> set = Sets.newHashSet();
+        for (Node bucket : buckets) {
+            set.add(new SimpleEntry<>(String.valueOf(bucket.key), bucket.value));
+        }
+        return set;
+    }
+
+    @Override
+    public Set<String> keySet() {
+        Set<String> set = Sets.newHashSet();
+        for (Node bucket : buckets) {
+            if (bucket == null){
+                continue;
+            }
+            set.add(bucket.value);
+        }
+        return set;
     }
 
     /**

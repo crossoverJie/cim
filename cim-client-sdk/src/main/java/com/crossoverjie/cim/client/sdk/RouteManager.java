@@ -1,5 +1,6 @@
 package com.crossoverjie.cim.client.sdk;
 
+import com.crossoverjie.cim.client.sdk.impl.ClientImpl;
 import com.crossoverjie.cim.common.core.proxy.RpcProxyManager;
 import com.crossoverjie.cim.common.enums.StatusEnum;
 import com.crossoverjie.cim.common.exception.CIMException;
@@ -29,8 +30,8 @@ public class RouteManager {
         if (!cimServerResVO.getCode().equals(StatusEnum.SUCCESS.getCode())) {
             event.info(cimServerResVO.getMessage());
 
-            // when client in reConnect state, could not exit.
-            if (ConnectionState.getReConnect()) {
+            // when client in Reconnecting state, could exit.
+            if (ClientImpl.getClient().getState() == ClientState.State.Reconnecting) {
                 event.warn("###{}###", StatusEnum.RECONNECT_FAIL.getMessage());
                 throw new CIMException(StatusEnum.RECONNECT_FAIL);
             }
@@ -48,5 +49,10 @@ public class RouteManager {
                 event.error("send group msg error", e);
             }
         });
+    }
+
+    public void offLine(Long userId) throws Exception {
+        ChatReqVO vo = new ChatReqVO(userId, "offLine");
+        routeApi.offLine(vo);
     }
 }

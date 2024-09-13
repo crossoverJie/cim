@@ -56,7 +56,7 @@ public class RouteController implements RouteApi {
     @Autowired
     private CommonBizService commonBizService;
 
-    @Autowired
+    @Resource
     private RouteHandle routeHandle;
 
     @Operation(summary = "群聊 API")
@@ -162,12 +162,13 @@ public class RouteController implements RouteApi {
 
         // check server available
         Set<String> availableServerList = metaStore.getAvailableServerList();
+        String key = String.valueOf(loginReqVO.getUserId());
         String server =
-                routeHandle.routeServer(List.copyOf(availableServerList), String.valueOf(loginReqVO.getUserId()));
+                routeHandle.routeServer(List.copyOf(availableServerList), key);
         log.info("userInfo=[{}] route server info=[{}]", loginReqVO, server);
 
         RouteInfo routeInfo = RouteInfoParseUtil.parse(server);
-        commonBizService.checkServerAvailable(routeInfo);
+        routeInfo = commonBizService.checkServerAvailable(routeInfo, key);
 
         //保存路由信息
         accountService.saveRouteInfo(loginReqVO, server);

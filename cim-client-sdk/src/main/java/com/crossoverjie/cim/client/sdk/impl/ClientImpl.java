@@ -3,10 +3,12 @@ package com.crossoverjie.cim.client.sdk.impl;
 import static com.crossoverjie.cim.common.enums.StatusEnum.RECONNECT_FAIL;
 import com.crossoverjie.cim.client.sdk.Client;
 import com.crossoverjie.cim.client.sdk.ClientState;
+import com.crossoverjie.cim.client.sdk.ReConnectManager;
 import com.crossoverjie.cim.client.sdk.RouteManager;
 import com.crossoverjie.cim.client.sdk.io.CIMClientHandleInitializer;
 import com.crossoverjie.cim.common.constant.Constants;
 import com.crossoverjie.cim.common.exception.CIMException;
+import com.crossoverjie.cim.common.kit.HeartBeatHandler;
 import com.crossoverjie.cim.common.protocol.CIMRequestProto;
 import com.crossoverjie.cim.common.util.StringUtil;
 import com.crossoverjie.cim.route.api.vo.req.ChatReqVO;
@@ -28,6 +30,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Consumer;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
@@ -46,9 +49,17 @@ public class ClientImpl extends ClientState implements Client {
     private final RouteManager routeManager;
 
     @Getter
+    private final HeartBeatHandler heartBeatHandler = ReConnectManager.createHeartBeatHandler();
+    @Getter
+    private final ReConnectManager reConnectManager = ReConnectManager.createReConnectManager();
+
+    @Getter
     private static ClientImpl client;
     @Getter
-    private final CIMRequestProto.CIMReqProtocol heartBeat;
+    private final CIMRequestProto.CIMReqProtocol heartBeatPacket;
+
+    // Client connected server info
+    private CIMServerResVO serverInfo;
 
     public ClientImpl(ClientConfigurationData conf) {
         this.conf = conf;
@@ -72,23 +83,64 @@ public class ClientImpl extends ClientState implements Client {
 
         routeManager = new RouteManager(conf.getRouteUrl(), conf.getOkHttpClient(), conf.getEvent());
 
-        heartBeat = CIMRequestProto.CIMReqProtocol.newBuilder()
+        heartBeatPacket = CIMRequestProto.CIMReqProtocol.newBuilder()
                 .setRequestId(this.conf.getUserId())
                 .setReqMsg("ping")
                 .setType(Constants.CommandType.PING)
                 .build();
         client = this;
 
-        this.userLogin().ifPresentOrElse((cimServer) -> {
-            this.connectServer(cimServer);
-            this.loginServer();
-        }, () -> {
-            this.conf.getEvent().error("login fail");
-            this.conf.getEvent().fatal(this);
+        connectServer(v -> this.conf.getEvent().info("Login success!"));
+    }
+
+    private void connectServer(Consumer<Void> success) {
+        doConnectServer().whenComplete((r, e) -> {
+            if (r) {
+                success.accept(null);
+            }
+            if (e != null) {
+                if (e instanceof CIMException cimException && cimException.getErrorCode()
+                        .equals(RECONNECT_FAIL.getCode())) {
+                    this.conf.getEvent().fatal(this);
+                } else {
+                    if (errorCount++ >= this.conf.getLoginRetryCount()) {
+                        this.conf.getEvent()
+                                .error("The maximum number of reconnections has been reached[{}]times, exit cim client!",
+                                        errorCount);
+                        this.conf.getEvent().fatal(this);
+                    }
+                }
+            }
+
         });
     }
 
-    private Optional<CIMServerResVO> userLogin() {
+    /**
+     * 1. User login and get target server
+     * 2. Connect target server
+     * 3. send login cmd to server
+     */
+    private CompletableFuture<Boolean> doConnectServer() {
+        CompletableFuture<Boolean> future = new CompletableFuture<>();
+        this.userLogin(future).ifPresentOrElse((cimServer) -> {
+            this.doConnectServer(cimServer, future);
+            this.loginServer();
+            this.serverInfo = cimServer;
+            future.complete(true);
+        }, () -> {
+            this.conf.getEvent().error("Login fail!");
+            this.conf.getEvent().fatal(this);
+            future.complete(false);
+        });
+        return future;
+    }
+
+    /**
+     * Login and get server info
+     *
+     * @return Server info
+     */
+    private Optional<CIMServerResVO> userLogin(CompletableFuture<Boolean> future) {
         LoginReqVO loginReqVO = new LoginReqVO(conf.getUserId(),
                 conf.getUserName());
 
@@ -96,26 +148,16 @@ public class ClientImpl extends ClientState implements Client {
         try {
             cimServer = routeManager.getServer(loginReqVO);
             log.info("cimServer=[{}]", cimServer);
-        } catch (CIMException cimException) {
-            if (cimException.getErrorCode().equals(RECONNECT_FAIL.getCode())) {
-                this.conf.getEvent().fatal(this);
-            }
         } catch (Exception e) {
-            errorCount++;
-            if (errorCount >= this.conf.getLoginRetryCount()) {
-                this.conf.getEvent()
-                        .warn("The maximum number of reconnections has been reached[{}]times, exit cim client!",
-                                errorCount);
-                this.conf.getEvent().fatal(this);
-            }
             log.error("login fail", e);
+            future.completeExceptionally(e);
         }
         return Optional.ofNullable(cimServer);
     }
 
     private final EventLoopGroup group = new NioEventLoopGroup(0, new DefaultThreadFactory("cim-work"));
 
-    private void connectServer(CIMServerResVO cimServer) {
+    private void doConnectServer(CIMServerResVO cimServer, CompletableFuture<Boolean> future) {
         Bootstrap bootstrap = new Bootstrap();
         bootstrap.group(group)
                 .channel(NioSocketChannel.class)
@@ -128,15 +170,8 @@ public class ClientImpl extends ClientState implements Client {
                 channel = (SocketChannel) sync.channel();
             }
         } catch (InterruptedException e) {
-            errorCount++;
-            if (errorCount >= this.conf.getLoginRetryCount()) {
-                this.conf.getEvent()
-                        .warn("The maximum number of reconnections has been reached[{}]times, exit cim client!",
-                                errorCount);
-                this.conf.getEvent().fatal(this);
-            }
+            future.completeExceptionally(e);
         }
-
     }
 
     /**
@@ -154,10 +189,39 @@ public class ClientImpl extends ClientState implements Client {
                 );
     }
 
+    /**
+     * 1. clear route information.
+     * 2. reconnect.
+     * 3. shutdown reconnect job.
+     * 4. reset reconnect state.
+     * @throws Exception
+     */
+    public void reconnect() throws Exception {
+        if (channel != null && channel.isActive()) {
+            return;
+        }
+        this.serverInfo = null;
+        // clear route information.
+        this.routeManager.offLine(this.getUserId());
+
+        this.conf.getEvent().info("cim trigger reconnecting....");
+
+        // TODO: 2024/9/13 need a backoff interface
+        int random = (int) (Math.random() * 7 + 3);
+        TimeUnit.SECONDS.sleep(random);
+
+        // don't set State ready, because when connect success, the State will be set to ready automate.
+        connectServer(v -> {
+            this.reConnectManager.reConnectSuccess();
+            this.conf.getEvent().info("Great! reConnect success!!!");
+        });
+    }
+
     @Override
     public void close() {
         if (channel != null) {
             channel.close();
+            channel = null;
         }
     }
 
@@ -180,5 +244,10 @@ public class ClientImpl extends ClientState implements Client {
     @Override
     public ClientState.State getState() {
         return super.getState();
+    }
+
+    @Override
+    public Optional<CIMServerResVO> getServerInfo() {
+        return Optional.ofNullable(this.serverInfo);
     }
 }

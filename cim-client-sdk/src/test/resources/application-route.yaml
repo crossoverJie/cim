@@ -40,7 +40,7 @@ app:
   # route strategy
   route:
     way:
-      handler: com.crossoverjie.cim.common.route.algorithm.consistenthash.ConsistentHashHandle
+      handler: com.crossoverjie.cim.common.route.algorithm.loop.LoopHandle
 
   #app.route.way.consitenthash=com.crossoverjie.cim.common.route.algorithm.consistenthash.SortArrayMapConsistentHash
 

@@ -3,6 +3,9 @@ package com.crossoverjie.cim.common.route.algorithm.consistenthash;
 import com.crossoverjie.cim.common.data.construct.SortArrayMap;
 import com.google.common.annotations.VisibleForTesting;
 
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
 
 /**
@@ -25,9 +28,15 @@ public class SortArrayMapConsistentHash extends AbstractConsistentHash {
     public void add(long key, String value) {
         for (int i = 0; i < VIRTUAL_NODE_SIZE; i++) {
             Long hash = super.hash("vir" + key + i);
-            sortArrayMap.add(hash,value);
+            sortArrayMap.add(hash, value);
         }
         sortArrayMap.add(key, value);
+    }
+
+    @Override
+    protected Map<String,String> remove(String value) {
+        sortArrayMap = sortArrayMap.remove(value);
+        return sortArrayMap;
     }
 
     @Override
