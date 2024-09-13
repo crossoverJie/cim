@@ -72,6 +72,14 @@ public class ClientTest extends AbstractRouteBaseTest {
         super.stopSingle();
     }
 
+    /**
+     * 1. Start two servers.
+     * 2. Start two client, and send message.
+     * 3. Stop one server which is connected by client1.
+     * 4. Wait for client1 reconnect.
+     * 5. Send message again.
+     * @throws Exception
+     */
     @Test
     public void testReconnect() throws Exception {
         super.startTwoServer();
