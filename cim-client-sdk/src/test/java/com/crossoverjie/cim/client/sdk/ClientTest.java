@@ -24,7 +24,7 @@ public class ClientTest extends AbstractRouteBaseTest {
 
     @Test
     public void groupChat() throws Exception {
-        super.startServer();
+        super.starSingleServer();
         super.startRoute();
         String routeUrl = "http://localhost:8083";
         String c1 = "crossoverJie";
@@ -69,7 +69,7 @@ public class ClientTest extends AbstractRouteBaseTest {
         client1.sendGroup(msg);
 
         Awaitility.await().untilAsserted(() -> Assertions.assertEquals(String.format("crossoverJie:%s", msg), client2Receive.get()));;
-
+        super.stopSingle();
     }
 
     @Test
@@ -142,6 +142,7 @@ public class ClientTest extends AbstractRouteBaseTest {
         log.info("send message again, client2Receive = {}", client2Receive.get());
         client1.sendGroup(msg);
         Awaitility.await().untilAsserted(() -> Assertions.assertEquals(String.format("cj:%s", msg), client2Receive.get()));;
+        super.stopTwoServer();
     }
 
 }

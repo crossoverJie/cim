@@ -25,16 +25,22 @@ public abstract class AbstractServerBaseTest {
     @Getter
     private String zookeeperAddr;
 
-    public void startServer() {
+    private ConfigurableApplicationContext singleRun;
+    public void starSingleServer() {
         zooKeeperContainer.start();
         zookeeperAddr = String.format("%s:%d", zooKeeperContainer.getHost(), zooKeeperContainer.getMappedPort(ZooKeeperContainer.DEFAULT_CLIENT_PORT));
         SpringApplication server = new SpringApplication(CIMServerApplication.class);
-        server.run("--app.zk.addr=" + zookeeperAddr);
+        singleRun = server.run("--app.zk.addr=" + zookeeperAddr);
+    }
+    public void stopSingle(){
+        singleRun.close();
     }
 
     private final Map<Integer, ConfigurableApplicationContext> runMap = new HashMap<>(2);
     public void startTwoServer() {
-        zooKeeperContainer.start();
+        if (!zooKeeperContainer.isRunning()){
+            zooKeeperContainer.start();
+        }
         zookeeperAddr = String.format("%s:%d", zooKeeperContainer.getHost(), zooKeeperContainer.getMappedPort(ZooKeeperContainer.DEFAULT_CLIENT_PORT));
         SpringApplication server = new SpringApplication(CIMServerApplication.class);
         String[] args1 = new String[]{
@@ -58,9 +64,14 @@ public abstract class AbstractServerBaseTest {
 
     public void stopServer(Integer port) {
         runMap.get(port).close();
+        runMap.remove(port);
+    }
+    public void stopTwoServer() {
+        runMap.forEach((k,v) -> v.close());
     }
 
     public void close(){
         zooKeeperContainer.close();
     }
+
 }

@@ -27,7 +27,7 @@ public class ClientTest extends AbstractRouteBaseTest {
 
     @Test
     public void olu() throws Exception {
-        super.startServer();
+        super.starSingleServer();
         super.startRoute();
         this.login("crossoverJie", 8082);
         this.login("cj", 8182);

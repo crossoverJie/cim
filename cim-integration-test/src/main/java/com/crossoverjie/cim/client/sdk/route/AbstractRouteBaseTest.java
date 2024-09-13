@@ -8,6 +8,7 @@ import com.crossoverjie.cim.route.api.vo.req.RegisterInfoReqVO;
 import com.crossoverjie.cim.route.api.vo.res.RegisterInfoResVO;
 import com.redis.testcontainers.RedisContainer;
 import org.springframework.boot.SpringApplication;
+import org.springframework.context.ConfigurableApplicationContext;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.utility.DockerImageName;
 
@@ -16,6 +17,7 @@ public abstract class AbstractRouteBaseTest extends AbstractServerBaseTest {
     @Container
     RedisContainer redis = new RedisContainer(DockerImageName.parse("redis:7.4.0"));
 
+    private ConfigurableApplicationContext run;
     public void startRoute() {
         redis.start();
         SpringApplication route = new SpringApplication(RouteApplication.class);
@@ -25,12 +27,13 @@ public abstract class AbstractRouteBaseTest extends AbstractServerBaseTest {
                 "--app.zk.addr=" + super.getZookeeperAddr(),
         };
         route.setAdditionalProfiles("route");
-        route.run(args);
+        run = route.run(args);
     }
 
     public void close(){
         super.close();
         redis.close();
+        run.close();
     }
 
     public Long registerAccount(String userName) throws Exception {
