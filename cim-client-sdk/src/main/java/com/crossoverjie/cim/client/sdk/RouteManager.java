@@ -4,11 +4,13 @@ import com.crossoverjie.cim.client.sdk.impl.ClientImpl;
 import com.crossoverjie.cim.common.core.proxy.RpcProxyManager;
 import com.crossoverjie.cim.common.enums.StatusEnum;
 import com.crossoverjie.cim.common.exception.CIMException;
+import com.crossoverjie.cim.common.pojo.CIMUserInfo;
 import com.crossoverjie.cim.common.res.BaseResponse;
 import com.crossoverjie.cim.route.api.RouteApi;
 import com.crossoverjie.cim.route.api.vo.req.ChatReqVO;
 import com.crossoverjie.cim.route.api.vo.req.LoginReqVO;
 import com.crossoverjie.cim.route.api.vo.res.CIMServerResVO;
+import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import okhttp3.OkHttpClient;
 
@@ -54,5 +56,10 @@ public class RouteManager {
     public void offLine(Long userId) throws Exception {
         ChatReqVO vo = new ChatReqVO(userId, "offLine");
         routeApi.offLine(vo);
+    }
+
+    public Set<CIMUserInfo> onlineUser() throws Exception {
+        BaseResponse<Set<CIMUserInfo>> onlineUsersResVO = routeApi.onlineUser();
+        return onlineUsersResVO.getDataBody();
     }
 }

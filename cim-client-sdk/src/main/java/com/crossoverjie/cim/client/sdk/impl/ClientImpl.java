@@ -9,6 +9,7 @@ import com.crossoverjie.cim.client.sdk.io.CIMClientHandleInitializer;
 import com.crossoverjie.cim.common.constant.Constants;
 import com.crossoverjie.cim.common.exception.CIMException;
 import com.crossoverjie.cim.common.kit.HeartBeatHandler;
+import com.crossoverjie.cim.common.pojo.CIMUserInfo;
 import com.crossoverjie.cim.common.protocol.CIMRequestProto;
 import com.crossoverjie.cim.common.util.StringUtil;
 import com.crossoverjie.cim.route.api.vo.req.ChatReqVO;
@@ -24,6 +25,7 @@ import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.util.concurrent.DefaultThreadFactory;
 import java.util.Optional;
+import java.util.Set;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -244,6 +246,11 @@ public class ClientImpl extends ClientState implements Client {
     @Override
     public ClientState.State getState() {
         return super.getState();
+    }
+
+    @Override
+    public Set<CIMUserInfo> getOnlineUser() throws Exception {
+        return routeManager.onlineUser();
     }
 
     @Override

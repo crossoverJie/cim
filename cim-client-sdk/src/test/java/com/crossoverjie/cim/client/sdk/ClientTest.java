@@ -1,8 +1,10 @@
 package com.crossoverjie.cim.client.sdk;
 
 import com.crossoverjie.cim.client.sdk.route.AbstractRouteBaseTest;
+import com.crossoverjie.cim.common.pojo.CIMUserInfo;
 import com.crossoverjie.cim.route.api.vo.res.CIMServerResVO;
 import java.util.Optional;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 import lombok.Cleanup;
@@ -67,6 +69,18 @@ public class ClientTest extends AbstractRouteBaseTest {
         // send msg
         String msg = "hello";
         client1.sendGroup(msg);
+
+        Set<CIMUserInfo> onlineUser = client1.getOnlineUser();
+        Assertions.assertEquals(onlineUser.size(),2);
+        onlineUser.forEach(userInfo -> {
+            log.info("online user = {}", userInfo);
+            Long userId = userInfo.getUserId();
+            if (userId.equals(id)) {
+                Assertions.assertEquals(c1, userInfo.getUserName());
+            } else if (userId.equals(zsId)) {
+                Assertions.assertEquals(zs, userInfo.getUserName());
+            }
+        });
 
         Awaitility.await().untilAsserted(() -> Assertions.assertEquals(String.format("crossoverJie:%s", msg), client2Receive.get()));;
         super.stopSingle();
