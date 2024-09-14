@@ -219,6 +219,7 @@ public class ClientImpl extends ClientState implements Client {
             channel.close();
             channel = null;
         }
+        super.setState(ClientState.State.Closed);
         this.routeManager.offLine(this.getAuth().getUserId());
     }
 

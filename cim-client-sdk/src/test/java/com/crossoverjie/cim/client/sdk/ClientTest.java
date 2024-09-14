@@ -365,4 +365,33 @@ public class ClientTest extends AbstractRouteBaseTest {
         super.stopSingle();
     }
 
+    @Test
+    public void testClose() throws Exception {
+        super.starSingleServer();
+        super.startRoute();
+        String routeUrl = "http://localhost:8083";
+        String cj = "crossoverJie";
+        Long id = super.registerAccount(cj);
+        var auth1 = ClientConfigurationData.Auth.builder()
+                .userId(id)
+                .userName(cj)
+                .build();
+
+        Client client1 = Client.builder()
+                .auth(auth1)
+                .routeUrl(routeUrl)
+                .build();
+        TimeUnit.SECONDS.sleep(3);
+        ClientState.State state = client1.getState();
+        Awaitility.await().atMost(10, TimeUnit.SECONDS)
+                .untilAsserted(() -> Assertions.assertEquals(ClientState.State.Ready, state));
+        Optional<CIMServerResVO> serverInfo = client1.getServerInfo();
+        Assertions.assertTrue(serverInfo.isPresent());
+        System.out.println("client1 serverInfo = " + serverInfo.get());
+
+        client1.close();
+        ClientState.State state1 = client1.getState();
+        Assertions.assertEquals(ClientState.State.Closed, state1);
+    }
+
 }
