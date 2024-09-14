@@ -2,6 +2,7 @@ package com.crossoverjie.cim.client.sdk;
 
 import com.crossoverjie.cim.client.sdk.impl.ClientBuilderImpl;
 import com.crossoverjie.cim.common.pojo.CIMUserInfo;
+import com.crossoverjie.cim.route.api.vo.req.P2PReqVO;
 import com.crossoverjie.cim.route.api.vo.res.CIMServerResVO;
 import java.io.Closeable;
 import java.util.Optional;
@@ -14,9 +15,17 @@ public interface Client extends Closeable {
         return new ClientBuilderImpl();
     }
 
-    void sendGroup(String msg) throws Exception;
+    default void sendP2P(P2PReqVO p2PReqVO) throws Exception{
+        sendP2PAsync(p2PReqVO).get();
+    };
 
-    CompletableFuture<Void> sendGroupeAsync(String msg);
+    CompletableFuture<Void> sendP2PAsync(P2PReqVO p2PReqVO);
+
+    default void sendGroup(String msg) throws Exception{
+        sendGroupAsync(msg).get();
+    };
+
+    CompletableFuture<Void> sendGroupAsync(String msg);
 
     ClientState.State getState();
 

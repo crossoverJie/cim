@@ -6,10 +6,13 @@ import com.crossoverjie.cim.common.enums.StatusEnum;
 import com.crossoverjie.cim.common.exception.CIMException;
 import com.crossoverjie.cim.common.pojo.CIMUserInfo;
 import com.crossoverjie.cim.common.res.BaseResponse;
+import com.crossoverjie.cim.common.res.NULLBody;
 import com.crossoverjie.cim.route.api.RouteApi;
 import com.crossoverjie.cim.route.api.vo.req.ChatReqVO;
 import com.crossoverjie.cim.route.api.vo.req.LoginReqVO;
+import com.crossoverjie.cim.route.api.vo.req.P2PReqVO;
 import com.crossoverjie.cim.route.api.vo.res.CIMServerResVO;
+import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import okhttp3.OkHttpClient;
@@ -38,9 +41,22 @@ public class RouteManager {
                 throw new CIMException(StatusEnum.RECONNECT_FAIL);
             }
         }
-
-
         return cimServerResVO.getDataBody();
+    }
+
+    public CompletableFuture<Void> sendP2P(CompletableFuture<Void> future, P2PReqVO p2PReqVO) {
+        return CompletableFuture.runAsync(() -> {
+            try {
+                BaseResponse<NULLBody> response = routeApi.p2pRoute(p2PReqVO);
+                if (response.getCode().equals(StatusEnum.OFF_LINE.getCode())) {
+                    future.completeExceptionally(new CIMException(StatusEnum.OFF_LINE));
+                }
+                future.complete(null);
+            } catch (Exception e) {
+                future.completeExceptionally(e);
+                event.error("send p2p msg error", e);
+            }
+        });
     }
 
     public CompletableFuture<Void> sendGroupMsg(ChatReqVO chatReqVO) {

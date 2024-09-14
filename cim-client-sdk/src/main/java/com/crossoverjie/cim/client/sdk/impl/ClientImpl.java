@@ -14,6 +14,7 @@ import com.crossoverjie.cim.common.protocol.CIMRequestProto;
 import com.crossoverjie.cim.common.util.StringUtil;
 import com.crossoverjie.cim.route.api.vo.req.ChatReqVO;
 import com.crossoverjie.cim.route.api.vo.req.LoginReqVO;
+import com.crossoverjie.cim.route.api.vo.req.P2PReqVO;
 import com.crossoverjie.cim.route.api.vo.res.CIMServerResVO;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import io.netty.bootstrap.Bootstrap;
@@ -228,12 +229,14 @@ public class ClientImpl extends ClientState implements Client {
     }
 
     @Override
-    public void sendGroup(String msg) throws Exception {
-        sendGroupeAsync(msg).get();
+    public CompletableFuture<Void> sendP2PAsync(P2PReqVO p2PReqVO) {
+        CompletableFuture<Void> future = new CompletableFuture<>();
+        p2PReqVO.setUserId(this.conf.getUserId());
+        return routeManager.sendP2P(future, p2PReqVO);
     }
 
     @Override
-    public CompletableFuture<Void> sendGroupeAsync(String msg) {
+    public CompletableFuture<Void> sendGroupAsync(String msg) {
         // TODO: 2024/9/12 return messageId
         return this.routeManager.sendGroupMsg(new ChatReqVO(this.conf.getUserId(), msg));
     }
