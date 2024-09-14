@@ -55,7 +55,6 @@ public class EchoServiceImpl implements Event {
     @Override
     public void fatal(Client client) {
         info("{} fatal error, shutdown client", client.getAuth());
-        System.exit(-1);
     }
 
 
