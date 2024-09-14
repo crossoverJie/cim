@@ -37,9 +37,8 @@ public class RouteHandler {
      *
      * @param userInfo
      * @param channel
-     * @throws IOException
      */
-    public void userOffLine(CIMUserInfo userInfo, NioSocketChannel channel) throws IOException {
+    public void userOffLine(CIMUserInfo userInfo, NioSocketChannel channel) {
         if (userInfo != null) {
             log.info("Account [{}] offline", userInfo.getUserName());
             SessionSocketHolder.removeSession(userInfo.getUserId());
@@ -60,11 +59,7 @@ public class RouteHandler {
     public void clearRouteInfo(CIMUserInfo userInfo) {
         RouteApi routeApi = RpcProxyManager.create(RouteApi.class, configuration.getRouteUrl(), okHttpClient);
         ChatReqVO vo = new ChatReqVO(userInfo.getUserId(), userInfo.getUserName());
-        try {
-            routeApi.offLine(vo);
-        } catch (Exception e){
-            log.error("Exception",e);
-        }
+        routeApi.offLine(vo);
     }
 
 }

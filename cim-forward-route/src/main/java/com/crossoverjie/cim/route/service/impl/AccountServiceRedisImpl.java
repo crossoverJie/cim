@@ -156,7 +156,7 @@ public class AccountServiceRedisImpl implements AccountService {
     }
 
     @Override
-    public void offLine(Long userId) throws Exception {
+    public void offLine(Long userId) {
 
         // TODO: 2019-01-21 改为一个原子命令，以防数据一致性
 

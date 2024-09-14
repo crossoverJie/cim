@@ -1,5 +1,6 @@
 package com.crossoverjie.cim.client.sdk;
 
+import com.crossoverjie.cim.client.sdk.impl.ClientConfigurationData;
 import com.crossoverjie.cim.client.sdk.route.AbstractRouteBaseTest;
 import com.crossoverjie.cim.common.pojo.CIMUserInfo;
 import com.crossoverjie.cim.route.api.vo.req.P2PReqVO;
@@ -29,15 +30,22 @@ public class ClientTest extends AbstractRouteBaseTest {
         super.starSingleServer();
         super.startRoute();
         String routeUrl = "http://localhost:8083";
-        String c1 = "crossoverJie";
+        String cj = "crossoverJie";
         String zs = "zs";
-        Long id = super.registerAccount(c1);
+        Long id = super.registerAccount(cj);
         Long zsId = super.registerAccount(zs);
+        var auth1 = ClientConfigurationData.Auth.builder()
+                .userId(id)
+                .userName(cj)
+                .build();
+        var auth2 = ClientConfigurationData.Auth.builder()
+                .userId(zsId)
+                .userName(zs)
+                .build();
 
         @Cleanup
         Client client1 = Client.builder()
-                .userName(c1)
-                .userId(id)
+                .auth(auth1)
                 .routeUrl(routeUrl)
                 .build();
         TimeUnit.SECONDS.sleep(3);
@@ -52,8 +60,7 @@ public class ClientTest extends AbstractRouteBaseTest {
         AtomicReference<String> client2Receive = new AtomicReference<>();
         @Cleanup
         Client client2 = Client.builder()
-                .userName(zs)
-                .userId(zsId)
+                .auth(auth2)
                 .routeUrl(routeUrl)
                 .messageListener((client, message) -> client2Receive.set(message))
                 .build();
@@ -76,7 +83,7 @@ public class ClientTest extends AbstractRouteBaseTest {
             log.info("online user = {}", userInfo);
             Long userId = userInfo.getUserId();
             if (userId.equals(id)) {
-                Assertions.assertEquals(c1, userInfo.getUserName());
+                Assertions.assertEquals(cj, userInfo.getUserName());
             } else if (userId.equals(zsId)) {
                 Assertions.assertEquals(zs, userInfo.getUserName());
             }
@@ -84,7 +91,6 @@ public class ClientTest extends AbstractRouteBaseTest {
 
         Awaitility.await().untilAsserted(
                 () -> Assertions.assertEquals(String.format("crossoverJie:%s", msg), client2Receive.get()));
-        ;
         super.stopSingle();
     }
 
@@ -99,11 +105,22 @@ public class ClientTest extends AbstractRouteBaseTest {
         Long cjId = super.registerAccount(cj);
         Long zsId = super.registerAccount(zs);
         Long lsId = super.registerAccount(ls);
+        var auth1 = ClientConfigurationData.Auth.builder()
+                .userName(cj)
+                .userId(cjId)
+                .build();
+        var auth2 = ClientConfigurationData.Auth.builder()
+                .userName(zs)
+                .userId(zsId)
+                .build();
+        var auth3 = ClientConfigurationData.Auth.builder()
+                .userName(ls)
+                .userId(lsId)
+                .build();
 
         @Cleanup
         Client client1 = Client.builder()
-                .userName(cj)
-                .userId(cjId)
+                .auth(auth1)
                 .routeUrl(routeUrl)
                 .build();
         TimeUnit.SECONDS.sleep(3);
@@ -119,8 +136,7 @@ public class ClientTest extends AbstractRouteBaseTest {
         AtomicReference<String> client2Receive = new AtomicReference<>();
         @Cleanup
         Client client2 = Client.builder()
-                .userName(zs)
-                .userId(zsId)
+                .auth(auth2)
                 .routeUrl(routeUrl)
                 .messageListener((client, message) -> client2Receive.set(message))
                 .build();
@@ -137,8 +153,7 @@ public class ClientTest extends AbstractRouteBaseTest {
         AtomicReference<String> client3Receive = new AtomicReference<>();
         @Cleanup
         Client client3 = Client.builder()
-                .userName(ls)
-                .userId(lsId)
+                .auth(auth3)
                 .routeUrl(routeUrl)
                 .messageListener((client, message) -> {
                     log.info("client3 receive message = {}", message);
@@ -176,7 +191,7 @@ public class ClientTest extends AbstractRouteBaseTest {
         });
 
         Awaitility.await().untilAsserted(
-                () -> Assertions.assertEquals(String.format("%s:%s",cj, msg), client3Receive.get()));
+                () -> Assertions.assertEquals(String.format("%s:%s", cj, msg), client3Receive.get()));
         Awaitility.await().untilAsserted(
                 () -> Assertions.assertNull(client2Receive.get()));
         super.stopSingle();
@@ -197,15 +212,22 @@ public class ClientTest extends AbstractRouteBaseTest {
         super.startRoute();
 
         String routeUrl = "http://localhost:8083";
-        String c1 = "cj";
+        String cj = "cj";
         String zs = "zs";
-        Long id = super.registerAccount(c1);
+        Long cjId = super.registerAccount(cj);
         Long zsId = super.registerAccount(zs);
+        var auth1 = ClientConfigurationData.Auth.builder()
+                .userName(cj)
+                .userId(cjId)
+                .build();
+        var auth2 = ClientConfigurationData.Auth.builder()
+                .userName(zs)
+                .userId(zsId)
+                .build();
 
         @Cleanup
         Client client1 = Client.builder()
-                .userName(c1)
-                .userId(id)
+                .auth(auth1)
                 .routeUrl(routeUrl)
                 .build();
         TimeUnit.SECONDS.sleep(3);
@@ -217,8 +239,7 @@ public class ClientTest extends AbstractRouteBaseTest {
         AtomicReference<String> client2Receive = new AtomicReference<>();
         @Cleanup
         Client client2 = Client.builder()
-                .userName(zs)
-                .userId(zsId)
+                .auth(auth2)
                 .routeUrl(routeUrl)
                 .messageListener((client, message) -> client2Receive.set(message))
                 .build();
@@ -263,8 +284,85 @@ public class ClientTest extends AbstractRouteBaseTest {
         client1.sendGroup(msg);
         Awaitility.await()
                 .untilAsserted(() -> Assertions.assertEquals(String.format("cj:%s", msg), client2Receive.get()));
-        ;
         super.stopTwoServer();
+    }
+
+    @Test
+    public void offLineAndOnline() throws Exception {
+        super.starSingleServer();
+        super.startRoute();
+        String routeUrl = "http://localhost:8083";
+        String cj = "crossoverJie";
+        String zs = "zs";
+        Long id = super.registerAccount(cj);
+        Long zsId = super.registerAccount(zs);
+        var auth1 = ClientConfigurationData.Auth.builder()
+                .userId(id)
+                .userName(cj)
+                .build();
+        var auth2 = ClientConfigurationData.Auth.builder()
+                .userId(zsId)
+                .userName(zs)
+                .build();
+
+        @Cleanup
+        Client client1 = Client.builder()
+                .auth(auth1)
+                .routeUrl(routeUrl)
+                .build();
+        TimeUnit.SECONDS.sleep(3);
+        ClientState.State state = client1.getState();
+        Awaitility.await().atMost(10, TimeUnit.SECONDS)
+                .untilAsserted(() -> Assertions.assertEquals(ClientState.State.Ready, state));
+        Optional<CIMServerResVO> serverInfo = client1.getServerInfo();
+        Assertions.assertTrue(serverInfo.isPresent());
+        System.out.println("client1 serverInfo = " + serverInfo.get());
+
+
+        AtomicReference<String> client2Receive = new AtomicReference<>();
+        Client client2 = Client.builder()
+                .auth(auth2)
+                .routeUrl(routeUrl)
+                .messageListener((client, message) -> client2Receive.set(message))
+                // Avoid auto reconnect, this test will manually close client.
+                .reconnectCheck((client) -> false)
+                .build();
+        TimeUnit.SECONDS.sleep(3);
+        ClientState.State state2 = client2.getState();
+        Awaitility.await().atMost(10, TimeUnit.SECONDS)
+                .untilAsserted(() -> Assertions.assertEquals(ClientState.State.Ready, state2));
+
+        Optional<CIMServerResVO> serverInfo2 = client2.getServerInfo();
+        Assertions.assertTrue(serverInfo2.isPresent());
+        System.out.println("client2 serverInfo = " + serverInfo2.get());
+
+        // send msg
+        String msg = "hello";
+        client1.sendGroup(msg);
+        Awaitility.await().untilAsserted(
+                () -> Assertions.assertEquals(String.format("crossoverJie:%s", msg), client2Receive.get()));
+        client2Receive.set("");
+
+        // Manually offline
+        client2.close();
+        TimeUnit.SECONDS.sleep(10);
+        client2 = Client.builder()
+                .auth(auth2)
+                .routeUrl(routeUrl)
+                .messageListener((client, message) -> client2Receive.set(message))
+                // Avoid to auto reconnect, this test will manually close client.
+                .reconnectCheck((client) -> false)
+                .build();
+        ClientState.State state3 = client2.getState();
+        Awaitility.await().atMost(10, TimeUnit.SECONDS)
+                .untilAsserted(() -> Assertions.assertEquals(ClientState.State.Ready, state3));
+
+        // send msg again
+        client1.sendGroup(msg);
+        Awaitility.await().untilAsserted(
+                () -> Assertions.assertEquals(String.format("crossoverJie:%s", msg), client2Receive.get()));
+
+        super.stopSingle();
     }
 
 }

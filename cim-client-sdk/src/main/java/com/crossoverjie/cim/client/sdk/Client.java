@@ -1,6 +1,7 @@
 package com.crossoverjie.cim.client.sdk;
 
 import com.crossoverjie.cim.client.sdk.impl.ClientBuilderImpl;
+import com.crossoverjie.cim.client.sdk.impl.ClientConfigurationData;
 import com.crossoverjie.cim.common.pojo.CIMUserInfo;
 import com.crossoverjie.cim.route.api.vo.req.P2PReqVO;
 import com.crossoverjie.cim.route.api.vo.res.CIMServerResVO;
@@ -29,7 +30,7 @@ public interface Client extends Closeable {
 
     ClientState.State getState();
 
-    Long getUserId();
+    ClientConfigurationData.Auth getAuth();
 
     Set<CIMUserInfo> getOnlineUser() throws Exception;
 

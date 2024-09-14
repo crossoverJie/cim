@@ -118,19 +118,24 @@
 			<dependency>
 				<groupId>com.crossoverjie.netty</groupId>
 				<artifactId>cim-common</artifactId>
-				<version>1.0.0-SNAPSHOT</version>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.crossoverjie.netty</groupId>
+				<artifactId>cim-client-sdk</artifactId>
+				<version>${project.version}</version>
 			</dependency>
 
 			<dependency>
 				<groupId>com.crossoverjie.netty</groupId>
 				<artifactId>cim-rout-api</artifactId>
-				<version>1.0.0-SNAPSHOT</version>
+				<version>${project.version}</version>
 			</dependency>
 
 			<dependency>
 				<groupId>com.crossoverjie.netty</groupId>
 				<artifactId>cim-server-api</artifactId>
-				<version>1.0.0-SNAPSHOT</version>
+				<version>${project.version}</version>
 			</dependency>
 
 			<dependency>

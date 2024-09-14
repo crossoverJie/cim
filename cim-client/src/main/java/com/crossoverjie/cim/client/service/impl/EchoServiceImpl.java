@@ -1,12 +1,13 @@
 package com.crossoverjie.cim.client.service.impl;
 
 import com.crossoverjie.cim.client.config.AppConfiguration;
-import com.crossoverjie.cim.client.service.EchoService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
+import com.crossoverjie.cim.client.sdk.Client;
+import com.crossoverjie.cim.client.sdk.Event;
+import com.vdurmont.emoji.EmojiParser;
+import jakarta.annotation.Resource;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import org.springframework.stereotype.Service;
 
 /**
  * Function:
@@ -16,22 +17,45 @@ import java.time.LocalTime;
  * @since JDK 1.8
  */
 @Service
-public class EchoServiceImpl implements EchoService {
+public class EchoServiceImpl implements Event {
 
     private static final String PREFIX = "$";
 
-    @Autowired
+    @Resource
     private AppConfiguration appConfiguration;
 
     @Override
-    public void echo(String msg, Object... replace) {
-        String date = LocalDate.now().toString() + " " + LocalTime.now().withNano(0).toString();
+    public void debug(String msg, Object... replace) {
+        info(String.format("Debug[%s]", msg), replace);
+    }
+
+    @Override
+    public void info(String msg, Object... replace) {
+        // Make terminal can display the emoji
+        msg = EmojiParser.parseToUnicode(msg);
+        String date = LocalDate.now() + " " + LocalTime.now().withNano(0).toString();
 
         msg = "[" + date + "] \033[31;4m" + appConfiguration.getUserName() + PREFIX + "\033[0m" + " " + msg;
 
         String log = print(msg, replace);
 
         System.out.println(log);
+    }
+
+    @Override
+    public void warn(String msg, Object... replace) {
+        info(String.format("Warn##%s##", msg), replace);
+    }
+
+    @Override
+    public void error(String msg, Object... replace) {
+        info(String.format("Error!!%s!!", msg), replace);
+    }
+
+    @Override
+    public void fatal(Client client) {
+        info("{} fatal error, shutdown client", client.getAuth());
+        System.exit(-1);
     }
 
 

@@ -7,8 +7,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.util.concurrent.ThreadPoolExecutor;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
 import okhttp3.OkHttpClient;
 
@@ -18,8 +18,15 @@ import okhttp3.OkHttpClient;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ClientConfigurationData {
 
-    private long userId;
-    private String userName;
+    private Auth auth;
+
+    @Data
+    @AllArgsConstructor
+    @Builder
+    public static class Auth{
+        private long userId;
+        private String userName;
+    }
 
     private String routeUrl;
     private int loginRetryCount = 5;
@@ -29,7 +36,7 @@ public class ClientConfigurationData {
 
     @JsonIgnore
     private MessageListener messageListener =
-            (client, msg) -> System.out.printf("id:[%s] msg:[%s]%n \n", client.getUserId(), msg);
+            (client, msg) -> System.out.printf("id:[%s] msg:[%s]%n \n", client.getAuth(), msg);
 
     @JsonIgnore
     private OkHttpClient okHttpClient = new OkHttpClient();

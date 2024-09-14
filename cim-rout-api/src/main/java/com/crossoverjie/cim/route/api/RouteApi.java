@@ -46,7 +46,7 @@ public interface RouteApi {
      * @return
      * @throws Exception
      */
-    BaseResponse<NULLBody> offLine(ChatReqVO groupReqVO) throws Exception;
+    BaseResponse<NULLBody> offLine(ChatReqVO groupReqVO);
 
     /**
      * Login account

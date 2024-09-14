@@ -31,7 +31,7 @@ cim:
   callback:
     thread:
       queue:
-        size: 2
+        size: 1000
       pool:
         size: 2
   heartbeat:

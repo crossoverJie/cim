@@ -128,7 +128,7 @@ public class RouteController implements RouteApi {
     @RequestMapping(value = "offLine", method = RequestMethod.POST)
     @ResponseBody()
     @Override
-    public BaseResponse<NULLBody> offLine(@RequestBody ChatReqVO groupReqVO) throws Exception {
+    public BaseResponse<NULLBody> offLine(@RequestBody ChatReqVO groupReqVO) {
         BaseResponse<NULLBody> res = new BaseResponse();
 
         CIMUserInfo cimUserInfo = userInfoCacheService.loadUserInfoByUserId(groupReqVO.getUserId());

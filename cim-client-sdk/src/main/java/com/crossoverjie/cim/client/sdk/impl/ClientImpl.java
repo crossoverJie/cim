@@ -11,7 +11,6 @@ import com.crossoverjie.cim.common.exception.CIMException;
 import com.crossoverjie.cim.common.kit.HeartBeatHandler;
 import com.crossoverjie.cim.common.pojo.CIMUserInfo;
 import com.crossoverjie.cim.common.protocol.CIMRequestProto;
-import com.crossoverjie.cim.common.util.StringUtil;
 import com.crossoverjie.cim.route.api.vo.req.ChatReqVO;
 import com.crossoverjie.cim.route.api.vo.req.LoginReqVO;
 import com.crossoverjie.cim.route.api.vo.req.P2PReqVO;
@@ -66,13 +65,7 @@ public class ClientImpl extends ClientState implements Client {
 
     public ClientImpl(ClientConfigurationData conf) {
         this.conf = conf;
-        if (this.conf.getUserId() <= 0 || StringUtil.isEmpty(this.conf.getUserName())) {
-            throw new IllegalArgumentException("userId and userName must be set");
-        }
 
-        if (StringUtil.isEmpty(this.conf.getRouteUrl())) {
-            throw new IllegalArgumentException("routeUrl must be set");
-        }
         if (this.conf.getCallbackThreadPool() == null) {
             BlockingQueue<Runnable> queue = new LinkedBlockingQueue<>(CALLBACK_QUEUE_SIZE);
             ThreadFactory factory = new ThreadFactoryBuilder()
@@ -87,7 +80,7 @@ public class ClientImpl extends ClientState implements Client {
         routeManager = new RouteManager(conf.getRouteUrl(), conf.getOkHttpClient(), conf.getEvent());
 
         heartBeatPacket = CIMRequestProto.CIMReqProtocol.newBuilder()
-                .setRequestId(this.conf.getUserId())
+                .setRequestId(this.conf.getAuth().getUserId())
                 .setReqMsg("ping")
                 .setType(Constants.CommandType.PING)
                 .build();
@@ -131,7 +124,7 @@ public class ClientImpl extends ClientState implements Client {
             this.serverInfo = cimServer;
             future.complete(true);
         }, () -> {
-            this.conf.getEvent().error("Login fail!");
+            this.conf.getEvent().error("Login fail!, cannot get server info!");
             this.conf.getEvent().fatal(this);
             future.complete(false);
         });
@@ -144,8 +137,8 @@ public class ClientImpl extends ClientState implements Client {
      * @return Server info
      */
     private Optional<CIMServerResVO> userLogin(CompletableFuture<Boolean> future) {
-        LoginReqVO loginReqVO = new LoginReqVO(conf.getUserId(),
-                conf.getUserName());
+        LoginReqVO loginReqVO = new LoginReqVO(conf.getAuth().getUserId(),
+                conf.getAuth().getUserName());
 
         CIMServerResVO cimServer = null;
         try {
@@ -182,8 +175,8 @@ public class ClientImpl extends ClientState implements Client {
      */
     private void loginServer() {
         CIMRequestProto.CIMReqProtocol login = CIMRequestProto.CIMReqProtocol.newBuilder()
-                .setRequestId(this.conf.getUserId())
-                .setReqMsg(this.conf.getUserName())
+                .setRequestId(this.conf.getAuth().getUserId())
+                .setReqMsg(this.conf.getAuth().getUserName())
                 .setType(Constants.CommandType.LOGIN)
                 .build();
         channel.writeAndFlush(login)
@@ -205,7 +198,7 @@ public class ClientImpl extends ClientState implements Client {
         }
         this.serverInfo = null;
         // clear route information.
-        this.routeManager.offLine(this.getUserId());
+        this.routeManager.offLine(this.getConf().getAuth().getUserId());
 
         this.conf.getEvent().info("cim trigger reconnecting....");
 
@@ -226,24 +219,25 @@ public class ClientImpl extends ClientState implements Client {
             channel.close();
             channel = null;
         }
+        this.routeManager.offLine(this.getAuth().getUserId());
     }
 
     @Override
     public CompletableFuture<Void> sendP2PAsync(P2PReqVO p2PReqVO) {
         CompletableFuture<Void> future = new CompletableFuture<>();
-        p2PReqVO.setUserId(this.conf.getUserId());
+        p2PReqVO.setUserId(this.conf.getAuth().getUserId());
         return routeManager.sendP2P(future, p2PReqVO);
     }
 
     @Override
     public CompletableFuture<Void> sendGroupAsync(String msg) {
         // TODO: 2024/9/12 return messageId
-        return this.routeManager.sendGroupMsg(new ChatReqVO(this.conf.getUserId(), msg));
+        return this.routeManager.sendGroupMsg(new ChatReqVO(this.conf.getAuth().getUserId(), msg));
     }
 
     @Override
-    public Long getUserId() {
-        return this.conf.getUserId();
+    public ClientConfigurationData.Auth getAuth() {
+        return this.conf.getAuth();
     }
 
     @Override

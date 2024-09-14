@@ -69,7 +69,7 @@ public class RouteManager {
         });
     }
 
-    public void offLine(Long userId) throws Exception {
+    public void offLine(Long userId) {
         ChatReqVO vo = new ChatReqVO(userId, "offLine");
         routeApi.offLine(vo);
     }

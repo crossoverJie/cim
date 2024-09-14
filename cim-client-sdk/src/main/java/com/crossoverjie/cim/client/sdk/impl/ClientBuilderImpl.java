@@ -5,6 +5,7 @@ import com.crossoverjie.cim.client.sdk.ClientBuilder;
 import com.crossoverjie.cim.client.sdk.Event;
 import com.crossoverjie.cim.client.sdk.io.MessageListener;
 import com.crossoverjie.cim.client.sdk.io.ReconnectCheck;
+import com.crossoverjie.cim.common.util.StringUtil;
 import java.util.concurrent.ThreadPoolExecutor;
 import okhttp3.OkHttpClient;
 
@@ -26,19 +27,19 @@ public class ClientBuilderImpl implements ClientBuilder {
     }
 
     @Override
-    public ClientBuilder userId(Long userId) {
-        this.conf.setUserId(userId);
-        return this;
-    }
-
-    @Override
-    public ClientBuilder userName(String userName) {
-        this.conf.setUserName(userName);
+    public ClientBuilder auth(ClientConfigurationData.Auth auth) {
+        if (auth.getUserId() <= 0 || StringUtil.isEmpty(auth.getUserName())){
+            throw new IllegalArgumentException("userId and userName must be set");
+        }
+        this.conf.setAuth(auth);
         return this;
     }
 
     @Override
     public ClientBuilder routeUrl(String routeUrl) {
+        if (StringUtil.isEmpty(routeUrl)) {
+            throw new IllegalArgumentException("routeUrl must be set");
+        }
         this.conf.setRouteUrl(routeUrl);
         return this;
     }

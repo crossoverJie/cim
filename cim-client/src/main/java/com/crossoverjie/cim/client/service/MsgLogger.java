@@ -10,7 +10,7 @@ package com.crossoverjie.cim.client.service;
 public interface MsgLogger {
 
     /**
-     * 异步写入消息
+     * write log
      * @param msg
      */
     void log(String msg) ;

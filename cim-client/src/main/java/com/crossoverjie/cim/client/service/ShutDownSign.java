@@ -10,11 +10,11 @@ import org.springframework.stereotype.Component;
  * @since JDK 1.8
  */
 @Component
-public class ShutDownMsg {
+public class ShutDownSign {
     private boolean isCommand ;
 
     /**
-     * 置为用户主动退出状态
+     * Set user exit sign.
      */
     public void shutdown(){
         isCommand = true ;

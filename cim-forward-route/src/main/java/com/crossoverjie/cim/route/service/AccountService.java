@@ -69,5 +69,5 @@ public interface AccountService {
      * @param userId 下线用户ID
      * @throws Exception
      */
-    void offLine(Long userId) throws Exception;
+    void offLine(Long userId);
 }

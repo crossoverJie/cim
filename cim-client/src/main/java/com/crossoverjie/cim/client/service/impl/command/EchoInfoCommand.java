@@ -1,9 +1,9 @@
 package com.crossoverjie.cim.client.service.impl.command;
 
-import com.crossoverjie.cim.client.service.EchoService;
+import com.crossoverjie.cim.client.sdk.Client;
+import com.crossoverjie.cim.client.sdk.Event;
 import com.crossoverjie.cim.client.service.InnerCommand;
-import com.crossoverjie.cim.client.service.impl.ClientInfo;
-import org.springframework.beans.factory.annotation.Autowired;
+import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
 
 /**
@@ -16,16 +16,16 @@ import org.springframework.stereotype.Service;
 @Service
 public class EchoInfoCommand implements InnerCommand {
 
-    @Autowired
-    private ClientInfo clientInfo;
+    @Resource
+    private Client client;
 
-    @Autowired
-    private EchoService echoService ;
+    @Resource
+    private Event event ;
 
     @Override
     public void process(String msg) {
-        echoService.echo("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
-        echoService.echo("client info={}", clientInfo.get().getUserName());
-        echoService.echo("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+        event.info("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+        event.info("client info={}", client.getAuth());
+        event.info("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
     }
 }

@@ -1,12 +1,12 @@
 package com.crossoverjie.cim.client.service.impl.command;
 
-import com.crossoverjie.cim.client.service.EchoService;
+import com.crossoverjie.cim.client.sdk.Client;
+import com.crossoverjie.cim.client.sdk.Event;
 import com.crossoverjie.cim.client.service.InnerCommand;
-import com.crossoverjie.cim.client.service.RouteRequest;
 import com.crossoverjie.cim.common.pojo.CIMUserInfo;
+import jakarta.annotation.Resource;
 import java.util.Set;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /**
@@ -20,22 +20,22 @@ import org.springframework.stereotype.Service;
 @Service
 public class PrintOnlineUsersCommand implements InnerCommand {
 
-    @Autowired
-    private RouteRequest routeRequest ;
+    @Resource
+    private Client client ;
 
-    @Autowired
-    private EchoService echoService ;
+    @Resource
+    private Event event ;
 
     @Override
     public void process(String msg) {
         try {
-            Set<CIMUserInfo> onlineUsers = routeRequest.onlineUsers();
+            Set<CIMUserInfo> onlineUsers = client.getOnlineUser();
 
-            echoService.echo("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+            event.info("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
             for (CIMUserInfo onlineUser : onlineUsers) {
-                echoService.echo("userId={}=====userName={}",onlineUser.getUserId(),onlineUser.getUserName());
+                event.info("userId={}=====userName={}",onlineUser.getUserId(),onlineUser.getUserName());
             }
-            echoService.echo("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+            event.info("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
 
         } catch (Exception e) {
             log.error("Exception", e);

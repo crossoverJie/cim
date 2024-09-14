@@ -64,7 +64,7 @@ public class UserInfoCacheServiceImpl implements UserInfoCacheService {
     }
 
     @Override
-    public void removeLoginStatus(Long userId) throws Exception {
+    public void removeLoginStatus(Long userId) {
         redisTemplate.opsForSet().remove(LOGIN_STATUS_PREFIX,userId.toString()) ;
     }
 

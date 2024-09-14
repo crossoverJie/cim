@@ -33,13 +33,6 @@
     </dependency>
 
     <dependency>
-      <groupId>com.crossoverjie.netty</groupId>
-      <artifactId>cim-client</artifactId>
-      <version>${project.version}</version>
-      <scope>compile</scope>
-    </dependency>
-
-    <dependency>
       <groupId>org.junit.vintage</groupId>
       <artifactId>junit-vintage-engine</artifactId>
       <scope>test</scope>

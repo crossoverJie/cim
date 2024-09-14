@@ -40,7 +40,7 @@ public class CIMClientHandle extends SimpleChannelInboundHandler<CIMResponseProt
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) {
-        ClientImpl.getClient().getConf().getEvent().info("ChannelActive");
+        ClientImpl.getClient().getConf().getEvent().debug("ChannelActive");
         ClientImpl.getClient().setState(ClientState.State.Ready);
     }
 
