@@ -392,6 +392,7 @@ public class ClientTest extends AbstractRouteBaseTest {
         client1.close();
         ClientState.State state1 = client1.getState();
         Assertions.assertEquals(ClientState.State.Closed, state1);
+        super.stopSingle();
     }
 
 }
