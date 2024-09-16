@@ -1,12 +1,9 @@
 package com.crossoverjie.cim.client.scanner;
 
-import com.crossoverjie.cim.client.config.AppConfiguration;
-import com.crossoverjie.cim.client.service.EchoService;
+import com.crossoverjie.cim.client.sdk.Event;
 import com.crossoverjie.cim.client.service.MsgHandle;
 import com.crossoverjie.cim.client.service.MsgLogger;
 import com.crossoverjie.cim.client.util.SpringBeanFactory;
-import com.vdurmont.emoji.EmojiParser;
-
 import java.util.Scanner;
 import lombok.SneakyThrows;
 
@@ -20,22 +17,15 @@ import lombok.SneakyThrows;
 public class Scan implements Runnable {
 
 
-    /**
-     * 系统参数
-     */
-    private AppConfiguration configuration;
+    private final MsgHandle msgHandle ;
 
-    private MsgHandle msgHandle ;
-
-    private MsgLogger msgLogger ;
-
-    private EchoService echoService ;
+    private final MsgLogger msgLogger ;
+    private final Event event ;
 
     public Scan() {
-        this.configuration = SpringBeanFactory.getBean(AppConfiguration.class);
         this.msgHandle = SpringBeanFactory.getBean(MsgHandle.class) ;
         this.msgLogger = SpringBeanFactory.getBean(MsgLogger.class) ;
-        this.echoService = SpringBeanFactory.getBean(EchoService.class) ;
+        this.event = SpringBeanFactory.getBean(Event.class) ;
     }
 
     @SneakyThrows
@@ -45,23 +35,21 @@ public class Scan implements Runnable {
         while (true) {
             String msg = sc.nextLine();
 
-            //检查消息
             if (msgHandle.checkMsg(msg)) {
                 continue;
             }
 
-            //系统内置命令
+            // internal cmd
             if (msgHandle.innerCommand(msg)){
                 continue;
             }
 
-            //真正的发送消息
             msgHandle.sendMsg(msg) ;
 
-            //写入聊天记录
+            // write to log
             msgLogger.log(msg) ;
 
-            echoService.echo(EmojiParser.parseToUnicode(msg));
+            event.info(msg);
         }
     }
 

@@ -4,6 +4,7 @@ import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Function:一致性 hash 算法抽象类
@@ -20,6 +21,13 @@ public abstract class AbstractConsistentHash {
      * @param value
      */
     protected abstract void add(long key,String value);
+
+    /**
+     * remove node
+     * @param value node
+     * @return current data
+     */
+    protected abstract Map<String,String> remove(String value);
 
     /**
      * Clear old data in the structure

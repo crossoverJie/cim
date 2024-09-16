@@ -4,6 +4,10 @@ import com.crossoverjie.cim.common.enums.StatusEnum;
 import com.crossoverjie.cim.common.exception.CIMException;
 import com.google.common.annotations.VisibleForTesting;
 
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
@@ -15,7 +19,7 @@ import java.util.TreeMap;
  * @since JDK 1.8
  */
 public class TreeMapConsistentHash extends AbstractConsistentHash {
-    private TreeMap<Long,String> treeMap = new TreeMap<Long, String>() ;
+    private final TreeMap<Long,String> treeMap = new TreeMap<Long, String>() ;
 
     /**
      * 虚拟节点数量
@@ -29,6 +33,16 @@ public class TreeMapConsistentHash extends AbstractConsistentHash {
             treeMap.put(hash,value);
         }
         treeMap.put(key, value);
+    }
+
+    @Override
+    protected Map<String,String> remove(String value) {
+        treeMap.entrySet().removeIf(next -> next.getValue().equals(value));
+        Map<String, String> result = new HashMap<>(treeMap.entrySet().size());
+        for (Map.Entry<Long, String> longStringEntry : treeMap.entrySet()) {
+            result.put(longStringEntry.getValue(),"");
+        }
+        return result;
     }
 
     @Override
@@ -48,7 +62,6 @@ public class TreeMapConsistentHash extends AbstractConsistentHash {
     @Override
     public String getFirstNodeValue(String value) {
         long hash = super.hash(value);
-        System.out.println("value=" + value + " hash = " + hash);
         SortedMap<Long, String> last = treeMap.tailMap(hash);
         if (!last.isEmpty()) {
             return last.get(last.firstKey());

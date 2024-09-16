@@ -1,0 +1,49 @@
+spring:
+  application:
+    name:
+      cim-forward-route
+  data:
+    redis:
+      host: 127.0.0.1
+      port: 6379
+      jedis:
+        pool:
+          max-active: 100
+          max-idle: 100
+          max-wait: 1000
+          min-idle: 10
+# web port
+server:
+  port: 8083
+
+logging:
+  level:
+    root: info
+
+  # enable swagger
+springdoc:
+  swagger-ui:
+    enabled: true
+
+app:
+  zk:
+    connect:
+      timeout: 30000
+    root: /route
+
+  # route strategy
+  #app.route.way=com.crossoverjie.cim.common.route.algorithm.loop.LoopHandle
+
+  # route strategy
+  #app.route.way=com.crossoverjie.cim.common.route.algorithm.random.RandomHandle
+
+  # route strategy
+  route:
+    way:
+      handler: com.crossoverjie.cim.common.route.algorithm.loop.LoopHandle
+
+  #app.route.way.consitenthash=com.crossoverjie.cim.common.route.algorithm.consistenthash.SortArrayMapConsistentHash
+
+      consitenthash: com.crossoverjie.cim.common.route.algorithm.consistenthash.TreeMapConsistentHash
+
+

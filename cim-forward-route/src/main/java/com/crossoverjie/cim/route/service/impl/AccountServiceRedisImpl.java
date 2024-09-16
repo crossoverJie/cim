@@ -85,7 +85,7 @@ public class AccountServiceRedisImpl implements AccountService {
 
         //登录成功，保存登录状态
         boolean status = userInfoCacheService.saveAndCheckUserLoginStatus(loginReqVO.getUserId());
-        if (status == false) {
+        if (!status) {
             //重复登录
             return StatusEnum.REPEAT_LOGIN;
         }
@@ -156,7 +156,7 @@ public class AccountServiceRedisImpl implements AccountService {
     }
 
     @Override
-    public void offLine(Long userId) throws Exception {
+    public void offLine(Long userId) {
 
         // TODO: 2019-01-21 改为一个原子命令，以防数据一致性
 

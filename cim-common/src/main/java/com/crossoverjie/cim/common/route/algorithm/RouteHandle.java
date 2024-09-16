@@ -1,5 +1,6 @@
 package com.crossoverjie.cim.common.route.algorithm;
 
+import com.crossoverjie.cim.common.pojo.RouteInfo;
 import java.util.List;
 
 /**
@@ -17,5 +18,8 @@ public interface RouteHandle {
      * @param key
      * @return
      */
+    // TODO: 2024/9/13 Use List<RouteInfo> instead of List<String> to make the code more type-safe
     String routeServer(List<String> values,String key) ;
+
+    List<String> removeExpireServer(RouteInfo routeInfo);
 }

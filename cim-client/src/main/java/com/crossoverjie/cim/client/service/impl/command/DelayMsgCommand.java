@@ -1,11 +1,11 @@
 package com.crossoverjie.cim.client.service.impl.command;
 
-import com.crossoverjie.cim.client.service.EchoService;
+import com.crossoverjie.cim.client.sdk.Event;
 import com.crossoverjie.cim.client.service.InnerCommand;
 import com.crossoverjie.cim.client.service.MsgHandle;
 import com.crossoverjie.cim.common.data.construct.RingBufferWheel;
-import com.vdurmont.emoji.EmojiParser;
-import org.springframework.beans.factory.annotation.Autowired;
+import jakarta.annotation.Resource;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 /**
@@ -16,31 +16,32 @@ import org.springframework.stereotype.Service;
  * @since JDK 1.8
  */
 @Service
+@Slf4j
 public class DelayMsgCommand implements InnerCommand {
 
-    @Autowired
-    private EchoService echoService ;
+    @Resource
+    private Event event;
 
-    @Autowired
+    @Resource
     private MsgHandle msgHandle ;
 
-    @Autowired
+    @Resource
     private RingBufferWheel ringBufferWheel ;
 
     @Override
     public void process(String msg) {
         if (msg.split(" ").length <=2){
-            echoService.echo("incorrect commond, :delay [msg] [delayTime]") ;
+            event.info("incorrect commond, :delay [msg] [delayTime]") ;
             return ;
         }
 
         String message = msg.split(" ")[1] ;
-        Integer delayTime = Integer.valueOf(msg.split(" ")[2]);
+        int delayTime = Integer.parseInt(msg.split(" ")[2]);
 
         RingBufferWheel.Task task = new DelayMsgJob(message) ;
         task.setKey(delayTime);
         ringBufferWheel.addTask(task);
-        echoService.echo(EmojiParser.parseToUnicode(msg));
+        event.info(msg);
     }
 
 
@@ -55,7 +56,11 @@ public class DelayMsgCommand implements InnerCommand {
 
         @Override
         public void run() {
-            msgHandle.sendMsg(msg);
+            try {
+                msgHandle.sendMsg(msg);
+            } catch (Exception e) {
+                log.error("Delay message send error",e);
+            }
         }
     }
 }

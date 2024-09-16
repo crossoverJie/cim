@@ -49,7 +49,7 @@ public class BeanConfig {
                 .retryPolicy(retryPolicy)
                 .build());
         metaStore.listenServerList((root, currentChildren) -> {
-            log.info("Server list change, root=[{}], currentChildren=[{}]", root, currentChildren);
+            log.info("Server list change, root=[{}], current server list=[{}]", root, currentChildren);
         });
         return metaStore;
     }

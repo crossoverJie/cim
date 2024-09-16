@@ -32,9 +32,8 @@ public interface UserInfoCacheService {
     /**
      * 清除用户的登录状态
      * @param userId
-     * @throws Exception
      */
-    void removeLoginStatus(Long userId) throws Exception ;
+    void removeLoginStatus(Long userId) ;
 
 
     /**
