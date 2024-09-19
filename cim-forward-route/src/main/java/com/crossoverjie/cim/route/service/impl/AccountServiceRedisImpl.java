@@ -150,9 +150,9 @@ public class AccountServiceRedisImpl implements AccountService {
         CIMUserInfo cimUserInfo = userInfoCacheService.loadUserInfoByUserId(sendUserId);
 
         String url = "http://" + cimServerResVO.getIp() + ":" + cimServerResVO.getHttpPort();
-        ServerApi serverApi = RpcProxyManager.create(ServerApi.class, url, okHttpClient);
+        ServerApi serverApi = RpcProxyManager.create(ServerApi.class, okHttpClient);
         SendMsgReqVO vo = new SendMsgReqVO(cimUserInfo.getUserName() + ":" + groupReqVO.getMsg(), groupReqVO.getUserId());
-        serverApi.sendMsg(vo);
+        serverApi.sendMsg(vo, url);
     }
 
     @Override

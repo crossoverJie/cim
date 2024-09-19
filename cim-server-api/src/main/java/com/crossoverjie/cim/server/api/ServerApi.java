@@ -1,5 +1,6 @@
 package com.crossoverjie.cim.server.api;
 
+import com.crossoverjie.cim.common.core.proxy.DynamicUrl;
 import com.crossoverjie.cim.common.res.BaseResponse;
 import com.crossoverjie.cim.server.api.vo.req.SendMsgReqVO;
 import com.crossoverjie.cim.server.api.vo.res.SendMsgResVO;
@@ -19,5 +20,5 @@ public interface ServerApi {
      * @return
      * @throws Exception
      */
-    BaseResponse<SendMsgResVO> sendMsg(SendMsgReqVO sendMsgReqVO) throws Exception;
+    BaseResponse<SendMsgResVO> sendMsg(SendMsgReqVO sendMsgReqVO, @DynamicUrl String url) throws Exception;
 }

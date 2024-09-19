@@ -3,17 +3,16 @@ package com.crossoverjie.cim.common.core.proxy;
 import static com.crossoverjie.cim.common.enums.StatusEnum.VALIDATION_FAIL;
 import com.alibaba.fastjson.JSONObject;
 import com.crossoverjie.cim.common.exception.CIMException;
-import com.crossoverjie.cim.common.res.BaseResponse;
 import com.crossoverjie.cim.common.util.HttpClient;
 import com.crossoverjie.cim.common.util.StringUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Proxy;
 import java.lang.reflect.Type;
-import java.lang.reflect.TypeVariable;
 import java.net.URI;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.OkHttpClient;
@@ -46,6 +45,10 @@ public final class RpcProxyManager<T> {
         this.okHttpClient = okHttpClient;
     }
 
+    private RpcProxyManager(Class<T> clazz, OkHttpClient okHttpClient) {
+        this(clazz, "", okHttpClient);
+    }
+
     /**
      * Default private constructor.
      */
@@ -63,6 +66,10 @@ public final class RpcProxyManager<T> {
      */
     public static <T> T create(Class<T> clazz, String url, OkHttpClient okHttpClient) {
         return new RpcProxyManager<>(clazz, url, okHttpClient).getInstance();
+    }
+
+    public static <T> T create(Class<T> clazz, OkHttpClient okHttpClient) {
+        return new RpcProxyManager<>(clazz, okHttpClient).getInstance();
     }
 
     /**
@@ -99,26 +106,47 @@ public final class RpcProxyManager<T> {
             if (annotation != null && StringUtil.isNotEmpty(annotation.url())) {
                 serverUrl = url + "/" + annotation.url();
             }
+            URI serverUri = new URI(serverUrl);
+            serverUrl = serverUri.normalize().toString();
+
+            Object para = null;
+            Class<?> parameterType = null;
+            for (int i = 0; i < method.getParameterAnnotations().length; i++) {
+                Annotation[] annotations = method.getParameterAnnotations()[i];
+                if (annotations.length == 0) {
+                    para = args[i];
+                    parameterType = method.getParameterTypes()[i];
+                }
+
+                for (Annotation ann : annotations) {
+                    if (ann instanceof DynamicUrl) {
+                        if (args[i] instanceof String) {
+                            serverUrl = (String) args[i];
+                            if (((DynamicUrl) ann).useMethodEndpoint()) {
+                                serverUrl = serverUrl + "/" + method.getName();
+                            }
+                            break;
+                        } else {
+                            throw new CIMException("DynamicUrl must be String type");
+                        }
+                    }
+                }
+            }
+
             try {
                 if (annotation != null && annotation.method().equals(Request.GET)) {
                     result = HttpClient.get(okHttpClient, serverUrl);
                 } else {
-                    JSONObject jsonObject = new JSONObject();
-                    URI serverUri = new URI(serverUrl);
-                    serverUrl = serverUri.normalize().toString();
 
-                    if (args != null && args.length > 1) {
+                    if (args == null || args.length > 2 || para == null || parameterType == null) {
                         throw new IllegalArgumentException(VALIDATION_FAIL.message());
                     }
-
-                    if (method.getParameterTypes().length > 0) {
-                        Object para = args[0];
-                        Class<?> parameterType = method.getParameterTypes()[0];
-                        for (Field field : parameterType.getDeclaredFields()) {
-                            field.setAccessible(true);
-                            jsonObject.put(field.getName(), field.get(para));
-                        }
+                    JSONObject jsonObject = new JSONObject();
+                    for (Field field : parameterType.getDeclaredFields()) {
+                        field.setAccessible(true);
+                        jsonObject.put(field.getName(), field.get(para));
                     }
+
                     result = HttpClient.post(okHttpClient, jsonObject.toString(), serverUrl);
                 }
                 if (method.getReturnType() == void.class) {
@@ -131,7 +159,8 @@ public final class RpcProxyManager<T> {
                     return objectMapper.readValue(json, method.getReturnType());
                 } else {
                     return objectMapper.readValue(json, objectMapper.getTypeFactory()
-                            .constructParametricType(method.getReturnType(), objectMapper.getTypeFactory().constructType(genericTypeOfBaseResponse)));
+                            .constructParametricType(method.getReturnType(),
+                                    objectMapper.getTypeFactory().constructType(genericTypeOfBaseResponse)));
                 }
             } finally {
                 if (result != null) {
@@ -166,35 +195,35 @@ public final class RpcProxyManager<T> {
      * @throws ClassNotFoundException if the class of the generic type is not found
     private Class<?> getBaseResponseGeneric(Method declaredMethod) throws ClassNotFoundException {
 
-        Type returnType = declaredMethod.getGenericReturnType();
+    Type returnType = declaredMethod.getGenericReturnType();
 
-        // check if the return type is a parameterized type
-        if (returnType instanceof ParameterizedType parameterizedType) {
+    // check if the return type is a parameterized type
+    if (returnType instanceof ParameterizedType parameterizedType) {
 
-            Type[] actualTypeArguments = parameterizedType.getActualTypeArguments();
+    Type[] actualTypeArguments = parameterizedType.getActualTypeArguments();
 
-            for (Type typeArgument : actualTypeArguments) {
-                // BaseResponse only has one generic type
-                return getClass(typeArgument);
-            }
-        }
+    for (Type typeArgument : actualTypeArguments) {
+    // BaseResponse only has one generic type
+    return getClass(typeArgument);
+    }
+    }
 
-        return null;
+    return null;
     }
 
     public static Class<?> getClass(Type type) throws ClassNotFoundException {
-        if (type instanceof Class<?>) {
-            // 普通类型，直接返回
-            return (Class<?>) type;
-        } else if (type instanceof ParameterizedType) {
-            // 参数化类型，返回原始类型
-            return getClass(((ParameterizedType) type).getRawType());
-        } else if (type instanceof TypeVariable<?>) {
-            // 类型变量，无法在运行时获取具体类型
-            return Object.class;
-        } else {
-            throw new ClassNotFoundException("无法处理的类型: " + type.toString());
-        }
+    if (type instanceof Class<?>) {
+    // 普通类型，直接返回
+    return (Class<?>) type;
+    } else if (type instanceof ParameterizedType) {
+    // 参数化类型，返回原始类型
+    return getClass(((ParameterizedType) type).getRawType());
+    } else if (type instanceof TypeVariable<?>) {
+    // 类型变量，无法在运行时获取具体类型
+    return Object.class;
+    } else {
+    throw new ClassNotFoundException("无法处理的类型: " + type.toString());
+    }
     }*/
 
 }
