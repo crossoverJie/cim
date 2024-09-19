@@ -1,5 +1,6 @@
 package com.crossoverjie.cim.common.core.proxy;
 
+import com.crossoverjie.cim.common.exception.CIMException;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.io.Serializable;
@@ -39,6 +40,25 @@ class RpcProxyManagerTest {
     }
 
     @Test
+    public void testUrl() {
+        OkHttpClient client = new OkHttpClient();
+        String url = "http://echo.free.beeceptor.com/sample-request?author=beeceptor";
+        Echo echo = RpcProxyManager.create(Echo.class, client);
+        EchoRequest request = new EchoRequest();
+        request.setName("crossoverJie");
+        request.setAge(18);
+        request.setCity("shenzhen");
+        EchoResponse response = echo.echoTarget(url,request);
+        Assertions.assertEquals(response.getParsedBody().getName(), "crossoverJie");
+        Assertions.assertEquals(response.getParsedBody().getAge(), 18);
+        Assertions.assertEquals(response.getParsedBody().getCity(), "shenzhen");
+        response = echo.echoTarget(request, url);
+        Assertions.assertEquals(response.getParsedBody().getName(), "crossoverJie");
+
+        Assertions.assertThrows(CIMException.class, () -> echo.echoTarget(request));
+    }
+
+    @Test
     public void testFail() {
         OkHttpClient client = new OkHttpClient();
         String url = "http://echo.free.beeceptor.com";
@@ -47,7 +67,7 @@ class RpcProxyManagerTest {
         request.setName("crossoverJie");
         request.setAge(18);
         request.setCity("shenzhen");
-        Assertions.assertThrows(IllegalArgumentException.class, () -> echo.fail(request, "test"));
+        Assertions.assertThrows(IllegalArgumentException.class, () -> echo.fail(request, "test",""));
     }
 
 
@@ -67,8 +87,14 @@ class RpcProxyManagerTest {
     interface Echo {
         @Request(url = "sample-request?author=beeceptor")
         EchoResponse echo(EchoRequest message);
+
         @Request(url = "sample-request?author=beeceptor")
-        EchoResponse fail(EchoRequest message, String s);
+        EchoResponse echoTarget(@DynamicUrl(useMethodEndpoint = false) String url,  EchoRequest message);
+        EchoResponse echoTarget(EchoRequest message, @DynamicUrl(useMethodEndpoint = false) String url);
+        @Request(url = "sample-request?author=beeceptor")
+        EchoResponse echoTarget(@DynamicUrl EchoRequest message);
+        @Request(url = "sample-request?author=beeceptor")
+        EchoResponse fail(EchoRequest message, String s, String s1);
 
         @Request(url = "sample-request?author=beeceptor")
         EchoGeneric<EchoResponse.HeadersDTO> echoGeneric(EchoRequest message);

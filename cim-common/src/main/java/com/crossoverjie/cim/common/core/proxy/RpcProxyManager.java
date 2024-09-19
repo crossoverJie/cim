@@ -3,17 +3,16 @@ package com.crossoverjie.cim.common.core.proxy;
 import static com.crossoverjie.cim.common.enums.StatusEnum.VALIDATION_FAIL;
 import com.alibaba.fastjson.JSONObject;
 import com.crossoverjie.cim.common.exception.CIMException;
-import com.crossoverjie.cim.common.res.BaseResponse;
 import com.crossoverjie.cim.common.util.HttpClient;
 import com.crossoverjie.cim.common.util.StringUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Proxy;
 import java.lang.reflect.Type;
-import java.lang.reflect.TypeVariable;
 import java.net.URI;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.OkHttpClient;
@@ -45,6 +44,9 @@ public final class RpcProxyManager<T> {
         this.url = url;
         this.okHttpClient = okHttpClient;
     }
+    private RpcProxyManager(Class<T> clazz,OkHttpClient okHttpClient) {
+        this(clazz,"",okHttpClient);
+    }
 
     /**
      * Default private constructor.
@@ -63,6 +65,10 @@ public final class RpcProxyManager<T> {
      */
     public static <T> T create(Class<T> clazz, String url, OkHttpClient okHttpClient) {
         return new RpcProxyManager<>(clazz, url, okHttpClient).getInstance();
+    }
+
+    public static <T> T create(Class<T> clazz, OkHttpClient okHttpClient) {
+        return new RpcProxyManager<>(clazz, okHttpClient).getInstance();
     }
 
     /**
@@ -99,26 +105,47 @@ public final class RpcProxyManager<T> {
             if (annotation != null && StringUtil.isNotEmpty(annotation.url())) {
                 serverUrl = url + "/" + annotation.url();
             }
+            URI serverUri = new URI(serverUrl);
+            serverUrl = serverUri.normalize().toString();
+
+            Object para = null;
+            Class<?> parameterType = null;
+            for (int i = 0; i < method.getParameterAnnotations().length; i++) {
+                Annotation[] annotations = method.getParameterAnnotations()[i];
+                if (annotations.length == 0){
+                    para = args[i];
+                    parameterType= method.getParameterTypes()[i];
+                }
+
+                for (Annotation ann : annotations) {
+                    if (ann instanceof DynamicUrl) {
+                        if (args[i] instanceof String){
+                            serverUrl = (String) args[i];
+                            if (((DynamicUrl) ann).useMethodEndpoint()){
+                                serverUrl = serverUrl + "/" + method.getName();
+                            }
+                            break;
+                        }else {
+                            throw new CIMException("DynamicUrl must be String type");
+                        }
+                    }
+                }
+            }
+
             try {
                 if (annotation != null && annotation.method().equals(Request.GET)) {
                     result = HttpClient.get(okHttpClient, serverUrl);
                 } else {
-                    JSONObject jsonObject = new JSONObject();
-                    URI serverUri = new URI(serverUrl);
-                    serverUrl = serverUri.normalize().toString();
 
-                    if (args != null && args.length > 1) {
+                    if ( args == null || args.length > 2 || para == null || parameterType == null) {
                         throw new IllegalArgumentException(VALIDATION_FAIL.message());
                     }
-
-                    if (method.getParameterTypes().length > 0) {
-                        Object para = args[0];
-                        Class<?> parameterType = method.getParameterTypes()[0];
-                        for (Field field : parameterType.getDeclaredFields()) {
-                            field.setAccessible(true);
-                            jsonObject.put(field.getName(), field.get(para));
-                        }
+                    JSONObject jsonObject = new JSONObject();
+                    for (Field field : parameterType.getDeclaredFields()) {
+                        field.setAccessible(true);
+                        jsonObject.put(field.getName(), field.get(para));
                     }
+
                     result = HttpClient.post(okHttpClient, jsonObject.toString(), serverUrl);
                 }
                 if (method.getReturnType() == void.class) {
