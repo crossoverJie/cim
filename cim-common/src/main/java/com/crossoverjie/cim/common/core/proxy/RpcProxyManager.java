@@ -44,8 +44,9 @@ public final class RpcProxyManager<T> {
         this.url = url;
         this.okHttpClient = okHttpClient;
     }
-    private RpcProxyManager(Class<T> clazz,OkHttpClient okHttpClient) {
-        this(clazz,"",okHttpClient);
+
+    private RpcProxyManager(Class<T> clazz, OkHttpClient okHttpClient) {
+        this(clazz, "", okHttpClient);
     }
 
     /**
@@ -112,20 +113,20 @@ public final class RpcProxyManager<T> {
             Class<?> parameterType = null;
             for (int i = 0; i < method.getParameterAnnotations().length; i++) {
                 Annotation[] annotations = method.getParameterAnnotations()[i];
-                if (annotations.length == 0){
+                if (annotations.length == 0) {
                     para = args[i];
-                    parameterType= method.getParameterTypes()[i];
+                    parameterType = method.getParameterTypes()[i];
                 }
 
                 for (Annotation ann : annotations) {
                     if (ann instanceof DynamicUrl) {
-                        if (args[i] instanceof String){
+                        if (args[i] instanceof String) {
                             serverUrl = (String) args[i];
-                            if (((DynamicUrl) ann).useMethodEndpoint()){
+                            if (((DynamicUrl) ann).useMethodEndpoint()) {
                                 serverUrl = serverUrl + "/" + method.getName();
                             }
                             break;
-                        }else {
+                        } else {
                             throw new CIMException("DynamicUrl must be String type");
                         }
                     }
@@ -137,7 +138,7 @@ public final class RpcProxyManager<T> {
                     result = HttpClient.get(okHttpClient, serverUrl);
                 } else {
 
-                    if ( args == null || args.length > 2 || para == null || parameterType == null) {
+                    if (args == null || args.length > 2 || para == null || parameterType == null) {
                         throw new IllegalArgumentException(VALIDATION_FAIL.message());
                     }
                     JSONObject jsonObject = new JSONObject();
@@ -158,7 +159,8 @@ public final class RpcProxyManager<T> {
                     return objectMapper.readValue(json, method.getReturnType());
                 } else {
                     return objectMapper.readValue(json, objectMapper.getTypeFactory()
-                            .constructParametricType(method.getReturnType(), objectMapper.getTypeFactory().constructType(genericTypeOfBaseResponse)));
+                            .constructParametricType(method.getReturnType(),
+                                    objectMapper.getTypeFactory().constructType(genericTypeOfBaseResponse)));
                 }
             } finally {
                 if (result != null) {
@@ -193,35 +195,35 @@ public final class RpcProxyManager<T> {
      * @throws ClassNotFoundException if the class of the generic type is not found
     private Class<?> getBaseResponseGeneric(Method declaredMethod) throws ClassNotFoundException {
 
-        Type returnType = declaredMethod.getGenericReturnType();
+    Type returnType = declaredMethod.getGenericReturnType();
 
-        // check if the return type is a parameterized type
-        if (returnType instanceof ParameterizedType parameterizedType) {
+    // check if the return type is a parameterized type
+    if (returnType instanceof ParameterizedType parameterizedType) {
 
-            Type[] actualTypeArguments = parameterizedType.getActualTypeArguments();
+    Type[] actualTypeArguments = parameterizedType.getActualTypeArguments();
 
-            for (Type typeArgument : actualTypeArguments) {
-                // BaseResponse only has one generic type
-                return getClass(typeArgument);
-            }
-        }
+    for (Type typeArgument : actualTypeArguments) {
+    // BaseResponse only has one generic type
+    return getClass(typeArgument);
+    }
+    }
 
-        return null;
+    return null;
     }
 
     public static Class<?> getClass(Type type) throws ClassNotFoundException {
-        if (type instanceof Class<?>) {
-            // 普通类型，直接返回
-            return (Class<?>) type;
-        } else if (type instanceof ParameterizedType) {
-            // 参数化类型，返回原始类型
-            return getClass(((ParameterizedType) type).getRawType());
-        } else if (type instanceof TypeVariable<?>) {
-            // 类型变量，无法在运行时获取具体类型
-            return Object.class;
-        } else {
-            throw new ClassNotFoundException("无法处理的类型: " + type.toString());
-        }
+    if (type instanceof Class<?>) {
+    // 普通类型，直接返回
+    return (Class<?>) type;
+    } else if (type instanceof ParameterizedType) {
+    // 参数化类型，返回原始类型
+    return getClass(((ParameterizedType) type).getRawType());
+    } else if (type instanceof TypeVariable<?>) {
+    // 类型变量，无法在运行时获取具体类型
+    return Object.class;
+    } else {
+    throw new ClassNotFoundException("无法处理的类型: " + type.toString());
+    }
     }*/
 
 }
