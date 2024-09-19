@@ -55,6 +55,11 @@ class RpcProxyManagerTest {
         response = echo.echoTarget(request, url);
         Assertions.assertEquals(response.getParsedBody().getName(), "crossoverJie");
 
+        String req = "/request";
+        response = echo.request("http://echo.free.beeceptor.com", request);
+        Assertions.assertEquals(response.getPath(), req);
+        Assertions.assertEquals(response.getParsedBody().getAge(), 18);
+
         Assertions.assertThrows(CIMException.class, () -> echo.echoTarget(request));
     }
 
@@ -93,6 +98,7 @@ class RpcProxyManagerTest {
         EchoResponse echoTarget(EchoRequest message, @DynamicUrl(useMethodEndpoint = false) String url);
         @Request(url = "sample-request?author=beeceptor")
         EchoResponse echoTarget(@DynamicUrl EchoRequest message);
+        EchoResponse request(@DynamicUrl() String url, EchoRequest message);
         @Request(url = "sample-request?author=beeceptor")
         EchoResponse fail(EchoRequest message, String s, String s1);
 
