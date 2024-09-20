@@ -55,6 +55,9 @@ public class AccountServiceRedisImpl implements AccountService {
     @Autowired
     private OkHttpClient okHttpClient;
 
+    @Autowired
+    private ServerApi serverApi;
+
     @Override
     public RegisterInfoResVO register(RegisterInfoResVO info) {
         String key = ACCOUNT_PREFIX + info.getUserId();
@@ -153,7 +156,7 @@ public class AccountServiceRedisImpl implements AccountService {
         CIMUserInfo cimUserInfo = userInfoCacheService.loadUserInfoByUserId(sendUserId);
 
         String url = "http://" + cimServerResVO.getIp() + ":" + cimServerResVO.getHttpPort();
-        ServerApi serverApi = RpcProxyManager.create(ServerApi.class, okHttpClient);
+
         SendMsgReqVO vo = new SendMsgReqVO(cimUserInfo.getUserName() + ":" + groupReqVO.getMsg(), groupReqVO.getUserId());
         serverApi.sendMsg(vo, url);
     }

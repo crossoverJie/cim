@@ -32,6 +32,9 @@ public class RouteHandler {
     @Autowired
     private AppConfiguration configuration;
 
+    @Autowired
+    private RouteApi routeApi;
+
     /**
      * 用户下线
      *
@@ -57,7 +60,6 @@ public class RouteHandler {
      * @throws IOException
      */
     public void clearRouteInfo(CIMUserInfo userInfo) {
-        RouteApi routeApi = RpcProxyManager.create(RouteApi.class, configuration.getRouteUrl(), okHttpClient);
         ChatReqVO vo = new ChatReqVO(userInfo.getUserId(), userInfo.getUserName());
         routeApi.offLine(vo);
     }
