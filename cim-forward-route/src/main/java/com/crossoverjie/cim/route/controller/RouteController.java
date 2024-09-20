@@ -131,10 +131,12 @@ public class RouteController implements RouteApi {
     public BaseResponse<NULLBody> offLine(@RequestBody ChatReqVO groupReqVO) {
         BaseResponse<NULLBody> res = new BaseResponse();
 
-        CIMUserInfo cimUserInfo = userInfoCacheService.loadUserInfoByUserId(groupReqVO.getUserId());
+        if(userInfoCacheService.CheckUserLoginStatus(groupReqVO.getUserId())){
+            CIMUserInfo cimUserInfo = userInfoCacheService.loadUserInfoByUserId(groupReqVO.getUserId());
 
-        log.info("user [{}] offline!", cimUserInfo.toString());
-        accountService.offLine(groupReqVO.getUserId());
+            log.info("user [{}] offline!", cimUserInfo.toString());
+            accountService.offLine(groupReqVO.getUserId());
+        }
 
         res.setCode(StatusEnum.SUCCESS.getCode());
         res.setMessage(StatusEnum.SUCCESS.getMessage());

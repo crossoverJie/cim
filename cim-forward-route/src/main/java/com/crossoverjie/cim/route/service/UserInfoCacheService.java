@@ -30,6 +30,14 @@ public interface UserInfoCacheService {
     boolean saveAndCheckUserLoginStatus(Long userId) throws Exception ;
 
     /**
+     * 检查用户登录情况
+     * @param userId userId 用户唯一 ID
+     * @return true 为已登录 false 为未登录
+     * @throws Exception
+     */
+    boolean CheckUserLoginStatus(Long userId) ;
+
+    /**
      * 清除用户的登录状态
      * @param userId
      */

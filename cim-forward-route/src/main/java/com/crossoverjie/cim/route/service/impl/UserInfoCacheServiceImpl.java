@@ -64,6 +64,11 @@ public class UserInfoCacheServiceImpl implements UserInfoCacheService {
     }
 
     @Override
+    public boolean CheckUserLoginStatus(Long userId){
+        return redisTemplate.opsForSet().isMember(LOGIN_STATUS_PREFIX, userId.toString());
+    }
+
+    @Override
     public void removeLoginStatus(Long userId) {
         redisTemplate.opsForSet().remove(LOGIN_STATUS_PREFIX,userId.toString()) ;
     }
