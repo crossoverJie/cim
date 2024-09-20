@@ -24,11 +24,6 @@ public class UserInfoCacheServiceImplTest extends AbstractBaseTest{
     }
 
     @Test
-    public void removeLoginStatus() throws Exception {
-        userInfoCacheService.removeLoginStatus(2000L);
-    }
-
-    @Test
     public void onlineUser(){
         Set<CIMUserInfo> cimUserInfos = userInfoCacheService.onlineUser();
         log.info("cimUserInfos={}", JSON.toJSONString(cimUserInfos));

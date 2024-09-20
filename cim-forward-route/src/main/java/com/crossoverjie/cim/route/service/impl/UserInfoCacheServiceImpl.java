@@ -69,11 +69,6 @@ public class UserInfoCacheServiceImpl implements UserInfoCacheService {
     }
 
     @Override
-    public void removeLoginStatus(Long userId) {
-        redisTemplate.opsForSet().remove(LOGIN_STATUS_PREFIX,userId.toString()) ;
-    }
-
-    @Override
     public Set<CIMUserInfo> onlineUser() {
         Set<CIMUserInfo> set = null ;
         Set<String> members = redisTemplate.opsForSet().members(LOGIN_STATUS_PREFIX);

@@ -38,13 +38,6 @@ public interface UserInfoCacheService {
     boolean CheckUserLoginStatus(Long userId) ;
 
     /**
-     * 清除用户的登录状态
-     * @param userId
-     */
-    void removeLoginStatus(Long userId) ;
-
-
-    /**
      * query all online user
      * @return online user
      */

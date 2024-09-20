@@ -1,5 +1,6 @@
 package com.crossoverjie.cim.server.controller;
 
+import com.crossoverjie.cim.common.core.proxy.DynamicUrl;
 import com.crossoverjie.cim.common.enums.StatusEnum;
 import com.crossoverjie.cim.common.res.BaseResponse;
 import com.crossoverjie.cim.server.api.ServerApi;
@@ -38,7 +39,7 @@ public class IndexController implements ServerApi {
     @Operation(summary = "Push msg to client")
     @RequestMapping(value = "sendMsg",method = RequestMethod.POST)
     @ResponseBody
-    public BaseResponse<SendMsgResVO> sendMsg(@RequestBody SendMsgReqVO sendMsgReqVO){
+    public BaseResponse<SendMsgResVO> sendMsg(@RequestBody SendMsgReqVO sendMsgReqVO, @DynamicUrl String url){
         BaseResponse<SendMsgResVO> res = new BaseResponse();
         cimServer.sendMsg(sendMsgReqVO) ;
 

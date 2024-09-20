@@ -18,19 +18,22 @@ import lombok.extern.slf4j.Slf4j;
 import okhttp3.OkHttpClient;
 import okhttp3.Response;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.redis.connection.RedisConnection;
 import org.springframework.data.redis.core.Cursor;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ScanOptions;
+import org.springframework.data.redis.core.script.DefaultRedisScript;
+import org.springframework.scripting.support.ResourceScriptSource;
 import org.springframework.stereotype.Service;
 
 import java.nio.charset.StandardCharsets;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
 import static com.crossoverjie.cim.common.enums.StatusEnum.OFF_LINE;
-import static com.crossoverjie.cim.route.constant.Constant.ACCOUNT_PREFIX;
-import static com.crossoverjie.cim.route.constant.Constant.ROUTE_PREFIX;
+import static com.crossoverjie.cim.route.constant.Constant.*;
 
 /**
  * Function:
@@ -150,20 +153,20 @@ public class AccountServiceRedisImpl implements AccountService {
         CIMUserInfo cimUserInfo = userInfoCacheService.loadUserInfoByUserId(sendUserId);
 
         String url = "http://" + cimServerResVO.getIp() + ":" + cimServerResVO.getHttpPort();
-        ServerApi serverApi = RpcProxyManager.create(ServerApi.class, url, okHttpClient);
+        ServerApi serverApi = RpcProxyManager.create(ServerApi.class, okHttpClient);
         SendMsgReqVO vo = new SendMsgReqVO(cimUserInfo.getUserName() + ":" + groupReqVO.getMsg(), groupReqVO.getUserId());
-        serverApi.sendMsg(vo);
+        serverApi.sendMsg(vo, url);
     }
 
     @Override
     public void offLine(Long userId) {
 
-        // TODO: 2019-01-21 改为一个原子命令，以防数据一致性
+        DefaultRedisScript redisScript = new DefaultRedisScript();
+        redisScript.setScriptSource(new ResourceScriptSource(new ClassPathResource("lua/offLine.lua")));
 
-        //删除路由
-        redisTemplate.delete(ROUTE_PREFIX + userId);
-
-        //删除登录状态
-        userInfoCacheService.removeLoginStatus(userId);
+        redisTemplate.execute(redisScript,
+                Collections.singletonList(ROUTE_PREFIX + userId),
+                LOGIN_STATUS_PREFIX,
+                userId.toString());
     }
 }
