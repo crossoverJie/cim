@@ -3,6 +3,7 @@ package com.crossoverjie.cim.route.config;
 import com.crossoverjie.cim.common.metastore.MetaStore;
 import com.crossoverjie.cim.common.metastore.ZkConfiguration;
 import com.crossoverjie.cim.common.metastore.ZkMetaStoreImpl;
+import com.crossoverjie.cim.common.pojo.CIMUserInfo;
 import com.crossoverjie.cim.common.route.algorithm.RouteHandle;
 import com.crossoverjie.cim.common.route.algorithm.consistenthash.AbstractConsistentHash;
 import com.google.common.cache.CacheBuilder;
@@ -22,6 +23,8 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 import java.lang.reflect.Method;
 import java.util.concurrent.TimeUnit;
+
+import static com.crossoverjie.cim.route.constant.Constant.ACCOUNT_PREFIX;
 
 /**
  * Function:
@@ -104,5 +107,23 @@ public class BeanConfig {
 
         }
 
+    }
+
+    @Bean
+    public LoadingCache<Long, CIMUserInfo> USER_INFO_MAP(RedisTemplate<String, String> redisTemplate) {
+        return CacheBuilder.newBuilder()
+                .maximumSize(1024)
+                .build(new CacheLoader<>() {
+                    @Override
+                    public CIMUserInfo load(Long userId) throws Exception {
+                        CIMUserInfo cimUserInfo = null;
+                        String sendUserName = redisTemplate.opsForValue().get(ACCOUNT_PREFIX + userId);
+                        if (sendUserName.isBlank()) {
+                            sendUserName = "unLoginUser";
+                        }
+                        cimUserInfo = new CIMUserInfo(userId, sendUserName);
+                        return cimUserInfo;
+                    }
+                });
     }
 }
