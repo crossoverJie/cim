@@ -73,7 +73,8 @@ public class UserInfoCacheServiceImpl implements UserInfoCacheService {
                 set = new HashSet<>(64) ;
             }
             Optional<CIMUserInfo> cimUserInfo = loadUserInfoByUserId(Long.valueOf(member)) ;
-            set.add(cimUserInfo.get()) ;
+
+            cimUserInfo.ifPresentOrElse(set::add, () -> {});
         }
 
         return set;
