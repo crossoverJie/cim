@@ -133,6 +133,7 @@ public class BeanConfig {
                         return cimUserInfo;
                     }
                 });
+    }
       
     @Bean
     public ServerApi serverApi(OkHttpClient okHttpClient) {
