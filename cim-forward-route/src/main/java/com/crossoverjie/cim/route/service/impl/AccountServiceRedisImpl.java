@@ -14,6 +14,7 @@ import com.crossoverjie.cim.route.service.AccountService;
 import com.crossoverjie.cim.route.service.UserInfoCacheService;
 import com.crossoverjie.cim.server.api.ServerApi;
 import com.crossoverjie.cim.server.api.vo.req.SendMsgReqVO;
+import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.OkHttpClient;
 import okhttp3.Response;
@@ -47,14 +48,17 @@ import static com.crossoverjie.cim.route.constant.Constant.*;
 @Service
 public class AccountServiceRedisImpl implements AccountService {
 
-    @Autowired
+    @Resource
     private RedisTemplate<String, String> redisTemplate;
 
-    @Autowired
+    @Resource
     private UserInfoCacheService userInfoCacheService;
 
-    @Autowired
+    @Resource
     private OkHttpClient okHttpClient;
+
+    @Resource
+    private ServerApi serverApi;
 
     @Override
     public RegisterInfoResVO register(RegisterInfoResVO info) {
@@ -156,6 +160,7 @@ public class AccountServiceRedisImpl implements AccountService {
         String url = "http://" + cimServerResVO.getIp() + ":" + cimServerResVO.getHttpPort();
         ServerApi serverApi = RpcProxyManager.create(ServerApi.class, okHttpClient);
         SendMsgReqVO vo = new SendMsgReqVO(cimUserInfo.get().getUserName() + ":" + groupReqVO.getMsg(), groupReqVO.getUserId());
+
         serverApi.sendMsg(vo, url);
     }
 
