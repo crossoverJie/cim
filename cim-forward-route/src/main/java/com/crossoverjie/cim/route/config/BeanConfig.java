@@ -9,6 +9,7 @@ import com.crossoverjie.cim.common.route.algorithm.consistenthash.AbstractConsis
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
+import com.google.common.cache.Weigher;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.OkHttpClient;
 import org.I0Itec.zkclient.ZkClient;
@@ -22,6 +23,7 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 import java.lang.reflect.Method;
+import java.time.Duration;
 import java.util.concurrent.TimeUnit;
 
 import static com.crossoverjie.cim.route.constant.Constant.ACCOUNT_PREFIX;
@@ -112,8 +114,11 @@ public class BeanConfig {
     @Bean
     public LoadingCache<Long, CIMUserInfo> USER_INFO_MAP(RedisTemplate<String, String> redisTemplate) {
         return CacheBuilder.newBuilder()
+                .initialCapacity(64)
                 .maximumSize(1024)
-                .build(new CacheLoader<>() {
+                .concurrencyLevel(Runtime.getRuntime().availableProcessors())
+                .expireAfterWrite(10, TimeUnit.MINUTES)
+                .build(new CacheLoader<Long,CIMUserInfo>() {
                     @Override
                     public CIMUserInfo load(Long userId) throws Exception {
                         CIMUserInfo cimUserInfo = null;
