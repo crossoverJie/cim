@@ -35,3 +35,5 @@ cim:
     time: 60 # cim heartbeat time (seconds)
   reconnect:
     count: 3
+    backoff:
+      strategy: com.crossoverjie.cim.client.sdk.io.backoff.RandomBackoff
