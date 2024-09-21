@@ -29,6 +29,8 @@ public class AppConfiguration {
 
     @Value("${cim.reconnect.count}")
     private int reconnectCount;
+    @Value("${cim.reconnect.backoff.strategy}")
+    private String backoffStrategy;
 
     @Value("${cim.route.url}")
     private String routeUrl;

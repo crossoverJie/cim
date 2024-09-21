@@ -3,6 +3,7 @@ package com.crossoverjie.cim.client.config;
 import com.crossoverjie.cim.client.sdk.Client;
 import com.crossoverjie.cim.client.sdk.Event;
 import com.crossoverjie.cim.client.sdk.impl.ClientConfigurationData;
+import com.crossoverjie.cim.client.sdk.io.backoff.RandomBackoff;
 import com.crossoverjie.cim.client.service.MsgLogger;
 import com.crossoverjie.cim.client.service.ShutDownSign;
 import com.crossoverjie.cim.client.service.impl.MsgCallBackListener;
@@ -61,6 +62,7 @@ public class BeanConfig {
                 .okHttpClient(okHttpClient)
                 .messageListener(new MsgCallBackListener(msgLogger))
                 .callbackThreadPool(callbackThreadPool)
+                .backoffStrategy(appConfiguration.getBackoffStrategy())
                 .build();
     }
 

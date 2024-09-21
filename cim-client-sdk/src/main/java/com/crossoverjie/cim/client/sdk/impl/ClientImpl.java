@@ -202,9 +202,7 @@ public class ClientImpl extends ClientState implements Client {
 
         this.conf.getEvent().info("cim trigger reconnecting....");
 
-        // TODO: 2024/9/13 need a backoff interface
-        int random = (int) (Math.random() * 7 + 3);
-        TimeUnit.SECONDS.sleep(random);
+        this.conf.getBackoffStrategy().runBackoff();
 
         // don't set State ready, because when connect success, the State will be set to ready automate.
         connectServer(v -> {

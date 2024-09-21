@@ -1,7 +1,9 @@
 package com.crossoverjie.cim.client.sdk.impl;
 
 import com.crossoverjie.cim.client.sdk.Event;
+import com.crossoverjie.cim.client.sdk.io.backoff.BackoffStrategy;
 import com.crossoverjie.cim.client.sdk.io.MessageListener;
+import com.crossoverjie.cim.client.sdk.io.backoff.RandomBackoff;
 import com.crossoverjie.cim.client.sdk.io.ReconnectCheck;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -46,4 +48,7 @@ public class ClientConfigurationData {
 
     @JsonIgnore
     private ReconnectCheck reconnectCheck = (client) -> true;
+
+    @JsonIgnore
+    private BackoffStrategy backoffStrategy = new RandomBackoff();
 }
