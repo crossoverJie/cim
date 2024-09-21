@@ -31,6 +31,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 import static com.crossoverjie.cim.common.enums.StatusEnum.OFF_LINE;
 import static com.crossoverjie.cim.route.constant.Constant.*;
@@ -150,11 +151,11 @@ public class AccountServiceRedisImpl implements AccountService {
 
     @Override
     public void pushMsg(CIMServerResVO cimServerResVO, long sendUserId, ChatReqVO groupReqVO) throws Exception {
-        CIMUserInfo cimUserInfo = userInfoCacheService.loadUserInfoByUserId(sendUserId);
+        Optional<CIMUserInfo> cimUserInfo = userInfoCacheService.loadUserInfoByUserId(sendUserId);
 
         String url = "http://" + cimServerResVO.getIp() + ":" + cimServerResVO.getHttpPort();
         ServerApi serverApi = RpcProxyManager.create(ServerApi.class, okHttpClient);
-        SendMsgReqVO vo = new SendMsgReqVO(cimUserInfo.getUserName() + ":" + groupReqVO.getMsg(), groupReqVO.getUserId());
+        SendMsgReqVO vo = new SendMsgReqVO(cimUserInfo.get().getUserName() + ":" + groupReqVO.getMsg(), groupReqVO.getUserId());
         serverApi.sendMsg(vo, url);
     }
 
