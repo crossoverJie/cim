@@ -118,12 +118,12 @@ public class BeanConfig {
                 .maximumSize(1024)
                 .concurrencyLevel(Runtime.getRuntime().availableProcessors())
                 .expireAfterWrite(10, TimeUnit.MINUTES)
-                .build(new CacheLoader<Long,CIMUserInfo>() {
+                .build(new CacheLoader<Long, CIMUserInfo>() {
                     @Override
                     public CIMUserInfo load(Long userId) throws Exception {
                         CIMUserInfo cimUserInfo = null;
                         String sendUserName = redisTemplate.opsForValue().get(ACCOUNT_PREFIX + userId);
-                        if (sendUserName.isBlank()) {
+                        if (sendUserName == null) {
                             sendUserName = "unLoginUser";
                         }
                         cimUserInfo = new CIMUserInfo(userId, sendUserName);
