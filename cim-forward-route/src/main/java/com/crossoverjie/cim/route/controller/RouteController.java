@@ -77,7 +77,7 @@ public class RouteController implements RouteApi {
             if (userId.equals(groupReqVO.getUserId())) {
                 //过滤掉自己
                 Optional<CIMUserInfo> cimUserInfo = userInfoCacheService.loadUserInfoByUserId(groupReqVO.getUserId());
-                log.warn("过滤掉了发送者 userId={}", cimUserInfo.toString());
+                cimUserInfo.ifPresent(userInfo -> log.warn("过滤掉了发送者 userId={}", userInfo.toString()));
                 continue;
             }
 
@@ -134,10 +134,10 @@ public class RouteController implements RouteApi {
 
         Optional<CIMUserInfo> cimUserInfo = userInfoCacheService.loadUserInfoByUserId(groupReqVO.getUserId());
 
-        if(cimUserInfo.isPresent()){
-            log.info("user [{}] offline!", cimUserInfo.toString());
+        cimUserInfo.ifPresent(userInfo -> {
+            log.info("user [{}] offline!", userInfo.toString());
             accountService.offLine(groupReqVO.getUserId());
-        }
+        });
 
         res.setCode(StatusEnum.SUCCESS.getCode());
         res.setMessage(StatusEnum.SUCCESS.getMessage());

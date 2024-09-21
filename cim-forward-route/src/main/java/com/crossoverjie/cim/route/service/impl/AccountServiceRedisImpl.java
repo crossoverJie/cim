@@ -157,11 +157,16 @@ public class AccountServiceRedisImpl implements AccountService {
     public void pushMsg(CIMServerResVO cimServerResVO, long sendUserId, ChatReqVO groupReqVO) throws Exception {
         Optional<CIMUserInfo> cimUserInfo = userInfoCacheService.loadUserInfoByUserId(sendUserId);
 
-        String url = "http://" + cimServerResVO.getIp() + ":" + cimServerResVO.getHttpPort();
-        ServerApi serverApi = RpcProxyManager.create(ServerApi.class, okHttpClient);
-        SendMsgReqVO vo = new SendMsgReqVO(cimUserInfo.get().getUserName() + ":" + groupReqVO.getMsg(), groupReqVO.getUserId());
-
-        serverApi.sendMsg(vo, url);
+        cimUserInfo.ifPresent(userInfo -> {
+            String url = "http://" + cimServerResVO.getIp() + ":" + cimServerResVO.getHttpPort();
+            SendMsgReqVO vo = new SendMsgReqVO(userInfo.getUserName() + ":" + groupReqVO.getMsg(), groupReqVO.getUserId());
+            try {
+                serverApi.sendMsg(vo, url);
+            } catch (Exception e) {
+                log.error("Error sending message", e);
+                throw new RuntimeException("Error sending message", e);
+            }
+        });
     }
 
     @Override
