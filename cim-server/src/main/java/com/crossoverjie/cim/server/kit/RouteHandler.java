@@ -7,6 +7,7 @@ import com.crossoverjie.cim.route.api.vo.req.ChatReqVO;
 import com.crossoverjie.cim.server.config.AppConfiguration;
 import com.crossoverjie.cim.server.util.SessionSocketHolder;
 import io.netty.channel.socket.nio.NioSocketChannel;
+import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.OkHttpClient;
 import okhttp3.Response;
@@ -26,11 +27,14 @@ import java.io.IOException;
 @Slf4j
 public class RouteHandler {
 
-    @Autowired
+    @Resource
     private OkHttpClient okHttpClient;
 
-    @Autowired
+    @Resource
     private AppConfiguration configuration;
+
+    @Resource
+    private RouteApi routeApi;
 
     /**
      * 用户下线
@@ -57,7 +61,6 @@ public class RouteHandler {
      * @throws IOException
      */
     public void clearRouteInfo(CIMUserInfo userInfo) {
-        RouteApi routeApi = RpcProxyManager.create(RouteApi.class, configuration.getRouteUrl(), okHttpClient);
         ChatReqVO vo = new ChatReqVO(userInfo.getUserId(), userInfo.getUserName());
         routeApi.offLine(vo);
     }

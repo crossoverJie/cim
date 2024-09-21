@@ -1,15 +1,18 @@
 package com.crossoverjie.cim.route.config;
 
+import com.crossoverjie.cim.common.core.proxy.RpcProxyManager;
 import com.crossoverjie.cim.common.metastore.MetaStore;
 import com.crossoverjie.cim.common.metastore.ZkConfiguration;
 import com.crossoverjie.cim.common.metastore.ZkMetaStoreImpl;
 import com.crossoverjie.cim.common.pojo.CIMUserInfo;
 import com.crossoverjie.cim.common.route.algorithm.RouteHandle;
 import com.crossoverjie.cim.common.route.algorithm.consistenthash.AbstractConsistentHash;
+import com.crossoverjie.cim.server.api.ServerApi;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import com.google.common.cache.Weigher;
+import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.OkHttpClient;
 import org.I0Itec.zkclient.ZkClient;
@@ -40,7 +43,7 @@ import static com.crossoverjie.cim.route.constant.Constant.ACCOUNT_PREFIX;
 public class BeanConfig {
 
 
-    @Autowired
+    @Resource
     private AppConfiguration appConfiguration;
 
 
@@ -130,5 +133,9 @@ public class BeanConfig {
                         return cimUserInfo;
                     }
                 });
+      
+    @Bean
+    public ServerApi serverApi(OkHttpClient okHttpClient) {
+        return RpcProxyManager.create(ServerApi.class, okHttpClient);
     }
 }
