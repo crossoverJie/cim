@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -34,12 +35,12 @@ public class UserInfoCacheServiceImpl implements UserInfoCacheService {
     private RedisTemplate<String,String> redisTemplate ;
 
     @Override
-    public CIMUserInfo loadUserInfoByUserId(Long userId) {
+    public Optional<CIMUserInfo> loadUserInfoByUserId(Long userId) {
 
         //优先从本地缓存获取
         CIMUserInfo cimUserInfo = USER_INFO_MAP.get(userId);
         if (cimUserInfo != null){
-            return cimUserInfo ;
+            return Optional.ofNullable(cimUserInfo);
         }
 
         //load redis
@@ -49,7 +50,7 @@ public class UserInfoCacheServiceImpl implements UserInfoCacheService {
             USER_INFO_MAP.put(userId,cimUserInfo) ;
         }
 
-        return cimUserInfo;
+        return Optional.ofNullable(cimUserInfo);
     }
 
     @Override
@@ -71,8 +72,9 @@ public class UserInfoCacheServiceImpl implements UserInfoCacheService {
             if (set == null){
                 set = new HashSet<>(64) ;
             }
-            CIMUserInfo cimUserInfo = loadUserInfoByUserId(Long.valueOf(member)) ;
-            set.add(cimUserInfo) ;
+            Optional<CIMUserInfo> cimUserInfo = loadUserInfoByUserId(Long.valueOf(member)) ;
+
+            cimUserInfo.ifPresent(set::add);
         }
 
         return set;

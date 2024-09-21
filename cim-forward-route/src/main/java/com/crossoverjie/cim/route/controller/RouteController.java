@@ -23,6 +23,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import jakarta.annotation.Resource;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -75,8 +76,8 @@ public class RouteController implements RouteApi {
             CIMServerResVO cimServerResVO = cimServerResVOEntry.getValue();
             if (userId.equals(groupReqVO.getUserId())) {
                 //过滤掉自己
-                CIMUserInfo cimUserInfo = userInfoCacheService.loadUserInfoByUserId(groupReqVO.getUserId());
-                log.warn("过滤掉了发送者 userId={}", cimUserInfo.toString());
+                Optional<CIMUserInfo> cimUserInfo = userInfoCacheService.loadUserInfoByUserId(groupReqVO.getUserId());
+                cimUserInfo.ifPresent(userInfo -> log.warn("过滤掉了发送者 userId={}", userInfo.toString()));
                 continue;
             }
 
@@ -131,10 +132,12 @@ public class RouteController implements RouteApi {
     public BaseResponse<NULLBody> offLine(@RequestBody ChatReqVO groupReqVO) {
         BaseResponse<NULLBody> res = new BaseResponse();
 
-        CIMUserInfo cimUserInfo = userInfoCacheService.loadUserInfoByUserId(groupReqVO.getUserId());
+        Optional<CIMUserInfo> cimUserInfo = userInfoCacheService.loadUserInfoByUserId(groupReqVO.getUserId());
 
-        log.info("user [{}] offline!", cimUserInfo.toString());
-        accountService.offLine(groupReqVO.getUserId());
+        cimUserInfo.ifPresent(userInfo -> {
+            log.info("user [{}] offline!", userInfo.toString());
+            accountService.offLine(groupReqVO.getUserId());
+        });
 
         res.setCode(StatusEnum.SUCCESS.getCode());
         res.setMessage(StatusEnum.SUCCESS.getMessage());
