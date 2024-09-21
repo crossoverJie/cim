@@ -7,6 +7,7 @@ import com.crossoverjie.cim.route.api.vo.req.ChatReqVO;
 import com.crossoverjie.cim.server.config.AppConfiguration;
 import com.crossoverjie.cim.server.util.SessionSocketHolder;
 import io.netty.channel.socket.nio.NioSocketChannel;
+import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.OkHttpClient;
 import okhttp3.Response;
@@ -26,13 +27,13 @@ import java.io.IOException;
 @Slf4j
 public class RouteHandler {
 
-    @Autowired
+    @Resource
     private OkHttpClient okHttpClient;
 
-    @Autowired
+    @Resource
     private AppConfiguration configuration;
 
-    @Autowired
+    @Resource
     private RouteApi routeApi;
 
     /**

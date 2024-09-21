@@ -7,6 +7,7 @@ import com.crossoverjie.cim.common.metastore.ZkConfiguration;
 import com.crossoverjie.cim.common.metastore.ZkMetaStoreImpl;
 import com.crossoverjie.cim.common.protocol.CIMRequestProto;
 import com.crossoverjie.cim.route.api.RouteApi;
+import jakarta.annotation.Resource;
 import okhttp3.OkHttpClient;
 import org.I0Itec.zkclient.ZkClient;
 import org.apache.curator.retry.ExponentialBackoffRetry;
@@ -26,7 +27,7 @@ import java.util.concurrent.TimeUnit;
 @Configuration
 public class BeanConfig {
 
-    @Autowired
+    @Resource
     private AppConfiguration appConfiguration;
 
     /**

@@ -10,6 +10,7 @@ import com.crossoverjie.cim.server.api.ServerApi;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
+import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.OkHttpClient;
 import org.I0Itec.zkclient.ZkClient;
@@ -37,7 +38,7 @@ import java.util.concurrent.TimeUnit;
 public class BeanConfig {
 
 
-    @Autowired
+    @Resource
     private AppConfiguration appConfiguration;
 
 

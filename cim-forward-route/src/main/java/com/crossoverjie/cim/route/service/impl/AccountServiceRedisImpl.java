@@ -14,6 +14,7 @@ import com.crossoverjie.cim.route.service.AccountService;
 import com.crossoverjie.cim.route.service.UserInfoCacheService;
 import com.crossoverjie.cim.server.api.ServerApi;
 import com.crossoverjie.cim.server.api.vo.req.SendMsgReqVO;
+import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.OkHttpClient;
 import okhttp3.Response;
@@ -46,16 +47,16 @@ import static com.crossoverjie.cim.route.constant.Constant.*;
 @Service
 public class AccountServiceRedisImpl implements AccountService {
 
-    @Autowired
+    @Resource
     private RedisTemplate<String, String> redisTemplate;
 
-    @Autowired
+    @Resource
     private UserInfoCacheService userInfoCacheService;
 
-    @Autowired
+    @Resource
     private OkHttpClient okHttpClient;
 
-    @Autowired
+    @Resource
     private ServerApi serverApi;
 
     @Override
