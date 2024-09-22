@@ -2,6 +2,10 @@ package com.crossoverjie.cim.route.service.impl;
 
 import com.crossoverjie.cim.common.pojo.CIMUserInfo;
 import com.crossoverjie.cim.route.service.UserInfoCacheService;
+import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.CacheLoader;
+import com.google.common.cache.LoadingCache;
+import jakarta.annotation.Resource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
@@ -11,6 +15,8 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
 
 import static com.crossoverjie.cim.route.constant.Constant.ACCOUNT_PREFIX;
 import static com.crossoverjie.cim.route.constant.Constant.LOGIN_STATUS_PREFIX;
@@ -26,31 +32,17 @@ import static com.crossoverjie.cim.route.constant.Constant.LOGIN_STATUS_PREFIX;
 @Service
 public class UserInfoCacheServiceImpl implements UserInfoCacheService {
 
-    /**
-     * todo 本地缓存，为了防止内存撑爆，后期可换为 LRU。
-     */
-    private final static Map<Long,CIMUserInfo> USER_INFO_MAP = new ConcurrentHashMap<>(64) ;
-
     @Autowired
     private RedisTemplate<String,String> redisTemplate ;
 
+    @Resource(name = "userInfoCache")
+    private LoadingCache<Long, Optional<CIMUserInfo>> userInfoMap;
+
     @Override
     public Optional<CIMUserInfo> loadUserInfoByUserId(Long userId) {
-
-        //优先从本地缓存获取
-        CIMUserInfo cimUserInfo = USER_INFO_MAP.get(userId);
-        if (cimUserInfo != null){
-            return Optional.of(cimUserInfo);
-        }
-
-        //load redis
-        String sendUserName = redisTemplate.opsForValue().get(ACCOUNT_PREFIX + userId);
-        if (sendUserName != null){
-            cimUserInfo = new CIMUserInfo(userId,sendUserName) ;
-            USER_INFO_MAP.put(userId,cimUserInfo) ;
-        }
-
-        return Optional.ofNullable(cimUserInfo);
+        //Retrieve user information using a second-level cache.
+        Optional<CIMUserInfo> cimUserInfo = userInfoMap.getUnchecked(userId);
+        return cimUserInfo;
     }
 
     @Override
