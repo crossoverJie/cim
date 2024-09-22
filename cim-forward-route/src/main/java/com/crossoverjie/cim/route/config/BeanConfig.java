@@ -125,7 +125,6 @@ public class BeanConfig {
                 .build(new CacheLoader<>() {
                     @Override
                     public Optional<CIMUserInfo> load(Long userId) throws Exception {
-                        CIMUserInfo cimUserInfo = null;
                         String sendUserName = redisTemplate.opsForValue().get(ACCOUNT_PREFIX + userId);
                         if (sendUserName == null) {
                             return Optional.empty();
