@@ -130,7 +130,7 @@ public class BeanConfig {
                         if (sendUserName == null) {
                             return Optional.empty();
                         }
-                        cimUserInfo = new CIMUserInfo(userId, sendUserName);
+                        CIMUserInfo cimUserInfo = new CIMUserInfo(userId, sendUserName);
                         return Optional.of(cimUserInfo);
                     }
                 });
