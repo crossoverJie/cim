@@ -27,6 +27,7 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 import java.lang.reflect.Method;
 import java.time.Duration;
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 import static com.crossoverjie.cim.route.constant.Constant.ACCOUNT_PREFIX;
@@ -114,23 +115,23 @@ public class BeanConfig {
 
     }
 
-    @Bean
-    public LoadingCache<Long, CIMUserInfo> USER_INFO_MAP(RedisTemplate<String, String> redisTemplate) {
+    @Bean("userInfoCache")
+    public LoadingCache<Long, Optional<CIMUserInfo>> userInfoCache(RedisTemplate<String, String> redisTemplate) {
         return CacheBuilder.newBuilder()
                 .initialCapacity(64)
                 .maximumSize(1024)
                 .concurrencyLevel(Runtime.getRuntime().availableProcessors())
                 .expireAfterWrite(10, TimeUnit.MINUTES)
-                .build(new CacheLoader<Long, CIMUserInfo>() {
+                .build(new CacheLoader<>() {
                     @Override
-                    public CIMUserInfo load(Long userId) throws Exception {
+                    public Optional<CIMUserInfo> load(Long userId) throws Exception {
                         CIMUserInfo cimUserInfo = null;
                         String sendUserName = redisTemplate.opsForValue().get(ACCOUNT_PREFIX + userId);
                         if (sendUserName == null) {
-                            sendUserName = "unLoginUser";
+                            return Optional.empty();
                         }
                         cimUserInfo = new CIMUserInfo(userId, sendUserName);
-                        return cimUserInfo;
+                        return Optional.of(cimUserInfo);
                     }
                 });
     }
