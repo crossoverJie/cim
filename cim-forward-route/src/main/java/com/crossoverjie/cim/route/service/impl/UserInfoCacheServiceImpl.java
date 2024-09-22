@@ -34,7 +34,7 @@ public class UserInfoCacheServiceImpl implements UserInfoCacheService {
     @Autowired
     private RedisTemplate<String,String> redisTemplate ;
 
-    @Autowired
+    @Resource(name = "userInfoCache")
     private LoadingCache<Long, CIMUserInfo> USER_INFO_MAP;
 
     @Override
