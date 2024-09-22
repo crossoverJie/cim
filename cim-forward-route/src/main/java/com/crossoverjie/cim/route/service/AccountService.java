@@ -62,7 +62,7 @@ public interface AccountService {
      * @param sendUserId 发送者的ID
      * @throws Exception
      */
-    void pushMsg(CIMServerResVO cimServerResVO, long sendUserId , ChatReqVO groupReqVO) throws Exception;
+    void pushMsg(CIMServerResVO cimServerResVO, long sendUserId , ChatReqVO groupReqVO);
 
     /**
      * 用户下线

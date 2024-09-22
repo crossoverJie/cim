@@ -14,6 +14,7 @@ import com.crossoverjie.cim.route.service.AccountService;
 import com.crossoverjie.cim.route.service.UserInfoCacheService;
 import com.crossoverjie.cim.server.api.ServerApi;
 import com.crossoverjie.cim.server.api.vo.req.SendMsgReqVO;
+import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.OkHttpClient;
 import okhttp3.Response;
@@ -31,6 +32,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 import static com.crossoverjie.cim.common.enums.StatusEnum.OFF_LINE;
 import static com.crossoverjie.cim.route.constant.Constant.*;
@@ -46,14 +48,14 @@ import static com.crossoverjie.cim.route.constant.Constant.*;
 @Service
 public class AccountServiceRedisImpl implements AccountService {
 
-    @Autowired
+    @Resource
     private RedisTemplate<String, String> redisTemplate;
 
-    @Autowired
+    @Resource
     private UserInfoCacheService userInfoCacheService;
 
-    @Autowired
-    private OkHttpClient okHttpClient;
+    @Resource
+    private ServerApi serverApi;
 
     @Override
     public RegisterInfoResVO register(RegisterInfoResVO info) {
@@ -135,7 +137,8 @@ public class AccountServiceRedisImpl implements AccountService {
         }
 
         RouteInfo parse = RouteInfoParseUtil.parse(value);
-        CIMServerResVO cimServerResVO = new CIMServerResVO(parse.getIp(), parse.getCimServerPort(), parse.getHttpPort());
+        CIMServerResVO cimServerResVO =
+                new CIMServerResVO(parse.getIp(), parse.getCimServerPort(), parse.getHttpPort());
         return cimServerResVO;
     }
 
@@ -143,19 +146,23 @@ public class AccountServiceRedisImpl implements AccountService {
         long userId = Long.valueOf(key.split(":")[1]);
         String value = redisTemplate.opsForValue().get(key);
         RouteInfo parse = RouteInfoParseUtil.parse(value);
-        CIMServerResVO cimServerResVO = new CIMServerResVO(parse.getIp(), parse.getCimServerPort(), parse.getHttpPort());
+        CIMServerResVO cimServerResVO =
+                new CIMServerResVO(parse.getIp(), parse.getCimServerPort(), parse.getHttpPort());
         routes.put(userId, cimServerResVO);
     }
 
 
     @Override
-    public void pushMsg(CIMServerResVO cimServerResVO, long sendUserId, ChatReqVO groupReqVO) throws Exception {
-        CIMUserInfo cimUserInfo = userInfoCacheService.loadUserInfoByUserId(sendUserId);
+    public void pushMsg(CIMServerResVO cimServerResVO, long sendUserId, ChatReqVO groupReqVO) {
+        Optional<CIMUserInfo> cimUserInfo = userInfoCacheService.loadUserInfoByUserId(sendUserId);
 
-        String url = "http://" + cimServerResVO.getIp() + ":" + cimServerResVO.getHttpPort();
-        ServerApi serverApi = RpcProxyManager.create(ServerApi.class, okHttpClient);
-        SendMsgReqVO vo = new SendMsgReqVO(cimUserInfo.getUserName() + ":" + groupReqVO.getMsg(), groupReqVO.getUserId());
-        serverApi.sendMsg(vo, url);
+        cimUserInfo.ifPresent(userInfo -> {
+            String url = "http://" + cimServerResVO.getIp() + ":" + cimServerResVO.getHttpPort();
+            SendMsgReqVO vo =
+                    new SendMsgReqVO(userInfo.getUserName() + ":" + groupReqVO.getMsg(), groupReqVO.getUserId());
+            serverApi.sendMsg(vo, url);
+
+        });
     }
 
     @Override
