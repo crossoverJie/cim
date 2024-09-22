@@ -115,7 +115,7 @@ public class BeanConfig {
     }
 
     @Bean
-    public LoadingCache<Long, CIMUserInfo> USER_INFO_MAP(RedisTemplate<String, String> redisTemplate) {
+    public LoadingCache<Long, CIMUserInfo> userInfoCache(RedisTemplate<String, String> redisTemplate) {
         return CacheBuilder.newBuilder()
                 .initialCapacity(64)
                 .maximumSize(1024)
