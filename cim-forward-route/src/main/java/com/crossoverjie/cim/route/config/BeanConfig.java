@@ -114,7 +114,7 @@ public class BeanConfig {
 
     }
 
-    @Bean
+    @Bean("userInfoCache")
     public LoadingCache<Long, CIMUserInfo> userInfoCache(RedisTemplate<String, String> redisTemplate) {
         return CacheBuilder.newBuilder()
                 .initialCapacity(64)
