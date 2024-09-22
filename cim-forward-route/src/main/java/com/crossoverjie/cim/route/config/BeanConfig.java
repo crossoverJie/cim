@@ -127,7 +127,7 @@ public class BeanConfig {
                         CIMUserInfo cimUserInfo = null;
                         String sendUserName = redisTemplate.opsForValue().get(ACCOUNT_PREFIX + userId);
                         if (sendUserName == null) {
-                            sendUserName = "unLoginUser";
+                            return null;
                         }
                         cimUserInfo = new CIMUserInfo(userId, sendUserName);
                         return cimUserInfo;
