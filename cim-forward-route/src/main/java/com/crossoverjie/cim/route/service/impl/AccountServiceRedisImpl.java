@@ -55,9 +55,6 @@ public class AccountServiceRedisImpl implements AccountService {
     private UserInfoCacheService userInfoCacheService;
 
     @Resource
-    private OkHttpClient okHttpClient;
-
-    @Resource
     private ServerApi serverApi;
 
     @Override
