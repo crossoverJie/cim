@@ -30,6 +30,6 @@ jobs:
     - name: Build with Maven
       run: mvn -B package --file pom.xml
     - name: Upload coverage reports to Codecov
-      uses: codecov/codecov-action@v4.2.1
+      uses: codecov/codecov-action@v4.2.0
       env:
         CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
