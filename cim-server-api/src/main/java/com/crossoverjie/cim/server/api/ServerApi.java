@@ -20,5 +20,5 @@ public interface ServerApi {
      * @return
      * @throws Exception
      */
-    BaseResponse<SendMsgResVO> sendMsg(SendMsgReqVO sendMsgReqVO, @DynamicUrl String url) throws Exception;
+    BaseResponse<SendMsgResVO> sendMsg(SendMsgReqVO sendMsgReqVO, @DynamicUrl String url);
 }

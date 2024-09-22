@@ -395,4 +395,26 @@ public class ClientTest extends AbstractRouteBaseTest {
         super.stopSingle();
     }
 
+    @Test
+    public void testIncorrectUser() throws Exception {
+        super.starSingleServer();
+        super.startRoute();
+        String routeUrl = "http://localhost:8083";
+        String cj = "xx";
+        long id = 100L;
+        var auth1 = ClientConfigurationData.Auth.builder()
+                .userId(id)
+                .userName(cj)
+                .build();
+
+        Client client1 = Client.builder()
+                .auth(auth1)
+                .routeUrl(routeUrl)
+                .build();
+        TimeUnit.SECONDS.sleep(3);
+
+        Assertions.assertDoesNotThrow(client1::close);
+
+        super.stopSingle();
+    }
 }

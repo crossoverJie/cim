@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutionException;
@@ -37,11 +38,10 @@ public class UserInfoCacheServiceImpl implements UserInfoCacheService {
     private LoadingCache<Long, CIMUserInfo> USER_INFO_MAP;
 
     @Override
-    public CIMUserInfo loadUserInfoByUserId(Long userId) {
+    public Optional<CIMUserInfo> loadUserInfoByUserId(Long userId) {
         //Retrieve user information using a second-level cache.
-        CIMUserInfo cimUserInfo = null;
-        cimUserInfo = USER_INFO_MAP.getUnchecked(userId);
-        return cimUserInfo;
+        CIMUserInfo = USER_INFO_MAP.getUnchecked(userId);
+        return Optional.ofNullable(cimUserInfo);
     }
 
     @Override
@@ -63,8 +63,9 @@ public class UserInfoCacheServiceImpl implements UserInfoCacheService {
             if (set == null){
                 set = new HashSet<>(64) ;
             }
-            CIMUserInfo cimUserInfo = loadUserInfoByUserId(Long.valueOf(member)) ;
-            set.add(cimUserInfo) ;
+            Optional<CIMUserInfo> cimUserInfo = loadUserInfoByUserId(Long.valueOf(member)) ;
+
+            cimUserInfo.ifPresent(set::add);
         }
 
         return set;
