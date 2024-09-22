@@ -140,7 +140,8 @@ public class AccountServiceRedisImpl implements AccountService {
         }
 
         RouteInfo parse = RouteInfoParseUtil.parse(value);
-        CIMServerResVO cimServerResVO = new CIMServerResVO(parse.getIp(), parse.getCimServerPort(), parse.getHttpPort());
+        CIMServerResVO cimServerResVO =
+                new CIMServerResVO(parse.getIp(), parse.getCimServerPort(), parse.getHttpPort());
         return cimServerResVO;
     }
 
@@ -148,24 +149,22 @@ public class AccountServiceRedisImpl implements AccountService {
         long userId = Long.valueOf(key.split(":")[1]);
         String value = redisTemplate.opsForValue().get(key);
         RouteInfo parse = RouteInfoParseUtil.parse(value);
-        CIMServerResVO cimServerResVO = new CIMServerResVO(parse.getIp(), parse.getCimServerPort(), parse.getHttpPort());
+        CIMServerResVO cimServerResVO =
+                new CIMServerResVO(parse.getIp(), parse.getCimServerPort(), parse.getHttpPort());
         routes.put(userId, cimServerResVO);
     }
 
 
     @Override
-    public void pushMsg(CIMServerResVO cimServerResVO, long sendUserId, ChatReqVO groupReqVO) throws Exception {
+    public void pushMsg(CIMServerResVO cimServerResVO, long sendUserId, ChatReqVO groupReqVO) {
         Optional<CIMUserInfo> cimUserInfo = userInfoCacheService.loadUserInfoByUserId(sendUserId);
 
         cimUserInfo.ifPresent(userInfo -> {
             String url = "http://" + cimServerResVO.getIp() + ":" + cimServerResVO.getHttpPort();
-            SendMsgReqVO vo = new SendMsgReqVO(userInfo.getUserName() + ":" + groupReqVO.getMsg(), groupReqVO.getUserId());
-            try {
-                serverApi.sendMsg(vo, url);
-            } catch (Exception e) {
-                log.error("Error sending message", e);
-                throw new RuntimeException("Error sending message", e);
-            }
+            SendMsgReqVO vo =
+                    new SendMsgReqVO(userInfo.getUserName() + ":" + groupReqVO.getMsg(), groupReqVO.getUserId());
+            serverApi.sendMsg(vo, url);
+
         });
     }
 

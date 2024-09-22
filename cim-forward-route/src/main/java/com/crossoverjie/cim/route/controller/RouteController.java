@@ -64,7 +64,7 @@ public class RouteController implements RouteApi {
     @RequestMapping(value = "groupRoute", method = RequestMethod.POST)
     @ResponseBody()
     @Override
-    public BaseResponse<NULLBody> groupRoute(@RequestBody ChatReqVO groupReqVO) throws Exception {
+    public BaseResponse<NULLBody> groupRoute(@RequestBody ChatReqVO groupReqVO) {
         BaseResponse<NULLBody> res = new BaseResponse();
 
         log.info("msg=[{}]", groupReqVO.toString());
@@ -103,7 +103,7 @@ public class RouteController implements RouteApi {
     @RequestMapping(value = "p2pRoute", method = RequestMethod.POST)
     @ResponseBody()
     @Override
-    public BaseResponse<NULLBody> p2pRoute(@RequestBody P2PReqVO p2pRequest) throws Exception {
+    public BaseResponse<NULLBody> p2pRoute(@RequestBody P2PReqVO p2pRequest) {
         BaseResponse<NULLBody> res = new BaseResponse();
 
         try {

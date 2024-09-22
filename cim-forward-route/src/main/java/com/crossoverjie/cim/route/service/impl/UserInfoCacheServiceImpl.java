@@ -40,7 +40,7 @@ public class UserInfoCacheServiceImpl implements UserInfoCacheService {
         //优先从本地缓存获取
         CIMUserInfo cimUserInfo = USER_INFO_MAP.get(userId);
         if (cimUserInfo != null){
-            return Optional.ofNullable(cimUserInfo);
+            return Optional.of(cimUserInfo);
         }
 
         //load redis
