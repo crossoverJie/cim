@@ -121,7 +121,7 @@ public class BeanConfig {
                 .maximumSize(1024)
                 .concurrencyLevel(Runtime.getRuntime().availableProcessors())
                 .expireAfterWrite(10, TimeUnit.MINUTES)
-                .build(new CacheLoader<Long, CIMUserInfo>() {
+                .build(new CacheLoader<>() {
                     @Override
                     public CIMUserInfo load(Long userId) throws Exception {
                         CIMUserInfo cimUserInfo = null;
