@@ -36,13 +36,13 @@ public class UserInfoCacheServiceImpl implements UserInfoCacheService {
     private RedisTemplate<String,String> redisTemplate ;
 
     @Resource(name = "userInfoCache")
-    private LoadingCache<Long, CIMUserInfo> userInfoMap;
+    private LoadingCache<Long, Optional<CIMUserInfo>> userInfoMap;
 
     @Override
     public Optional<CIMUserInfo> loadUserInfoByUserId(Long userId) {
         //Retrieve user information using a second-level cache.
-        CIMUserInfo cimUserInfo = userInfoMap.getUnchecked(userId);
-        return Optional.ofNullable(cimUserInfo);
+        Optional<CIMUserInfo> cimUserInfo = userInfoMap.getUnchecked(userId);
+        return cimUserInfo;
     }
 
     @Override
