@@ -5,6 +5,7 @@ on:
     secrets:
       codecov_token:
         required: true
+  workflow_dispatch:
 
 jobs:
   build_and_test:
@@ -22,7 +23,7 @@ jobs:
       - name: Build with Maven
         run: mvn -B package --file pom.xml
       - name: Upload coverage reports to Codecov
-        uses: codecov/codecov-action@v4.2.0
+        uses: codecov/codecov-action@v4
         with:
-          token: ${{ secrets.codecov_token }}
+          token: ${{ secrets.CODECOV_TOKEN }}
           verbose: true
