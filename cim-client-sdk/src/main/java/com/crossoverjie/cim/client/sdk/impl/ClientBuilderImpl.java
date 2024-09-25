@@ -89,15 +89,8 @@ public class ClientBuilderImpl implements ClientBuilder {
     }
 
     @Override
-    public ClientBuilder backoffStrategy(String backoffStrategy) {
-        Class<?> clazz = null;
-        try {
-            clazz = Class.forName(backoffStrategy);
-            Constructor<?> constructor = clazz.getDeclaredConstructor();
-            this.conf.setBackoffStrategy((BackoffStrategy) constructor.newInstance());
-        } catch (Exception e) {
-            logger.error("error loader backoffStrategy, using default RandomBackoff", e);
-        }
+    public ClientBuilder backoffStrategy(BackoffStrategy backoffStrategy) {
+        this.conf.setBackoffStrategy(backoffStrategy);
         return this;
     }
 }

@@ -22,5 +22,5 @@ public interface ClientBuilder {
     ClientBuilder okHttpClient(OkHttpClient okHttpClient);
     ClientBuilder messageListener(MessageListener messageListener);
     ClientBuilder callbackThreadPool(ThreadPoolExecutor callbackThreadPool);
-    ClientBuilder backoffStrategy(String backoffStrategy);
+    ClientBuilder backoffStrategy(BackoffStrategy backoffStrategy);
 }

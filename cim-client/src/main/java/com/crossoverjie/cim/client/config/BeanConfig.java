@@ -62,7 +62,7 @@ public class BeanConfig {
                 .okHttpClient(okHttpClient)
                 .messageListener(new MsgCallBackListener(msgLogger))
                 .callbackThreadPool(callbackThreadPool)
-                .backoffStrategy(appConfiguration.getBackoffStrategy())
+                .backoffStrategy(new RandomBackoff())
                 .build();
     }
 
