@@ -12,8 +12,7 @@ public class RandomBackoff implements BackoffStrategy {
 
     @Override
     public long nextBackoff() {
-        int random = (int) (Math.random() * 7 + 3);
-        return random;
+        return (int) (Math.random() * 7 + 3);
     }
 
 }
