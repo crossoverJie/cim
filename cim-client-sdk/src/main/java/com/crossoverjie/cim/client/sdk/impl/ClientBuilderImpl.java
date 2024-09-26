@@ -6,20 +6,14 @@ import com.crossoverjie.cim.client.sdk.Event;
 import com.crossoverjie.cim.client.sdk.io.MessageListener;
 import com.crossoverjie.cim.client.sdk.io.ReconnectCheck;
 import com.crossoverjie.cim.client.sdk.io.backoff.BackoffStrategy;
-import com.crossoverjie.cim.client.sdk.io.backoff.RandomBackoff;
 import com.crossoverjie.cim.common.util.StringUtil;
-
-import java.lang.reflect.Constructor;
-import java.util.ServiceLoader;
 import java.util.concurrent.ThreadPoolExecutor;
 import okhttp3.OkHttpClient;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class ClientBuilderImpl implements ClientBuilder {
 
 
-    private ClientConfigurationData conf;
+    private final ClientConfigurationData conf;
 
     public ClientBuilderImpl() {
         this(new ClientConfigurationData());
