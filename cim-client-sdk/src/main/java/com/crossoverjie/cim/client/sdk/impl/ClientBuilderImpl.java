@@ -18,7 +18,6 @@ import org.slf4j.LoggerFactory;
 
 public class ClientBuilderImpl implements ClientBuilder {
 
-    private Logger logger = LoggerFactory.getLogger(ClientBuilderImpl.class);
 
     private ClientConfigurationData conf;
 
