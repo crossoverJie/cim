@@ -1,6 +1,7 @@
 package com.crossoverjie.cim.client.sdk;
 
 import com.crossoverjie.cim.client.sdk.impl.ClientConfigurationData;
+import com.crossoverjie.cim.client.sdk.io.backoff.RandomBackoff;
 import com.crossoverjie.cim.client.sdk.route.AbstractRouteBaseTest;
 import com.crossoverjie.cim.common.pojo.CIMUserInfo;
 import com.crossoverjie.cim.route.api.vo.req.P2PReqVO;
@@ -224,11 +225,13 @@ public class ClientTest extends AbstractRouteBaseTest {
                 .userName(zs)
                 .userId(zsId)
                 .build();
+        var backoffStrategy = new RandomBackoff();
 
         @Cleanup
         Client client1 = Client.builder()
                 .auth(auth1)
                 .routeUrl(routeUrl)
+                .backoffStrategy(backoffStrategy)
                 .build();
         TimeUnit.SECONDS.sleep(3);
         ClientState.State state = client1.getState();
@@ -242,6 +245,7 @@ public class ClientTest extends AbstractRouteBaseTest {
                 .auth(auth2)
                 .routeUrl(routeUrl)
                 .messageListener((client, message) -> client2Receive.set(message))
+                .backoffStrategy(backoffStrategy)
                 .build();
         TimeUnit.SECONDS.sleep(3);
         ClientState.State state2 = client2.getState();

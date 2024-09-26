@@ -4,6 +4,8 @@ import com.crossoverjie.cim.client.sdk.impl.ClientConfigurationData;
 import com.crossoverjie.cim.client.sdk.io.MessageListener;
 import com.crossoverjie.cim.client.sdk.io.ReconnectCheck;
 import java.util.concurrent.ThreadPoolExecutor;
+
+import com.crossoverjie.cim.client.sdk.io.backoff.BackoffStrategy;
 import okhttp3.OkHttpClient;
 
 /**
@@ -20,4 +22,5 @@ public interface ClientBuilder {
     ClientBuilder okHttpClient(OkHttpClient okHttpClient);
     ClientBuilder messageListener(MessageListener messageListener);
     ClientBuilder callbackThreadPool(ThreadPoolExecutor callbackThreadPool);
+    ClientBuilder backoffStrategy(BackoffStrategy backoffStrategy);
 }
