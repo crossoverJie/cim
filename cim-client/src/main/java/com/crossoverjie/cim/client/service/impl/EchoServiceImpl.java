@@ -3,6 +3,7 @@ package com.crossoverjie.cim.client.service.impl;
 import com.crossoverjie.cim.client.config.AppConfiguration;
 import com.crossoverjie.cim.client.sdk.Client;
 import com.crossoverjie.cim.client.sdk.Event;
+import com.crossoverjie.cim.client.service.MsgLogger;
 import com.vdurmont.emoji.EmojiParser;
 import jakarta.annotation.Resource;
 import java.time.LocalDate;
@@ -24,9 +25,12 @@ public class EchoServiceImpl implements Event {
     @Resource
     private AppConfiguration appConfiguration;
 
+    @Resource
+    private MsgLogger msgLogger;
+
     @Override
     public void debug(String msg, Object... replace) {
-        info(String.format("Debug[%s]", msg), replace);
+        msgLogger.log(String.format("Debug[%s]", msg));
     }
 
     @Override

@@ -48,13 +48,13 @@ public class RouteController implements RouteApi {
     @Resource
     private MetaStore metaStore;
 
-    @Autowired
+    @Resource
     private AccountService accountService;
 
-    @Autowired
+    @Resource
     private UserInfoCacheService userInfoCacheService;
 
-    @Autowired
+    @Resource
     private CommonBizService commonBizService;
 
     @Resource
@@ -69,19 +69,18 @@ public class RouteController implements RouteApi {
 
         log.info("msg=[{}]", groupReqVO.toString());
 
-        //获取所有的推送列表
-        Map<Long, CIMServerResVO> serverResVOMap = accountService.loadRouteRelated();
-        for (Map.Entry<Long, CIMServerResVO> cimServerResVOEntry : serverResVOMap.entrySet()) {
-            Long userId = cimServerResVOEntry.getKey();
-            CIMServerResVO cimServerResVO = cimServerResVOEntry.getValue();
+        Map<Long, CIMServerResVO> serverResVoMap = accountService.loadRouteRelated();
+        for (Map.Entry<Long, CIMServerResVO> cimServerResVoEntry : serverResVoMap.entrySet()) {
+            Long userId = cimServerResVoEntry.getKey();
+            CIMServerResVO cimServerResVO = cimServerResVoEntry.getValue();
             if (userId.equals(groupReqVO.getUserId())) {
-                //过滤掉自己
+                // Skip the sender
                 Optional<CIMUserInfo> cimUserInfo = userInfoCacheService.loadUserInfoByUserId(groupReqVO.getUserId());
-                cimUserInfo.ifPresent(userInfo -> log.warn("过滤掉了发送者 userId={}", userInfo.toString()));
+                cimUserInfo.ifPresent(userInfo -> log.warn("skip send user userId={}", userInfo));
                 continue;
             }
 
-            //推送消息
+            // Push message
             ChatReqVO chatVO = new ChatReqVO(userId, groupReqVO.getMsg());
             accountService.pushMsg(cimServerResVO, groupReqVO.getUserId(), chatVO);
 
