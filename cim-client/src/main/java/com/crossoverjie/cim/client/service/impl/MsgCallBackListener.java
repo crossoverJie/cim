@@ -1,6 +1,7 @@
 package com.crossoverjie.cim.client.service.impl;
 
 import com.crossoverjie.cim.client.sdk.Client;
+import com.crossoverjie.cim.client.sdk.Event;
 import com.crossoverjie.cim.client.sdk.io.MessageListener;
 import com.crossoverjie.cim.client.service.MsgLogger;
 
@@ -15,14 +16,17 @@ public class MsgCallBackListener implements MessageListener {
 
 
     private final MsgLogger msgLogger;
+    private final Event event;
 
-    public MsgCallBackListener(MsgLogger msgLogger) {
+    public MsgCallBackListener(MsgLogger msgLogger, Event event) {
         this.msgLogger = msgLogger;
+        this.event = event;
     }
 
 
     @Override
     public void received(Client client, String msg) {
-        msgLogger.log(msg);
+        this.msgLogger.log(msg);
+        this.event.info(msg);
     }
 }

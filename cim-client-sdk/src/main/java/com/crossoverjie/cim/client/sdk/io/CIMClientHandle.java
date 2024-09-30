@@ -67,7 +67,6 @@ public class CIMClientHandle extends SimpleChannelInboundHandler<CIMResponseProt
 
         if (msg.getType() != Constants.CommandType.PING) {
             // callback
-            ClientImpl.getClient().getConf().getEvent().info(msg.getResMsg());
             ClientImpl.getClient().getConf().getCallbackThreadPool().execute(() -> {
                 ClientImpl.getClient().getConf().getMessageListener().received(ClientImpl.getClient(), msg.getResMsg());
             });

@@ -60,7 +60,7 @@ public class BeanConfig {
                 .event(event)
                 .reconnectCheck(client -> !shutDownSign.checkStatus())
                 .okHttpClient(okHttpClient)
-                .messageListener(new MsgCallBackListener(msgLogger))
+                .messageListener(new MsgCallBackListener(msgLogger, event))
                 .callbackThreadPool(callbackThreadPool)
                 .backoffStrategy(new RandomBackoff())
                 .build();
