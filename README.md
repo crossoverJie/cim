@@ -71,7 +71,6 @@ Using `CIM`, you can achieve the following requirements:
 
 ![](pic/architecture.png)
 
-translate to english
 - Each component in `CIM` is built using `SpringBoot`
   - Client build with [cim-client-sdk](https://github.com/crossoverJie/cim/tree/master/cim-client-sdk)
 - Use `Netty` to build the underlying communication.
