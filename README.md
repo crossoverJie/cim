@@ -28,17 +28,15 @@
 - [ ] Support kubernetes operation.
 - [ ] Supports binary client(build with golang).
 
-## 介绍
+## Introduction
 
-`CIM(CROSS-IM)` 一款面向开发者的 `IM(即时通讯)`系统；同时提供了一些组件帮助开发者构建一款属于自己可水平扩展的 `IM` 。
+`CIM(CROSS-IM)` is an `IM (instant messaging)` system for developers; it also provides some components to help developers build their own scalable `IM`.
+Using `CIM`, you can achieve the following requirements:
+- `IM` instant messaging system.
+- Message push middleware for `APP`.
+- Message middleware for `IOT` massive connection scenarios.
 
-借助 `CIM` 你可以实现以下需求：
-
-- `IM` 即时通讯系统。
-- 适用于 `APP` 的消息推送中间件。
-- `IOT` 海量连接场景中的消息透传中间件。
-
-> 在使用或开发过程中有任何疑问都可[联系我](#联系作者)。
+> If you have any questions during use or development, you can [contact me](#联系作者).
 
 ## 视频演示
 
@@ -62,16 +60,16 @@
 * [x] 服务端自动剔除离线客户端
 * [x] 客户端自动重连
 * [x] [延时消息](#延时消息)
+* [x] SDK 开发包
 * [ ] 分组群聊
-* [ ] SDK 开发包
 * [ ] 离线消息
-* [ ] 协议支持消息加密
+* [ ] 消息加密
 
 
 
-## 系统架构
+## Architecture
 
-![](https://i.loli.net/2019/05/08/5cd1d45a156f1.jpg)
+![](pic/architecture.png)
 
 - `CIM` 中的各个组件均采用 `SpringBoot` 构建。
 -  采用 `Netty` 构建底层通信。
@@ -80,27 +78,28 @@
 
 
 ### cim-server
+IM server is used to receive client connections, message forwarding, message push, etc.
+Support cluster deployment.
 
-`IM` 服务端；用于接收 `client` 连接、消息透传、消息推送等功能。
+### cim-route
 
-**支持集群部署。**
-
-### cim-forward-route
-
-消息路由服务器；用于处理消息路由、消息转发、用户登录、用户下线以及一些运营工具（获取在线用户数等）。
+Route server; used to process message routing, message forwarding, user login, user offline, and some operation tools (get the number of online users, etc.).
 
 ### cim-client
+IM client terminal, a command can be started and initiated to communicate with others (group chat, private chat).
 
-`IM` 客户端；给用户使用的消息终端，一个命令即可启动并向其他人发起通讯（群聊、私聊）。
+## Flow Chart
 
-## 流程图
+![](pic/flow.png)
 
-![](https://i.loli.net/2019/05/08/5cd1d45b982b3.jpg)
-
-- 客户端向 `route` 发起登录。
-- 登录成功从 `Zookeeper` 中选择可用 `IM-server` 返回给客户端，并保存登录、路由信息到 `Redis`。
-- 客户端向 `IM-server` 发起长连接，成功后保持心跳。
-- 客户端下线时通过 `route` 清除状态信息。
+- Server register to `MetaStore`
+- Route subscribe `MetaStore`
+- Client login to Route
+  - Route get Server info from `MetaStore`
+- Client open connection to Server
+- Client1 send message to Route
+- Route select Server and forward message to Server
+- Server push message to Client2
 
 
 ## 快速启动
