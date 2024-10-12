@@ -1,5 +1,10 @@
 
 ```java
+var auth1 = ClientConfigurationData.Auth.builder()
+.userId(id)
+.userName(cj)
+.build();
+
 Client client1 = Client.builder()
                 .auth(auth1)
                 .routeUrl(routeUrl)
