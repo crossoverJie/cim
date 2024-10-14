@@ -90,7 +90,7 @@ IM client terminal, a command can be started and initiated to communicate with o
 
 ## Flow Chart
 
-![](pic/flow.png)
+![](https://s2.loli.net/2024/10/13/8teMn7BSa5VWuvi.png)
 
 - Server register to `MetaStore`
 - Route subscribe `MetaStore`
@@ -275,7 +275,7 @@ java -jar cim-client-1.0.0-SNAPSHOT.jar --server.port=8084 --cim.user.id=上方�
 :delay delayMsg 10
 ```
 
-![](https://tva1.sinaimg.cn/large/006y8mN6ly1g7brppmokqg30gn07gafj.gif)
+![](pic/delay.gif)
 
 ## 联系作者
 
