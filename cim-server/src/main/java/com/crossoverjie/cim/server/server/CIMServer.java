@@ -1,7 +1,7 @@
 package com.crossoverjie.cim.server.server;
 
 import com.crossoverjie.cim.common.constant.Constants;
-import com.crossoverjie.cim.common.protocol.CIMRequestProto;
+import com.crossoverjie.cim.common.protocol.Request;
 import com.crossoverjie.cim.server.api.vo.req.SendMsgReqVO;
 import com.crossoverjie.cim.server.init.CIMServerInitializer;
 import com.crossoverjie.cim.server.util.SessionSocketHolder;
@@ -86,7 +86,7 @@ public class CIMServer {
             log.error("client {} offline!", sendMsgReqVO.getUserId());
             return;
         }
-        CIMRequestProto.CIMReqProtocol protocol = CIMRequestProto.CIMReqProtocol.newBuilder()
+        Request protocol = Request.newBuilder()
                 .setRequestId(sendMsgReqVO.getUserId())
                 .setReqMsg(sendMsgReqVO.getMsg())
                 .setType(Constants.CommandType.MSG)

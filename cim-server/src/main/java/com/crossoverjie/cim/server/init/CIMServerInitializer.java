@@ -1,6 +1,6 @@
 package com.crossoverjie.cim.server.init;
 
-import com.crossoverjie.cim.common.protocol.CIMRequestProto;
+import com.crossoverjie.cim.common.protocol.Request;
 import com.crossoverjie.cim.server.handle.CIMServerHandle;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelInitializer;
@@ -29,7 +29,7 @@ public class CIMServerInitializer extends ChannelInitializer<Channel> {
                 .addLast(new IdleStateHandler(11, 0, 0))
                 // google Protobuf 编解码
                 .addLast(new ProtobufVarint32FrameDecoder())
-                .addLast(new ProtobufDecoder(CIMRequestProto.CIMReqProtocol.getDefaultInstance()))
+                .addLast(new ProtobufDecoder(Request.getDefaultInstance()))
                 .addLast(new ProtobufVarint32LengthFieldPrepender())
                 .addLast(new ProtobufEncoder())
                 .addLast(cimServerHandle);

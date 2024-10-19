@@ -3,19 +3,14 @@ package com.crossoverjie.cim.server.config;
 import com.crossoverjie.cim.common.constant.Constants;
 import com.crossoverjie.cim.common.core.proxy.RpcProxyManager;
 import com.crossoverjie.cim.common.metastore.MetaStore;
-import com.crossoverjie.cim.common.metastore.ZkConfiguration;
 import com.crossoverjie.cim.common.metastore.ZkMetaStoreImpl;
-import com.crossoverjie.cim.common.protocol.CIMRequestProto;
+import com.crossoverjie.cim.common.protocol.Request;
 import com.crossoverjie.cim.route.api.RouteApi;
 import jakarta.annotation.Resource;
+import java.util.concurrent.TimeUnit;
 import okhttp3.OkHttpClient;
-import org.I0Itec.zkclient.ZkClient;
-import org.apache.curator.retry.ExponentialBackoffRetry;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
-import java.util.concurrent.TimeUnit;
 
 /**
  * Function:
@@ -45,7 +40,7 @@ public class BeanConfig {
     }
 
     @Bean
-    public MetaStore metaStore() throws Exception {
+    public MetaStore metaStore() {
         return new ZkMetaStoreImpl();
     }
 
@@ -55,13 +50,12 @@ public class BeanConfig {
      * @return
      */
     @Bean(value = "heartBeat")
-    public CIMRequestProto.CIMReqProtocol heartBeat() {
-        CIMRequestProto.CIMReqProtocol heart = CIMRequestProto.CIMReqProtocol.newBuilder()
+    public Request heartBeat() {
+        return Request.newBuilder()
                 .setRequestId(0L)
                 .setReqMsg("pong")
                 .setType(Constants.CommandType.PING)
                 .build();
-        return heart;
     }
 
     @Bean

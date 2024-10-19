@@ -1,6 +1,6 @@
 package com.crossoverjie.cim.client.sdk.io;
 
-import com.crossoverjie.cim.common.protocol.CIMResponseProto;
+import com.crossoverjie.cim.common.protocol.Response;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelInitializer;
 import io.netty.handler.codec.protobuf.ProtobufDecoder;
@@ -20,7 +20,7 @@ public class CIMClientHandleInitializer extends ChannelInitializer<Channel> {
 
                 // google Protobuf
                 .addLast(new ProtobufVarint32FrameDecoder())
-                .addLast(new ProtobufDecoder(CIMResponseProto.CIMResProtocol.getDefaultInstance()))
+                .addLast(new ProtobufDecoder(Response.getDefaultInstance()))
                 .addLast(new ProtobufVarint32LengthFieldPrepender())
                 .addLast(new ProtobufEncoder())
                 .addLast(cimClientHandle)
