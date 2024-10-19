@@ -1,9 +1,9 @@
 package com.crossoverjie.cim.server.handle;
 
-import com.crossoverjie.cim.common.constant.Constants;
 import com.crossoverjie.cim.common.exception.CIMException;
 import com.crossoverjie.cim.common.kit.HeartBeatHandler;
 import com.crossoverjie.cim.common.pojo.CIMUserInfo;
+import com.crossoverjie.cim.common.protocol.BaseCommand;
 import com.crossoverjie.cim.common.protocol.Request;
 import com.crossoverjie.cim.common.util.NettyAttrUtil;
 import com.crossoverjie.cim.server.kit.RouteHandler;
@@ -74,7 +74,7 @@ public class CIMServerHandle extends SimpleChannelInboundHandler<Request> {
     protected void channelRead0(ChannelHandlerContext ctx, Request msg) throws Exception {
         log.info("received msg=[{}]", msg.toString());
 
-        if (msg.getType() == Constants.CommandType.LOGIN) {
+        if (msg.getCmd() == BaseCommand.LOGIN_REQUEST) {
             //保存客户端与 Channel 之间的关系
             SessionSocketHolder.put(msg.getRequestId(), (NioSocketChannel) ctx.channel());
             SessionSocketHolder.saveSession(msg.getRequestId(), msg.getReqMsg());
@@ -82,7 +82,7 @@ public class CIMServerHandle extends SimpleChannelInboundHandler<Request> {
         }
 
         //心跳更新时间
-        if (msg.getType() == Constants.CommandType.PING){
+        if (msg.getCmd() == BaseCommand.PING){
             NettyAttrUtil.updateReaderTime(ctx.channel(),System.currentTimeMillis());
             //向客户端响应 pong 消息
             Request heartBeat = SpringBeanFactory.getBean("heartBeat", Request.class);

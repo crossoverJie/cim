@@ -41,8 +41,7 @@ public class UserInfoCacheServiceImpl implements UserInfoCacheService {
     @Override
     public Optional<CIMUserInfo> loadUserInfoByUserId(Long userId) {
         //Retrieve user information using a second-level cache.
-        Optional<CIMUserInfo> cimUserInfo = userInfoMap.getUnchecked(userId);
-        return cimUserInfo;
+        return userInfoMap.getUnchecked(userId);
     }
 
     @Override

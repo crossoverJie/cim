@@ -7,11 +7,17 @@ message Request{
     // todo source user info
     int64 requestId = 2;
     string reqMsg = 1;
-    int32 type = 3;
+    BaseCommand cmd = 3;
 }
 
 message Response{
     int64 responseId = 2;
     string resMsg = 1;
-    int32 type = 3;
+    BaseCommand cmd = 3;
+}
+
+enum BaseCommand{
+    LOGIN_REQUEST = 0;
+    MESSAGE = 1;
+    PING = 2;
 }

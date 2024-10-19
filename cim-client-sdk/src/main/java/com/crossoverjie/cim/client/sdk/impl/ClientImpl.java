@@ -6,10 +6,10 @@ import com.crossoverjie.cim.client.sdk.ClientState;
 import com.crossoverjie.cim.client.sdk.ReConnectManager;
 import com.crossoverjie.cim.client.sdk.RouteManager;
 import com.crossoverjie.cim.client.sdk.io.CIMClientHandleInitializer;
-import com.crossoverjie.cim.common.constant.Constants;
 import com.crossoverjie.cim.common.exception.CIMException;
 import com.crossoverjie.cim.common.kit.HeartBeatHandler;
 import com.crossoverjie.cim.common.pojo.CIMUserInfo;
+import com.crossoverjie.cim.common.protocol.BaseCommand;
 import com.crossoverjie.cim.common.protocol.Request;
 import com.crossoverjie.cim.route.api.vo.req.ChatReqVO;
 import com.crossoverjie.cim.route.api.vo.req.LoginReqVO;
@@ -82,7 +82,7 @@ public class ClientImpl extends ClientState implements Client {
         heartBeatPacket = Request.newBuilder()
                 .setRequestId(this.conf.getAuth().getUserId())
                 .setReqMsg("ping")
-                .setType(Constants.CommandType.PING)
+                .setCmd(BaseCommand.PING)
                 .build();
         client = this;
 
@@ -177,7 +177,7 @@ public class ClientImpl extends ClientState implements Client {
         Request login = Request.newBuilder()
                 .setRequestId(this.conf.getAuth().getUserId())
                 .setReqMsg(this.conf.getAuth().getUserName())
-                .setType(Constants.CommandType.LOGIN)
+                .setCmd(BaseCommand.LOGIN_REQUEST)
                 .build();
         channel.writeAndFlush(login)
                 .addListener((ChannelFutureListener) channelFuture ->
