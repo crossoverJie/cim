@@ -3,7 +3,7 @@ package com.crossoverjie.cim.client.sdk.io;
 import com.crossoverjie.cim.client.sdk.ClientState;
 import com.crossoverjie.cim.client.sdk.impl.ClientImpl;
 import com.crossoverjie.cim.common.constant.Constants;
-import com.crossoverjie.cim.common.protocol.CIMResponseProto;
+import com.crossoverjie.cim.common.protocol.Response;
 import com.crossoverjie.cim.common.util.NettyAttrUtil;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandler;
@@ -15,7 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @ChannelHandler.Sharable
 @Slf4j
-public class CIMClientHandle extends SimpleChannelInboundHandler<CIMResponseProto.CIMResProtocol> {
+public class CIMClientHandle extends SimpleChannelInboundHandler<Response> {
 
     @Override
     public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
@@ -57,7 +57,7 @@ public class CIMClientHandle extends SimpleChannelInboundHandler<CIMResponseProt
     }
 
     @Override
-    protected void channelRead0(ChannelHandlerContext ctx, CIMResponseProto.CIMResProtocol msg) {
+    protected void channelRead0(ChannelHandlerContext ctx, Response msg) {
 
 
         if (msg.getType() == Constants.CommandType.PING) {

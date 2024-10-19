@@ -10,7 +10,7 @@ import com.crossoverjie.cim.common.constant.Constants;
 import com.crossoverjie.cim.common.exception.CIMException;
 import com.crossoverjie.cim.common.kit.HeartBeatHandler;
 import com.crossoverjie.cim.common.pojo.CIMUserInfo;
-import com.crossoverjie.cim.common.protocol.CIMRequestProto;
+import com.crossoverjie.cim.common.protocol.Request;
 import com.crossoverjie.cim.route.api.vo.req.ChatReqVO;
 import com.crossoverjie.cim.route.api.vo.req.LoginReqVO;
 import com.crossoverjie.cim.route.api.vo.req.P2PReqVO;
@@ -58,7 +58,7 @@ public class ClientImpl extends ClientState implements Client {
     @Getter
     private static ClientImpl client;
     @Getter
-    private final CIMRequestProto.CIMReqProtocol heartBeatPacket;
+    private final Request heartBeatPacket;
 
     // Client connected server info
     private CIMServerResVO serverInfo;
@@ -79,7 +79,7 @@ public class ClientImpl extends ClientState implements Client {
 
         routeManager = new RouteManager(conf.getRouteUrl(), conf.getOkHttpClient(), conf.getEvent());
 
-        heartBeatPacket = CIMRequestProto.CIMReqProtocol.newBuilder()
+        heartBeatPacket = Request.newBuilder()
                 .setRequestId(this.conf.getAuth().getUserId())
                 .setReqMsg("ping")
                 .setType(Constants.CommandType.PING)
@@ -174,7 +174,7 @@ public class ClientImpl extends ClientState implements Client {
      * Send login cmd to server
      */
     private void loginServer() {
-        CIMRequestProto.CIMReqProtocol login = CIMRequestProto.CIMReqProtocol.newBuilder()
+        Request login = Request.newBuilder()
                 .setRequestId(this.conf.getAuth().getUserId())
                 .setReqMsg(this.conf.getAuth().getUserName())
                 .setType(Constants.CommandType.LOGIN)

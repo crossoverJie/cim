@@ -17,7 +17,7 @@ import org.apache.curator.retry.ExponentialBackoffRetry;
  * @since JDK 1.8
  */
 @Slf4j
-public class RegistryZK implements Runnable {
+public class RegistryMetaStore implements Runnable {
 
 
     private MetaStore metaStore;
@@ -27,7 +27,7 @@ public class RegistryZK implements Runnable {
     private String ip;
     private int cimServerPort;
     private int httpPort;
-    public RegistryZK(MetaStore metaStore, String ip, int cimServerPort,int httpPort) {
+    public RegistryMetaStore(MetaStore metaStore, String ip, int cimServerPort, int httpPort) {
         this.ip = ip;
         this.cimServerPort = cimServerPort;
         this.httpPort = httpPort ;

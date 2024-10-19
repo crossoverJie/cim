@@ -1,0 +1,17 @@
+syntax = "proto3";
+package com.crossoverjie.cim.common.protocol;
+option java_package = "com.crossoverjie.cim.common.protocol";
+option java_multiple_files = true;
+
+message Request{
+    // todo source user info
+    int64 requestId = 2;
+    string reqMsg = 1;
+    int32 type = 3;
+}
+
+message Response{
+    int64 responseId = 2;
+    string resMsg = 1;
+    int32 type = 3;
+}

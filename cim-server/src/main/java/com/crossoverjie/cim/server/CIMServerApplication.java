@@ -2,7 +2,7 @@ package com.crossoverjie.cim.server;
 
 import com.crossoverjie.cim.common.metastore.MetaStore;
 import com.crossoverjie.cim.server.config.AppConfiguration;
-import com.crossoverjie.cim.server.kit.RegistryZK;
+import com.crossoverjie.cim.server.kit.RegistryMetaStore;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -37,7 +37,7 @@ public class CIMServerApplication implements CommandLineRunner{
 	@Override
 	public void run(String... args) throws Exception {
 		String addr = InetAddress.getLocalHost().getHostAddress();
-		Thread thread = new Thread(new RegistryZK(metaStore, addr, appConfiguration.getCimServerPort(),httpPort));
+		Thread thread = new Thread(new RegistryMetaStore(metaStore, addr, appConfiguration.getCimServerPort(),httpPort));
 		thread.setName("registry-zk");
 		thread.start() ;
 	}

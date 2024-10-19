@@ -1,6 +1,7 @@
 package com.crossoverjie.cim.common.protocol;
 
 import com.google.protobuf.InvalidProtocolBufferException;
+import com.crossoverjie.cim.common.protocol.Request;
 
 /**
  * Function:
@@ -12,16 +13,17 @@ import com.google.protobuf.InvalidProtocolBufferException;
 public class ProtocolUtil {
 
     public static void main(String[] args) throws InvalidProtocolBufferException {
-        CIMRequestProto.CIMReqProtocol protocol = CIMRequestProto.CIMReqProtocol.newBuilder()
+        Request protocol = Request.newBuilder()
                 .setRequestId(123L)
                 .setReqMsg("你好啊")
+                .setType(1)
                 .build();
 
         byte[] encode = encode(protocol);
 
-        CIMRequestProto.CIMReqProtocol parseFrom = decode(encode);
+        Request parseFrom = decode(encode);
 
-        System.out.println(protocol.toString());
+        System.out.println(protocol);
         System.out.println(protocol.toString().equals(parseFrom.toString()));
     }
 
@@ -30,7 +32,7 @@ public class ProtocolUtil {
      * @param protocol
      * @return
      */
-    public static byte[] encode(CIMRequestProto.CIMReqProtocol protocol){
+    public static byte[] encode(Request protocol){
         return protocol.toByteArray() ;
     }
 
@@ -40,7 +42,7 @@ public class ProtocolUtil {
      * @return
      * @throws InvalidProtocolBufferException
      */
-    public static CIMRequestProto.CIMReqProtocol decode(byte[] bytes) throws InvalidProtocolBufferException {
-        return CIMRequestProto.CIMReqProtocol.parseFrom(bytes);
+    public static Request decode(byte[] bytes) throws InvalidProtocolBufferException {
+        return Request.parseFrom(bytes);
     }
 }

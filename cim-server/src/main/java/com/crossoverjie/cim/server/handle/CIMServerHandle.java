@@ -4,7 +4,7 @@ import com.crossoverjie.cim.common.constant.Constants;
 import com.crossoverjie.cim.common.exception.CIMException;
 import com.crossoverjie.cim.common.kit.HeartBeatHandler;
 import com.crossoverjie.cim.common.pojo.CIMUserInfo;
-import com.crossoverjie.cim.common.protocol.CIMRequestProto;
+import com.crossoverjie.cim.common.protocol.Request;
 import com.crossoverjie.cim.common.util.NettyAttrUtil;
 import com.crossoverjie.cim.server.kit.RouteHandler;
 import com.crossoverjie.cim.server.kit.ServerHeartBeatHandlerImpl;
@@ -28,7 +28,7 @@ import lombok.extern.slf4j.Slf4j;
  */
 @ChannelHandler.Sharable
 @Slf4j
-public class CIMServerHandle extends SimpleChannelInboundHandler<CIMRequestProto.CIMReqProtocol> {
+public class CIMServerHandle extends SimpleChannelInboundHandler<Request> {
 
 
 
@@ -71,7 +71,7 @@ public class CIMServerHandle extends SimpleChannelInboundHandler<CIMRequestProto
 
 
     @Override
-    protected void channelRead0(ChannelHandlerContext ctx, CIMRequestProto.CIMReqProtocol msg) throws Exception {
+    protected void channelRead0(ChannelHandlerContext ctx, Request msg) throws Exception {
         log.info("received msg=[{}]", msg.toString());
 
         if (msg.getType() == Constants.CommandType.LOGIN) {
@@ -85,8 +85,7 @@ public class CIMServerHandle extends SimpleChannelInboundHandler<CIMRequestProto
         if (msg.getType() == Constants.CommandType.PING){
             NettyAttrUtil.updateReaderTime(ctx.channel(),System.currentTimeMillis());
             //向客户端响应 pong 消息
-            CIMRequestProto.CIMReqProtocol heartBeat = SpringBeanFactory.getBean("heartBeat",
-                    CIMRequestProto.CIMReqProtocol.class);
+            Request heartBeat = SpringBeanFactory.getBean("heartBeat", Request.class);
             ctx.writeAndFlush(heartBeat).addListeners((ChannelFutureListener) future -> {
                 if (!future.isSuccess()) {
                     log.error("IO error,close Channel");
