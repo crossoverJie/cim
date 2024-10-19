@@ -1,18 +1,13 @@
-package com.crossoverjie.cim.common.protocol;
+package com.crossoverjie.cim.common.util;
 
-import com.google.protobuf.InvalidProtocolBufferException;
 import com.crossoverjie.cim.common.protocol.Request;
+import com.google.protobuf.InvalidProtocolBufferException;
+import org.junit.Test;
 
-/**
- * Function:
- *
- * @author crossoverJie
- *         Date: 2018/8/1 12:24
- * @since JDK 1.8
- */
-public class ProtocolUtil {
+public class ProtocolTest {
 
-    public static void main(String[] args) throws InvalidProtocolBufferException {
+    @Test
+    public void testProtocol() throws InvalidProtocolBufferException {
         Request protocol = Request.newBuilder()
                 .setRequestId(123L)
                 .setReqMsg("你好啊")

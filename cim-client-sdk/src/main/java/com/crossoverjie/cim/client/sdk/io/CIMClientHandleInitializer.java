@@ -20,7 +20,6 @@ public class CIMClientHandleInitializer extends ChannelInitializer<Channel> {
 
                 // google Protobuf
                 .addLast(new ProtobufVarint32FrameDecoder())
-//                .addLast(new ProtobufDecoder(CIMResponseProto.CIMResProtocol.getDefaultInstance()))
                 .addLast(new ProtobufDecoder(Response.getDefaultInstance()))
                 .addLast(new ProtobufVarint32LengthFieldPrepender())
                 .addLast(new ProtobufEncoder())
