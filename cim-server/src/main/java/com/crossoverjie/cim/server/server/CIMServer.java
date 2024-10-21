@@ -89,6 +89,7 @@ public class CIMServer {
         Request protocol = Request.newBuilder()
                 .setRequestId(sendMsgReqVO.getUserId())
                 .setReqMsg(sendMsgReqVO.getMsg())
+                .putAllProperties(sendMsgReqVO.getProperties())
                 .setCmd(BaseCommand.MESSAGE)
                 .build();
 

@@ -1,5 +1,6 @@
 package com.crossoverjie.cim.route.service.impl;
 
+import com.crossoverjie.cim.common.constant.Constants;
 import com.crossoverjie.cim.common.core.proxy.RpcProxyManager;
 import com.crossoverjie.cim.common.enums.StatusEnum;
 import com.crossoverjie.cim.common.exception.CIMException;
@@ -10,6 +11,7 @@ import com.crossoverjie.cim.route.api.vo.req.ChatReqVO;
 import com.crossoverjie.cim.route.api.vo.req.LoginReqVO;
 import com.crossoverjie.cim.route.api.vo.res.CIMServerResVO;
 import com.crossoverjie.cim.route.api.vo.res.RegisterInfoResVO;
+import com.crossoverjie.cim.route.constant.Constant;
 import com.crossoverjie.cim.route.service.AccountService;
 import com.crossoverjie.cim.route.service.UserInfoCacheService;
 import com.crossoverjie.cim.server.api.ServerApi;
@@ -159,7 +161,11 @@ public class AccountServiceRedisImpl implements AccountService {
         cimUserInfo.ifPresent(userInfo -> {
             String url = "http://" + cimServerResVO.getIp() + ":" + cimServerResVO.getHttpPort();
             SendMsgReqVO vo =
-                    new SendMsgReqVO(userInfo.getUserName() + ":" + groupReqVO.getMsg(), groupReqVO.getUserId());
+                    new SendMsgReqVO(groupReqVO.getMsg(), groupReqVO.getUserId());
+            vo.setProperties(Map.of(
+                    Constants.MetaKey.USER_ID, String.valueOf(sendUserId),
+                    Constants.MetaKey.USER_NAME, userInfo.getUserName())
+            );
             serverApi.sendMsg(vo, url);
 
         });

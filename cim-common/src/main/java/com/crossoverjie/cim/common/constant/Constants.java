@@ -21,5 +21,9 @@ public class Constants {
      */
     public static final String COUNTER_CLIENT_PUSH_COUNT = "counter.client.push.count" ;
 
+    public static class MetaKey {
+        public static final String USER_ID = "userId" ;
+        public static final String USER_NAME = "userName" ;
+    }
 
 }

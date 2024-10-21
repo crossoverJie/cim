@@ -4,6 +4,9 @@ import com.crossoverjie.cim.common.req.BaseRequest;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
+import java.util.Map;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * Function:
@@ -21,6 +24,10 @@ public class SendMsgReqVO extends BaseRequest {
     @NotNull(message = "userId 不能为空")
     @Schema(requiredMode = Schema.RequiredMode.REQUIRED, description = "userId", example = "11")
     private Long userId ;
+
+    @Setter
+    @Getter
+    private Map<String, String> properties;
 
     public SendMsgReqVO() {
     }

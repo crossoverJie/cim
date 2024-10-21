@@ -38,7 +38,7 @@ public class ClientConfigurationData {
 
     @JsonIgnore
     private MessageListener messageListener =
-            (client, msg) -> System.out.printf("id:[%s] msg:[%s]%n \n", client.getAuth(), msg);
+            (client, properties, msg) -> System.out.printf("id:[%s] msg:[%s]%n \n", client.getAuth(), msg);
 
     @JsonIgnore
     private OkHttpClient okHttpClient = new OkHttpClient();
