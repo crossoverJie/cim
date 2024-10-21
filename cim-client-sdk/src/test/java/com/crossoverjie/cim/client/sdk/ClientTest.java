@@ -265,7 +265,7 @@ public class ClientTest extends AbstractRouteBaseTest {
         String msg = "hello";
         client1.sendGroup(msg);
         Awaitility.await()
-                .untilAsserted(() -> Assertions.assertEquals(String.format("cj:%s", msg), client2Receive.get()));
+                .untilAsserted(() -> Assertions.assertEquals(msg, client2Receive.get()));
         client2Receive.set("");
 
 
