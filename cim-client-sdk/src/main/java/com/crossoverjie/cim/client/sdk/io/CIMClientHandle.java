@@ -60,7 +60,7 @@ public class CIMClientHandle extends SimpleChannelInboundHandler<Response> {
     protected void channelRead0(ChannelHandlerContext ctx, Response msg) {
 
 
-        if (msg.getCmd() == com.crossoverjie.cim.common.protocol.BaseCommand.PING) {
+        if (msg.getCmd() == BaseCommand.PING) {
             ClientImpl.getClient().getConf().getEvent().debug("received ping from server");
             NettyAttrUtil.updateReaderTime(ctx.channel(), System.currentTimeMillis());
         }
