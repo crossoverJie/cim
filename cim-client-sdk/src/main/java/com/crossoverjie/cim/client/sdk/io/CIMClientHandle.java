@@ -2,7 +2,7 @@ package com.crossoverjie.cim.client.sdk.io;
 
 import com.crossoverjie.cim.client.sdk.ClientState;
 import com.crossoverjie.cim.client.sdk.impl.ClientImpl;
-import com.crossoverjie.cim.common.constant.Constants;
+import com.crossoverjie.cim.common.protocol.BaseCommand;
 import com.crossoverjie.cim.common.protocol.Response;
 import com.crossoverjie.cim.common.util.NettyAttrUtil;
 import io.netty.channel.ChannelFutureListener;
@@ -60,15 +60,15 @@ public class CIMClientHandle extends SimpleChannelInboundHandler<Response> {
     protected void channelRead0(ChannelHandlerContext ctx, Response msg) {
 
 
-        if (msg.getType() == Constants.CommandType.PING) {
+        if (msg.getCmd() == BaseCommand.PING) {
             ClientImpl.getClient().getConf().getEvent().debug("received ping from server");
             NettyAttrUtil.updateReaderTime(ctx.channel(), System.currentTimeMillis());
         }
 
-        if (msg.getType() != Constants.CommandType.PING) {
+        if (msg.getCmd() != BaseCommand.PING) {
             // callback
             ClientImpl.getClient().getConf().getCallbackThreadPool().execute(() -> {
-                ClientImpl.getClient().getConf().getMessageListener().received(ClientImpl.getClient(), msg.getResMsg());
+                ClientImpl.getClient().getConf().getMessageListener().received(ClientImpl.getClient(), msg.getPropertiesMap(), msg.getResMsg());
             });
         }
 

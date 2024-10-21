@@ -1,5 +1,6 @@
 package com.crossoverjie.cim.common.util;
 
+import com.crossoverjie.cim.common.protocol.BaseCommand;
 import com.crossoverjie.cim.common.protocol.Request;
 import com.google.protobuf.InvalidProtocolBufferException;
 import org.junit.Test;
@@ -11,7 +12,7 @@ public class ProtocolTest {
         Request protocol = Request.newBuilder()
                 .setRequestId(123L)
                 .setReqMsg("你好啊")
-                .setType(1)
+                .setCmd(BaseCommand.LOGIN_REQUEST)
                 .build();
 
         byte[] encode = encode(protocol);

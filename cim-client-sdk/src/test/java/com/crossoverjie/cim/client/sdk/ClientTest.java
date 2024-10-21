@@ -3,6 +3,7 @@ package com.crossoverjie.cim.client.sdk;
 import com.crossoverjie.cim.client.sdk.impl.ClientConfigurationData;
 import com.crossoverjie.cim.client.sdk.io.backoff.RandomBackoff;
 import com.crossoverjie.cim.client.sdk.route.AbstractRouteBaseTest;
+import com.crossoverjie.cim.common.constant.Constants;
 import com.crossoverjie.cim.common.pojo.CIMUserInfo;
 import com.crossoverjie.cim.route.api.vo.req.P2PReqVO;
 import com.crossoverjie.cim.route.api.vo.res.CIMServerResVO;
@@ -63,7 +64,11 @@ public class ClientTest extends AbstractRouteBaseTest {
         Client client2 = Client.builder()
                 .auth(auth2)
                 .routeUrl(routeUrl)
-                .messageListener((client, message) -> client2Receive.set(message))
+                .messageListener((client, properties, message) -> {
+                    client2Receive.set(message);
+                    Assertions.assertEquals(properties.get(Constants.MetaKey.USER_ID), String.valueOf(auth1.getUserId()));
+                    Assertions.assertEquals(properties.get(Constants.MetaKey.USER_NAME), auth1.getUserName());
+                })
                 .build();
         TimeUnit.SECONDS.sleep(3);
         ClientState.State state2 = client2.getState();
@@ -91,7 +96,7 @@ public class ClientTest extends AbstractRouteBaseTest {
         });
 
         Awaitility.await().untilAsserted(
-                () -> Assertions.assertEquals(String.format("crossoverJie:%s", msg), client2Receive.get()));
+                () -> Assertions.assertEquals(msg, client2Receive.get()));
         super.stopSingle();
     }
 
@@ -139,7 +144,7 @@ public class ClientTest extends AbstractRouteBaseTest {
         Client client2 = Client.builder()
                 .auth(auth2)
                 .routeUrl(routeUrl)
-                .messageListener((client, message) -> client2Receive.set(message))
+                .messageListener((client, properties, message) -> client2Receive.set(message))
                 .build();
         TimeUnit.SECONDS.sleep(3);
         ClientState.State state2 = client2.getState();
@@ -156,7 +161,7 @@ public class ClientTest extends AbstractRouteBaseTest {
         Client client3 = Client.builder()
                 .auth(auth3)
                 .routeUrl(routeUrl)
-                .messageListener((client, message) -> {
+                .messageListener((client, properties, message) -> {
                     log.info("client3 receive message = {}", message);
                     client3Receive.set(message);
                 })
@@ -192,7 +197,7 @@ public class ClientTest extends AbstractRouteBaseTest {
         });
 
         Awaitility.await().untilAsserted(
-                () -> Assertions.assertEquals(String.format("%s:%s", cj, msg), client3Receive.get()));
+                () -> Assertions.assertEquals(msg, client3Receive.get()));
         Awaitility.await().untilAsserted(
                 () -> Assertions.assertNull(client2Receive.get()));
         super.stopSingle();
@@ -244,7 +249,7 @@ public class ClientTest extends AbstractRouteBaseTest {
         Client client2 = Client.builder()
                 .auth(auth2)
                 .routeUrl(routeUrl)
-                .messageListener((client, message) -> client2Receive.set(message))
+                .messageListener((client, properties, message) -> client2Receive.set(message))
                 .backoffStrategy(backoffStrategy)
                 .build();
         TimeUnit.SECONDS.sleep(3);
@@ -260,7 +265,7 @@ public class ClientTest extends AbstractRouteBaseTest {
         String msg = "hello";
         client1.sendGroup(msg);
         Awaitility.await()
-                .untilAsserted(() -> Assertions.assertEquals(String.format("cj:%s", msg), client2Receive.get()));
+                .untilAsserted(() -> Assertions.assertEquals(msg, client2Receive.get()));
         client2Receive.set("");
 
 
@@ -287,7 +292,7 @@ public class ClientTest extends AbstractRouteBaseTest {
         log.info("send message again, client2Receive = {}", client2Receive.get());
         client1.sendGroup(msg);
         Awaitility.await()
-                .untilAsserted(() -> Assertions.assertEquals(String.format("cj:%s", msg), client2Receive.get()));
+                .untilAsserted(() -> Assertions.assertEquals(msg, client2Receive.get()));
         super.stopTwoServer();
     }
 
@@ -327,7 +332,7 @@ public class ClientTest extends AbstractRouteBaseTest {
         Client client2 = Client.builder()
                 .auth(auth2)
                 .routeUrl(routeUrl)
-                .messageListener((client, message) -> client2Receive.set(message))
+                .messageListener((client, properties, message) -> client2Receive.set(message))
                 // Avoid auto reconnect, this test will manually close client.
                 .reconnectCheck((client) -> false)
                 .build();
@@ -344,7 +349,7 @@ public class ClientTest extends AbstractRouteBaseTest {
         String msg = "hello";
         client1.sendGroup(msg);
         Awaitility.await().untilAsserted(
-                () -> Assertions.assertEquals(String.format("crossoverJie:%s", msg), client2Receive.get()));
+                () -> Assertions.assertEquals(msg, client2Receive.get()));
         client2Receive.set("");
 
         // Manually offline
@@ -353,7 +358,7 @@ public class ClientTest extends AbstractRouteBaseTest {
         client2 = Client.builder()
                 .auth(auth2)
                 .routeUrl(routeUrl)
-                .messageListener((client, message) -> client2Receive.set(message))
+                .messageListener((client, properties, message) -> client2Receive.set(message))
                 // Avoid to auto reconnect, this test will manually close client.
                 .reconnectCheck((client) -> false)
                 .build();
@@ -364,7 +369,7 @@ public class ClientTest extends AbstractRouteBaseTest {
         // send msg again
         client1.sendGroup(msg);
         Awaitility.await().untilAsserted(
-                () -> Assertions.assertEquals(String.format("crossoverJie:%s", msg), client2Receive.get()));
+                () -> Assertions.assertEquals(msg, client2Receive.get()));
 
         super.stopSingle();
     }

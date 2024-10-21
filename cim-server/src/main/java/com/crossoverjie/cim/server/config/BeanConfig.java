@@ -1,9 +1,9 @@
 package com.crossoverjie.cim.server.config;
 
-import com.crossoverjie.cim.common.constant.Constants;
 import com.crossoverjie.cim.common.core.proxy.RpcProxyManager;
 import com.crossoverjie.cim.common.metastore.MetaStore;
 import com.crossoverjie.cim.common.metastore.ZkMetaStoreImpl;
+import com.crossoverjie.cim.common.protocol.BaseCommand;
 import com.crossoverjie.cim.common.protocol.Request;
 import com.crossoverjie.cim.route.api.RouteApi;
 import jakarta.annotation.Resource;
@@ -54,7 +54,7 @@ public class BeanConfig {
         return Request.newBuilder()
                 .setRequestId(0L)
                 .setReqMsg("pong")
-                .setType(Constants.CommandType.PING)
+                .setCmd(BaseCommand.PING)
                 .build();
     }
 
