@@ -126,6 +126,7 @@ public class ClientImpl extends ClientState implements Client {
         }, () -> {
             this.conf.getEvent().error("Login fail!, cannot get server info!");
             this.conf.getEvent().fatal(this);
+            System.exit(0);
             future.complete(false);
         });
         return future;
