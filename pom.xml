@@ -39,6 +39,7 @@
         <module>cim-server-api</module>
         <module>cim-integration-test</module>
         <module>cim-client-sdk</module>
+        <module>cim-message-storage</module>
     </modules>
 
 
@@ -233,6 +234,22 @@
                 <configuration>
                     <source>17</source>
                     <target>17</target>
+<!--                    The default jdk of the company is 1.8, so there is a problem. Add the following comment to see if it can be solved.
+                         If there is no such problem, remove this comment-->
+<!--                    <fork>true</fork>-->
+<!--                    <executable>F:/ayd/jdk-17/bin/javac</executable>-->
+<!--                </configuration>-->
+<!--            </plugin>-->
+<!--            <plugin>-->
+<!--                <groupId>org.apache.maven.plugins</groupId>-->
+<!--                <artifactId>maven-surefire-plugin</artifactId>-->
+<!--                <version>3.2.5</version>-->
+<!--                <configuration>-->
+<!--                    &lt;!&ndash; 替代旧的 forkMode=always &ndash;&gt;-->
+<!--                    <forkCount>1</forkCount>  &lt;!&ndash; 并行测试的进程数 &ndash;&gt;-->
+<!--                    <reuseForks>false</reuseForks> &lt;!&ndash; 每次测试新建JVM（相当于原always）&ndash;&gt;-->
+<!--                    <argLine>-Dfile.encoding=UTF-8</argLine>-->
+<!--                    <jvm>F:/ayd/jdk-17/bin/java</jvm>-->
                 </configuration>
             </plugin>
             <plugin>
