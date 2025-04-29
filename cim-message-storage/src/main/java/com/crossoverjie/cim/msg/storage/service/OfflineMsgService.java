@@ -14,6 +14,8 @@ public interface OfflineMsgService {
      */
     void save(P2PReqVO p2PReqVO);
 
+    //todo 提供个批量保存的，方便定时任务重 WAL 补推
+
 
     /**
      * 客户端上线后，根据游标（存储的最后推送的离线消息的id）分页获取消息
