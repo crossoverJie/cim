@@ -12,7 +12,7 @@ import java.util.Map;
 @AllArgsConstructor
 @NoArgsConstructor
 @Accessors(chain = true)
-public class OfflineMessage {
+public class OfflineMsg {
     private Long id;
     private String conversationId;
     private String messageId;
