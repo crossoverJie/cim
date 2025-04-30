@@ -18,16 +18,21 @@ public interface OfflineMsgService {
 
 
     /**
-     * 客户端上线后，根据游标（存储的最后推送的离线消息的id）分页获取消息
+     * After the client goes online, it retrieves messages in pages based on the cursor (the id of the last pushed offline message stored)
+     * @param conversationId
+     * @param userId
+     * @param lastMessageId
+     * @param limit
+     * @return
      */
-    List<OfflineMsg> fetchOfflineWithCursor(String conversationId, String userId, int limit);
+    List<OfflineMsg> fetchOfflineWithCursor(String conversationId, String userId, String lastMessageId, int limit);
 
     /**
      * 将离线消息推送给客户端
      */
 
     /**
-     * 客户端接收到离线消息并且 ack 后，将这批离校消息的状态修改为 acked
+     * After the client receives the offline message and ack, it changes the status of this batch of school departure messages to "acked" and updates the session cursor
      */
-    void ackAndUpdateCursor(String conversationId, String userId, List<OfflineMsg> msgs);
+    void ackAndUpdateCursor(String conversationId, String userId, List<String> messageIds);
 }
