@@ -14,13 +14,14 @@ import java.util.Map;
 @Accessors(chain = true)
 public class OfflineMsg {
     private Long id;
-    private String conversationId;
     private String messageId;
-    private String senderId;
-    private String receiverId;
+    private Long userId;
     private byte[] content;
     private Integer messageType;
     private Integer status;        // 0: Pending, 1: Acked
     private LocalDateTime createdAt;
+    /**
+     * 消息来源存储在这里
+     */
     private Map<String, String> properties;
 }
