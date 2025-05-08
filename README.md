@@ -109,7 +109,7 @@ Use allin1 docker to start the server:
 
 ```shell
 docker pull crossoverjie/cim-allin1:latest
-docker run -p 2181:2181 -p 6379:6379 -p 8083:8083 --rm --name cim-allin1  cim-allin1
+docker run -p 2181:2181 -p 6379:6379 -p 8083:8083 --rm --name cim-allin1  crossoverjie/cim-allin1:latest
 ```
 
 ### Build in local
