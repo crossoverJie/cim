@@ -20,6 +20,25 @@
     <dependencies>
 
         <dependency>
+            <groupId>org.mybatis.spring.boot</groupId>
+            <artifactId>mybatis-spring-boot-starter</artifactId>
+            <version>3.0.3</version> <!-- 使用最新稳定版本 -->
+        </dependency>
+
+        <!-- Database Driver (e.g., MySQL) -->
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>8.0.33</version>
+        </dependency>
+
+        <!-- Jackson for JSON Serialization -->
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+        </dependency>
+
+        <dependency>
             <groupId>com.crossoverjie.netty</groupId>
             <artifactId>cim-rout-api</artifactId>
         </dependency>

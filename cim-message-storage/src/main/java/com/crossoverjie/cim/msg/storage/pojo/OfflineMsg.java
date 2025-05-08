@@ -17,7 +17,7 @@ public class OfflineMsg {
     private String messageId;
     private Long userId;
     private byte[] content;
-    private Integer messageType;
+    private Integer messageType;   // 0: Text, 1: Image
     private Integer status;        // 0: Pending, 1: Acked
     private LocalDateTime createdAt;
     /**
