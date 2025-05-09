@@ -39,7 +39,6 @@
         <module>cim-server-api</module>
         <module>cim-integration-test</module>
         <module>cim-client-sdk</module>
-        <module>cim-message-storage</module>
     </modules>
 
 
