@@ -1,10 +1,16 @@
 package com.crossoverjie.cim.server.server;
 
+import com.crossoverjie.cim.common.exception.CIMException;
 import com.crossoverjie.cim.common.protocol.BaseCommand;
 import com.crossoverjie.cim.common.protocol.Request;
 import com.crossoverjie.cim.server.api.vo.req.SendMsgReqVO;
+import com.crossoverjie.cim.server.factory.OfflineMsgFactory;
 import com.crossoverjie.cim.server.init.CIMServerInitializer;
+import com.crossoverjie.cim.server.pojo.OfflineMsg;
+import com.crossoverjie.cim.server.service.OfflineMsgService;
+import com.crossoverjie.cim.server.service.RedisWALService;
 import com.crossoverjie.cim.server.util.SessionSocketHolder;
+import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
@@ -15,8 +21,15 @@ import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
+
 import java.net.InetSocketAddress;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.ThreadFactory;
+
+import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -24,7 +37,7 @@ import org.springframework.stereotype.Component;
  * Function:
  *
  * @author crossoverJie
- *         Date: 21/05/2018 00:30
+ * Date: 21/05/2018 00:30
  * @since JDK 1.8
  */
 @Component
@@ -39,6 +52,13 @@ public class CIMServer {
     @Value("${cim.server.port}")
     private int nettyPort;
 
+    @Resource
+    private RedisWALService redisWALService;
+
+    @Resource
+    private OfflineMsgService offlineMsgService;
+    @Resource
+    private OfflineMsgFactory offlineMsgFactory;
 
     /**
      * 启动 cim server
@@ -77,9 +97,10 @@ public class CIMServer {
 
     /**
      * Push msg to client.
+     *
      * @param sendMsgReqVO 消息
      */
-    public void sendMsg(SendMsgReqVO sendMsgReqVO){
+    public void sendMsg(SendMsgReqVO sendMsgReqVO) {
         NioSocketChannel socketChannel = SessionSocketHolder.get(sendMsgReqVO.getUserId());
 
         if (null == socketChannel) {
@@ -98,7 +119,34 @@ public class CIMServer {
                 log.info("server push msg:[{}]", sendMsgReqVO.toString()));
     }
 
-    public void saveOfflineMsg(SendMsgReqVO sendMsgReqVO){
+    //todo These steps are completed asynchronously
+    //todo batch storage?
+    //todo restore mechanism? 数据库要是连接异常，那估计短时间内都连接不上？那重试机制还有必要嘛。不如等redis补偿
+    public void saveOfflineMsg(SendMsgReqVO sendMsgReqVO) {
+
+        boolean redisAvailable = true;
+        boolean dbAvailable = true;
+
+        OfflineMsg offlineMsg = offlineMsgFactory.createFromVo(sendMsgReqVO);
+
+        try {
+            redisWALService.saveOfflineMsgToWal(offlineMsg);
+        } catch (Exception e) {
+            redisAvailable = false;
+            log.error("save offline msg in the redis error", e);
+        }
+
+        try {
+            offlineMsgService.save(offlineMsg);
+            redisWALService.deleteOfflineMsgFromWal(offlineMsg.getMessageId());
+        } catch (Exception e) {
+            dbAvailable = false;
+            log.error("save offline msg in the database error", e);
+        }
+
+        if (!(redisAvailable && dbAvailable)) {
+            throw new CIMException("save offline msg error");
+        }
 
     }
 }

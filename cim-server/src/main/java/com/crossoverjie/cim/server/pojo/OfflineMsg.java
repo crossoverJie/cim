@@ -1,5 +1,6 @@
 package com.crossoverjie.cim.server.pojo;
 
+import com.crossoverjie.cim.server.api.vo.req.SendMsgReqVO;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -24,4 +25,5 @@ public class OfflineMsg {
      * 消息来源存储在这里
      */
     private Map<String, String> properties;
+
 }

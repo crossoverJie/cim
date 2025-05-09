@@ -11,6 +11,10 @@ import java.util.concurrent.TimeUnit;
 import okhttp3.OkHttpClient;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.redis.connection.RedisConnectionFactory;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 /**
  * Function:
@@ -44,6 +48,20 @@ public class BeanConfig {
         return new ZkMetaStoreImpl();
     }
 
+    /**
+     * Redis bean
+     *
+     * @param factory
+     * @return
+     */
+    @Bean
+    public RedisTemplate<String, String> redisTemplate(RedisConnectionFactory factory) {
+        StringRedisTemplate redisTemplate = new StringRedisTemplate(factory);
+        redisTemplate.setKeySerializer(new StringRedisSerializer());
+        redisTemplate.setValueSerializer(new StringRedisSerializer());
+        redisTemplate.afterPropertiesSet();
+        return redisTemplate;
+    }
 
     /**
      * 创建心跳单例

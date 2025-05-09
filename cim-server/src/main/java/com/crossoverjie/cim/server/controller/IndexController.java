@@ -55,7 +55,7 @@ public class IndexController implements ServerApi {
 
     @Override
     public void saveOfflineMsg(@RequestBody SendMsgReqVO sendMsgReqVO) {
-
+        cimServer.saveOfflineMsg(sendMsgReqVO);
     }
 
 }

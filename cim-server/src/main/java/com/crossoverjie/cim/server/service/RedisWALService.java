@@ -13,7 +13,7 @@ public interface RedisWALService {
      *
      * @param msg
      */
-    void logOfflineMsg(OfflineMsg msg);
+//    void logOfflineMsg(OfflineMsg msg);
 
 
     /**
@@ -28,4 +28,8 @@ public interface RedisWALService {
      * Compensation: Background scheduled tasks, consumed from WAL and stored in the database
      */
     void startWALConsumer();
+
+    void saveOfflineMsgToWal(OfflineMsg msg);
+
+    void deleteOfflineMsgFromWal(String messageId);
 }

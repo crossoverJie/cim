@@ -1,6 +1,7 @@
 package com.crossoverjie.cim.server.service;
 
 import com.crossoverjie.cim.route.api.vo.req.P2PReqVO;
+import com.crossoverjie.cim.server.api.vo.req.SendMsgReqVO;
 import com.crossoverjie.cim.server.pojo.OfflineMsg;
 
 import java.util.List;
@@ -9,10 +10,9 @@ public interface OfflineMsgService {
 
     /**
      * Save offline messages
-     *
-     * @param p2PReqVO
+     * @param offlineMsg
      */
-    void save(P2PReqVO p2PReqVO);
+    void save(OfflineMsg offlineMsg);
 
 
     /**
