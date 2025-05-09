@@ -1,5 +1,6 @@
 package com.crossoverjie.cim.route.controller;
 
+import com.crossoverjie.cim.common.constant.Constants;
 import com.crossoverjie.cim.common.enums.StatusEnum;
 import com.crossoverjie.cim.common.exception.CIMException;
 import com.crossoverjie.cim.common.metastore.MetaStore;
@@ -19,6 +20,8 @@ import com.crossoverjie.cim.route.api.vo.res.RegisterInfoResVO;
 import com.crossoverjie.cim.route.service.AccountService;
 import com.crossoverjie.cim.route.service.CommonBizService;
 import com.crossoverjie.cim.route.service.UserInfoCacheService;
+import com.crossoverjie.cim.server.api.ServerApi;
+import com.crossoverjie.cim.server.api.vo.req.SendMsgReqVO;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.annotation.Resource;
 import java.util.List;
@@ -61,7 +64,8 @@ public class RouteController implements RouteApi {
     private RouteHandle routeHandle;
 
     @Resource
-    private
+    private ServerApi serverApi;
+
 
     @Operation(summary = "群聊 API")
     @RequestMapping(value = "groupRoute", method = RequestMethod.POST)
@@ -230,7 +234,13 @@ public class RouteController implements RouteApi {
     @RequestMapping(value = "saveOfflineMsg", method = RequestMethod.GET)
     @ResponseBody()
     @Override
-    public BaseResponse<NULLBody> saveOfflineMsg(P2PReqVO p2pRequest) throws Exception {
-        return null;
+    public void saveOfflineMsg(P2PReqVO p2pRequest) throws Exception {
+
+        SendMsgReqVO vo =
+                new SendMsgReqVO(p2pRequest.getMsg(), p2pRequest.getReceiveUserId());
+        vo.setProperties(Map.of(
+                Constants.MetaKey.SEND_USER_ID, String.valueOf(p2pRequest.getUserId())
+        ));
+        serverApi.saveOfflineMsg(vo);
     }
 }

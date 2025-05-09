@@ -97,4 +97,8 @@ public class CIMServer {
         future.addListener((ChannelFutureListener) channelFuture ->
                 log.info("server push msg:[{}]", sendMsgReqVO.toString()));
     }
+
+    public void saveOfflineMsg(SendMsgReqVO sendMsgReqVO){
+
+    }
 }

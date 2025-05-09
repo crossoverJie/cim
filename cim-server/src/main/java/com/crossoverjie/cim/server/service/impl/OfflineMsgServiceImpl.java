@@ -1,9 +1,10 @@
-package com.crossoverjie.cim.server.service;
+package com.crossoverjie.cim.server.service.impl;
 
 import com.crossoverjie.cim.common.constant.Constants;
 import com.crossoverjie.cim.route.api.vo.req.P2PReqVO;
 import com.crossoverjie.cim.server.mapper.OfflineMsgMapper;
 import com.crossoverjie.cim.server.pojo.OfflineMsg;
+import com.crossoverjie.cim.server.service.OfflineMsgService;
 import com.crossoverjie.cim.server.util.SnowflakeIdWorker;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.stereotype.Service;

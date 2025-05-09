@@ -81,7 +81,7 @@ public interface RouteApi {
      * @return
      * @throws Exception
      */
-    BaseResponse<NULLBody> saveOfflineMsg(P2PReqVO p2pRequest) throws Exception;
+    void saveOfflineMsg(P2PReqVO p2pRequest) throws Exception;
 
     // TODO: 2024/8/19  Get cache server & metastore server
 }

@@ -53,4 +53,9 @@ public class IndexController implements ServerApi {
         return res ;
     }
 
+    @Override
+    public void saveOfflineMsg(@RequestBody SendMsgReqVO sendMsgReqVO) {
+
+    }
+
 }
