@@ -1,6 +1,7 @@
-package com.crossoverjie.cim.msg.storage.service;
+package com.crossoverjie.cim.server.service;
 
-import com.crossoverjie.cim.msg.storage.pojo.OfflineMsg;
+
+import com.crossoverjie.cim.server.pojo.OfflineMsg;
 
 import java.util.List;
 

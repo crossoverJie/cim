@@ -1,9 +1,9 @@
-package com.crossoverjie.cim.msg.storage.pojo;
+package com.crossoverjie.cim.server.pojo;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.experimental.Accessors;
 
 import java.time.LocalDateTime;
 import java.util.Map;
@@ -11,7 +11,7 @@ import java.util.Map;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Accessors(chain = true)
+@Builder
 public class OfflineMsg {
     private Long id;
     private String messageId;

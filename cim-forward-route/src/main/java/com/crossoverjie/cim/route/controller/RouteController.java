@@ -60,6 +60,9 @@ public class RouteController implements RouteApi {
     @Resource
     private RouteHandle routeHandle;
 
+    @Resource
+    private
+
     @Operation(summary = "群聊 API")
     @RequestMapping(value = "groupRoute", method = RequestMethod.POST)
     @ResponseBody()
@@ -221,5 +224,13 @@ public class RouteController implements RouteApi {
         res.setCode(StatusEnum.SUCCESS.getCode());
         res.setMessage(StatusEnum.SUCCESS.getMessage());
         return res;
+    }
+
+    @Operation(summary = "saveOfflineMsg")
+    @RequestMapping(value = "saveOfflineMsg", method = RequestMethod.GET)
+    @ResponseBody()
+    @Override
+    public BaseResponse<NULLBody> saveOfflineMsg(P2PReqVO p2pRequest) throws Exception {
+        return null;
     }
 }

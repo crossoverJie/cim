@@ -1,4 +1,4 @@
-package com.crossoverjie.cim.msg.storage.pojo;
+package com.crossoverjie.cim.server.pojo;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

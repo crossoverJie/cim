@@ -24,6 +24,8 @@ public class Constants {
     public static class MetaKey {
         public static final String USER_ID = "userId" ;
         public static final String USER_NAME = "userName" ;
+        public static final String SEND_USER_ID = "sendUserId" ;
+        public static final String SEND_USER_NAME = "sendUserName" ;
     }
 
 }

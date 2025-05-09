@@ -1,6 +1,8 @@
-package com.crossoverjie.cim.msg.storage.mapper;
+package com.crossoverjie.cim.server.mapper;
 
-import com.crossoverjie.cim.msg.storage.pojo.OfflineMsg;
+
+
+import com.crossoverjie.cim.server.pojo.OfflineMsg;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 

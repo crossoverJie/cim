@@ -1,4 +1,4 @@
-package com.crossoverjie.cim.msg.storage.service;
+package com.crossoverjie.cim.server.service;
 
 public interface OfflineMsgLastSendRecordService {
 

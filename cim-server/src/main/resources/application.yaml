@@ -2,6 +2,12 @@ spring:
   application:
     name:
       cim-server
+
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/cim-test?useUnicode=true&characterEncoding=utf8&serverTimezone=GMT%2B8
+    username: root
+    password: zcyzcy159162
   
 # web port
 server:
@@ -32,3 +38,11 @@ cim:
     url: http://localhost:8083/ # route url suggested that this is Nginx address
   heartbeat:
     time: 30 # cim heartbeat time(seconds)
+
+mybatis-plus:
+  configuration:
+    map-underscore-to-camel-case: true # 自动驼峰转换
+  type-aliases-package: com.crossoverjie.cim.msg.storage.pojo # 实体类包路径
+  global-config:
+    db-config:
+      id-type: auto

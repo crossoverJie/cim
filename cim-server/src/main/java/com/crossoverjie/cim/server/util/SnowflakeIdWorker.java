@@ -1,4 +1,4 @@
-package com.crossoverjie.cim.msg.storage.util;
+package com.crossoverjie.cim.server.util;
 
 import org.springframework.stereotype.Component;
 
