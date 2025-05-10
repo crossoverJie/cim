@@ -1,6 +1,7 @@
 package com.crossoverjie.cim.server.service.impl;
 
 import com.crossoverjie.cim.common.constant.Constants;
+import com.crossoverjie.cim.common.exception.CIMException;
 import com.crossoverjie.cim.route.api.vo.req.P2PReqVO;
 import com.crossoverjie.cim.server.api.vo.req.SendMsgReqVO;
 import com.crossoverjie.cim.server.mapper.OfflineMsgMapper;
@@ -23,9 +24,13 @@ import java.util.Map;
 public class OfflineMsgServiceImpl implements OfflineMsgService {
 
     private final OfflineMsgMapper offlineMsgMapper;
+    private final SnowflakeIdWorker idWorker;
+    private final ObjectMapper objectMapper;
 
-    public OfflineMsgServiceImpl(OfflineMsgMapper offlineMsgMapper) {
+    public OfflineMsgServiceImpl(OfflineMsgMapper offlineMsgMapper, SnowflakeIdWorker idWorker, ObjectMapper objectMapper) {
         this.offlineMsgMapper = offlineMsgMapper;
+        this.idWorker = idWorker;
+        this.objectMapper = objectMapper;
     }
 
     @Override
@@ -40,4 +45,33 @@ public class OfflineMsgServiceImpl implements OfflineMsgService {
         List<OfflineMsg> offlineMsgs = offlineMsgMapper.fetchOfflineMsgsWithCursor(userId, lastMessageId, limit);
         return offlineMsgs;
     }
+
+    public OfflineMsg createFromVo(SendMsgReqVO vo) {
+
+        try {
+            String msgId = String.valueOf(idWorker.nextId());
+            byte[] content = objectMapper.writeValueAsBytes(vo);
+            return OfflineMsg.builder()
+                    .messageId(msgId)
+                    .userId(vo.getUserId())
+                    .content(content)
+                    //todo 写在constants中，而不是直接一个0
+                    .messageType(0)
+                    .status(0)
+                    .createdAt(LocalDateTime.now())
+                    .properties(Map.of(
+                            Constants.MetaKey.SEND_USER_ID,
+                            vo.getProperties().get(Constants.MetaKey.SEND_USER_ID)
+                    ))
+                    .build();
+        } catch (Exception e) {
+            throw new CIMException("Failed to create OfflineMsg from SendMsgReqVO", e);
+        }
+    }
+
+    @Override
+    public void updateStatus(Long userId, List<String> messageIds) {
+        offlineMsgMapper.updateStatus(userId, messageIds);
+    }
+
 }

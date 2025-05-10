@@ -1,6 +1,5 @@
 package com.crossoverjie.cim.server.service;
 
-import com.crossoverjie.cim.route.api.vo.req.P2PReqVO;
 import com.crossoverjie.cim.server.api.vo.req.SendMsgReqVO;
 import com.crossoverjie.cim.server.pojo.OfflineMsg;
 
@@ -23,5 +22,9 @@ public interface OfflineMsgService {
      * @return
      */
     List<OfflineMsg> fetchOfflineMsgsWithCursor(Long userId, String lastMessageId, int limit);
+
+    OfflineMsg createFromVo(SendMsgReqVO vo);
+
+    void updateStatus(Long userId, List<String> messageIds);
 
 }

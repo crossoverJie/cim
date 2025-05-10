@@ -28,4 +28,7 @@ public class Constants {
         public static final String SEND_USER_NAME = "sendUserName" ;
     }
 
+    //从数据库读取离线消息的每次获取量
+    public static final Integer FETCH_OFFLINE_MSG_LIMIT = 100 ;
+
 }

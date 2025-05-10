@@ -32,6 +32,7 @@ public class OfflineMsgFactory {
                     .messageId(msgId)
                     .userId(vo.getUserId())
                     .content(content)
+                    //todo 写在constants中，而不是直接一个0
                     .messageType(0)
                     .status(0)
                     .createdAt(LocalDateTime.now())
