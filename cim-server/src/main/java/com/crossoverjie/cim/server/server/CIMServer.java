@@ -12,6 +12,7 @@ import com.crossoverjie.cim.server.service.OfflineMsgService;
 import com.crossoverjie.cim.server.service.RedisWALService;
 import com.crossoverjie.cim.server.util.SessionSocketHolder;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
+import com.google.protobuf.ByteString;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
@@ -24,6 +25,7 @@ import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
 
 import java.net.InetSocketAddress;
+import java.util.List;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.ThreadFactory;
@@ -121,6 +123,41 @@ public class CIMServer {
         future.addListener((ChannelFutureListener) channelFuture ->
                 log.info("server push msg:[{}]", sendMsgReqVO.toString()));
     }
+
+    public void sendOfflineMsgs(Long userId) {
+        NioSocketChannel channel = SessionSocketHolder.get(userId);
+        if (channel == null) {
+            log.error("client {} offline!", userId);
+            return;
+        }
+
+        List<OfflineMsg> fetchMsgs = offlineStore.fetch(userId);
+        if (fetchMsgs.isEmpty()) {
+            return;
+        }
+
+        for (OfflineMsg offlineMsg : fetchMsgs) {
+            Request protocol = Request.newBuilder()
+                    .setRequestId(offlineMsg.getUserId())
+                    .setReqMsg(String.valueOf(ByteString.copyFrom(offlineMsg.getContent())))  // 假设 content 是 byte[]
+                    .putAllProperties(offlineMsg.getProperties())
+                    .setCmd(BaseCommand.MESSAGE)
+                    .build();
+            channel.write(protocol);
+        }
+
+        ChannelFuture lastFuture = (ChannelFuture) channel.flush();
+        lastFuture.addListener((ChannelFutureListener) future -> {
+            if (future.isSuccess()) {
+                offlineStore.markDelivered(userId, fetchMsgs.stream().map(OfflineMsg::getMessageId).toList());
+                log.info("server push {} msgs to user {}", fetchMsgs.size(), userId);
+            } else {
+                log.error("failed to push {} msgs to user {}",
+                        fetchMsgs.size(), userId, future.cause());
+            }
+        });
+    }
+
 
 
     public void saveOfflineMsg(SendMsgReqVO sendMsgReqVO) {

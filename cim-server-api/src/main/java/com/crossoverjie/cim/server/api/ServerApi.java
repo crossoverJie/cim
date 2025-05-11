@@ -2,8 +2,9 @@ package com.crossoverjie.cim.server.api;
 
 import com.crossoverjie.cim.common.core.proxy.DynamicUrl;
 import com.crossoverjie.cim.common.res.BaseResponse;
-import com.crossoverjie.cim.common.res.NULLBody;
+import com.crossoverjie.cim.server.api.vo.req.OfflineMsgReqVO;
 import com.crossoverjie.cim.server.api.vo.req.SendMsgReqVO;
+import com.crossoverjie.cim.server.api.vo.res.OfflineMsgResVO;
 import com.crossoverjie.cim.server.api.vo.res.SendMsgResVO;
 
 /**
@@ -22,6 +23,8 @@ public interface ServerApi {
      * @throws Exception
      */
     BaseResponse<SendMsgResVO> sendMsg(SendMsgReqVO sendMsgReqVO, @DynamicUrl String url);
+
+    BaseResponse<OfflineMsgResVO> sendOfflineMsgs(OfflineMsgReqVO offlineMsgReqVO,  String url);
 
     /**
      * Save offline message

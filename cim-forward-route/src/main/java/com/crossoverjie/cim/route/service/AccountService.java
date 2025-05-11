@@ -70,4 +70,6 @@ public interface AccountService {
      * @throws Exception
      */
     void offLine(Long userId);
+
+    void sendOfflineMsgs(CIMServerResVO cimServerResVO, Long receiveUserId);
 }

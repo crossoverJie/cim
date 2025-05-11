@@ -11,10 +11,7 @@ import com.crossoverjie.cim.common.res.NULLBody;
 import com.crossoverjie.cim.common.route.algorithm.RouteHandle;
 import com.crossoverjie.cim.common.util.RouteInfoParseUtil;
 import com.crossoverjie.cim.route.api.RouteApi;
-import com.crossoverjie.cim.route.api.vo.req.ChatReqVO;
-import com.crossoverjie.cim.route.api.vo.req.LoginReqVO;
-import com.crossoverjie.cim.route.api.vo.req.P2PReqVO;
-import com.crossoverjie.cim.route.api.vo.req.RegisterInfoReqVO;
+import com.crossoverjie.cim.route.api.vo.req.*;
 import com.crossoverjie.cim.route.api.vo.res.CIMServerResVO;
 import com.crossoverjie.cim.route.api.vo.res.RegisterInfoResVO;
 import com.crossoverjie.cim.route.service.AccountService;
@@ -242,5 +239,29 @@ public class RouteController implements RouteApi {
                 Constants.MetaKey.SEND_USER_ID, String.valueOf(p2pRequest.getUserId())
         ));
         serverApi.saveOfflineMsg(vo);
+    }
+
+    @Operation(summary = "Send offline messages")
+    @RequestMapping(value = "sendOfflineMsgs", method = RequestMethod.POST)
+    @ResponseBody()
+    @Override
+    public BaseResponse<NULLBody> sendOfflineMsgs(@RequestBody OfflineMsgReqVO offlineMsgReqVO) {
+        BaseResponse<NULLBody> res = new BaseResponse();
+
+        try {
+            //获取接收消息用户的路由信息
+            CIMServerResVO cimServerResVO = accountService.loadRouteRelatedByUserId(offlineMsgReqVO.getReceiveUserId());
+
+            //p2pRequest.getReceiveUserId()==>消息接收者的 userID
+            accountService.sendOfflineMsgs(cimServerResVO, offlineMsgReqVO.getReceiveUserId());
+
+            res.setCode(StatusEnum.SUCCESS.getCode());
+            res.setMessage(StatusEnum.SUCCESS.getMessage());
+
+        } catch (CIMException e) {
+            res.setCode(e.getErrorCode());
+            res.setMessage(e.getErrorMessage());
+        }
+        return res;
     }
 }
