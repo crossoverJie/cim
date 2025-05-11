@@ -31,12 +31,12 @@ public class BasicDbStore implements OfflineStore {
 
     @Override
     public List<OfflineMsg> fetch(Long userId) {
-        String lastMessageId = offlineMsgLastSendRecordService.getLatestMessageId(userId);
-        return offlineMsgService.fetchOfflineMsgsWithCursor(userId, lastMessageId, FETCH_OFFLINE_MSG_LIMIT);
+        return offlineMsgService.fetchOfflineMsgsWithCursor(userId, FETCH_OFFLINE_MSG_LIMIT);
     }
 
     @Override
     public void markDelivered(Long userId, List<String> messageIds) {
         offlineMsgService.updateStatus(userId, messageIds);
+        offlineMsgLastSendRecordService.saveLatestMessageId(userId, messageIds.get(messageIds.size() - 1));
     }
 }

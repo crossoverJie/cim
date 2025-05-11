@@ -19,6 +19,29 @@
                 #{propertiesJson})
     </insert>
 
+    <insert id="insertBatch" parameterType="java.util.List">
+        INSERT INTO offline_msg (
+        message_id,
+        user_id,
+        content,
+        message_type,
+        status,
+        created_at,
+        properties
+        ) VALUES
+        <foreach collection="list" item="item" separator=",">
+            (
+            #{item.messageId},
+            #{item.userId},
+            #{item.content},
+            #{item.messageType},
+            #{item.status},
+            #{item.createdAt},
+            #{item.propertiesJson}
+            )
+        </foreach>
+    </insert>
+
     <select id="fetchOfflineMsgsWithCursor" resultType="com.crossoverjie.cim.server.pojo.OfflineMsg">
         SELECT
         id,
@@ -32,7 +55,19 @@
         FROM offline_msg
         WHERE user_id = #{userId}
         <if test="lastMessageId != null">
-            AND message_id &gt; #{lastMessageId}
+            AND message_id &gt; (select last_message_id from offline_msg_last_send_record where user_id = #{userId})
+        </if>
+        ORDER BY message_id ASC
+        LIMIT #{limit}
+    </select>
+
+    <select id="fetchOfflineMsgIdsWithCursor" resultType="java.lang.String">
+        SELECT
+        message_id
+        FROM offline_msg
+        WHERE user_id = #{userId}
+        <if test="lastMessageId != null">
+            AND message_id &gt; (select last_message_id from offline_msg_last_send_record where user_id = #{userId})
         </if>
         ORDER BY message_id ASC
         LIMIT #{limit}

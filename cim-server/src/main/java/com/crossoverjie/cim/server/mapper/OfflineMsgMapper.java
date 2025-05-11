@@ -18,10 +18,14 @@ public interface OfflineMsgMapper {
 
     int insert(OfflineMsg msg);
 
-    List<OfflineMsg> fetchOfflineMsgsWithCursor(@Param("userId") Long userId, @Param("lastMessageId") String lastMessageId, @Param("limit") int limit);
+    int insertBatch(@Param("offlineMsgs") List<OfflineMsg> offlineMsgs);
+
+    List<OfflineMsg> fetchOfflineMsgsWithCursor(@Param("userId") Long userId,  @Param("limit") int limit);
 
     int updateStatus(
             @Param("userId") Long userId,
             @Param("messageIds") List<String> messageIds);
+
+    List<String> fetchOfflineMsgIdsWithCursor(@Param("userId") Long userId);
 
 }

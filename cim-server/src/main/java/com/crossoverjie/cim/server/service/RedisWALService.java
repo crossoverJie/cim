@@ -27,9 +27,14 @@ public interface RedisWALService {
     /**
      * Compensation: Background scheduled tasks, consumed from WAL and stored in the database
      */
-    void startWALConsumer();
+    void startOfflineMsgsWALConsumer();
 
     void saveOfflineMsgToWal(OfflineMsg msg);
 
     void deleteOfflineMsgFromWal(String messageId);
+
+    void markDelivered(String messageId);
+
+    //将redis中的数据迁移到数据库中
+    void migrateOfflineMsgToDb(Long userId);
 }

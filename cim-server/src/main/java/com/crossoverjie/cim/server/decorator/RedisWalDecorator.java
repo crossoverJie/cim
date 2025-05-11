@@ -7,7 +7,9 @@ import com.crossoverjie.cim.server.service.RedisWALService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -20,12 +22,12 @@ import java.util.List;
 public class RedisWalDecorator extends StoreDecorator {
 
 
-    private final RedisWALService redisWALService;
+    private final RedisWALService wal;
     private final OfflineMsgService offlineMsgService;
 
-    public RedisWalDecorator(@Qualifier("basicDbStore") OfflineStore delegate, RedisWALService wal, OfflineMsgService offlineMsgService) {
-        super(delegate);
-        this.redisWALService = wal;
+    public RedisWalDecorator(@Qualifier("basicDbStore") OfflineStore basicDbStore, RedisWALService wal, OfflineMsgService offlineMsgService) {
+        super(basicDbStore);
+        this.wal = wal;
         this.offlineMsgService = offlineMsgService;
     }
 
@@ -39,15 +41,14 @@ public class RedisWalDecorator extends StoreDecorator {
         boolean dbAvailable = true;
 
         try {
-            redisWALService.saveOfflineMsgToWal(offlineMsg);
+            wal.saveOfflineMsgToWal(offlineMsg);
         } catch (Exception e) {
             redisAvailable = false;
             log.error("save offline msg in the redis error", e);
         }
 
         try {
-            offlineMsgService.save(offlineMsg);
-            redisWALService.deleteOfflineMsgFromWal(offlineMsg.getMessageId());
+            super.save(offlineMsg);
         } catch (Exception e) {
             dbAvailable = false;
             log.error("save offline msg in the database error", e);
@@ -56,23 +57,32 @@ public class RedisWalDecorator extends StoreDecorator {
         if (!(redisAvailable && dbAvailable)) {
             throw new CIMException("save offline msg error");
         }
-
-//        // 先写 WAL
-//        wal.saveOfflineMsgToWal(msg);
-//        // 再调用下层（可能是 MySQL，也可能是另一个 decorator）
-//        super.save(msg);
-//        // 如果下层成功，可删 WAL
-//        wal.deleteOfflineMsgFromWal(msg.getMessageId());
     }
 
     @Override
     public List<OfflineMsg> fetch(Long userId) {
-//        // 先尝试下层（MySQL）
-//        List<OfflineMsg> list = super.fetch(userId);
-//        if (!list.isEmpty()) return list;
-//        // 回落到 WAL
-//        return redisWALService.pullOfflineMsgFromWal(userId);
-        return null;
+
+        List<OfflineMsg> msgs = new ArrayList<>();
+
+        List<OfflineMsg> msgsFromDb = super.fetch(userId);
+        if (!CollectionUtils.isEmpty(msgsFromDb)) {
+            msgs.addAll(msgsFromDb);
+        }
+
+        //获取redis数据之前，先进行一波下发
+        wal.migrateOfflineMsgToDb(userId);
+
+        List<OfflineMsg> msgsFromRedis = wal.getOfflineMsgs(userId);
+        if (!CollectionUtils.isEmpty(msgsFromRedis)) {
+            msgs.addAll(msgsFromRedis);
+        }
+        return msgs;
+    }
+
+    @Override
+    public void markDelivered(Long userId, List<String> messageIds) {
+        super.markDelivered(userId, messageIds);
+        messageIds.stream().forEach(id -> wal.markDelivered(id));
     }
 }
 
