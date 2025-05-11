@@ -64,17 +64,17 @@ public class RedisWalDecorator extends StoreDecorator {
 
         List<OfflineMsg> msgs = new ArrayList<>();
 
-        List<OfflineMsg> msgsFromDb = super.fetch(userId);
-        if (!CollectionUtils.isEmpty(msgsFromDb)) {
-            msgs.addAll(msgsFromDb);
-        }
-
         //获取redis数据之前，先进行一波下发
         wal.migrateOfflineMsgToDb(userId);
 
         List<OfflineMsg> msgsFromRedis = wal.getOfflineMsgs(userId);
         if (!CollectionUtils.isEmpty(msgsFromRedis)) {
             msgs.addAll(msgsFromRedis);
+        }
+
+        List<OfflineMsg> msgsFromDb = super.fetch(userId);
+        if (!CollectionUtils.isEmpty(msgsFromDb)) {
+            msgs.addAll(msgsFromDb);
         }
         return msgs;
     }
