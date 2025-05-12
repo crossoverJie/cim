@@ -121,6 +121,7 @@ public class ClientImpl extends ClientState implements Client {
         this.userLogin(future).ifPresentOrElse((cimServer) -> {
             this.doConnectServer(cimServer, future);
             this.loginServer();
+            routeManager.fetchOfflineMsgs(conf.getAuth().getUserId());
             this.serverInfo = cimServer;
             future.complete(true);
         }, () -> {

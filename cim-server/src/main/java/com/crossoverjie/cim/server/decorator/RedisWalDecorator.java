@@ -37,8 +37,6 @@ public class RedisWalDecorator extends StoreDecorator {
 
     //todo restore mechanism? 数据库要是连接异常，那估计短时间内都连接不上？那重试机制还有必要嘛。不如等redis补偿
 
-    //todo 数据不一致： 从redis中fetch后，进行下发，下发过程中，执行了consumeRedis的任务，未下发状态去到mysql，这样会下发客户端两次
-    // ---redis中userId加多个处理中的状态，若是处理中，则等候一下
     @Override
     public void save(OfflineMsg offlineMsg) {
 

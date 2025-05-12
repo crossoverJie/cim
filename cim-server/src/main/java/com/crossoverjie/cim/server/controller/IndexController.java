@@ -73,6 +73,9 @@ public class IndexController implements ServerApi {
     }
 
     @Override
+    @Operation(summary = "save offline msgs")
+    @RequestMapping(value = "saveOfflineMsg",method = RequestMethod.POST)
+    @ResponseBody
     public void saveOfflineMsg(@RequestBody SaveOfflineMsgReqVO vo) {
         cimServer.saveOfflineMsg(vo);
     }
