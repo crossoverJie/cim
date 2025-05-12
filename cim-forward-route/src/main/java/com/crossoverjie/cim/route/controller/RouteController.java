@@ -251,18 +251,17 @@ public class RouteController implements RouteApi {
 
     }
 
-    @Operation(summary = "Send offline messages")
-    @RequestMapping(value = "sendOfflineMsgs", method = RequestMethod.POST)
+    @Operation(summary = "Clinet fetch offline messages")
+    @RequestMapping(value = "fetchOfflineMsgs", method = RequestMethod.POST)
     @ResponseBody()
     @Override
-    public BaseResponse<NULLBody> sendOfflineMsgs(@RequestBody OfflineMsgReqVO offlineMsgReqVO) {
+    public BaseResponse<NULLBody> fetchOfflineMsgs(@RequestBody OfflineMsgReqVO offlineMsgReqVO) {
         BaseResponse<NULLBody> res = new BaseResponse();
 
         try {
             //获取接收消息用户的路由信息
             CIMServerResVO cimServerResVO = accountService.loadRouteRelatedByUserId(offlineMsgReqVO.getReceiveUserId());
 
-            //p2pRequest.getReceiveUserId()==>消息接收者的 userID
             accountService.sendOfflineMsgs(cimServerResVO, offlineMsgReqVO.getReceiveUserId());
 
             res.setCode(StatusEnum.SUCCESS.getCode());

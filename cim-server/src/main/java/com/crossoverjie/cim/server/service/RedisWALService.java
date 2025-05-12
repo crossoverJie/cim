@@ -29,12 +29,28 @@ public interface RedisWALService {
      */
     void startOfflineMsgsWALConsumer();
 
-    void saveOfflineMsgToWal(OfflineMsg msg);
+    /**
+     * Before writing: Write the offline message to redis
+     * @param msg
+     */
+    void saveOfflineMsgToRedis(OfflineMsg msg);
 
-    void deleteOfflineMsgFromWal(String messageId);
+    /**
+     * Delete offline messages from redis
+     * @param messageId
+     */
+    void deleteOfflineMsgFromRedis(String messageId);
 
+    /**
+     * Mark the message as delivered
+     * @param messageId
+     */
     void markDelivered(String messageId);
 
-    //将redis中的数据迁移到数据库中
+
+    /**
+     * Migrate offline messages to the database
+     * @param userId
+     */
     void migrateOfflineMsgToDb(Long userId);
 }

@@ -82,6 +82,6 @@ public interface RouteApi {
     BaseResponse<NULLBody> saveOfflineMsg(P2PReqVO p2pRequest) throws Exception;
 
 
-    BaseResponse<NULLBody> sendOfflineMsgs(OfflineMsgReqVO offlineMsgReqVO);
+    BaseResponse<NULLBody> fetchOfflineMsgs(OfflineMsgReqVO offlineMsgReqVO);
     // TODO: 2024/8/19  Get cache server & metastore server
 }

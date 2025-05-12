@@ -1,12 +1,17 @@
 package com.crossoverjie.cim.server.service.impl;
 
+import com.crossoverjie.cim.common.exception.CIMException;
 import com.crossoverjie.cim.server.pojo.OfflineMsg;
 import com.crossoverjie.cim.server.service.OfflineMsgService;
 import com.crossoverjie.cim.server.service.RedisWALService;
+import com.crossoverjie.cim.server.util.OfflineMsgLockManager;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.connection.RedisConnection;
+import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.core.Cursor;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ScanOptions;
@@ -25,7 +30,7 @@ public class RedisWALServiceImpl implements RedisWALService {
 
     private static final String MSG_KEY = "offline:msg:";
     private static final String USER_IDX = "offline:msgs:user:";
-    private static final String ALL_MSG_IDS = "offline:msg:all_ids";
+//    private static final String ALL_MSG_IDS = "offline:msg:all_ids";
 
     @Autowired
     private RedisTemplate<String, Object> redis;
@@ -33,23 +38,24 @@ public class RedisWALServiceImpl implements RedisWALService {
     private ObjectMapper mapper;
     @Autowired
     private OfflineMsgService offlineMsgService;
+    @Autowired
+    private OfflineMsgLockManager lockManager;
 
 
-    public void saveOfflineMsgToWal(OfflineMsg msg) {
+    public void saveOfflineMsgToRedis(OfflineMsg msg) {
         String key = MSG_KEY + msg.getId();
         Map<String, Object> map = new ObjectMapper()
                 .convertValue(msg, new TypeReference<>() {
                 });
+
         redis.opsForHash().putAll(key, map);
 
         //用于处理单个user
         redis.opsForList().rightPush(USER_IDX + msg.getUserId(), msg.getId().toString());
-        //用于全局下发
-        redis.opsForSet().add(ALL_MSG_IDS, msg.getMessageId());
     }
 
     @Override
-    public void deleteOfflineMsgFromWal(String messageId) {
+    public void deleteOfflineMsgFromRedis(String messageId) {
         redis.opsForHash().delete(MSG_KEY + messageId);
     }
 
@@ -80,62 +86,89 @@ public class RedisWALServiceImpl implements RedisWALService {
         return offlineMsgs;
     }
 
-    public List<OfflineMsg> getAllOfflineMsgs() {
+//    public List<OfflineMsg> getAllOfflineMsgs() {
+//
+//        List<String> allMsgIds = redis.opsForSet().members(ALL_MSG_IDS)
+//                .stream()
+//                .map(Object::toString)
+//                .collect(Collectors.toList());
+//
+//        List<OfflineMsg> offlineMsgs = new ArrayList<>();
+//        for (String id : allMsgIds) {
+//            String key = MSG_KEY + id;
+//            Map<Object, Object> map = redis.opsForHash().entries(key);
+//            if (!map.isEmpty()) {
+//                OfflineMsg msg = mapper.convertValue(map, OfflineMsg.class);
+//                offlineMsgs.add(msg);
+//            }
+//        }
+//        return offlineMsgs;
+//    }
 
-        List<String> allMsgIds = redis.opsForSet().members(ALL_MSG_IDS)
-                .stream()
-                .map(Object::toString)
-                .collect(Collectors.toList());
+    @Override
+    public void migrateOfflineMsgToDb(Long userId) {
+        lockManager.withWriteLock(userId, () -> {
+            List<OfflineMsg> offlineMsgs = getOfflineMsgs(userId);
 
-        List<OfflineMsg> offlineMsgs = new ArrayList<>();
-        for (String id : allMsgIds) {
-            String key = MSG_KEY + id;
-            Map<Object, Object> map = redis.opsForHash().entries(key);
-            if (!map.isEmpty()) {
-                OfflineMsg msg = mapper.convertValue(map, OfflineMsg.class);
-                offlineMsgs.add(msg);
+            if (CollectionUtils.isEmpty(offlineMsgs)) {
+                return;
             }
-        }
-        return offlineMsgs;
+
+            List<String> dbIds = offlineMsgService.fetchOfflineMsgIdsWithCursor(userId);
+            offlineMsgs.removeIf(msg -> dbIds.contains(msg.getMessageId()));
+            if (CollectionUtils.isEmpty(offlineMsgs)) {
+                log.info("no offline msg to migrate");
+                clearOfflineMsg(userId, offlineMsgs);
+                return;
+            }
+            offlineMsgService.insertBatch(offlineMsgs);
+            clearOfflineMsg(userId, offlineMsgs);
+        });
+    }
+
+    //todo 获取userId的所有离线消息后，删除前，又有新消息进来了，就会误删
+    public void clearOfflineMsg(Long userId, List<OfflineMsg> offlineMsgs) {
+        offlineMsgs.stream().forEach(msg -> deleteOfflineMsgFromRedis(msg.getMessageId()));
+        redis.delete(USER_IDX + userId);
     }
 
     @Override
     public void startOfflineMsgsWALConsumer() {
+        try {
+            Set<String> userKeys = scanUserKeys(redis.getConnectionFactory());
+
+            userKeys.parallelStream().forEach(key -> {
+                Long userId = extractUserId(key); // 从 "USER_IDX_1001" 提取 1001
+                migrateOfflineMsgToDb(userId);
+            });
+        } catch (Exception e) {
+            log.error("An exception occurred when consuming offline messages in redis", e);
+        }
 
     }
 
-
-    @Override
-    public void migrateOfflineMsgToDb(Long userId) {
-        List<OfflineMsg> offlineMsgs = new ArrayList<>();
-        if (userId == null) {
-            offlineMsgs = getAllOfflineMsgs();
-        } else {
-            offlineMsgs = getOfflineMsgs(userId);
+    private Long extractUserId(String key) {
+        String numbers = StringUtils.getDigits(key);
+        if (StringUtils.isNotEmpty(numbers)) {
+            return Long.parseLong(numbers);
         }
+        throw new CIMException("get user id from key failed");
+    }
 
+    public Set<String> scanUserKeys(RedisConnectionFactory factory) {
+        Set<String> userKeys = new HashSet<>();
+        try (RedisConnection connection = factory.getConnection()) {
+            ScanOptions options = ScanOptions.scanOptions()
+                    .match(USER_IDX + "*")
+                    .count(100) // 每批扫描100个键
+                    .build();
 
-        List<String> dbIds = offlineMsgService.fetchOfflineMsgIdsWithCursor(userId);
-        offlineMsgs.removeIf(msg -> dbIds.contains(msg.getMessageId()));
-        if (CollectionUtils.isEmpty(offlineMsgs)) {
-            log.info("no offline msg to migrate");
-            return;
+            Cursor<byte[]> cursor = connection.scan(options);
+            while (cursor.hasNext()) {
+                byte[] keyBytes = cursor.next();
+                userKeys.add(new String(keyBytes, StandardCharsets.UTF_8));
+            }
         }
-
-        try {
-            offlineMsgService.insertBatch(offlineMsgs);
-        } catch (Exception e) {
-            log.error("migrate offline msg to db failed", e);
-            offlineMsgs.stream().forEach(msg -> markDelivered(msg.getMessageId()));
-            return;
-        }
-
-        offlineMsgs.stream().forEach(msg -> deleteOfflineMsgFromWal(msg.getMessageId()));
-        if (userId == null) {
-            redis.delete(ALL_MSG_IDS);
-        } else {
-            redis.delete(USER_IDX + userId);
-        }
-
+        return userKeys;
     }
 }
