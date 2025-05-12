@@ -72,7 +72,8 @@ public class RedisWALServiceImpl implements RedisWALService {
                 .stream()
                 .map(Object::toString)
                 .collect(Collectors.toList());
-        if (ids == null) return Collections.emptyList();
+        if (CollectionUtils.isEmpty(ids))
+            return Collections.emptyList();
 
         List<OfflineMsg> offlineMsgs = new ArrayList<>();
         for (String id : ids) {
@@ -107,23 +108,21 @@ public class RedisWALServiceImpl implements RedisWALService {
 
     @Override
     public void migrateOfflineMsgToDb(Long userId) {
-        lockManager.withWriteLock(userId, () -> {
-            List<OfflineMsg> offlineMsgs = getOfflineMsgs(userId);
+        List<OfflineMsg> offlineMsgs = getOfflineMsgs(userId);
 
-            if (CollectionUtils.isEmpty(offlineMsgs)) {
-                return;
-            }
+        if (CollectionUtils.isEmpty(offlineMsgs)) {
+            return;
+        }
 
-            List<String> dbIds = offlineMsgService.fetchOfflineMsgIdsWithCursor(userId);
-            offlineMsgs.removeIf(msg -> dbIds.contains(msg.getMessageId()));
-            if (CollectionUtils.isEmpty(offlineMsgs)) {
-                log.info("no offline msg to migrate");
-                clearOfflineMsg(userId, offlineMsgs);
-                return;
-            }
-            offlineMsgService.insertBatch(offlineMsgs);
+        List<String> dbIds = offlineMsgService.fetchOfflineMsgIdsWithCursor(userId);
+        offlineMsgs.removeIf(msg -> dbIds.contains(msg.getMessageId()));
+        if (CollectionUtils.isEmpty(offlineMsgs)) {
+            log.info("no offline msg to migrate");
             clearOfflineMsg(userId, offlineMsgs);
-        });
+            return;
+        }
+        offlineMsgService.insertBatch(offlineMsgs);
+        clearOfflineMsg(userId, offlineMsgs);
     }
 
     //todo 获取userId的所有离线消息后，删除前，又有新消息进来了，就会误删
@@ -139,12 +138,33 @@ public class RedisWALServiceImpl implements RedisWALService {
 
             userKeys.parallelStream().forEach(key -> {
                 Long userId = extractUserId(key); // 从 "USER_IDX_1001" 提取 1001
+                if (getLockedUserIdsByScan().contains(userId)) {
+                    return;
+                }
+
                 migrateOfflineMsgToDb(userId);
             });
         } catch (Exception e) {
             log.error("An exception occurred when consuming offline messages in redis", e);
         }
 
+    }
+
+    public Set<Long> getLockedUserIdsByScan() {
+        Set<Long> userIds = new HashSet<>();
+        ScanOptions opts = ScanOptions.scanOptions()
+                .match("lock:offlineMsg:*")
+                .count(500)
+                .build();
+        RedisConnection conn = redis.getConnectionFactory().getConnection();
+        try (Cursor<byte[]> cursor = conn.scan(opts)) {
+            while (cursor.hasNext()) {
+                String key = new String(cursor.next(), StandardCharsets.UTF_8);
+                String idStr = key.substring("lock:offlineMsg:".length());
+                userIds.add(Long.valueOf(idStr));
+            }
+        }
+        return userIds;
     }
 
     private Long extractUserId(String key) {

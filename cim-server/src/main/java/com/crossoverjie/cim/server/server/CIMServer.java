@@ -3,6 +3,7 @@ package com.crossoverjie.cim.server.server;
 import com.crossoverjie.cim.common.exception.CIMException;
 import com.crossoverjie.cim.common.protocol.BaseCommand;
 import com.crossoverjie.cim.common.protocol.Request;
+import com.crossoverjie.cim.server.annotation.RedisLock;
 import com.crossoverjie.cim.server.api.vo.req.SaveOfflineMsgReqVO;
 import com.crossoverjie.cim.server.api.vo.req.SendMsgReqVO;
 import com.crossoverjie.cim.server.decorator.OfflineStore;
@@ -30,6 +31,7 @@ import java.util.List;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.TimeUnit;
 
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
@@ -125,6 +127,8 @@ public class CIMServer {
                 log.info("server push msg:[{}]", sendMsgReqVO.toString()));
     }
 
+    @RedisLock(key = "T(java.lang.String).format('lock:offlineMsg:%s', #userId)",
+            waitTime = 5, leaseTime = 30)
     public void sendOfflineMsgs(Long userId) {
         NioSocketChannel channel = SessionSocketHolder.get(userId);
         if (channel == null) {
@@ -160,7 +164,8 @@ public class CIMServer {
     }
 
 
-
+    @RedisLock(key = "T(java.lang.String).format('lock:offlineMsg:%s', #vo.userId)",
+            waitTime = 5, leaseTime = 30)
     public void saveOfflineMsg(SaveOfflineMsgReqVO vo) {
         OfflineMsg offlineMsg = offlineMsgFactory.createFromVo(vo);
         offlineStore.save(offlineMsg);
