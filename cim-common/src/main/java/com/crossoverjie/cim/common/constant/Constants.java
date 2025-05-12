@@ -35,4 +35,8 @@ public class Constants {
 
     public static final Integer OFFLINE_MSG_DELIVERED = 1 ;
 
+    public static final Integer MSG_TYPE_TEXT = 0 ;
+
+    public static final Integer MSG_TYPE_IMAGE = 1 ;
+
 }

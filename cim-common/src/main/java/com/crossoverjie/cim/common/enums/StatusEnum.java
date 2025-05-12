@@ -33,7 +33,7 @@ public enum StatusEnum {
     /** 登录信息不匹配 */
     ACCOUNT_NOT_MATCH("9100", "The User information you have used is incorrect!"),
 
-
+    OFFLINE_MESSAGE_STORAGE_ERROR("9200", "Offline message storage error!"),
 
     ;
 

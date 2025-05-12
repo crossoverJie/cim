@@ -3,6 +3,7 @@ package com.crossoverjie.cim.server.server;
 import com.crossoverjie.cim.common.exception.CIMException;
 import com.crossoverjie.cim.common.protocol.BaseCommand;
 import com.crossoverjie.cim.common.protocol.Request;
+import com.crossoverjie.cim.server.api.vo.req.SaveOfflineMsgReqVO;
 import com.crossoverjie.cim.server.api.vo.req.SendMsgReqVO;
 import com.crossoverjie.cim.server.decorator.OfflineStore;
 import com.crossoverjie.cim.server.factory.OfflineMsgFactory;
@@ -160,11 +161,8 @@ public class CIMServer {
 
 
 
-    public void saveOfflineMsg(SendMsgReqVO sendMsgReqVO) {
-
-        OfflineMsg offlineMsg = offlineMsgFactory.createFromVo(sendMsgReqVO);
-
+    public void saveOfflineMsg(SaveOfflineMsgReqVO vo) {
+        OfflineMsg offlineMsg = offlineMsgFactory.createFromVo(vo);
         offlineStore.save(offlineMsg);
-
     }
 }

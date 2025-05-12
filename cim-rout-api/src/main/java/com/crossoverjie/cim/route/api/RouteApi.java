@@ -7,6 +7,7 @@ import com.crossoverjie.cim.common.res.NULLBody;
 import com.crossoverjie.cim.route.api.vo.req.*;
 import com.crossoverjie.cim.route.api.vo.res.CIMServerResVO;
 import com.crossoverjie.cim.route.api.vo.res.RegisterInfoResVO;
+
 import java.util.Set;
 
 /**
@@ -78,7 +79,7 @@ public interface RouteApi {
      * @return
      * @throws Exception
      */
-    void saveOfflineMsg(P2PReqVO p2pRequest) throws Exception;
+    BaseResponse<NULLBody> saveOfflineMsg(P2PReqVO p2pRequest) throws Exception;
 
 
     BaseResponse<NULLBody> sendOfflineMsgs(OfflineMsgReqVO offlineMsgReqVO);

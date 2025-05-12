@@ -5,6 +5,7 @@ import com.crossoverjie.cim.common.enums.StatusEnum;
 import com.crossoverjie.cim.common.res.BaseResponse;
 import com.crossoverjie.cim.server.api.ServerApi;
 import com.crossoverjie.cim.server.api.vo.req.OfflineMsgReqVO;
+import com.crossoverjie.cim.server.api.vo.req.SaveOfflineMsgReqVO;
 import com.crossoverjie.cim.server.api.vo.req.SendMsgReqVO;
 import com.crossoverjie.cim.server.api.vo.res.OfflineMsgResVO;
 import com.crossoverjie.cim.server.api.vo.res.SendMsgResVO;
@@ -72,8 +73,8 @@ public class IndexController implements ServerApi {
     }
 
     @Override
-    public void saveOfflineMsg(@RequestBody SendMsgReqVO sendMsgReqVO) {
-        cimServer.saveOfflineMsg(sendMsgReqVO);
+    public void saveOfflineMsg(@RequestBody SaveOfflineMsgReqVO vo) {
+        cimServer.saveOfflineMsg(vo);
     }
 
 }

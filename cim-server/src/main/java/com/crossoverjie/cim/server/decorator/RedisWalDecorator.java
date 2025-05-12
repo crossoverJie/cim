@@ -1,5 +1,6 @@
 package com.crossoverjie.cim.server.decorator;
 
+import com.crossoverjie.cim.common.enums.StatusEnum;
 import com.crossoverjie.cim.common.exception.CIMException;
 import com.crossoverjie.cim.server.pojo.OfflineMsg;
 import com.crossoverjie.cim.server.service.OfflineMsgService;
@@ -31,19 +32,17 @@ public class RedisWalDecorator extends StoreDecorator {
         this.offlineMsgService = offlineMsgService;
     }
 
-    //todo These steps are completed asynchronously
-    //todo batch storage?
     //todo restore mechanism? 数据库要是连接异常，那估计短时间内都连接不上？那重试机制还有必要嘛。不如等redis补偿
     @Override
     public void save(OfflineMsg offlineMsg) {
 
-        boolean redisAvailable = true;
+        boolean walAvailable = true;
         boolean dbAvailable = true;
 
         try {
             wal.saveOfflineMsgToWal(offlineMsg);
         } catch (Exception e) {
-            redisAvailable = false;
+            walAvailable = false;
             log.error("save offline msg in the redis error", e);
         }
 
@@ -54,8 +53,8 @@ public class RedisWalDecorator extends StoreDecorator {
             log.error("save offline msg in the database error", e);
         }
 
-        if (!(redisAvailable && dbAvailable)) {
-            throw new CIMException("save offline msg error");
+        if (!walAvailable && !dbAvailable) {
+            throw new CIMException(StatusEnum.OFFLINE_MESSAGE_STORAGE_ERROR);
         }
     }
 

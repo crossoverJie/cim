@@ -18,13 +18,15 @@ import com.crossoverjie.cim.route.service.AccountService;
 import com.crossoverjie.cim.route.service.CommonBizService;
 import com.crossoverjie.cim.route.service.UserInfoCacheService;
 import com.crossoverjie.cim.server.api.ServerApi;
-import com.crossoverjie.cim.server.api.vo.req.SendMsgReqVO;
+import com.crossoverjie.cim.server.api.vo.req.SaveOfflineMsgReqVO;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.annotation.Resource;
+
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -231,14 +233,22 @@ public class RouteController implements RouteApi {
     @RequestMapping(value = "saveOfflineMsg", method = RequestMethod.GET)
     @ResponseBody()
     @Override
-    public void saveOfflineMsg(P2PReqVO p2pRequest) throws Exception {
+    public BaseResponse<NULLBody> saveOfflineMsg(P2PReqVO p2pRequest) throws Exception {
+        BaseResponse<NULLBody> res = new BaseResponse();
 
-        SendMsgReqVO vo =
-                new SendMsgReqVO(p2pRequest.getMsg(), p2pRequest.getReceiveUserId());
-        vo.setProperties(Map.of(
-                Constants.MetaKey.SEND_USER_ID, String.valueOf(p2pRequest.getUserId())
-        ));
-        serverApi.saveOfflineMsg(vo);
+        try {
+            SaveOfflineMsgReqVO vo =
+                    new SaveOfflineMsgReqVO(p2pRequest.getMsg(), p2pRequest.getReceiveUserId());
+            vo.setProperties(Map.of(
+                    Constants.MetaKey.SEND_USER_ID, String.valueOf(p2pRequest.getUserId())
+            ));
+            serverApi.saveOfflineMsg(vo);
+        } catch (CIMException e) {
+            res.setCode(e.getErrorCode());
+            res.setMessage(e.getErrorMessage());
+        }
+        return res;
+
     }
 
     @Operation(summary = "Send offline messages")

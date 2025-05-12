@@ -2,6 +2,7 @@ package com.crossoverjie.cim.server.factory;
 
 import com.crossoverjie.cim.common.constant.Constants;
 import com.crossoverjie.cim.common.exception.CIMException;
+import com.crossoverjie.cim.server.api.vo.req.SaveOfflineMsgReqVO;
 import com.crossoverjie.cim.server.api.vo.req.SendMsgReqVO;
 import com.crossoverjie.cim.server.pojo.OfflineMsg;
 import com.crossoverjie.cim.server.util.SnowflakeIdWorker;
@@ -10,6 +11,8 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.Map;
+
+import static com.crossoverjie.cim.common.constant.Constants.*;
 
 
 @Service
@@ -23,7 +26,7 @@ public class OfflineMsgFactory {
         this.objectMapper = objectMapper;
     }
 
-    public OfflineMsg createFromVo(SendMsgReqVO vo) {
+    public OfflineMsg createFromVo(SaveOfflineMsgReqVO vo) {
 
         try {
             String msgId = String.valueOf(idWorker.nextId());
@@ -32,9 +35,8 @@ public class OfflineMsgFactory {
                     .messageId(msgId)
                     .userId(vo.getUserId())
                     .content(content)
-                    //todo 写在constants中，而不是直接一个0
-                    .messageType(0)
-                    .status(0)
+                    .messageType(MSG_TYPE_TEXT)
+                    .status(OFFLINE_MSG_PENDING)
                     .createdAt(LocalDateTime.now())
                     .properties(Map.of(
                             Constants.MetaKey.SEND_USER_ID,
