@@ -35,7 +35,7 @@ public class BasicDbStore implements OfflineStore {
     }
 
     @Override
-    public void markDelivered(Long userId, List<String> messageIds) {
+    public void markDelivered(Long userId, List<Long> messageIds) {
         offlineMsgService.updateStatus(userId, messageIds);
         offlineMsgLastSendRecordService.saveLatestMessageId(userId, messageIds.get(messageIds.size() - 1));
     }

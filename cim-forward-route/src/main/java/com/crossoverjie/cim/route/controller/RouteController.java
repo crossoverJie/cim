@@ -114,6 +114,7 @@ public class RouteController implements RouteApi {
         BaseResponse<NULLBody> res = new BaseResponse();
 
         try {
+            //todo delete
             if(p2pRequest.getMsg().contains("-ol")){
                 throw new CIMException(OFF_LINE);
             }

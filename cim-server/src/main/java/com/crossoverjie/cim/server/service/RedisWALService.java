@@ -39,13 +39,13 @@ public interface RedisWALService {
      * Delete offline messages from redis
      * @param messageId
      */
-    void deleteOfflineMsgFromRedis(String messageId);
+    void deleteOfflineMsgFromRedis(Long messageId);
 
     /**
      * Mark the message as delivered
      * @param messageId
      */
-    void markDelivered(String messageId);
+    void markDelivered(Long messageId);
 
 
     /**

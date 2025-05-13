@@ -30,5 +30,5 @@ public interface OfflineStore {
      * @param userId
      * @param messageIds
      */
-    void markDelivered(Long userId, List<String> messageIds);
+    void markDelivered(Long userId, List<Long> messageIds);
 }

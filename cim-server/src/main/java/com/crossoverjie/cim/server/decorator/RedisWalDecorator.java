@@ -84,7 +84,7 @@ public class RedisWalDecorator extends StoreDecorator {
     }
 
     @Override
-    public void markDelivered(Long userId, List<String> messageIds) {
+    public void markDelivered(Long userId, List<Long> messageIds) {
         super.markDelivered(userId, messageIds);
         messageIds.stream().forEach(id -> wal.markDelivered(id));
     }

@@ -6,6 +6,7 @@ import com.crossoverjie.cim.common.metastore.ZkMetaStoreImpl;
 import com.crossoverjie.cim.common.protocol.BaseCommand;
 import com.crossoverjie.cim.common.protocol.Request;
 import com.crossoverjie.cim.route.api.RouteApi;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.annotation.Resource;
 import java.util.concurrent.TimeUnit;
 import okhttp3.OkHttpClient;
@@ -14,6 +15,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.data.redis.hash.Jackson2HashMapper;
 import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
@@ -29,6 +31,12 @@ public class BeanConfig {
 
     @Resource
     private AppConfiguration appConfiguration;
+
+    @Bean
+    public Jackson2HashMapper hashMapper(ObjectMapper objectMapper) {
+        // false 表示不在 key 里加 @class 信息
+        return new Jackson2HashMapper(objectMapper, false);
+    }
 
     /**
      * http client

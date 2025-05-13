@@ -17,7 +17,7 @@ public class OfflineMsgLastSendRecordServiceImpl implements OfflineMsgLastSendRe
     private OfflineMsgLastSendRecordMapper offlineMsgLastSendRecordMapper;
 
     @Override
-    public void saveLatestMessageId(Long userId, String lastMessageId) {
+    public void saveLatestMessageId(Long userId, Long lastMessageId) {
         offlineMsgLastSendRecordMapper.saveLatestMessageId(userId,lastMessageId);
     }
 

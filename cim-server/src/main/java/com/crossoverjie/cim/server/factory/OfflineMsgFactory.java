@@ -29,7 +29,7 @@ public class OfflineMsgFactory {
     public OfflineMsg createFromVo(SaveOfflineMsgReqVO vo) {
 
         try {
-            String msgId = String.valueOf(idWorker.nextId());
+            Long msgId = idWorker.nextId();
             byte[] content = objectMapper.writeValueAsBytes(vo);
             return OfflineMsg.builder()
                     .messageId(msgId)

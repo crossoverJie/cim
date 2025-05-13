@@ -15,6 +15,7 @@ import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.core.Cursor;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ScanOptions;
+import org.springframework.data.redis.hash.Jackson2HashMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
@@ -29,7 +30,7 @@ import static com.crossoverjie.cim.common.constant.Constants.OFFLINE_MSG_DELIVER
 public class RedisWALServiceImpl implements RedisWALService {
 
     private static final String MSG_KEY = "offline:msg:";
-    private static final String USER_IDX = "offline:msgs:user:";
+    private static final String USER_IDX = "offline:msg:user:";
 //    private static final String ALL_MSG_IDS = "offline:msg:all_ids";
 
     @Autowired
@@ -40,33 +41,37 @@ public class RedisWALServiceImpl implements RedisWALService {
     private OfflineMsgService offlineMsgService;
     @Autowired
     private OfflineMsgLockManager lockManager;
+    @Autowired
+    private Jackson2HashMapper hashMapper;
 
 
     public void saveOfflineMsgToRedis(OfflineMsg msg) {
         String key = MSG_KEY + msg.getMessageId();
-        Map<String, Object> map = new HashMap<>();
-        map.put("messageId", msg.getMessageId());
-        map.put("userId", msg.getUserId());
-       // todo msg这里存什么好
-        map.put("content", new String(msg.getContent(), StandardCharsets.UTF_8));
-        map.put("messageType", msg.getMessageType());
-        map.put("status", msg.getStatus());
-        map.put("createdAt", msg.getCreatedAt().toString()); // 或使用DateTimeFormatter
-        map.put("properties", msg.getProperties());
+//        Map<String, Object> map = new HashMap<>();
+//        map.put("messageId", msg.getMessageId());
+//        map.put("userId", msg.getUserId());
+//       // todo msg这里存什么好
+//        map.put("content", new String(msg.getContent(), StandardCharsets.UTF_8));
+//        map.put("messageType", msg.getMessageType());
+//        map.put("status", msg.getStatus());
+//        map.put("createdAt", msg.getCreatedAt().toString()); // 或使用DateTimeFormatter
+//        map.put("properties", msg.getProperties());
 
-        redis.opsForHash().putAll(key, map);
+//        redis.opsForHash().putAll(key, map);
 
+        Map<String, Object> hashMap = hashMapper.toHash(msg);
+        redis.opsForHash().putAll(key, hashMap);
         //用于处理单个user
-        redis.opsForList().rightPush(USER_IDX + msg.getUserId(), msg.getUserId().toString());
+        redis.opsForList().rightPush(USER_IDX + msg.getUserId(), msg.getMessageId().toString());
     }
 
     @Override
-    public void deleteOfflineMsgFromRedis(String messageId) {
+    public void deleteOfflineMsgFromRedis(Long messageId) {
         redis.opsForHash().delete(MSG_KEY + messageId);
     }
 
     @Override
-    public void markDelivered(String messageId) {
+    public void markDelivered(Long messageId) {
         String key = MSG_KEY + messageId;
         redis.opsForHash().put(key, "status", OFFLINE_MSG_DELIVERED);
     }
@@ -120,7 +125,7 @@ public class RedisWALServiceImpl implements RedisWALService {
             return;
         }
 
-        List<String> dbIds = offlineMsgService.fetchOfflineMsgIdsWithCursor(userId);
+        List<Long> dbIds = offlineMsgService.fetchOfflineMsgIdsWithCursor(userId);
         offlineMsgs.removeIf(msg -> dbIds.contains(msg.getMessageId()));
         if (CollectionUtils.isEmpty(offlineMsgs)) {
             log.info("no offline msg to migrate");

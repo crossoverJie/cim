@@ -27,9 +27,9 @@ public interface OfflineMsgService {
 
     OfflineMsg createFromVo(SendMsgReqVO vo);
 
-    void updateStatus(Long userId, List<String> messageIds);
+    void updateStatus(Long userId, List<Long> messageIds);
 
-    List<String> fetchOfflineMsgIdsWithCursor(Long userId);
+    List<Long> fetchOfflineMsgIdsWithCursor(Long userId);
 
     int insertBatch(List<OfflineMsg> offlineMsgs);
 }

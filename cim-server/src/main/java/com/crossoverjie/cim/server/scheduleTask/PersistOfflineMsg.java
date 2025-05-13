@@ -12,7 +12,7 @@ public class PersistOfflineMsg {
     private RedisWALService redisWALServicel;
 
 
-    @Scheduled(cron = "0/20 * * * * ?")
+//    @Scheduled(cron = "0/20 * * * * ?")
     public void persistOfflineMsg() {
         redisWALServicel.startOfflineMsgsWALConsumer();
     }

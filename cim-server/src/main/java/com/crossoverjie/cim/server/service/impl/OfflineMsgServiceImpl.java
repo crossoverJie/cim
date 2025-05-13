@@ -49,7 +49,7 @@ public class OfflineMsgServiceImpl implements OfflineMsgService {
     public OfflineMsg createFromVo(SendMsgReqVO vo) {
 
         try {
-            String msgId = String.valueOf(idWorker.nextId());
+            Long msgId = idWorker.nextId();
             byte[] content = objectMapper.writeValueAsBytes(vo);
             return OfflineMsg.builder()
                     .messageId(msgId)
@@ -70,12 +70,12 @@ public class OfflineMsgServiceImpl implements OfflineMsgService {
     }
 
     @Override
-    public void updateStatus(Long userId, List<String> messageIds) {
+    public void updateStatus(Long userId, List<Long> messageIds) {
         offlineMsgMapper.updateStatus(userId, messageIds);
     }
 
     @Override
-    public List<String> fetchOfflineMsgIdsWithCursor(Long userId) {
+    public List<Long> fetchOfflineMsgIdsWithCursor(Long userId) {
         return offlineMsgMapper.fetchOfflineMsgIdsWithCursor(userId);
     }
 

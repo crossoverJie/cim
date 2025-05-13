@@ -1,6 +1,6 @@
 CREATE TABLE offline_msg (
                              id BIGINT PRIMARY KEY AUTO_INCREMENT,
-                             message_id VARCHAR(64) NOT NULL,
+                             message_id BIGINT NOT NULL,
                              user_id BIGINT NOT NULL,
                              content BLOB,
                              message_type INT,

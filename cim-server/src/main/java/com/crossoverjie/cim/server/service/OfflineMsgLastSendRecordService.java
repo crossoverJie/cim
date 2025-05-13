@@ -5,7 +5,7 @@ public interface OfflineMsgLastSendRecordService {
     /**
      * Save the last messageId of the latest batch of offline messages pushed to the client
      */
-    void saveLatestMessageId(Long userId, String lastMessageId);
+    void saveLatestMessageId(Long userId, Long lastMessageId);
 
     /**
      * Obtain the latest messageId of a certain session

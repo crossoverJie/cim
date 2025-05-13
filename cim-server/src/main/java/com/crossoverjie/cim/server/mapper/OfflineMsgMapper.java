@@ -24,8 +24,8 @@ public interface OfflineMsgMapper {
 
     int updateStatus(
             @Param("userId") Long userId,
-            @Param("messageIds") List<String> messageIds);
+            @Param("messageIds") List<Long> messageIds);
 
-    List<String> fetchOfflineMsgIdsWithCursor(@Param("userId") Long userId);
+    List<Long> fetchOfflineMsgIdsWithCursor(@Param("userId") Long userId);
 
 }

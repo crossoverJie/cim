@@ -14,7 +14,7 @@ import java.util.Map;
 @NoArgsConstructor
 @Builder
 public class OfflineMsg {
-    private String messageId;
+    private Long messageId;
     private Long userId;
     private byte[] content;
     private Integer messageType;   // 0: Text, 1: Image

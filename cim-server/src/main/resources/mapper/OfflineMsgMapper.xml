@@ -44,7 +44,6 @@
 
     <select id="fetchOfflineMsgsWithCursor" resultType="com.crossoverjie.cim.server.pojo.OfflineMsg">
         SELECT
-        id,
         message_id,
         user_id,
         content,
@@ -59,14 +58,13 @@
         LIMIT #{limit}
     </select>
 
-    <select id="fetchOfflineMsgIdsWithCursor" resultType="java.lang.String">
+    <select id="fetchOfflineMsgIdsWithCursor" resultType="java.lang.Long" parameterType="java.lang.Long">
         SELECT
         message_id
         FROM offline_msg
         WHERE user_id = #{userId}
         AND message_id &gt; (select last_message_id from offline_msg_last_send_record where user_id = #{userId})
         ORDER BY message_id ASC
-        LIMIT #{limit}
     </select>
 
     <update id="updateStatus" parameterType="map">

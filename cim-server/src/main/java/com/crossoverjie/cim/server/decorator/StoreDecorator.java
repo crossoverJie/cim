@@ -26,7 +26,7 @@ public abstract class StoreDecorator implements OfflineStore {
         return delegate.fetch(userId);
     }
 
-    public void markDelivered(Long userId, List<String> messageIds) {
+    public void markDelivered(Long userId, List<Long> messageIds) {
         delegate.markDelivered(userId, messageIds);
     }
 }
