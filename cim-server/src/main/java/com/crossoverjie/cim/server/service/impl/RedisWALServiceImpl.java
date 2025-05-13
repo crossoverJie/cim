@@ -43,15 +43,21 @@ public class RedisWALServiceImpl implements RedisWALService {
 
 
     public void saveOfflineMsgToRedis(OfflineMsg msg) {
-        String key = MSG_KEY + msg.getId();
-        Map<String, Object> map = new ObjectMapper()
-                .convertValue(msg, new TypeReference<>() {
-                });
+        String key = MSG_KEY + msg.getMessageId();
+        Map<String, Object> map = new HashMap<>();
+        map.put("messageId", msg.getMessageId());
+        map.put("userId", msg.getUserId());
+       // todo msg这里存什么好
+        map.put("content", new String(msg.getContent(), StandardCharsets.UTF_8));
+        map.put("messageType", msg.getMessageType());
+        map.put("status", msg.getStatus());
+        map.put("createdAt", msg.getCreatedAt().toString()); // 或使用DateTimeFormatter
+        map.put("properties", msg.getProperties());
 
         redis.opsForHash().putAll(key, map);
 
         //用于处理单个user
-        redis.opsForList().rightPush(USER_IDX + msg.getUserId(), msg.getId().toString());
+        redis.opsForList().rightPush(USER_IDX + msg.getUserId(), msg.getUserId().toString());
     }
 
     @Override

@@ -3,11 +3,11 @@ package com.crossoverjie.cim.server.api.vo.req;
 import com.crossoverjie.cim.common.req.BaseRequest;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.Map;
-
+@Builder
+@AllArgsConstructor
 public class SaveOfflineMsgReqVO extends BaseRequest {
 
     @NotNull(message = "msg 不能为空")

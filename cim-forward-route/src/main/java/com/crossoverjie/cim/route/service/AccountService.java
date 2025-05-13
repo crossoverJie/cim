@@ -5,6 +5,7 @@ import com.crossoverjie.cim.route.api.vo.req.ChatReqVO;
 import com.crossoverjie.cim.route.api.vo.req.LoginReqVO;
 import com.crossoverjie.cim.route.api.vo.res.CIMServerResVO;
 import com.crossoverjie.cim.route.api.vo.res.RegisterInfoResVO;
+import com.crossoverjie.cim.server.api.vo.req.SaveOfflineMsgReqVO;
 
 import java.util.Map;
 
@@ -72,4 +73,6 @@ public interface AccountService {
     void offLine(Long userId);
 
     void sendOfflineMsgs(CIMServerResVO cimServerResVO, Long receiveUserId);
+
+    void saveOfflineMsg(CIMServerResVO cimServerResVO,SaveOfflineMsgReqVO saveOfflineMsgReqVO);
 }

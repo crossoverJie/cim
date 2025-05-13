@@ -54,9 +54,7 @@
         properties
         FROM offline_msg
         WHERE user_id = #{userId}
-        <if test="lastMessageId != null">
-            AND message_id &gt; (select last_message_id from offline_msg_last_send_record where user_id = #{userId})
-        </if>
+        AND message_id &gt; (select last_message_id from offline_msg_last_send_record where user_id = #{userId})
         ORDER BY message_id ASC
         LIMIT #{limit}
     </select>
@@ -66,9 +64,7 @@
         message_id
         FROM offline_msg
         WHERE user_id = #{userId}
-        <if test="lastMessageId != null">
-            AND message_id &gt; (select last_message_id from offline_msg_last_send_record where user_id = #{userId})
-        </if>
+        AND message_id &gt; (select last_message_id from offline_msg_last_send_record where user_id = #{userId})
         ORDER BY message_id ASC
         LIMIT #{limit}
     </select>

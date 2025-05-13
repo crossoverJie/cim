@@ -5,6 +5,7 @@ import com.crossoverjie.cim.server.decorator.OfflineStore;
 import com.crossoverjie.cim.server.decorator.RedisWalDecorator;
 import com.crossoverjie.cim.server.service.OfflineMsgService;
 import com.crossoverjie.cim.server.service.RedisWALService;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -27,6 +28,7 @@ public class StoreConfig {
 
     @Bean
     @ConditionalOnProperty(name = "offline.store.mode", havingValue = "redis_mysql")
+    @ConditionalOnMissingBean(name = "primaryStore")
     public OfflineStore redisMysqlStore(
             BasicDbStore dbStore,
             RedisWALService wal,

@@ -37,5 +37,5 @@ public interface ServerApi {
      * Save offline message
      * @param saveOfflineMsgReqVO
      */
-    void saveOfflineMsg(SaveOfflineMsgReqVO saveOfflineMsgReqVO);
+    void saveOfflineMsg(SaveOfflineMsgReqVO saveOfflineMsgReqVO, @DynamicUrl String url);
 }

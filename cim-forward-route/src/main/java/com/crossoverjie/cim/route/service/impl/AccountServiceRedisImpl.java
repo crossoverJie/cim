@@ -16,6 +16,7 @@ import com.crossoverjie.cim.route.service.AccountService;
 import com.crossoverjie.cim.route.service.UserInfoCacheService;
 import com.crossoverjie.cim.server.api.ServerApi;
 import com.crossoverjie.cim.server.api.vo.req.OfflineMsgReqVO;
+import com.crossoverjie.cim.server.api.vo.req.SaveOfflineMsgReqVO;
 import com.crossoverjie.cim.server.api.vo.req.SendMsgReqVO;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
@@ -177,6 +178,14 @@ public class AccountServiceRedisImpl implements AccountService {
 
         String url = "http://" + cimServerResVO.getIp() + ":" + cimServerResVO.getHttpPort();
         serverApi.sendOfflineMsgs(OfflineMsgReqVO.builder().receiveUserId(receiveUserId).build(), url);
+
+    }
+
+    @Override
+    public void saveOfflineMsg(CIMServerResVO cimServerResVO, SaveOfflineMsgReqVO saveOfflineMsgReqVO) {
+
+        String url = "http://" + cimServerResVO.getIp() + ":" + cimServerResVO.getHttpPort();
+        serverApi.saveOfflineMsg(saveOfflineMsgReqVO, url);
 
     }
 

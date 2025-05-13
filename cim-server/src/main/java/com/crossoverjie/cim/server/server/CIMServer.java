@@ -36,6 +36,7 @@ import java.util.concurrent.TimeUnit;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -65,6 +66,8 @@ public class CIMServer {
     private OfflineMsgService offlineMsgService;
     @Resource
     private OfflineMsgFactory offlineMsgFactory;
+
+    @Qualifier("redisWalDecorator")  //todo delete，改为依赖配置文件注入
     @Autowired
     private OfflineStore offlineStore;
 

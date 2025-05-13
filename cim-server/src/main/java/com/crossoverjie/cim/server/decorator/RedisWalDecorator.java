@@ -26,13 +26,11 @@ public class RedisWalDecorator extends StoreDecorator {
 
     private final RedisWALService wal;
     private final OfflineMsgService offlineMsgService;
-    private final OfflineMsgLockManager lockManager;
 
-    public RedisWalDecorator(@Qualifier("basicDbStore") OfflineStore basicDbStore, RedisWALService wal, OfflineMsgService offlineMsgService, OfflineMsgLockManager offlineMsgLockManager) {
+    public RedisWalDecorator(@Qualifier("basicDbStore") OfflineStore basicDbStore, RedisWALService wal, OfflineMsgService offlineMsgService) {
         super(basicDbStore);
         this.wal = wal;
         this.offlineMsgService = offlineMsgService;
-        this.lockManager = offlineMsgLockManager;
     }
 
     //todo restore mechanism? 数据库要是连接异常，那估计短时间内都连接不上？那重试机制还有必要嘛。不如等redis补偿
@@ -87,10 +85,8 @@ public class RedisWalDecorator extends StoreDecorator {
 
     @Override
     public void markDelivered(Long userId, List<String> messageIds) {
-        lockManager.withWriteLock(userId, () -> {
-            super.markDelivered(userId, messageIds);
-            messageIds.stream().forEach(id -> wal.markDelivered(id));
-        });
+        super.markDelivered(userId, messageIds);
+        messageIds.stream().forEach(id -> wal.markDelivered(id));
     }
 }
 

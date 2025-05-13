@@ -35,6 +35,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import static com.crossoverjie.cim.common.enums.StatusEnum.OFF_LINE;
+
 /**
  * Function:
  *
@@ -112,6 +114,10 @@ public class RouteController implements RouteApi {
         BaseResponse<NULLBody> res = new BaseResponse();
 
         try {
+            if(p2pRequest.getMsg().contains("-ol")){
+                throw new CIMException(OFF_LINE);
+            }
+
             //获取接收消息用户的路由信息
             CIMServerResVO cimServerResVO = accountService.loadRouteRelatedByUserId(p2pRequest.getReceiveUserId());
 
@@ -230,19 +236,20 @@ public class RouteController implements RouteApi {
     }
 
     @Operation(summary = "saveOfflineMsg")
-    @RequestMapping(value = "saveOfflineMsg", method = RequestMethod.GET)
+    @RequestMapping(value = "saveOfflineMsg", method = RequestMethod.POST)
     @ResponseBody()
     @Override
-    public BaseResponse<NULLBody> saveOfflineMsg(P2PReqVO p2pRequest) throws Exception {
+    public BaseResponse<NULLBody> saveOfflineMsg(@RequestBody P2PReqVO p2pRequest) throws Exception {
         BaseResponse<NULLBody> res = new BaseResponse();
 
         try {
+            CIMServerResVO cimServerResVO = accountService.loadRouteRelatedByUserId(p2pRequest.getReceiveUserId());
             SaveOfflineMsgReqVO vo =
                     new SaveOfflineMsgReqVO(p2pRequest.getMsg(), p2pRequest.getReceiveUserId());
             vo.setProperties(Map.of(
                     Constants.MetaKey.SEND_USER_ID, String.valueOf(p2pRequest.getUserId())
             ));
-            serverApi.saveOfflineMsg(vo);
+            accountService.saveOfflineMsg(cimServerResVO,vo);
         } catch (CIMException e) {
             res.setCode(e.getErrorCode());
             res.setMessage(e.getErrorMessage());
