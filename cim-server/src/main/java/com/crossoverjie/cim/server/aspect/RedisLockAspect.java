@@ -1,6 +1,7 @@
 package com.crossoverjie.cim.server.aspect;
 
 import com.crossoverjie.cim.server.annotation.RedisLock;
+import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -26,6 +27,7 @@ import java.util.concurrent.TimeUnit;
  */
 @Aspect
 @Component
+@Slf4j
 public class RedisLockAspect {
 
     @Autowired
@@ -55,11 +57,13 @@ public class RedisLockAspect {
         }
 
         try {
+            log.info("method: {} - lock acquired, key: {}", method.getName(), lockKey);
             // 3) 执行业务方法
             return pjp.proceed();
         } finally {
             // 4) 释放锁
             lock.unlock();
+            log.info("method: {} - lock released, key: {}", method.getName(), lockKey);
         }
     }
 }

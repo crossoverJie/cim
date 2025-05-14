@@ -21,7 +21,7 @@ springdoc:
 logging:
   level:
     root: info
-  
+
 # enable zk
 app:
   zk:
@@ -39,10 +39,15 @@ cim:
   heartbeat:
     time: 30 # cim heartbeat time(seconds)
 
-mybatis-plus:
+mybatis:
   configuration:
     map-underscore-to-camel-case: true # 自动驼峰转换
-  type-aliases-package: com.crossoverjie.cim.msg.storage.pojo # 实体类包路径
+  type-aliases-package: com.crossoverjie.cim.server.pojo # 实体类包路径
+  mapper-locations: classpath:mapper/*.xml
   global-config:
     db-config:
       id-type: auto
+
+offline:
+  store:
+    mode: redis_mysql
