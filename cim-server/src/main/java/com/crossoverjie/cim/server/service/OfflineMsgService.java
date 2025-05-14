@@ -31,5 +31,5 @@ public interface OfflineMsgService {
 
     List<Long> fetchOfflineMsgIdsWithCursor(Long userId);
 
-    int insertBatch(List<OfflineMsg> offlineMsgs);
+    Integer insertBatch(List<OfflineMsg> offlineMsgs);
 }

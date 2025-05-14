@@ -147,7 +147,7 @@ public class CIMServer {
         for (OfflineMsg offlineMsg : fetchMsgs) {
             Request protocol = Request.newBuilder()
                     .setRequestId(offlineMsg.getUserId())
-                    .setReqMsg(String.valueOf(ByteString.copyFrom(offlineMsg.getContent())))  // 假设 content 是 byte[]
+                    .setReqMsg(offlineMsg.getContent())  // 假设 content 是 byte[]
                     .putAllProperties(offlineMsg.getProperties())
                     .setCmd(BaseCommand.MESSAGE)
                     .build();

@@ -6,6 +6,7 @@ import com.crossoverjie.cim.server.pojo.OfflineMsg;
 import java.util.List;
 
 //todo Add batch modifications？
+//todo OfflineMsgBufferService
 public interface RedisWALService {
 
     /**

@@ -50,11 +50,10 @@ public class OfflineMsgServiceImpl implements OfflineMsgService {
 
         try {
             Long msgId = idWorker.nextId();
-            byte[] content = objectMapper.writeValueAsBytes(vo);
             return OfflineMsg.builder()
                     .messageId(msgId)
                     .userId(vo.getUserId())
-                    .content(content)
+                    .content(vo.getMsg())
                     //todo 写在constants中，而不是直接一个0
                     .messageType(0)
                     .status(0)
@@ -80,7 +79,7 @@ public class OfflineMsgServiceImpl implements OfflineMsgService {
     }
 
     @Override
-    public int insertBatch(List<OfflineMsg> offlineMsgs) {
+    public Integer insertBatch(List<OfflineMsg> offlineMsgs) {
         return offlineMsgMapper.insertBatch(offlineMsgs);
     }
 

@@ -67,7 +67,7 @@ public class RedisWALServiceImpl implements RedisWALService {
 
     @Override
     public void deleteOfflineMsgFromRedis(Long messageId) {
-        redis.opsForHash().delete(MSG_KEY + messageId);
+        redis.delete(MSG_KEY + messageId);
     }
 
     @Override
@@ -98,24 +98,6 @@ public class RedisWALServiceImpl implements RedisWALService {
         return offlineMsgs;
     }
 
-//    public List<OfflineMsg> getAllOfflineMsgs() {
-//
-//        List<String> allMsgIds = redis.opsForSet().members(ALL_MSG_IDS)
-//                .stream()
-//                .map(Object::toString)
-//                .collect(Collectors.toList());
-//
-//        List<OfflineMsg> offlineMsgs = new ArrayList<>();
-//        for (String id : allMsgIds) {
-//            String key = MSG_KEY + id;
-//            Map<Object, Object> map = redis.opsForHash().entries(key);
-//            if (!map.isEmpty()) {
-//                OfflineMsg msg = mapper.convertValue(map, OfflineMsg.class);
-//                offlineMsgs.add(msg);
-//            }
-//        }
-//        return offlineMsgs;
-//    }
 
     @Override
     public void migrateOfflineMsgToDb(Long userId) {

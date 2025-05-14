@@ -30,11 +30,10 @@ public class OfflineMsgFactory {
 
         try {
             Long msgId = idWorker.nextId();
-            byte[] content = objectMapper.writeValueAsBytes(vo);
             return OfflineMsg.builder()
                     .messageId(msgId)
                     .userId(vo.getUserId())
-                    .content(content)
+                    .content(vo.getMsg())
                     .messageType(MSG_TYPE_TEXT)
                     .status(OFFLINE_MSG_PENDING)
                     .createdAt(LocalDateTime.now())

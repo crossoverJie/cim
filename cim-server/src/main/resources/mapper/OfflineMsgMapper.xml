@@ -16,7 +16,7 @@
                 #{messageType},
                 #{status},
                 #{createdAt},
-                #{propertiesJson})
+                #{properties})
     </insert>
 
     <insert id="insertBatch" parameterType="java.util.List">
@@ -29,7 +29,7 @@
         created_at,
         properties
         ) VALUES
-        <foreach collection="list" item="item" separator=",">
+        <foreach collection="offlineMsgs" item="item" separator=",">
             (
             #{item.messageId},
             #{item.userId},
@@ -37,7 +37,7 @@
             #{item.messageType},
             #{item.status},
             #{item.createdAt},
-            #{item.propertiesJson}
+            #{item.properties, typeHandler=com.crossoverjie.cim.server.util.MapToJsonTypeHandler}
             )
         </foreach>
     </insert>

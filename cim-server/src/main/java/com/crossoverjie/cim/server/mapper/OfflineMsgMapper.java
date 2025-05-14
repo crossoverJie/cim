@@ -20,7 +20,7 @@ public interface OfflineMsgMapper {
 
     int insertBatch(@Param("offlineMsgs") List<OfflineMsg> offlineMsgs);
 
-    List<OfflineMsg> fetchOfflineMsgsWithCursor(@Param("userId") Long userId,  @Param("limit") int limit);
+    List<OfflineMsg> fetchOfflineMsgsWithCursor(@Param("userId") Long userId,  @Param("limit") Integer limit);
 
     int updateStatus(
             @Param("userId") Long userId,
