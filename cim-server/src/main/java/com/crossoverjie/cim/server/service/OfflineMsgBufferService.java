@@ -5,16 +5,7 @@ import com.crossoverjie.cim.server.pojo.OfflineMsg;
 
 import java.util.List;
 
-//todo Add batch modifications？
-//todo OfflineMsgBufferService
-public interface RedisWALService {
-
-    /**
-     * Before writing: Write the offline message to redis
-     *
-     * @param msg
-     */
-//    void logOfflineMsg(OfflineMsg msg);
+public interface OfflineMsgBufferService {
 
 
     /**
@@ -26,21 +17,21 @@ public interface RedisWALService {
     List<OfflineMsg> getOfflineMsgs(Long userId);
 
     /**
-     * Compensation: Background scheduled tasks, consumed from WAL and stored in the database
+     * Compensation: Background scheduled tasks, consumed from Buffer and stored in the database
      */
-    void startOfflineMsgsWALConsumer();
+    void startOfflineMsgsBufferConsume();
 
     /**
-     * Before writing: Write the offline message to redis
+     * Before writing: Write the offline message to buffer
      * @param msg
      */
-    void saveOfflineMsgToRedis(OfflineMsg msg);
+    void saveOfflineMsgInBuffer(OfflineMsg msg);
 
     /**
-     * Delete offline messages from redis
+     * Delete offline messages from buffer
      * @param messageId
      */
-    void deleteOfflineMsgFromRedis(Long messageId);
+    void deleteOfflineMsgFromBuffer(Long messageId);
 
     /**
      * Mark the message as delivered

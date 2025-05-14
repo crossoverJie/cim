@@ -1,20 +1,16 @@
 package com.crossoverjie.cim.server.server;
 
-import com.crossoverjie.cim.common.exception.CIMException;
 import com.crossoverjie.cim.common.protocol.BaseCommand;
 import com.crossoverjie.cim.common.protocol.Request;
 import com.crossoverjie.cim.server.annotation.RedisLock;
 import com.crossoverjie.cim.server.api.vo.req.SaveOfflineMsgReqVO;
 import com.crossoverjie.cim.server.api.vo.req.SendMsgReqVO;
-import com.crossoverjie.cim.server.decorator.OfflineStore;
+import com.crossoverjie.cim.server.decorator.OfflineMsgStore;
 import com.crossoverjie.cim.server.factory.OfflineMsgFactory;
 import com.crossoverjie.cim.server.init.CIMServerInitializer;
 import com.crossoverjie.cim.server.pojo.OfflineMsg;
-import com.crossoverjie.cim.server.service.OfflineMsgService;
-import com.crossoverjie.cim.server.service.RedisWALService;
+import com.crossoverjie.cim.server.service.impl.RedisOfflineMsgBuffer;
 import com.crossoverjie.cim.server.util.SessionSocketHolder;
-import com.google.common.util.concurrent.ThreadFactoryBuilder;
-import com.google.protobuf.ByteString;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
@@ -28,10 +24,6 @@ import jakarta.annotation.PreDestroy;
 
 import java.net.InetSocketAddress;
 import java.util.List;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ScheduledThreadPoolExecutor;
-import java.util.concurrent.ThreadFactory;
-import java.util.concurrent.TimeUnit;
 
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
@@ -60,16 +52,13 @@ public class CIMServer {
     private int nettyPort;
 
     @Resource
-    private RedisWALService redisWALService;
-
-    @Resource
-    private OfflineMsgService offlineMsgService;
+    private RedisOfflineMsgBuffer redisOfflineMsgBuffer;
     @Resource
     private OfflineMsgFactory offlineMsgFactory;
 
-    @Qualifier("redisWalDecorator")  //todo delete，改为依赖配置文件注入
+    @Qualifier("redisStoreDecorator")  //todo delete，改为依赖配置文件注入
     @Autowired
-    private OfflineStore offlineStore;
+    private OfflineMsgStore offlineMsgStore;
 
     /**
      * 启动 cim server
@@ -139,7 +128,7 @@ public class CIMServer {
             return;
         }
 
-        List<OfflineMsg> fetchMsgs = offlineStore.fetch(userId);
+        List<OfflineMsg> fetchMsgs = offlineMsgStore.fetch(userId);
         if (fetchMsgs.isEmpty()) {
             return;
         }
@@ -157,7 +146,7 @@ public class CIMServer {
         ChannelFuture lastFuture = (ChannelFuture) channel.flush();
         lastFuture.addListener((ChannelFutureListener) future -> {
             if (future.isSuccess()) {
-                offlineStore.markDelivered(userId, fetchMsgs.stream().map(OfflineMsg::getMessageId).toList());
+                offlineMsgStore.markDelivered(userId, fetchMsgs.stream().map(OfflineMsg::getMessageId).toList());
                 log.info("server push {} msgs to user {}", fetchMsgs.size(), userId);
             } else {
                 log.error("failed to push {} msgs to user {}",
@@ -171,6 +160,6 @@ public class CIMServer {
             waitTime = 5, leaseTime = 30)
     public void saveOfflineMsg(SaveOfflineMsgReqVO vo) {
         OfflineMsg offlineMsg = offlineMsgFactory.createFromVo(vo);
-        offlineStore.save(offlineMsg);
+        offlineMsgStore.save(offlineMsg);
     }
 }

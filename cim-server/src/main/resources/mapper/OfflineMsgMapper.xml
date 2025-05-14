@@ -53,7 +53,7 @@
         properties
         FROM offline_msg
         WHERE user_id = #{userId}
-        AND message_id &gt; (select last_message_id from offline_msg_last_send_record where user_id = #{userId})
+        AND message_id &gt; COALESCE((select last_message_id from offline_msg_last_send_record where user_id = #{userId}),0)
         ORDER BY message_id ASC
         LIMIT #{limit}
     </select>
@@ -68,13 +68,15 @@
     </select>
 
     <update id="updateStatus" parameterType="map">
-        UPDATE offline_message
+        UPDATE offline_msg
         SET status = 1
         WHERE user_id = #{userId}
-        AND message_id IN
-        <foreach item="id" collection="messageIds" open="(" separator="," close=")">
-            #{id}
-        </foreach>
+        <if test="messageIds != null and !messageIds.isEmpty()">
+            AND message_id IN
+            <foreach item="id" collection="messageIds" open="(" separator="," close=")">
+                #{id}
+            </foreach>
+        </if>
     </update>
 </mapper>
 
