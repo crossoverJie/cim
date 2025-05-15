@@ -13,12 +13,14 @@ public interface OfflineMsgStore {
 
     /**
      * Save offline message
+     *
      * @param offlineMsg
      */
     void save(OfflineMsg offlineMsg);
 
     /**
      * Fetch offline messages for a user
+     *
      * @param userId
      * @return
      */
@@ -26,6 +28,7 @@ public interface OfflineMsgStore {
 
     /**
      * Mark messages as delivered
+     *
      * @param userId
      * @param messageIds
      */

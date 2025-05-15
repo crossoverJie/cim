@@ -36,7 +36,7 @@ public class RedisStoreDecorator extends StoreDecorator {
     @Override
     public void save(OfflineMsg offlineMsg) {
 
-        //todo 延迟下发风险：存储redis后，执行定时任务前，redis异常，那数据会延迟下发。
+        //todo 延迟下发风险：存储redis后，执行定时任务（将buffer的数据传到db）前，redis异常，那数据会延迟下发（等redis恢复再下发）。
         boolean bufferAvailable = true;
         try {
             buffer.saveOfflineMsgInBuffer(offlineMsg);
@@ -82,8 +82,19 @@ public class RedisStoreDecorator extends StoreDecorator {
 
     @Override
     public void markDelivered(Long userId, List<Long> messageIds) {
-        super.markDelivered(userId, messageIds);
-        messageIds.stream().forEach(id -> buffer.markDelivered(id));
+
+        try {
+            messageIds.stream().forEach(id -> buffer.markDelivered(id));
+        }catch (Exception e){
+            log.error("mark offline msg as delivered in the redis error", e);
+        }
+
+        try{
+            super.markDelivered(userId, messageIds);
+        }catch (Exception e){
+            log.error("mark offline msg as delivered in the database error", e);
+        }
+
     }
 }
 
