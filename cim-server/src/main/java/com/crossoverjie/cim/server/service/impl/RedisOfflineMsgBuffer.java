@@ -1,11 +1,10 @@
 package com.crossoverjie.cim.server.service.impl;
 
 import com.crossoverjie.cim.common.exception.CIMException;
+import com.crossoverjie.cim.server.annotation.RedisLock;
 import com.crossoverjie.cim.server.pojo.OfflineMsg;
 import com.crossoverjie.cim.server.service.OfflineMsgService;
-import com.crossoverjie.cim.server.service.RedisWALService;
-import com.crossoverjie.cim.server.util.OfflineMsgLockManager;
-import com.fasterxml.jackson.core.type.TypeReference;
+import com.crossoverjie.cim.server.service.OfflineMsgBufferService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -27,11 +26,10 @@ import static com.crossoverjie.cim.common.constant.Constants.OFFLINE_MSG_DELIVER
 
 @Service
 @Slf4j
-public class RedisWALServiceImpl implements RedisWALService {
+public class RedisOfflineMsgBuffer implements OfflineMsgBufferService {
 
     private static final String MSG_KEY = "offline:msg:";
     private static final String USER_IDX = "offline:msg:user:";
-//    private static final String ALL_MSG_IDS = "offline:msg:all_ids";
 
     @Autowired
     private RedisTemplate<String, Object> redis;
@@ -40,33 +38,19 @@ public class RedisWALServiceImpl implements RedisWALService {
     @Autowired
     private OfflineMsgService offlineMsgService;
     @Autowired
-    private OfflineMsgLockManager lockManager;
-    @Autowired
     private Jackson2HashMapper hashMapper;
 
 
-    public void saveOfflineMsgToRedis(OfflineMsg msg) {
+    public void saveOfflineMsgInBuffer(OfflineMsg msg) {
         String key = MSG_KEY + msg.getMessageId();
-//        Map<String, Object> map = new HashMap<>();
-//        map.put("messageId", msg.getMessageId());
-//        map.put("userId", msg.getUserId());
-//       // todo msg这里存什么好
-//        map.put("content", new String(msg.getContent(), StandardCharsets.UTF_8));
-//        map.put("messageType", msg.getMessageType());
-//        map.put("status", msg.getStatus());
-//        map.put("createdAt", msg.getCreatedAt().toString()); // 或使用DateTimeFormatter
-//        map.put("properties", msg.getProperties());
-
-//        redis.opsForHash().putAll(key, map);
 
         Map<String, Object> hashMap = hashMapper.toHash(msg);
         redis.opsForHash().putAll(key, hashMap);
-        //用于处理单个user
         redis.opsForList().rightPush(USER_IDX + msg.getUserId(), msg.getMessageId().toString());
     }
 
     @Override
-    public void deleteOfflineMsgFromRedis(Long messageId) {
+    public void deleteOfflineMsgFromBuffer(Long messageId) {
         redis.delete(MSG_KEY + messageId);
     }
 
@@ -100,6 +84,7 @@ public class RedisWALServiceImpl implements RedisWALService {
 
 
     @Override
+    @RedisLock(key = "T(java.lang.String).format('lock:offlineMsg:%s', #userId)", waitTime = 5, leaseTime = 30)
     public void migrateOfflineMsgToDb(Long userId) {
         List<OfflineMsg> offlineMsgs = getOfflineMsgs(userId);
 
@@ -118,19 +103,18 @@ public class RedisWALServiceImpl implements RedisWALService {
         clearOfflineMsg(userId, offlineMsgs);
     }
 
-    //todo 获取userId的所有离线消息后，删除前，又有新消息进来了，就会误删
     public void clearOfflineMsg(Long userId, List<OfflineMsg> offlineMsgs) {
-        offlineMsgs.stream().forEach(msg -> deleteOfflineMsgFromRedis(msg.getMessageId()));
+        offlineMsgs.stream().forEach(msg -> deleteOfflineMsgFromBuffer(msg.getMessageId()));
         redis.delete(USER_IDX + userId);
     }
 
     @Override
-    public void startOfflineMsgsWALConsumer() {
+    public void startOfflineMsgsBufferConsume() {
         try {
             Set<String> userKeys = scanUserKeys(redis.getConnectionFactory());
 
             userKeys.parallelStream().forEach(key -> {
-                Long userId = extractUserId(key); // 从 "USER_IDX_1001" 提取 1001
+                Long userId = extractUserId(key);
                 if (getLockedUserIdsByScan().contains(userId)) {
                     return;
                 }

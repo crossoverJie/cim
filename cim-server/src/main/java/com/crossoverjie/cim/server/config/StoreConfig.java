@@ -1,10 +1,10 @@
 package com.crossoverjie.cim.server.config;
 
 import com.crossoverjie.cim.server.decorator.BasicDbStore;
-import com.crossoverjie.cim.server.decorator.OfflineStore;
-import com.crossoverjie.cim.server.decorator.RedisWalDecorator;
+import com.crossoverjie.cim.server.decorator.OfflineMsgStore;
+import com.crossoverjie.cim.server.decorator.RedisStoreDecorator;
+import com.crossoverjie.cim.server.service.OfflineMsgBufferService;
 import com.crossoverjie.cim.server.service.OfflineMsgService;
-import com.crossoverjie.cim.server.service.RedisWALService;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
@@ -22,17 +22,17 @@ public class StoreConfig {
     @Bean
     @Primary
     @ConditionalOnProperty(name="offline.store.mode", havingValue="mysql", matchIfMissing=true)
-    public OfflineStore primaryStore(OfflineStore basicMysqlStore) {
+    public OfflineMsgStore primaryStore(OfflineMsgStore basicMysqlStore) {
         return basicMysqlStore;
     }
 
     @Bean
     @ConditionalOnProperty(name = "offline.store.mode", havingValue = "redis_mysql")
     @ConditionalOnMissingBean(name = "primaryStore")
-    public OfflineStore redisMysqlStore(
+    public OfflineMsgStore redisMysqlStore(
             BasicDbStore dbStore,
-            RedisWALService wal,
+            OfflineMsgBufferService buffer,
             OfflineMsgService offlineMsgService) {
-        return new RedisWalDecorator(dbStore, wal, offlineMsgService);
+        return new RedisStoreDecorator(dbStore, buffer, offlineMsgService);
     }
 }

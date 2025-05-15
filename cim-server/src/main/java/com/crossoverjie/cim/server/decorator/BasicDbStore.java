@@ -1,6 +1,5 @@
 package com.crossoverjie.cim.server.decorator;
 
-import com.crossoverjie.cim.server.api.vo.req.SendMsgReqVO;
 import com.crossoverjie.cim.server.pojo.OfflineMsg;
 import com.crossoverjie.cim.server.service.OfflineMsgLastSendRecordService;
 import com.crossoverjie.cim.server.service.OfflineMsgService;
@@ -17,7 +16,7 @@ import static com.crossoverjie.cim.common.constant.Constants.FETCH_OFFLINE_MSG_L
  * @description
  */
 @Service
-public class BasicDbStore implements OfflineStore {
+public class BasicDbStore implements OfflineMsgStore {
 
     @Autowired
     private OfflineMsgService offlineMsgService;

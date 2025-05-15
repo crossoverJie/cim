@@ -3,13 +3,11 @@ package com.crossoverjie.cim.server.decorator;
 import com.crossoverjie.cim.common.enums.StatusEnum;
 import com.crossoverjie.cim.common.exception.CIMException;
 import com.crossoverjie.cim.server.pojo.OfflineMsg;
+import com.crossoverjie.cim.server.service.OfflineMsgBufferService;
 import com.crossoverjie.cim.server.service.OfflineMsgService;
-import com.crossoverjie.cim.server.service.RedisWALService;
-import com.crossoverjie.cim.server.util.OfflineMsgLockManager;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
-import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,15 +19,15 @@ import java.util.List;
  */
 @Service
 @Slf4j
-public class RedisWalDecorator extends StoreDecorator {
+public class RedisStoreDecorator extends StoreDecorator {
 
 
-    private final RedisWALService wal;
+    private final OfflineMsgBufferService buffer;
     private final OfflineMsgService offlineMsgService;
 
-    public RedisWalDecorator(@Qualifier("basicDbStore") OfflineStore basicDbStore, RedisWALService wal, OfflineMsgService offlineMsgService) {
+    public RedisStoreDecorator(@Qualifier("basicDbStore") OfflineMsgStore basicDbStore, OfflineMsgBufferService buffer, OfflineMsgService offlineMsgService) {
         super(basicDbStore);
-        this.wal = wal;
+        this.buffer = buffer;
         this.offlineMsgService = offlineMsgService;
     }
 
@@ -38,17 +36,16 @@ public class RedisWalDecorator extends StoreDecorator {
     @Override
     public void save(OfflineMsg offlineMsg) {
 
-        Long userId = offlineMsg.getUserId();
         //todo 延迟下发风险：存储redis后，执行定时任务前，redis异常，那数据会延迟下发。
-        boolean walAvailable = true;
+        boolean bufferAvailable = true;
         try {
-            wal.saveOfflineMsgToRedis(offlineMsg);
+            buffer.saveOfflineMsgInBuffer(offlineMsg);
         } catch (Exception e) {
-            walAvailable = false;
-            log.error("save offline msg in the redis error", e);
+            bufferAvailable = false;
+            log.error("save offline msg in the buffer error", e);
         }
 
-        if (!walAvailable) {
+        if (!bufferAvailable) {
             try {
                 super.save(offlineMsg);
             } catch (Exception e) {
@@ -63,11 +60,11 @@ public class RedisWalDecorator extends StoreDecorator {
     public List<OfflineMsg> fetch(Long userId) {
 
         List<OfflineMsg> msgs = new ArrayList<>();
-        List<OfflineMsg> msgsFromRedis = new ArrayList<>();
+        List<OfflineMsg> msgsFromBuffer = new ArrayList<>();
         List<OfflineMsg> msgsFromDb = new ArrayList<>();
 
         try {
-            msgsFromRedis = wal.getOfflineMsgs(userId);
+            msgsFromBuffer = buffer.getOfflineMsgs(userId);
         } catch (Exception e) {
             log.error("get offline msg in the redis error", e);
         }
@@ -78,7 +75,7 @@ public class RedisWalDecorator extends StoreDecorator {
             log.error("get offline msg in the database error", e);
         }
 
-        msgs.addAll(msgsFromRedis);
+        msgs.addAll(msgsFromBuffer);
         msgs.addAll(msgsFromDb);
         return msgs;
     }
@@ -86,7 +83,7 @@ public class RedisWalDecorator extends StoreDecorator {
     @Override
     public void markDelivered(Long userId, List<Long> messageIds) {
         super.markDelivered(userId, messageIds);
-        messageIds.stream().forEach(id -> wal.markDelivered(id));
+        messageIds.stream().forEach(id -> buffer.markDelivered(id));
     }
 }
 

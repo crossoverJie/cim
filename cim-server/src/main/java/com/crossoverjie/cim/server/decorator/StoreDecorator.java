@@ -9,10 +9,10 @@ import java.util.List;
  * @date 2025/5/10
  * @description
  */
-public abstract class StoreDecorator implements OfflineStore {
-    protected final OfflineStore delegate;
+public abstract class StoreDecorator implements OfflineMsgStore {
+    protected final OfflineMsgStore delegate;
 
-    protected StoreDecorator(OfflineStore delegate) {
+    protected StoreDecorator(OfflineMsgStore delegate) {
         this.delegate = delegate;
     }
 
