@@ -133,31 +133,31 @@ public class CIMServer {
         if (fetchMsgs.isEmpty()) {
             return;
         }
-
         fetchMsgs.sort(Comparator.comparing(OfflineMsg::getCreatedAt));
 
-        //todo 有漏消息，要处理
+        int batchSize = fetchMsgs.size();
         ChannelFuture lastWriteFuture = null;
         for (OfflineMsg offlineMsg : fetchMsgs) {
-            log.info("messageId,{}", offlineMsg.getMessageId());
+            log.info("offlineMsg:{}", offlineMsg);
             Request protocol = Request.newBuilder()
-                    .setRequestId(offlineMsg.getUserId())
+                    .setRequestId(offlineMsg.getMessageId())
                     .setReqMsg(offlineMsg.getContent())
                     .putAllProperties(offlineMsg.getProperties())
                     .setCmd(BaseCommand.MESSAGE)
                     .build();
-            lastWriteFuture = channel.write(protocol); // 保存每个消息的 write future
+
+            lastWriteFuture = channel.write(protocol);
         }
 
+        channel.flush();
+
         if (lastWriteFuture != null) {
-            channel.flush(); // 触发发送缓冲区中的数据
             lastWriteFuture.addListener((ChannelFutureListener) future -> {
                 if (future.isSuccess()) {
-                    offlineMsgStore.markDelivered(userId, fetchMsgs.stream().map(OfflineMsg::getMessageId).toList());
-                    log.info("server push {} msgs to user {}", fetchMsgs.size(), userId);
+//               todo 先处理完只传输4条的问题再放开     offlineMsgStore.markDelivered(userId, fetchMsgs.stream().map(OfflineMsg::getMessageId).collect(Collectors.toList()));
+                    log.info("server push {} msgs to user {}", batchSize, userId);
                 } else {
-                    log.error("failed to push {} msgs to user {}",
-                            fetchMsgs.size(), userId, future.cause());
+                    log.error("failed to push msgs to user {}, cause: {}", userId, future.cause());
                 }
             });
         }
