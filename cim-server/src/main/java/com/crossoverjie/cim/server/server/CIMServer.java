@@ -23,6 +23,7 @@ import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
 
 import java.net.InetSocketAddress;
+import java.util.Comparator;
 import java.util.List;
 
 import jakarta.annotation.Resource;
@@ -133,26 +134,33 @@ public class CIMServer {
             return;
         }
 
+        fetchMsgs.sort(Comparator.comparing(OfflineMsg::getCreatedAt));
+
+        //todo 有漏消息，要处理
+        ChannelFuture lastWriteFuture = null;
         for (OfflineMsg offlineMsg : fetchMsgs) {
+            log.info("messageId,{}", offlineMsg.getMessageId());
             Request protocol = Request.newBuilder()
                     .setRequestId(offlineMsg.getUserId())
                     .setReqMsg(offlineMsg.getContent())
                     .putAllProperties(offlineMsg.getProperties())
                     .setCmd(BaseCommand.MESSAGE)
                     .build();
-            channel.write(protocol);
+            lastWriteFuture = channel.write(protocol); // 保存每个消息的 write future
         }
 
-        ChannelFuture lastFuture = (ChannelFuture) channel.flush();
-        lastFuture.addListener((ChannelFutureListener) future -> {
-            if (future.isSuccess()) {
-                offlineMsgStore.markDelivered(userId, fetchMsgs.stream().map(OfflineMsg::getMessageId).toList());
-                log.info("server push {} msgs to user {}", fetchMsgs.size(), userId);
-            } else {
-                log.error("failed to push {} msgs to user {}",
-                        fetchMsgs.size(), userId, future.cause());
-            }
-        });
+        if (lastWriteFuture != null) {
+            channel.flush(); // 触发发送缓冲区中的数据
+            lastWriteFuture.addListener((ChannelFutureListener) future -> {
+                if (future.isSuccess()) {
+                    offlineMsgStore.markDelivered(userId, fetchMsgs.stream().map(OfflineMsg::getMessageId).toList());
+                    log.info("server push {} msgs to user {}", fetchMsgs.size(), userId);
+                } else {
+                    log.error("failed to push {} msgs to user {}",
+                            fetchMsgs.size(), userId, future.cause());
+                }
+            });
+        }
     }
 
 

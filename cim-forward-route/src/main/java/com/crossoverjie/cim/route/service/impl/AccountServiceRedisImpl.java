@@ -9,6 +9,7 @@ import com.crossoverjie.cim.common.pojo.RouteInfo;
 import com.crossoverjie.cim.common.util.RouteInfoParseUtil;
 import com.crossoverjie.cim.route.api.vo.req.ChatReqVO;
 import com.crossoverjie.cim.route.api.vo.req.LoginReqVO;
+import com.crossoverjie.cim.route.api.vo.req.P2PReqVO;
 import com.crossoverjie.cim.route.api.vo.res.CIMServerResVO;
 import com.crossoverjie.cim.route.api.vo.res.RegisterInfoResVO;
 import com.crossoverjie.cim.route.constant.Constant;
@@ -182,10 +183,20 @@ public class AccountServiceRedisImpl implements AccountService {
     }
 
     @Override
-    public void saveOfflineMsg(CIMServerResVO cimServerResVO, SaveOfflineMsgReqVO saveOfflineMsgReqVO) {
+    public void saveOfflineMsg(CIMServerResVO cimServerResVO, P2PReqVO p2pRequest) {
 
-        String url = "http://" + cimServerResVO.getIp() + ":" + cimServerResVO.getHttpPort();
-        serverApi.saveOfflineMsg(saveOfflineMsgReqVO, url);
+        Optional<CIMUserInfo> cimUserInfo = userInfoCacheService.loadUserInfoByUserId(p2pRequest.getReceiveUserId());
+
+        cimUserInfo.ifPresent(userInfo -> {
+            String url = "http://" + cimServerResVO.getIp() + ":" + cimServerResVO.getHttpPort();
+            SaveOfflineMsgReqVO saveOfflineMsgReqVO = SaveOfflineMsgReqVO.builder()
+                    .msg(p2pRequest.getMsg())
+                    .userId(p2pRequest.getReceiveUserId())
+                    .properties(Map.of(
+                            Constants.MetaKey.USER_NAME, userInfo.getUserName())
+                    ).build();
+            serverApi.saveOfflineMsg(saveOfflineMsgReqVO, url);
+        });
 
     }
 

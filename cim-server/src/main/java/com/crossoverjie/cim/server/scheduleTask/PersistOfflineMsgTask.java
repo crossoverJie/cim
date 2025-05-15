@@ -14,7 +14,7 @@ public class PersistOfflineMsgTask {
     private RedisOfflineMsgBuffer redisOfflineMsgBuffer;
 
 
-    @Scheduled(cron = "0/50 * * * * ?")
+//    @Scheduled(cron = "0/50 * * * * ?")
     public void persistOfflineMsg() {
         log.info("start offline msg buffer consume");
         redisOfflineMsgBuffer.startOfflineMsgsBufferConsume();

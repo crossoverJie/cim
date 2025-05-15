@@ -3,6 +3,7 @@ package com.crossoverjie.cim.route.service;
 import com.crossoverjie.cim.common.enums.StatusEnum;
 import com.crossoverjie.cim.route.api.vo.req.ChatReqVO;
 import com.crossoverjie.cim.route.api.vo.req.LoginReqVO;
+import com.crossoverjie.cim.route.api.vo.req.P2PReqVO;
 import com.crossoverjie.cim.route.api.vo.res.CIMServerResVO;
 import com.crossoverjie.cim.route.api.vo.res.RegisterInfoResVO;
 import com.crossoverjie.cim.server.api.vo.req.SaveOfflineMsgReqVO;
@@ -74,5 +75,5 @@ public interface AccountService {
 
     void sendOfflineMsgs(CIMServerResVO cimServerResVO, Long receiveUserId);
 
-    void saveOfflineMsg(CIMServerResVO cimServerResVO,SaveOfflineMsgReqVO saveOfflineMsgReqVO);
+    void saveOfflineMsg(CIMServerResVO cimServerResVO, P2PReqVO p2pRequest);
 }

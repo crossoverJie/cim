@@ -9,6 +9,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.data.redis.connection.RedisConnection;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.core.Cursor;
@@ -39,6 +40,9 @@ public class RedisOfflineMsgBuffer implements OfflineMsgBufferService {
     private OfflineMsgService offlineMsgService;
     @Autowired
     private Jackson2HashMapper hashMapper;
+    @Lazy
+    @Autowired
+    private RedisOfflineMsgBuffer selfProxy;
 
 
     public void saveOfflineMsgInBuffer(OfflineMsg msg) {
@@ -119,7 +123,7 @@ public class RedisOfflineMsgBuffer implements OfflineMsgBufferService {
                     return;
                 }
 
-                migrateOfflineMsgToDb(userId);
+                selfProxy.migrateOfflineMsgToDb(userId);
             });
         } catch (Exception e) {
             log.error("An exception occurred when consuming offline messages in redis", e);

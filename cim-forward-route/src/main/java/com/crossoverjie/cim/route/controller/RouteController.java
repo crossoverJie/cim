@@ -115,7 +115,7 @@ public class RouteController implements RouteApi {
 
         try {
             //todo delete
-            if(p2pRequest.getMsg().contains("-ol")){
+            if (p2pRequest.getMsg().contains("-ol")) {
                 throw new CIMException(OFF_LINE);
             }
 
@@ -245,12 +245,11 @@ public class RouteController implements RouteApi {
 
         try {
             CIMServerResVO cimServerResVO = accountService.loadRouteRelatedByUserId(p2pRequest.getReceiveUserId());
-            SaveOfflineMsgReqVO vo =
-                    new SaveOfflineMsgReqVO(p2pRequest.getMsg(), p2pRequest.getReceiveUserId());
-            vo.setProperties(Map.of(
-                    Constants.MetaKey.SEND_USER_ID, String.valueOf(p2pRequest.getUserId())
-            ));
-            accountService.saveOfflineMsg(cimServerResVO,vo);
+
+            accountService.saveOfflineMsg(cimServerResVO, p2pRequest);
+
+            res.setCode(StatusEnum.SUCCESS.getCode());
+            res.setMessage(StatusEnum.SUCCESS.getMessage());
         } catch (CIMException e) {
             res.setCode(e.getErrorCode());
             res.setMessage(e.getErrorMessage());

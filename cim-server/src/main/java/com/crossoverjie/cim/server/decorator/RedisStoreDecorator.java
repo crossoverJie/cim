@@ -59,6 +59,9 @@ public class RedisStoreDecorator extends StoreDecorator {
     @Override
     public List<OfflineMsg> fetch(Long userId) {
 
+        boolean bufferAvailable = true;
+        boolean dbAvailable = true;
+
         List<OfflineMsg> msgs = new ArrayList<>();
         List<OfflineMsg> msgsFromBuffer = new ArrayList<>();
         List<OfflineMsg> msgsFromDb = new ArrayList<>();
@@ -67,12 +70,18 @@ public class RedisStoreDecorator extends StoreDecorator {
             msgsFromBuffer = buffer.getOfflineMsgs(userId);
         } catch (Exception e) {
             log.error("get offline msg in the redis error", e);
+            bufferAvailable = false;
         }
 
         try {
             msgsFromDb = super.fetch(userId);
         } catch (Exception e) {
             log.error("get offline msg in the database error", e);
+            dbAvailable = false;
+        }
+
+        if (!bufferAvailable && !dbAvailable) {
+            throw new CIMException(StatusEnum.OFFLINE_MESSAGE_RETRIEVAL_ERROR);
         }
 
         msgs.addAll(msgsFromBuffer);
@@ -83,16 +92,25 @@ public class RedisStoreDecorator extends StoreDecorator {
     @Override
     public void markDelivered(Long userId, List<Long> messageIds) {
 
+        boolean bufferAvailable = true;
+        boolean dbAvailable = true;
+
         try {
             messageIds.stream().forEach(id -> buffer.markDelivered(id));
-        }catch (Exception e){
+        } catch (Exception e) {
             log.error("mark offline msg as delivered in the redis error", e);
+            bufferAvailable = false;
         }
 
-        try{
+        try {
             super.markDelivered(userId, messageIds);
-        }catch (Exception e){
+        } catch (Exception e) {
             log.error("mark offline msg as delivered in the database error", e);
+            dbAvailable = false;
+        }
+
+        if (!bufferAvailable && !dbAvailable) {
+            throw new CIMException(StatusEnum.OFFLINE_MESSAGE_DELIVERY_ERROR);
         }
 
     }
