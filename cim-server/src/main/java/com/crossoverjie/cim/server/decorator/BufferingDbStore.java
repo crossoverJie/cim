@@ -7,35 +7,32 @@ import com.crossoverjie.cim.server.service.OfflineMsgBufferService;
 import com.crossoverjie.cim.server.service.OfflineMsgService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * @author zhongcanyu
- * @date 2025/5/10
+ * @date 2025/5/17
  * @description
  */
-@Service
 @Slf4j
-public class RedisStoreDecorator extends StoreDecorator {
+@Repository("bufferingDbStore")
+public class BufferingDbStore implements OfflineMsgStore {
 
-
+    private final OfflineMsgStore db;
     private final OfflineMsgBufferService buffer;
-    private final OfflineMsgService offlineMsgService;
 
-    public RedisStoreDecorator(@Qualifier("basicDbStore") OfflineMsgStore basicDbStore, OfflineMsgBufferService buffer, OfflineMsgService offlineMsgService) {
-        super(basicDbStore);
+    public BufferingDbStore(@Qualifier("basicDbStore") OfflineMsgStore basicDbStore, OfflineMsgBufferService buffer) {
+        this.db = basicDbStore;
         this.buffer = buffer;
-        this.offlineMsgService = offlineMsgService;
     }
 
     //todo restore mechanism? 数据库要是连接异常，那估计短时间内都连接不上？那重试机制还有必要嘛。不如等redis补偿
 
     @Override
     public void save(OfflineMsg offlineMsg) {
-
         //todo 延迟下发风险：存储redis后，执行定时任务（将buffer的数据传到db）前，redis异常，那数据会延迟下发（等redis恢复再下发）。
         boolean bufferAvailable = true;
         try {
@@ -47,7 +44,7 @@ public class RedisStoreDecorator extends StoreDecorator {
 
         if (!bufferAvailable) {
             try {
-                super.save(offlineMsg);
+                db.save(offlineMsg);
             } catch (Exception e) {
                 log.error("save offline msg in the database error", e);
                 throw new CIMException(StatusEnum.OFFLINE_MESSAGE_STORAGE_ERROR);
@@ -58,7 +55,6 @@ public class RedisStoreDecorator extends StoreDecorator {
 
     @Override
     public List<OfflineMsg> fetch(Long userId) {
-
         boolean bufferAvailable = true;
         boolean dbAvailable = true;
 
@@ -74,7 +70,7 @@ public class RedisStoreDecorator extends StoreDecorator {
         }
 
         try {
-            msgsFromDb = super.fetch(userId);
+            msgsFromDb = db.fetch(userId);
         } catch (Exception e) {
             log.error("get offline msg in the database error", e);
             dbAvailable = false;
@@ -91,7 +87,6 @@ public class RedisStoreDecorator extends StoreDecorator {
 
     @Override
     public void markDelivered(Long userId, List<Long> messageIds) {
-
         boolean bufferAvailable = true;
         boolean dbAvailable = true;
 
@@ -103,7 +98,7 @@ public class RedisStoreDecorator extends StoreDecorator {
         }
 
         try {
-            super.markDelivered(userId, messageIds);
+            db.markDelivered(userId, messageIds);
         } catch (Exception e) {
             log.error("mark offline msg as delivered in the database error", e);
             dbAvailable = false;
@@ -112,7 +107,5 @@ public class RedisStoreDecorator extends StoreDecorator {
         if (!bufferAvailable && !dbAvailable) {
             throw new CIMException(StatusEnum.OFFLINE_MESSAGE_DELIVERY_ERROR);
         }
-
     }
 }
-

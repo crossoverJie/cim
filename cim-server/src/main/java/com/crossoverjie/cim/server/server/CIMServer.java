@@ -25,11 +25,11 @@ import jakarta.annotation.PreDestroy;
 import java.net.InetSocketAddress;
 import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -53,11 +53,8 @@ public class CIMServer {
     private int nettyPort;
 
     @Resource
-    private RedisOfflineMsgBuffer redisOfflineMsgBuffer;
-    @Resource
     private OfflineMsgFactory offlineMsgFactory;
 
-    @Qualifier("redisStoreDecorator")  //todo delete，改为依赖配置文件注入
     @Autowired
     private OfflineMsgStore offlineMsgStore;
 
@@ -154,7 +151,7 @@ public class CIMServer {
         if (lastWriteFuture != null) {
             lastWriteFuture.addListener((ChannelFutureListener) future -> {
                 if (future.isSuccess()) {
-//               todo 先处理完只传输4条的问题再放开     offlineMsgStore.markDelivered(userId, fetchMsgs.stream().map(OfflineMsg::getMessageId).collect(Collectors.toList()));
+                    offlineMsgStore.markDelivered(userId, fetchMsgs.stream().map(OfflineMsg::getMessageId).collect(Collectors.toList()));
                     log.info("server push {} msgs to user {}", batchSize, userId);
                 } else {
                     log.error("failed to push msgs to user {}, cause: {}", userId, future.cause());

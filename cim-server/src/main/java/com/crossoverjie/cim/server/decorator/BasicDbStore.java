@@ -4,7 +4,7 @@ import com.crossoverjie.cim.server.pojo.OfflineMsg;
 import com.crossoverjie.cim.server.service.OfflineMsgLastSendRecordService;
 import com.crossoverjie.cim.server.service.OfflineMsgService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
@@ -15,7 +15,7 @@ import static com.crossoverjie.cim.common.constant.Constants.FETCH_OFFLINE_MSG_L
  * @date 2025/5/10
  * @description
  */
-@Service
+@Repository("basicDbStore")
 public class BasicDbStore implements OfflineMsgStore {
 
     @Autowired
