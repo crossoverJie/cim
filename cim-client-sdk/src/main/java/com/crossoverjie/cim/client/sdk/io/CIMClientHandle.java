@@ -67,6 +67,7 @@ public class CIMClientHandle extends SimpleChannelInboundHandler<Response> {
 
         if (msg.getCmd() != BaseCommand.PING) {
             // callback
+            //todo 线程池中配置了多个线程的话会导致消息顺序紊乱
             ClientImpl.getClient().getConf().getCallbackThreadPool().execute(() -> {
                 ClientImpl.getClient().getConf().getMessageListener().received(ClientImpl.getClient(), msg.getPropertiesMap(), msg.getResMsg());
             });
