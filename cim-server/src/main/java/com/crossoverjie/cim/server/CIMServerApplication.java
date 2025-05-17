@@ -9,12 +9,14 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.scheduling.annotation.EnableScheduling;
 
 import java.net.InetAddress;
 
 /**
  * @author crossoverJie
  */
+@EnableScheduling
 @SpringBootApplication
 @Slf4j
 public class CIMServerApplication implements CommandLineRunner{

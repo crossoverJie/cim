@@ -9,12 +9,15 @@ import com.crossoverjie.cim.common.pojo.RouteInfo;
 import com.crossoverjie.cim.common.util.RouteInfoParseUtil;
 import com.crossoverjie.cim.route.api.vo.req.ChatReqVO;
 import com.crossoverjie.cim.route.api.vo.req.LoginReqVO;
+import com.crossoverjie.cim.route.api.vo.req.P2PReqVO;
 import com.crossoverjie.cim.route.api.vo.res.CIMServerResVO;
 import com.crossoverjie.cim.route.api.vo.res.RegisterInfoResVO;
 import com.crossoverjie.cim.route.constant.Constant;
 import com.crossoverjie.cim.route.service.AccountService;
 import com.crossoverjie.cim.route.service.UserInfoCacheService;
 import com.crossoverjie.cim.server.api.ServerApi;
+import com.crossoverjie.cim.server.api.vo.req.OfflineMsgReqVO;
+import com.crossoverjie.cim.server.api.vo.req.SaveOfflineMsgReqVO;
 import com.crossoverjie.cim.server.api.vo.req.SendMsgReqVO;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
@@ -169,6 +172,32 @@ public class AccountServiceRedisImpl implements AccountService {
             serverApi.sendMsg(vo, url);
 
         });
+    }
+
+    @Override
+    public void sendOfflineMsgs(CIMServerResVO cimServerResVO, Long receiveUserId) {
+
+        String url = "http://" + cimServerResVO.getIp() + ":" + cimServerResVO.getHttpPort();
+        serverApi.sendOfflineMsgs(OfflineMsgReqVO.builder().receiveUserId(receiveUserId).build(), url);
+
+    }
+
+    @Override
+    public void saveOfflineMsg(CIMServerResVO cimServerResVO, P2PReqVO p2pRequest) {
+
+        Optional<CIMUserInfo> cimUserInfo = userInfoCacheService.loadUserInfoByUserId(p2pRequest.getReceiveUserId());
+
+        cimUserInfo.ifPresent(userInfo -> {
+            String url = "http://" + cimServerResVO.getIp() + ":" + cimServerResVO.getHttpPort();
+            SaveOfflineMsgReqVO saveOfflineMsgReqVO = SaveOfflineMsgReqVO.builder()
+                    .msg(p2pRequest.getMsg())
+                    .userId(p2pRequest.getReceiveUserId())
+                    .properties(Map.of(
+                            Constants.MetaKey.USER_NAME, userInfo.getUserName())
+                    ).build();
+            serverApi.saveOfflineMsg(saveOfflineMsgReqVO, url);
+        });
+
     }
 
     @Override
