@@ -9,7 +9,6 @@ import com.crossoverjie.cim.server.decorator.OfflineMsgStore;
 import com.crossoverjie.cim.server.factory.OfflineMsgFactory;
 import com.crossoverjie.cim.server.init.CIMServerInitializer;
 import com.crossoverjie.cim.server.pojo.OfflineMsg;
-import com.crossoverjie.cim.server.service.impl.RedisOfflineMsgBuffer;
 import com.crossoverjie.cim.server.util.SessionSocketHolder;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
@@ -110,6 +109,31 @@ public class CIMServer {
                 .setReqMsg(sendMsgReqVO.getMsg())
                 .putAllProperties(sendMsgReqVO.getProperties())
                 .setCmd(BaseCommand.MESSAGE)
+                .build();
+
+        ChannelFuture future = socketChannel.writeAndFlush(protocol);
+        future.addListener((ChannelFutureListener) channelFuture ->
+                log.info("server push msg:[{}]", sendMsgReqVO.toString()));
+    }
+
+    /**
+     * Push msg to client with command
+     *
+     * @param sendMsgReqVO
+     * @param baseCommand
+     */
+    public void sendMsg(SendMsgReqVO sendMsgReqVO, BaseCommand baseCommand) {
+        NioSocketChannel socketChannel = SessionSocketHolder.get(sendMsgReqVO.getUserId());
+
+        if (null == socketChannel) {
+            log.error("client {} offline!", sendMsgReqVO.getUserId());
+            return;
+        }
+        Request protocol = Request.newBuilder()
+                .setRequestId(sendMsgReqVO.getUserId())
+                .setReqMsg(sendMsgReqVO.getMsg())
+                .putAllProperties(sendMsgReqVO.getProperties())
+                .setCmd(baseCommand)
                 .build();
 
         ChannelFuture future = socketChannel.writeAndFlush(protocol);

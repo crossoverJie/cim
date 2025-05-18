@@ -50,7 +50,6 @@ public class RouteManager {
             try {
                 BaseResponse<NULLBody> response = routeApi.p2pRoute(p2PReqVO);
                 if (response.getCode().equals(StatusEnum.OFF_LINE.getCode())) {
-                    routeApi.saveOfflineMsg(p2PReqVO);
                     future.completeExceptionally(new CIMException(StatusEnum.OFF_LINE));
                 }
                 future.complete(null);

@@ -1,4 +1,4 @@
-package com.crossoverjie.cim.server.util;
+package com.crossoverjie.cim.persistence.mysql.util;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -14,7 +14,7 @@ import java.util.Map;
 
 /**
  * @author zhongcanyu
- * @date 2025/5/14
+ * @date 2025/5/18
  * @description
  */
 @Service
@@ -27,7 +27,7 @@ public class MapToJsonTypeHandler extends BaseTypeHandler<Map<String, String>> {
             String json = objectMapper.writeValueAsString(parameter);
             ps.setString(i, json);
         } catch (Exception e) {
-            throw new SQLException("Map 转 JSON 失败", e);
+            throw new SQLException("Failed to convert Map to JSON", e);
         }
     }
 

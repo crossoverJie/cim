@@ -73,15 +73,6 @@ public interface RouteApi {
     BaseResponse<Set<CIMUserInfo>> onlineUser() throws Exception;
 
 
-    /**
-     * save offline message
-     * @param p2pRequest
-     * @return
-     * @throws Exception
-     */
-    BaseResponse<NULLBody> saveOfflineMsg(P2PReqVO p2pRequest) throws Exception;
-
-
     BaseResponse<NULLBody> fetchOfflineMsgs(OfflineMsgReqVO offlineMsgReqVO);
     // TODO: 2024/8/19  Get cache server & metastore server
 }

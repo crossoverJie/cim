@@ -1,23 +1,17 @@
-package com.crossoverjie.cim.server.service.impl;
+package com.crossoverjie.cim.persistence.mysql.offlinemsg.impl;
 
-import com.crossoverjie.cim.common.constant.Constants;
-import com.crossoverjie.cim.common.exception.CIMException;
-import com.crossoverjie.cim.route.api.vo.req.P2PReqVO;
-import com.crossoverjie.cim.server.api.vo.req.SendMsgReqVO;
-import com.crossoverjie.cim.server.mapper.OfflineMsgMapper;
-import com.crossoverjie.cim.server.pojo.OfflineMsg;
-import com.crossoverjie.cim.server.service.OfflineMsgService;
-import com.crossoverjie.cim.server.util.SnowflakeIdWorker;
+import com.crossoverjie.cim.persistence.api.pojo.OfflineMsg;
+import com.crossoverjie.cim.persistence.api.service.OfflineMsgService;
+import com.crossoverjie.cim.persistence.api.util.SnowflakeIdWorker;
+import com.crossoverjie.cim.persistence.mysql.offlinemsg.mapper.OfflineMsgMapper;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Map;
 
 /**
  * @author zhongcanyu
- * @date 2025/5/8
+ * @date 2025/5/18
  * @description
  */
 @Service

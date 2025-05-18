@@ -25,8 +25,6 @@ public interface OfflineMsgService {
      */
     List<OfflineMsg> fetchOfflineMsgsWithCursor(Long userId, int limit);
 
-    OfflineMsg createFromVo(SendMsgReqVO vo);
-
     void updateStatus(Long userId, List<Long> messageIds);
 
     List<Long> fetchOfflineMsgIdsWithCursor(Long userId);

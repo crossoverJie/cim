@@ -114,10 +114,6 @@ public class RouteController implements RouteApi {
         BaseResponse<NULLBody> res = new BaseResponse();
 
         try {
-            //todo delete
-            if (p2pRequest.getMsg().contains("-ol")) {
-                throw new CIMException(OFF_LINE);
-            }
 
             //获取接收消息用户的路由信息
             CIMServerResVO cimServerResVO = accountService.loadRouteRelatedByUserId(p2pRequest.getReceiveUserId());
@@ -236,29 +232,7 @@ public class RouteController implements RouteApi {
         return res;
     }
 
-    @Operation(summary = "saveOfflineMsg")
-    @RequestMapping(value = "saveOfflineMsg", method = RequestMethod.POST)
-    @ResponseBody()
-    @Override
-    public BaseResponse<NULLBody> saveOfflineMsg(@RequestBody P2PReqVO p2pRequest) throws Exception {
-        BaseResponse<NULLBody> res = new BaseResponse();
-
-        try {
-            CIMServerResVO cimServerResVO = accountService.loadRouteRelatedByUserId(p2pRequest.getReceiveUserId());
-
-            accountService.saveOfflineMsg(cimServerResVO, p2pRequest);
-
-            res.setCode(StatusEnum.SUCCESS.getCode());
-            res.setMessage(StatusEnum.SUCCESS.getMessage());
-        } catch (CIMException e) {
-            res.setCode(e.getErrorCode());
-            res.setMessage(e.getErrorMessage());
-        }
-        return res;
-
-    }
-
-    @Operation(summary = "Clinet fetch offline messages")
+    @Operation(summary = "Client fetch offline messages")
     @RequestMapping(value = "fetchOfflineMsgs", method = RequestMethod.POST)
     @ResponseBody()
     @Override
