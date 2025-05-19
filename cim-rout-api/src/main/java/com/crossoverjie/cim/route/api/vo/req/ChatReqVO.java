@@ -1,5 +1,6 @@
 package com.crossoverjie.cim.route.api.vo.req;
 
+import com.crossoverjie.cim.common.protocol.BaseCommand;
 import com.crossoverjie.cim.common.req.BaseRequest;
 
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -30,6 +31,9 @@ public class ChatReqVO extends BaseRequest {
     @NotNull(message = "msg 不能为空")
     @Schema(requiredMode = Schema.RequiredMode.REQUIRED, description = "msg", example = "hello")
     private String msg ;
+
+    @Schema(requiredMode = Schema.RequiredMode.REQUIRED, description = "cmd", example = "11")
+    private BaseCommand cmd;
 
 
     @Override

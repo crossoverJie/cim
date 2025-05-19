@@ -1,5 +1,6 @@
 package com.crossoverjie.cim.server.api.vo.req;
 
+import com.crossoverjie.cim.common.protocol.BaseCommand;
 import com.crossoverjie.cim.common.req.BaseRequest;
 
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -25,6 +26,9 @@ public class SendMsgReqVO extends BaseRequest {
     @Schema(requiredMode = Schema.RequiredMode.REQUIRED, description = "userId", example = "11")
     private Long userId ;
 
+    @Schema(requiredMode = Schema.RequiredMode.REQUIRED, description = "cmd", example = "11")
+    private BaseCommand cmd;
+
     @Setter
     @Getter
     private Map<String, String> properties;
@@ -32,9 +36,25 @@ public class SendMsgReqVO extends BaseRequest {
     public SendMsgReqVO() {
     }
 
-    public SendMsgReqVO(String msg, Long userId) {
+    public SendMsgReqVO(String msg, Long userId, BaseCommand cmd, Map<String, String> properties) {
         this.msg = msg;
         this.userId = userId;
+        this.cmd = cmd;
+        this.properties = properties;
+    }
+
+    public SendMsgReqVO(String msg, Long userId, BaseCommand cmd) {
+        this.msg = msg;
+        this.userId = userId;
+        this.cmd = cmd;
+    }
+
+    public BaseCommand getCmd() {
+        return cmd;
+    }
+
+    public void setCmd(BaseCommand cmd) {
+        this.cmd = cmd;
     }
 
     public String getMsg() {

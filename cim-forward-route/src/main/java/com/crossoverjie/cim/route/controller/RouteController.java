@@ -6,6 +6,7 @@ import com.crossoverjie.cim.common.exception.CIMException;
 import com.crossoverjie.cim.common.metastore.MetaStore;
 import com.crossoverjie.cim.common.pojo.CIMUserInfo;
 import com.crossoverjie.cim.common.pojo.RouteInfo;
+import com.crossoverjie.cim.common.protocol.BaseCommand;
 import com.crossoverjie.cim.common.res.BaseResponse;
 import com.crossoverjie.cim.common.res.NULLBody;
 import com.crossoverjie.cim.common.route.algorithm.RouteHandle;
@@ -89,7 +90,7 @@ public class RouteController implements RouteApi {
             }
 
             // Push message
-            ChatReqVO chatVO = new ChatReqVO(userId, groupReqVO.getMsg());
+            ChatReqVO chatVO = new ChatReqVO(userId, groupReqVO.getMsg(), BaseCommand.MESSAGE);
             accountService.pushMsg(cimServerResVO, groupReqVO.getUserId(), chatVO);
 
         }
@@ -119,7 +120,7 @@ public class RouteController implements RouteApi {
             CIMServerResVO cimServerResVO = accountService.loadRouteRelatedByUserId(p2pRequest.getReceiveUserId());
 
             //p2pRequest.getReceiveUserId()==>消息接收者的 userID
-            ChatReqVO chatVO = new ChatReqVO(p2pRequest.getReceiveUserId(), p2pRequest.getMsg());
+            ChatReqVO chatVO = new ChatReqVO(p2pRequest.getReceiveUserId(), p2pRequest.getMsg(), BaseCommand.MESSAGE);
             accountService.pushMsg(cimServerResVO, p2pRequest.getUserId(), chatVO);
 
             res.setCode(StatusEnum.SUCCESS.getCode());
