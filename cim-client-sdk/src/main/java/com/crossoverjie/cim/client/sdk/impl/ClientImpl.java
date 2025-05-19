@@ -90,7 +90,7 @@ public class ClientImpl extends ClientState implements Client {
     }
 
     private void connectServer(Consumer<Void> success) {
-        doConnectServer().whenComplete((r, e) -> {
+        this.doConnectServer().whenComplete((r, e) -> {
             if (r) {
                 success.accept(null);
                 routeManager.fetchOfflineMsgs(conf.getAuth().getUserId());
