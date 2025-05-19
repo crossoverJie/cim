@@ -35,6 +35,10 @@ public class ChatReqVO extends BaseRequest {
     @Schema(requiredMode = Schema.RequiredMode.REQUIRED, description = "cmd", example = "11")
     private BaseCommand cmd;
 
+    public ChatReqVO(Long userId, String msg) {
+        this.userId = userId;
+        this.msg = msg;
+    }
 
     @Override
     public String toString() {

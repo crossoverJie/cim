@@ -19,7 +19,6 @@ import com.crossoverjie.cim.route.service.AccountService;
 import com.crossoverjie.cim.route.service.CommonBizService;
 import com.crossoverjie.cim.route.service.UserInfoCacheService;
 import com.crossoverjie.cim.server.api.ServerApi;
-import com.crossoverjie.cim.server.api.vo.req.SaveOfflineMsgReqVO;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.annotation.Resource;
 

@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.crossoverjie.cim.server.mapper.OfflineMsgMapper">
+<mapper namespace="com.crossoverjie.cim.persistence.mysql.offlinemsg.mapper.OfflineMsgMapper">
 
-    <insert id="insert" parameterType="com.crossoverjie.cim.server.pojo.OfflineMsg">
+    <insert id="insert" parameterType="com.crossoverjie.cim.persistence.api.pojo.OfflineMsg">
         INSERT INTO offline_msg (message_id,
                                  user_id,
                                  content,
@@ -16,7 +16,7 @@
                 #{messageType},
                 #{status},
                 #{createdAt},
-                #{properties})
+                #{properties, typeHandler=com.crossoverjie.cim.persistence.mysql.util.MapToJsonTypeHandler})
     </insert>
 
     <insert id="insertBatch" parameterType="java.util.List">
@@ -37,12 +37,12 @@
             #{item.messageType},
             #{item.status},
             #{item.createdAt},
-            #{item.properties, typeHandler=com.crossoverjie.cim.server.util.MapToJsonTypeHandler}
+            #{item.properties, typeHandler=com.crossoverjie.cim.persistence.mysql.util.MapToJsonTypeHandler}
             )
         </foreach>
     </insert>
 
-    <select id="fetchOfflineMsgsWithCursor" resultType="com.crossoverjie.cim.server.pojo.OfflineMsg">
+    <select id="fetchOfflineMsgsWithCursor" resultType="com.crossoverjie.cim.persistence.api.pojo.OfflineMsg">
         SELECT
         message_id,
         user_id,

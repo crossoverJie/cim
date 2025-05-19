@@ -1,14 +1,8 @@
 package com.crossoverjie.cim.server.server;
 
-import com.crossoverjie.cim.common.protocol.BaseCommand;
 import com.crossoverjie.cim.common.protocol.Request;
-import com.crossoverjie.cim.server.annotation.RedisLock;
-import com.crossoverjie.cim.server.api.vo.req.SaveOfflineMsgReqVO;
 import com.crossoverjie.cim.server.api.vo.req.SendMsgReqVO;
-import com.crossoverjie.cim.server.decorator.OfflineMsgStore;
-import com.crossoverjie.cim.server.factory.OfflineMsgFactory;
 import com.crossoverjie.cim.server.init.CIMServerInitializer;
-import com.crossoverjie.cim.server.pojo.OfflineMsg;
 import com.crossoverjie.cim.server.util.SessionSocketHolder;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
@@ -22,9 +16,6 @@ import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
 
 import java.net.InetSocketAddress;
-import java.util.Comparator;
-import java.util.List;
-import java.util.stream.Collectors;
 
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
@@ -50,12 +41,6 @@ public class CIMServer {
 
     @Value("${cim.server.port}")
     private int nettyPort;
-
-    @Resource
-    private OfflineMsgFactory offlineMsgFactory;
-
-    @Autowired
-    private OfflineMsgStore offlineMsgStore;
 
     /**
      * 启动 cim server

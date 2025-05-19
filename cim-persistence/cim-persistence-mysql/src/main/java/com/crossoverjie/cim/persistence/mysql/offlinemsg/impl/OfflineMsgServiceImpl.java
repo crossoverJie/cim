@@ -5,6 +5,7 @@ import com.crossoverjie.cim.persistence.api.service.OfflineMsgService;
 import com.crossoverjie.cim.persistence.api.util.SnowflakeIdWorker;
 import com.crossoverjie.cim.persistence.mysql.offlinemsg.mapper.OfflineMsgMapper;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
