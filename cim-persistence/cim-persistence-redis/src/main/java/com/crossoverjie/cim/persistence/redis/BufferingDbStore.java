@@ -25,7 +25,7 @@ public class BufferingDbStore implements OfflineMsgStore {
     private final OfflineMsgStore db;
     private final OfflineMsgBufferService buffer;
 
-    public BufferingDbStore(@Qualifier("basicDbStore") OfflineMsgStore basicDbStore, OfflineMsgBufferService buffer) {
+    public BufferingDbStore(@Qualifier("basicDbStore") OfflineMsgStore basicDbStore,@Qualifier("redisOfflineMsgBuffer") OfflineMsgBufferService buffer) {
         this.db = basicDbStore;
         this.buffer = buffer;
     }

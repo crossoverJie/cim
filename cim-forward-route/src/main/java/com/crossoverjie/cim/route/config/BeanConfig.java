@@ -50,39 +50,6 @@ public class BeanConfig {
     @Resource
     private AppConfiguration appConfiguration;
 
-
-    /**
-     * Redis bean
-     *
-     * @param factory
-     * @return
-     */
-    @Bean
-    public RedisTemplate<String, Object> stringObjectRedisTemplate(RedisConnectionFactory factory) {
-        RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
-        redisTemplate.setConnectionFactory(factory);
-
-        // 设置键的序列化器为字符串
-        redisTemplate.setKeySerializer(new StringRedisSerializer());
-
-        // 设置值的序列化器为JSON，支持对象存储
-        redisTemplate.setValueSerializer(new GenericJackson2JsonRedisSerializer());
-
-        // 设置Hash键和值的序列化器（可选）
-        redisTemplate.setHashKeySerializer(new StringRedisSerializer());
-        redisTemplate.setHashValueSerializer(new GenericJackson2JsonRedisSerializer());
-
-        // 初始化属性
-        redisTemplate.afterPropertiesSet();
-        return redisTemplate;
-    }
-
-    @Bean
-    public Jackson2HashMapper hashMapper(ObjectMapper objectMapper) {
-        // false 表示不在 key 里加 @class 信息
-        return new Jackson2HashMapper(objectMapper, false);
-    }
-
     @Bean
     public MetaStore metaStore() throws Exception {
         MetaStore metaStore = new ZkMetaStoreImpl();

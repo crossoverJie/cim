@@ -57,8 +57,8 @@ app:
 mybatis:
   configuration:
     map-underscore-to-camel-case: true # 自动驼峰转换
-  type-aliases-package: com.crossoverjie.cim.server.pojo # 实体类包路径
-  mapper-locations: classpath:mapper/*.xml
+  type-aliases-package: com.crossoverjie.cim.persistence.api.pojo # 实体类包路径
+  mapper-locations: classpath*:mapper/*.xml
   global-config:
     db-config:
       id-type: auto
