@@ -56,28 +56,28 @@ public class IndexController implements ServerApi {
         return res ;
     }
 
-    @Override
-    @Operation(summary = "Push offline msgs to client")
-    @RequestMapping(value = "sendOfflineMsgs",method = RequestMethod.POST)
-    @ResponseBody
-    public BaseResponse<OfflineMsgResVO> sendOfflineMsgs(@RequestBody OfflineMsgReqVO offlineMsgReqVO, @DynamicUrl String url){
-        BaseResponse<OfflineMsgResVO> res = new BaseResponse();
-        cimServer.sendOfflineMsgs(offlineMsgReqVO.getReceiveUserId()) ;
+//    @Override
+//    @Operation(summary = "Push offline msgs to client")
+//    @RequestMapping(value = "sendOfflineMsgs",method = RequestMethod.POST)
+//    @ResponseBody
+//    public BaseResponse<OfflineMsgResVO> sendOfflineMsgs(@RequestBody OfflineMsgReqVO offlineMsgReqVO, @DynamicUrl String url){
+//        BaseResponse<OfflineMsgResVO> res = new BaseResponse();
+//        cimServer.sendOfflineMsgs(offlineMsgReqVO.getReceiveUserId()) ;
+//
+//        OfflineMsgResVO offlineMsgResVO = new OfflineMsgResVO() ;
+//        offlineMsgResVO.setMsg("OK") ;
+//        res.setCode(StatusEnum.SUCCESS.getCode()) ;
+//        res.setMessage(StatusEnum.SUCCESS.getMessage()) ;
+//        res.setDataBody(offlineMsgResVO) ;
+//        return res ;
+//    }
 
-        OfflineMsgResVO offlineMsgResVO = new OfflineMsgResVO() ;
-        offlineMsgResVO.setMsg("OK") ;
-        res.setCode(StatusEnum.SUCCESS.getCode()) ;
-        res.setMessage(StatusEnum.SUCCESS.getMessage()) ;
-        res.setDataBody(offlineMsgResVO) ;
-        return res ;
-    }
-
-    @Override
-    @Operation(summary = "save offline msgs")
-    @RequestMapping(value = "saveOfflineMsg",method = RequestMethod.POST)
-    @ResponseBody
-    public void saveOfflineMsg(@RequestBody SaveOfflineMsgReqVO vo, @DynamicUrl String url) {
-        cimServer.saveOfflineMsg(vo);
-    }
+//    @Override
+//    @Operation(summary = "save offline msgs")
+//    @RequestMapping(value = "saveOfflineMsg",method = RequestMethod.POST)
+//    @ResponseBody
+//    public void saveOfflineMsg(@RequestBody SaveOfflineMsgReqVO vo, @DynamicUrl String url) {
+//        cimServer.saveOfflineMsg(vo);
+//    }
 
 }

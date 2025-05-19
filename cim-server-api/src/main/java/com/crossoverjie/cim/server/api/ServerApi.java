@@ -31,11 +31,11 @@ public interface ServerApi {
      * @param url
      * @return
      */
-    BaseResponse<OfflineMsgResVO> sendOfflineMsgs(OfflineMsgReqVO offlineMsgReqVO, @DynamicUrl String url);
+//    BaseResponse<OfflineMsgResVO> sendOfflineMsgs(OfflineMsgReqVO offlineMsgReqVO, @DynamicUrl String url);
 
     /**
      * Save offline message
      * @param saveOfflineMsgReqVO
      */
-    void saveOfflineMsg(SaveOfflineMsgReqVO saveOfflineMsgReqVO, @DynamicUrl String url);
+//    void saveOfflineMsg(SaveOfflineMsgReqVO saveOfflineMsgReqVO, @DynamicUrl String url);
 }

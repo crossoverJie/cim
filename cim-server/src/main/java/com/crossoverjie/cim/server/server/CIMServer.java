@@ -108,7 +108,7 @@ public class CIMServer {
                 .setRequestId(sendMsgReqVO.getUserId())
                 .setReqMsg(sendMsgReqVO.getMsg())
                 .putAllProperties(sendMsgReqVO.getProperties())
-                .setCmd(BaseCommand.MESSAGE)
+                .setCmd(sendMsgReqVO.getCmd())
                 .build();
 
         ChannelFuture future = socketChannel.writeAndFlush(protocol);
@@ -116,79 +116,54 @@ public class CIMServer {
                 log.info("server push msg:[{}]", sendMsgReqVO.toString()));
     }
 
-    /**
-     * Push msg to client with command
-     *
-     * @param sendMsgReqVO
-     * @param baseCommand
-     */
-    public void sendMsg(SendMsgReqVO sendMsgReqVO, BaseCommand baseCommand) {
-        NioSocketChannel socketChannel = SessionSocketHolder.get(sendMsgReqVO.getUserId());
-
-        if (null == socketChannel) {
-            log.error("client {} offline!", sendMsgReqVO.getUserId());
-            return;
-        }
-        Request protocol = Request.newBuilder()
-                .setRequestId(sendMsgReqVO.getUserId())
-                .setReqMsg(sendMsgReqVO.getMsg())
-                .putAllProperties(sendMsgReqVO.getProperties())
-                .setCmd(baseCommand)
-                .build();
-
-        ChannelFuture future = socketChannel.writeAndFlush(protocol);
-        future.addListener((ChannelFutureListener) channelFuture ->
-                log.info("server push msg:[{}]", sendMsgReqVO.toString()));
-    }
-
-    @RedisLock(key = "T(java.lang.String).format('lock:offlineMsg:%s', #userId)",
-            waitTime = 5, leaseTime = 30)
-    public void sendOfflineMsgs(Long userId) {
-        NioSocketChannel channel = SessionSocketHolder.get(userId);
-        if (channel == null) {
-            log.error("client {} offline!", userId);
-            return;
-        }
-
-        List<OfflineMsg> fetchMsgs = offlineMsgStore.fetch(userId);
-        if (fetchMsgs.isEmpty()) {
-            return;
-        }
-        fetchMsgs.sort(Comparator.comparing(OfflineMsg::getCreatedAt));
-
-        int batchSize = fetchMsgs.size();
-        ChannelFuture lastWriteFuture = null;
-        for (OfflineMsg offlineMsg : fetchMsgs) {
-            log.info("offlineMsg:{}", offlineMsg);
-            Request protocol = Request.newBuilder()
-                    .setRequestId(offlineMsg.getMessageId())
-                    .setReqMsg(offlineMsg.getContent())
-                    .putAllProperties(offlineMsg.getProperties())
-                    .setCmd(BaseCommand.MESSAGE)
-                    .build();
-
-            lastWriteFuture = channel.write(protocol);
-        }
-
-        channel.flush();
-
-        if (lastWriteFuture != null) {
-            lastWriteFuture.addListener((ChannelFutureListener) future -> {
-                if (future.isSuccess()) {
-                    offlineMsgStore.markDelivered(userId, fetchMsgs.stream().map(OfflineMsg::getMessageId).collect(Collectors.toList()));
-                    log.info("server push {} msgs to user {}", batchSize, userId);
-                } else {
-                    log.error("failed to push msgs to user {}, cause: {}", userId, future.cause());
-                }
-            });
-        }
-    }
+//    @RedisLock(key = "T(java.lang.String).format('lock:offlineMsg:%s', #userId)",
+//            waitTime = 5, leaseTime = 30)
+//    public void sendOfflineMsgs(Long userId) {
+//        NioSocketChannel channel = SessionSocketHolder.get(userId);
+//        if (channel == null) {
+//            log.error("client {} offline!", userId);
+//            return;
+//        }
+//
+//        List<OfflineMsg> fetchMsgs = offlineMsgStore.fetch(userId);
+//        if (fetchMsgs.isEmpty()) {
+//            return;
+//        }
+//        fetchMsgs.sort(Comparator.comparing(OfflineMsg::getCreatedAt));
+//
+//        int batchSize = fetchMsgs.size();
+//        ChannelFuture lastWriteFuture = null;
+//        for (OfflineMsg offlineMsg : fetchMsgs) {
+//            log.info("offlineMsg:{}", offlineMsg);
+//            Request protocol = Request.newBuilder()
+//                    .setRequestId(offlineMsg.getMessageId())
+//                    .setReqMsg(offlineMsg.getContent())
+//                    .putAllProperties(offlineMsg.getProperties())
+//                    .setCmd(BaseCommand.MESSAGE)
+//                    .build();
+//
+//            lastWriteFuture = channel.write(protocol);
+//        }
+//
+//        channel.flush();
+//
+//        if (lastWriteFuture != null) {
+//            lastWriteFuture.addListener((ChannelFutureListener) future -> {
+//                if (future.isSuccess()) {
+//                    offlineMsgStore.markDelivered(userId, fetchMsgs.stream().map(OfflineMsg::getMessageId).collect(Collectors.toList()));
+//                    log.info("server push {} msgs to user {}", batchSize, userId);
+//                } else {
+//                    log.error("failed to push msgs to user {}, cause: {}", userId, future.cause());
+//                }
+//            });
+//        }
+//    }
 
 
-    @RedisLock(key = "T(java.lang.String).format('lock:offlineMsg:%s', #vo.userId)",
-            waitTime = 5, leaseTime = 30)
-    public void saveOfflineMsg(SaveOfflineMsgReqVO vo) {
-        OfflineMsg offlineMsg = offlineMsgFactory.createFromVo(vo);
-        offlineMsgStore.save(offlineMsg);
-    }
+//    @RedisLock(key = "T(java.lang.String).format('lock:offlineMsg:%s', #vo.userId)",
+//            waitTime = 5, leaseTime = 30)
+//    public void saveOfflineMsg(SaveOfflineMsgReqVO vo) {
+//        OfflineMsg offlineMsg = offlineMsgFactory.createFromVo(vo);
+//        offlineMsgStore.save(offlineMsg);
+//    }
 }

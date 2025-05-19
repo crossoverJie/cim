@@ -93,6 +93,7 @@ public class ClientImpl extends ClientState implements Client {
         doConnectServer().whenComplete((r, e) -> {
             if (r) {
                 success.accept(null);
+                routeManager.fetchOfflineMsgs(conf.getAuth().getUserId());
             }
             if (e != null) {
                 if (e instanceof CIMException cimException && cimException.getErrorCode()
@@ -121,7 +122,7 @@ public class ClientImpl extends ClientState implements Client {
         this.userLogin(future).ifPresentOrElse((cimServer) -> {
             this.doConnectServer(cimServer, future);
             this.loginServer();
-            routeManager.fetchOfflineMsgs(conf.getAuth().getUserId());
+//            routeManager.fetchOfflineMsgs(conf.getAuth().getUserId());
             this.serverInfo = cimServer;
             future.complete(true);
         }, () -> {
@@ -232,7 +233,7 @@ public class ClientImpl extends ClientState implements Client {
     @Override
     public CompletableFuture<Void> sendGroupAsync(String msg) {
         // TODO: 2024/9/12 return messageId
-        return this.routeManager.sendGroupMsg(new ChatReqVO(this.conf.getAuth().getUserId(), msg));
+        return this.routeManager.sendGroupMsg(new ChatReqVO(this.conf.getAuth().getUserId(), msg, BaseCommand.MESSAGE));
     }
 
     @Override

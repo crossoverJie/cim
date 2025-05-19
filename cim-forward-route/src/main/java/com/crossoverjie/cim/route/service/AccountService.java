@@ -76,5 +76,4 @@ public interface AccountService {
 
     void saveOfflineMsg(CIMServerResVO cimServerResVO, P2PReqVO p2pRequest);
 
-    void fetchOfflineMsgs(Long receiveUserId);
 }
