@@ -33,6 +33,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import static com.crossoverjie.cim.common.enums.StatusEnum.OFF_LINE;
+
 /**
  * Function:
  *
@@ -81,7 +83,7 @@ public class RouteController implements RouteApi {
             }
 
             // Push message
-            ChatReqVO chatVO = new ChatReqVO(userId, groupReqVO.getMsg());
+            ChatReqVO chatVO = new ChatReqVO(userId, groupReqVO.getMsg(), null);
             accountService.pushMsg(cimServerResVO, groupReqVO.getUserId(), chatVO);
 
         }
@@ -107,11 +109,15 @@ public class RouteController implements RouteApi {
 
         try {
             //获取接收消息用户的路由信息
-            CIMServerResVO cimServerResVO = accountService.loadRouteRelatedByUserId(p2pRequest.getReceiveUserId());
+            Optional<CIMServerResVO> cimServerResVO = accountService.loadRouteRelatedByUserId(p2pRequest.getReceiveUserId());
+            if (cimServerResVO.isEmpty()) {
+                // todo save offline msg
+                throw new CIMException(OFF_LINE);
+            }
 
             //p2pRequest.getReceiveUserId()==>消息接收者的 userID
-            ChatReqVO chatVO = new ChatReqVO(p2pRequest.getReceiveUserId(), p2pRequest.getMsg());
-            accountService.pushMsg(cimServerResVO, p2pRequest.getUserId(), chatVO);
+            ChatReqVO chatVO = new ChatReqVO(p2pRequest.getReceiveUserId(), p2pRequest.getMsg(), p2pRequest.getBatchMsg());
+            accountService.pushMsg(cimServerResVO.get(), p2pRequest.getUserId(), chatVO);
 
             res.setCode(StatusEnum.SUCCESS.getCode());
             res.setMessage(StatusEnum.SUCCESS.getMessage());
@@ -128,14 +134,14 @@ public class RouteController implements RouteApi {
     @RequestMapping(value = "offLine", method = RequestMethod.POST)
     @ResponseBody()
     @Override
-    public BaseResponse<NULLBody> offLine(@RequestBody ChatReqVO groupReqVO) {
+    public BaseResponse<NULLBody> offLine(@RequestBody ChatReqVO chatReqVO) {
         BaseResponse<NULLBody> res = new BaseResponse();
 
-        Optional<CIMUserInfo> cimUserInfo = userInfoCacheService.loadUserInfoByUserId(groupReqVO.getUserId());
+        Optional<CIMUserInfo> cimUserInfo = userInfoCacheService.loadUserInfoByUserId(chatReqVO.getUserId());
 
         cimUserInfo.ifPresent(userInfo -> {
-            log.info("user [{}] offline!", userInfo.toString());
-            accountService.offLine(groupReqVO.getUserId());
+            log.info("user [{}] offline!", userInfo);
+            accountService.offLine(chatReqVO.getUserId());
         });
 
         res.setCode(StatusEnum.SUCCESS.getCode());

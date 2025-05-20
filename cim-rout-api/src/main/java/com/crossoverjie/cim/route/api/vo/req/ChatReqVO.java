@@ -9,6 +9,8 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 /**
  * Function: Google Protocol 编解码发送
  *
@@ -30,6 +32,8 @@ public class ChatReqVO extends BaseRequest {
     @NotNull(message = "msg 不能为空")
     @Schema(requiredMode = Schema.RequiredMode.REQUIRED, description = "msg", example = "hello")
     private String msg ;
+
+    private List<String> batchMsg;
 
 
     @Override

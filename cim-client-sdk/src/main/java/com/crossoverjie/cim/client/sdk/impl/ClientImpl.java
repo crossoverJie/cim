@@ -24,6 +24,9 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.util.concurrent.DefaultThreadFactory;
+
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.BlockingQueue;
@@ -58,6 +61,8 @@ public class ClientImpl extends ClientState implements Client {
     @Getter
     private static ClientImpl client;
     @Getter
+    private static Map<Long, ClientImpl> clientMap = new HashMap<>();
+    @Getter
     private final Request heartBeatPacket;
 
     // Client connected server info
@@ -85,6 +90,7 @@ public class ClientImpl extends ClientState implements Client {
                 .setCmd(BaseCommand.PING)
                 .build();
         client = this;
+        clientMap.put(conf.getAuth().getUserId(), this);
 
         connectServer(v -> this.conf.getEvent().info("Login success!"));
     }
@@ -231,7 +237,7 @@ public class ClientImpl extends ClientState implements Client {
     @Override
     public CompletableFuture<Void> sendGroupAsync(String msg) {
         // TODO: 2024/9/12 return messageId
-        return this.routeManager.sendGroupMsg(new ChatReqVO(this.conf.getAuth().getUserId(), msg));
+        return this.routeManager.sendGroupMsg(new ChatReqVO(this.conf.getAuth().getUserId(), msg, null));
     }
 
     @Override

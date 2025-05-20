@@ -4,6 +4,8 @@ import com.crossoverjie.cim.common.req.BaseRequest;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
+
+import java.util.List;
 import java.util.Map;
 import lombok.Getter;
 import lombok.Setter;
@@ -21,6 +23,10 @@ public class SendMsgReqVO extends BaseRequest {
     @Schema(requiredMode = Schema.RequiredMode.REQUIRED, description = "msg", example = "hello")
     private String msg ;
 
+    @Getter
+    @Setter
+    private List<String> batchMsg;
+
     @NotNull(message = "userId 不能为空")
     @Schema(requiredMode = Schema.RequiredMode.REQUIRED, description = "userId", example = "11")
     private Long userId ;
@@ -32,9 +38,10 @@ public class SendMsgReqVO extends BaseRequest {
     public SendMsgReqVO() {
     }
 
-    public SendMsgReqVO(String msg, Long userId) {
+    public SendMsgReqVO(String msg, Long userId, List<String> batchMsg) {
         this.msg = msg;
         this.userId = userId;
+        this.batchMsg = batchMsg;
     }
 
     public String getMsg() {
@@ -57,7 +64,9 @@ public class SendMsgReqVO extends BaseRequest {
     public String toString() {
         return "SendMsgReqVO{" +
                 "msg='" + msg + '\'' +
+                ", batchMsg=" + batchMsg +
                 ", userId=" + userId +
-                "} " + super.toString();
+                ", properties=" + properties +
+                '}';
     }
 }
