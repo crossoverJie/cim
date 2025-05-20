@@ -194,8 +194,8 @@ public class AccountServiceRedisImpl implements AccountService {
 
     }
 
-//    @RedisLock(key = "T(java.lang.String).format('lock:offlineMsg:%s', #userId)",
-//            waitTime = 5, leaseTime = 30)
+    @RedisLock(key = "T(java.lang.String).format('lock:offlineMsg:%s', #receiveUserId)",
+            waitTime = 5, leaseTime = 30)
     public void fetchOfflineMsgs(Long receiveUserId, String url) {
 
         List<OfflineMsg> offlineMsgs = offlineMsgStore.fetch(receiveUserId);
@@ -215,7 +215,7 @@ public class AccountServiceRedisImpl implements AccountService {
     }
 
 
-    @RedisLock(key = "T(java.lang.String).format('lock:offlineMsg:%s', #vo.userId)",
+    @RedisLock(key = "T(java.lang.String).format('lock:offlineMsg:%s', #p2pRequest.userId)",
             waitTime = 5, leaseTime = 30)
     @Override
     public void saveOfflineMsg(CIMServerResVO cimServerResVO, P2PReqVO p2pRequest) {
