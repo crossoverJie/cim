@@ -65,12 +65,6 @@ public class AccountServiceRedisImpl implements AccountService {
     @Resource
     private OfflineMsgFactory offlineMsgFactory;
 
-    @PostConstruct
-    public void init() {
-        System.out.println("Injected OfflineMsgStore type: " + offlineMsgStore.getClass());
-        // 预期输出: com.example.OfflineMsgBuffer
-    }
-
     @Override
     public RegisterInfoResVO register(RegisterInfoResVO info) {
         String key = ACCOUNT_PREFIX + info.getUserId();
