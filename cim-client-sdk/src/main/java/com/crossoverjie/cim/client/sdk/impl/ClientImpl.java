@@ -61,7 +61,7 @@ public class ClientImpl extends ClientState implements Client {
     @Getter
     private static ClientImpl client;
     @Getter
-    private static Map<Long, ClientImpl> clientMap = new HashMap<>();
+    private static Map<Long, ClientImpl> clientMap = new ConcurrentHashMap<>();
     @Getter
     private final Request heartBeatPacket;
 
