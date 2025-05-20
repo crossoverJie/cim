@@ -15,14 +15,13 @@ import com.crossoverjie.cim.route.api.vo.req.LoginReqVO;
 import com.crossoverjie.cim.route.api.vo.req.P2PReqVO;
 import com.crossoverjie.cim.route.api.vo.res.CIMServerResVO;
 import com.crossoverjie.cim.route.api.vo.res.RegisterInfoResVO;
-import com.crossoverjie.cim.route.constant.Constant;
 import com.crossoverjie.cim.route.factory.OfflineMsgFactory;
 import com.crossoverjie.cim.route.service.AccountService;
 import com.crossoverjie.cim.route.service.UserInfoCacheService;
 import com.crossoverjie.cim.server.api.ServerApi;
-import com.crossoverjie.cim.server.api.vo.req.OfflineMsgReqVO;
 import com.crossoverjie.cim.server.api.vo.req.SaveOfflineMsgReqVO;
 import com.crossoverjie.cim.server.api.vo.req.SendMsgReqVO;
+import jakarta.annotation.PostConstruct;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.ClassPathResource;
@@ -65,6 +64,12 @@ public class AccountServiceRedisImpl implements AccountService {
 
     @Resource
     private OfflineMsgFactory offlineMsgFactory;
+
+    @PostConstruct
+    public void init() {
+        System.out.println("Injected OfflineMsgStore type: " + offlineMsgStore.getClass());
+        // 预期输出: com.example.OfflineMsgBuffer
+    }
 
     @Override
     public RegisterInfoResVO register(RegisterInfoResVO info) {
@@ -195,8 +200,8 @@ public class AccountServiceRedisImpl implements AccountService {
 
     }
 
-    @RedisLock(key = "T(java.lang.String).format('lock:offlineMsg:%s', #userId)",
-            waitTime = 5, leaseTime = 30)
+//    @RedisLock(key = "T(java.lang.String).format('lock:offlineMsg:%s', #userId)",
+//            waitTime = 5, leaseTime = 30)
     public void fetchOfflineMsgs(Long receiveUserId, String url) {
 
         List<OfflineMsg> offlineMsgs = offlineMsgStore.fetch(receiveUserId);

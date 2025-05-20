@@ -12,7 +12,7 @@ import org.springframework.context.annotation.ComponentScan;
  */
 @Slf4j
 @SpringBootApplication
-@MapperScan("com.crossoverjie.cim.persistence")
+@MapperScan("com.crossoverjie.cim.persistence.mysql.offlinemsg.mapper")
 @ComponentScan("com.crossoverjie.cim")
 public class RouteApplication implements CommandLineRunner{
 

@@ -5,9 +5,10 @@ import com.crossoverjie.cim.common.exception.CIMException;
 import com.crossoverjie.cim.persistence.api.pojo.OfflineMsg;
 import com.crossoverjie.cim.persistence.api.service.OfflineMsgBufferService;
 import com.crossoverjie.cim.persistence.api.service.OfflineMsgStore;
+import com.crossoverjie.cim.persistence.mysql.offlinemsg.OfflineMsgDb;
+import com.crossoverjie.cim.persistence.redis.impl.OfflineMsgBufferServiceImpl;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.stereotype.Repository;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -19,14 +20,14 @@ import java.util.List;
  * @description
  */
 @Slf4j
-@Repository("bufferingDbStore")
-public class BufferingDbStore implements OfflineMsgStore {
+//@Service
+public class OfflineMsgBuffer implements OfflineMsgStore {
 
     private final OfflineMsgStore db;
     private final OfflineMsgBufferService buffer;
 
-    public BufferingDbStore(@Qualifier("basicDbStore") OfflineMsgStore basicDbStore,@Qualifier("redisOfflineMsgBuffer") OfflineMsgBufferService buffer) {
-        this.db = basicDbStore;
+    public OfflineMsgBuffer(OfflineMsgDb offlineMsgDb, OfflineMsgBufferServiceImpl buffer) {
+        this.db = offlineMsgDb;
         this.buffer = buffer;
     }
 

@@ -1,7 +1,6 @@
 package com.crossoverjie.cim.route.scheduleTask;
 
 import com.crossoverjie.cim.persistence.api.service.OfflineMsgBufferService;
-import com.crossoverjie.cim.persistence.redis.RedisOfflineMsgBuffer;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

@@ -1,4 +1,4 @@
-package com.crossoverjie.cim.persistence.redis;
+package com.crossoverjie.cim.persistence.redis.impl;
 
 import com.crossoverjie.cim.common.exception.CIMException;
 import com.crossoverjie.cim.persistence.api.annotation.RedisLock;
@@ -32,7 +32,7 @@ import static com.crossoverjie.cim.common.constant.Constants.OFFLINE_MSG_DELIVER
  */
 @Service
 @Slf4j
-public class RedisOfflineMsgBuffer implements OfflineMsgBufferService {
+public class OfflineMsgBufferServiceImpl implements OfflineMsgBufferService {
 
     private static final String MSG_KEY = "offline:msg:";
     private static final String USER_IDX = "offline:msg:user:";
@@ -47,7 +47,7 @@ public class RedisOfflineMsgBuffer implements OfflineMsgBufferService {
     private Jackson2HashMapper hashMapper;
     @Lazy
     @Autowired
-    private RedisOfflineMsgBuffer selfProxy;
+    private OfflineMsgBufferServiceImpl selfProxy;
 
 
     public void saveOfflineMsgInBuffer(OfflineMsg msg) {
