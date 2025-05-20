@@ -25,7 +25,6 @@ import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.util.concurrent.DefaultThreadFactory;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -226,6 +225,7 @@ public class ClientImpl extends ClientState implements Client {
         }
         super.setState(ClientState.State.Closed);
         this.routeManager.offLine(this.getAuth().getUserId());
+        this.clientMap.remove(this.getAuth().getUserId());
     }
 
     @Override

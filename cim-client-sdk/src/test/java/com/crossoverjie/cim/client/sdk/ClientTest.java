@@ -1,6 +1,7 @@
 package com.crossoverjie.cim.client.sdk;
 
 import com.crossoverjie.cim.client.sdk.impl.ClientConfigurationData;
+import com.crossoverjie.cim.client.sdk.impl.ClientImpl;
 import com.crossoverjie.cim.client.sdk.io.backoff.RandomBackoff;
 import com.crossoverjie.cim.client.sdk.route.AbstractRouteBaseTest;
 import com.crossoverjie.cim.common.constant.Constants;
@@ -211,6 +212,7 @@ public class ClientTest extends AbstractRouteBaseTest {
                 .batchMsg(batchMsg)
                 .build());
 
+        Assertions.assertEquals(ClientImpl.getClientMap().size(), 3);
         Awaitility.await().untilAsserted(
                 () -> Assertions.assertEquals(msg, client3Receive.get()));
         Awaitility.await().untilAsserted(
@@ -218,6 +220,10 @@ public class ClientTest extends AbstractRouteBaseTest {
         Awaitility.await().untilAsserted(
                 () -> Assertions.assertEquals(batchMsg, client1Receive));
         super.stopSingle();
+        client1.close();
+        client2.close();
+        client3.close();
+        Assertions.assertEquals(ClientImpl.getClientMap().size(), 0);
     }
 
     /**
