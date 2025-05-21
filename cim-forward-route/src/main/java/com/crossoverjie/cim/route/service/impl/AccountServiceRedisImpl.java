@@ -195,7 +195,7 @@ public class AccountServiceRedisImpl implements AccountService {
 
     }
 
-    @RedisLock(key = "T(java.lang.String).format('lock:offlineMsg:%s', #userId)",
+    @RedisLock(key = "T(java.lang.String).format('lock:offlineMsg:%s', #receiveUserId)",
             waitTime = 5, leaseTime = 30)
     public void fetchOfflineMsgs(Long receiveUserId, String url) {
 
