@@ -5,6 +5,10 @@ import com.crossoverjie.cim.common.req.BaseRequest;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
+import lombok.Getter;
+import lombok.Setter;
+
+import java.util.List;
 
 /**
  * Function: P2P request
@@ -32,6 +36,10 @@ public class P2PReqVO extends BaseRequest {
     @Schema(requiredMode = Schema.RequiredMode.REQUIRED, description = "msg", example = "hello")
     private String msg ;
 
+    @Getter
+    @Setter
+    private List<String> batchMsg;
+
     public P2PReqVO() {
     }
 
@@ -39,6 +47,12 @@ public class P2PReqVO extends BaseRequest {
         this.userId = userId;
         this.receiveUserId = receiveUserId;
         this.msg = msg;
+    }
+    public P2PReqVO(Long userId, Long receiveUserId, String msg, List<String> batchMsg) {
+        this.userId = userId;
+        this.receiveUserId = receiveUserId;
+        this.msg = msg;
+        this.batchMsg = batchMsg;
     }
 
     public Long getReceiveUserId() {

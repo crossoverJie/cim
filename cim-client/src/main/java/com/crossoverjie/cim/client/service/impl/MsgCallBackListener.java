@@ -28,7 +28,7 @@ public class MsgCallBackListener implements MessageListener {
 
     @Override
     public void received(Client client, Map<String, String> properties, String msg) {
-        String sendUserName = properties.getOrDefault(Constants.MetaKey.USER_NAME, "nobody");
+        String sendUserName = properties.getOrDefault(Constants.MetaKey.SEND_USER_NAME, "nobody");
         this.msgLogger.log(sendUserName + ":" + msg);
         this.event.info(sendUserName + ":" + msg);
     }

@@ -1,12 +1,16 @@
 package com.crossoverjie.cim.client.sdk;
 
 import com.crossoverjie.cim.client.sdk.impl.ClientConfigurationData;
+import com.crossoverjie.cim.client.sdk.impl.ClientImpl;
 import com.crossoverjie.cim.client.sdk.io.backoff.RandomBackoff;
 import com.crossoverjie.cim.client.sdk.route.AbstractRouteBaseTest;
 import com.crossoverjie.cim.common.constant.Constants;
 import com.crossoverjie.cim.common.pojo.CIMUserInfo;
 import com.crossoverjie.cim.route.api.vo.req.P2PReqVO;
 import com.crossoverjie.cim.route.api.vo.res.CIMServerResVO;
+
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
@@ -66,8 +70,8 @@ public class ClientTest extends AbstractRouteBaseTest {
                 .routeUrl(routeUrl)
                 .messageListener((client, properties, message) -> {
                     client2Receive.set(message);
-                    Assertions.assertEquals(properties.get(Constants.MetaKey.USER_ID), String.valueOf(auth1.getUserId()));
-                    Assertions.assertEquals(properties.get(Constants.MetaKey.USER_NAME), auth1.getUserName());
+                    Assertions.assertEquals(properties.get(Constants.MetaKey.SEND_USER_ID), String.valueOf(auth1.getUserId()));
+                    Assertions.assertEquals(properties.get(Constants.MetaKey.SEND_USER_NAME), auth1.getUserName());
                 })
                 .build();
         TimeUnit.SECONDS.sleep(3);
@@ -124,10 +128,15 @@ public class ClientTest extends AbstractRouteBaseTest {
                 .userId(lsId)
                 .build();
 
+        var client1Receive = new ArrayList<>();
         @Cleanup
         Client client1 = Client.builder()
                 .auth(auth1)
                 .routeUrl(routeUrl)
+                .messageListener((__, properties, message) -> {
+                    log.info("client1 receive message = {}", message);
+                    client1Receive.add(message);
+                })
                 .build();
         TimeUnit.SECONDS.sleep(3);
         ClientState.State state = client1.getState();
@@ -175,7 +184,7 @@ public class ClientTest extends AbstractRouteBaseTest {
         Assertions.assertTrue(serverInfo3.isPresent());
         System.out.println("client3 serverInfo = " + serverInfo3.get());
 
-        // send msg to client3
+        // client1 send msg to client3
         String msg = "hello";
         client1.sendP2P(P2PReqVO.builder()
                 .receiveUserId(lsId)
@@ -196,11 +205,25 @@ public class ClientTest extends AbstractRouteBaseTest {
             }
         });
 
+        // client2 send batch msg to client1
+        var batchMsg = List.of("a","b","c");
+        client2.sendP2P(P2PReqVO.builder()
+                .receiveUserId(cjId)
+                .batchMsg(batchMsg)
+                .build());
+
+        Assertions.assertEquals(ClientImpl.getClientMap().size(), 3);
         Awaitility.await().untilAsserted(
                 () -> Assertions.assertEquals(msg, client3Receive.get()));
         Awaitility.await().untilAsserted(
                 () -> Assertions.assertNull(client2Receive.get()));
+        Awaitility.await().untilAsserted(
+                () -> Assertions.assertEquals(batchMsg, client1Receive));
         super.stopSingle();
+        client1.close();
+        client2.close();
+        client3.close();
+        Assertions.assertEquals(ClientImpl.getClientMap().size(), 0);
     }
 
     /**

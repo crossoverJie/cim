@@ -7,6 +7,7 @@ import com.crossoverjie.cim.route.api.vo.res.CIMServerResVO;
 import com.crossoverjie.cim.route.api.vo.res.RegisterInfoResVO;
 
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * Function: 账户服务
@@ -48,11 +49,11 @@ public interface AccountService {
     Map<Long, CIMServerResVO> loadRouteRelated() ;
 
     /**
-     * 获取某个用户的路有关系
+     * Get user route info
      * @param userId
-     * @return 获取某个用户的路有关系
+     * @return route info
      */
-    CIMServerResVO loadRouteRelatedByUserId(Long userId) ;
+    Optional<CIMServerResVO> loadRouteRelatedByUserId(Long userId) ;
 
 
     /**

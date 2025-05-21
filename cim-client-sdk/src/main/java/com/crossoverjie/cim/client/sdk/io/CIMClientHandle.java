@@ -2,6 +2,7 @@ package com.crossoverjie.cim.client.sdk.io;
 
 import com.crossoverjie.cim.client.sdk.ClientState;
 import com.crossoverjie.cim.client.sdk.impl.ClientImpl;
+import com.crossoverjie.cim.common.constant.Constants;
 import com.crossoverjie.cim.common.protocol.BaseCommand;
 import com.crossoverjie.cim.common.protocol.Response;
 import com.crossoverjie.cim.common.util.NettyAttrUtil;
@@ -58,17 +59,25 @@ public class CIMClientHandle extends SimpleChannelInboundHandler<Response> {
 
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, Response msg) {
-
-
         if (msg.getCmd() == BaseCommand.PING) {
             ClientImpl.getClient().getConf().getEvent().debug("received ping from server");
             NettyAttrUtil.updateReaderTime(ctx.channel(), System.currentTimeMillis());
         }
 
         if (msg.getCmd() != BaseCommand.PING) {
+            String receiveUserId = msg.getPropertiesMap().get(Constants.MetaKey.RECEIVE_USER_ID);
+            ClientImpl client = ClientImpl.getClientMap().get(Long.valueOf(receiveUserId));
             // callback
-            ClientImpl.getClient().getConf().getCallbackThreadPool().execute(() -> {
-                ClientImpl.getClient().getConf().getMessageListener().received(ClientImpl.getClient(), msg.getPropertiesMap(), msg.getResMsg());
+            client.getConf().getCallbackThreadPool().execute(() -> {
+                log.info("client address: {} :{}", ctx.channel().remoteAddress(), client);
+                MessageListener messageListener = client.getConf().getMessageListener();
+                if (msg.getBatchResMsgCount() >0 ){
+                    for (int i = 0; i < msg.getBatchResMsgCount(); i++) {
+                        messageListener.received(client, msg.getPropertiesMap(), msg.getBatchResMsg(i));
+                    }
+                } else {
+                    messageListener.received(client, msg.getPropertiesMap(), msg.getResMsg());
+                }
             });
         }
 

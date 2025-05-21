@@ -24,10 +24,13 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.util.concurrent.DefaultThreadFactory;
+
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -58,6 +61,8 @@ public class ClientImpl extends ClientState implements Client {
     @Getter
     private static ClientImpl client;
     @Getter
+    private static Map<Long, ClientImpl> clientMap = new ConcurrentHashMap<>();
+    @Getter
     private final Request heartBeatPacket;
 
     // Client connected server info
@@ -85,12 +90,13 @@ public class ClientImpl extends ClientState implements Client {
                 .setCmd(BaseCommand.PING)
                 .build();
         client = this;
+        clientMap.put(conf.getAuth().getUserId(), this);
 
         connectServer(v -> this.conf.getEvent().info("Login success!"));
     }
 
     private void connectServer(Consumer<Void> success) {
-        doConnectServer().whenComplete((r, e) -> {
+        this.doConnectServer().whenComplete((r, e) -> {
             if (r) {
                 success.accept(null);
             }
@@ -219,6 +225,7 @@ public class ClientImpl extends ClientState implements Client {
         }
         super.setState(ClientState.State.Closed);
         this.routeManager.offLine(this.getAuth().getUserId());
+        this.clientMap.remove(this.getAuth().getUserId());
     }
 
     @Override
@@ -231,7 +238,7 @@ public class ClientImpl extends ClientState implements Client {
     @Override
     public CompletableFuture<Void> sendGroupAsync(String msg) {
         // TODO: 2024/9/12 return messageId
-        return this.routeManager.sendGroupMsg(new ChatReqVO(this.conf.getAuth().getUserId(), msg));
+        return this.routeManager.sendGroupMsg(new ChatReqVO(this.conf.getAuth().getUserId(), msg, null));
     }
 
     @Override
