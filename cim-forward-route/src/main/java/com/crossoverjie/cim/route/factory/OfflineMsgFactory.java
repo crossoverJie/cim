@@ -42,7 +42,7 @@ public class OfflineMsgFactory {
                     ))
                     .build();
         } catch (Exception e) {
-            throw new CIMException("Failed to create OfflineMsg from SendMsgReqVO", e);
+            throw new CIMException("Failed to create OfflineMsg from SaveOfflineMsgReqVO", e);
         }
     }
 
