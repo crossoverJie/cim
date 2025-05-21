@@ -9,6 +9,7 @@ import jakarta.validation.constraints.NotNull;
 import java.util.List;
 import java.util.Map;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -21,6 +22,7 @@ import lombok.Setter;
  * @since JDK 1.8
  */
 @Builder
+@AllArgsConstructor
 public class SendMsgReqVO extends BaseRequest {
 
     @NotNull(message = "msg 不能为空")
