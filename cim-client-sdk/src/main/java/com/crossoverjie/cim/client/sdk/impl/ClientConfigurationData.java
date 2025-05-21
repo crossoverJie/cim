@@ -47,7 +47,7 @@ public class ClientConfigurationData {
     private ThreadPoolExecutor callbackThreadPool;
 
     @JsonIgnore
-    private ReconnectCheck reconnectCheck = (client) -> true;
+    private ReconnectCheck reconnectCheck = (__) -> true;
 
     @JsonIgnore
     private BackoffStrategy backoffStrategy = new RandomBackoff();
