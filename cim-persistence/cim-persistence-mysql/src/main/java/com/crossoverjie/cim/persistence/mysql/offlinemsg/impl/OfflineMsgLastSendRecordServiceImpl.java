@@ -17,13 +17,13 @@ public class OfflineMsgLastSendRecordServiceImpl implements OfflineMsgLastSendRe
     private OfflineMsgLastSendRecordMapper offlineMsgLastSendRecordMapper;
 
     @Override
-    public void saveLatestMessageId(Long userId, Long lastMessageId) {
-        offlineMsgLastSendRecordMapper.saveLatestMessageId(userId,lastMessageId);
+    public void saveLatestMessageId(Long receiveUserId, Long lastMessageId) {
+        offlineMsgLastSendRecordMapper.saveLatestMessageId(receiveUserId,lastMessageId);
     }
 
     @Override
-    public String getLatestMessageId(Long userId) {
-        return offlineMsgLastSendRecordMapper.getLatestMessageId(userId);
+    public String getLatestMessageId(Long receiveUserId) {
+        return offlineMsgLastSendRecordMapper.getLatestMessageId(receiveUserId);
     }
 }
 

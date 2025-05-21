@@ -15,12 +15,14 @@ import com.crossoverjie.cim.route.service.UserInfoCacheService;
 import com.crossoverjie.cim.server.api.ServerApi;
 import com.crossoverjie.cim.server.api.vo.req.SendMsgReqVO;
 import jakarta.annotation.Resource;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+@Slf4j
 @Service
 public class OfflineMsgPushServiceImpl implements OfflineMsgPushService {
 
@@ -76,8 +78,9 @@ public class OfflineMsgPushServiceImpl implements OfflineMsgPushService {
                     .msg(p2pRequest.getMsg())
                     .receive_user_id(p2pRequest.getReceiveUserId())
                     .properties(Map.of(
-                            Constants.MetaKey.SEND_USER_ID, cimUserInfo.get().toString(),
-                            Constants.MetaKey.SEND_USER_NAME, p2pRequest.getUserId().toString()
+                            Constants.MetaKey.SEND_USER_ID, cimUserInfo.get().getUserId().toString(),
+                            Constants.MetaKey.SEND_USER_NAME, cimUserInfo.get().getUserName(),
+                            Constants.MetaKey.RECEIVE_USER_ID, p2pRequest.getReceiveUserId().toString()
                     )).build();
             OfflineMsg offlineMsg = offlineMsgFactory.createFromVo(saveOfflineMsgReqVO);
             offlineMsgStore.save(offlineMsg);

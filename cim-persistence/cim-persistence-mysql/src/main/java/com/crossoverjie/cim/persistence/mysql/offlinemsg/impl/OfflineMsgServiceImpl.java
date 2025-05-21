@@ -36,19 +36,19 @@ public class OfflineMsgServiceImpl implements OfflineMsgService {
     }
 
     @Override
-    public List<OfflineMsg> fetchOfflineMsgsWithCursor(Long userId, int limit) {
-        List<OfflineMsg> offlineMsgs = offlineMsgMapper.fetchOfflineMsgsWithCursor(userId, limit);
+    public List<OfflineMsg> fetchOfflineMsgsWithCursor(Long receiveUserId, int limit) {
+        List<OfflineMsg> offlineMsgs = offlineMsgMapper.fetchOfflineMsgsWithCursor(receiveUserId, limit);
         return offlineMsgs;
     }
 
     @Override
-    public void updateStatus(Long userId, List<Long> messageIds) {
-        offlineMsgMapper.updateStatus(userId, messageIds);
+    public void updateStatus(Long receiveUserId, List<Long> messageIds) {
+        offlineMsgMapper.updateStatus(receiveUserId, messageIds);
     }
 
     @Override
-    public List<Long> fetchOfflineMsgIdsWithCursor(Long userId) {
-        return offlineMsgMapper.fetchOfflineMsgIdsWithCursor(userId);
+    public List<Long> fetchOfflineMsgIdsWithCursor(Long receiveUserId) {
+        return offlineMsgMapper.fetchOfflineMsgIdsWithCursor(receiveUserId);
     }
 
     @Override

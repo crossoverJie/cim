@@ -4,9 +4,9 @@
 
     <insert id="saveLatestMessageId">
         INSERT INTO offline_msg_last_send_record
-            (user_id, last_message_id, updated_at)
+            (receive_user_id, last_message_id, updated_at)
         VALUES
-            (#{userId}, #{lastMessageId}, NOW())
+            (#{receiveUserId}, #{lastMessageId}, NOW())
             ON DUPLICATE KEY UPDATE
                                  last_message_id = #{lastMessageId},
                                  updated_at = NOW()
@@ -16,7 +16,7 @@
     <select id="getLatestMessageId" resultType="java.lang.String">
         SELECT last_message_id
         FROM offline_msg_last_send_record
-        WHERE user_id = #{userId}
+        WHERE receive_user_id = #{receiveUserId}
     </select>
 </mapper>
 

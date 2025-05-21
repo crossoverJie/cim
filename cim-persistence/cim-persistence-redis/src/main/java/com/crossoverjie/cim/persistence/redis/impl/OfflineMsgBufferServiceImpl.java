@@ -55,7 +55,7 @@ public class OfflineMsgBufferServiceImpl implements OfflineMsgBufferService {
 
         Map<String, Object> hashMap = hashMapper.toHash(msg);
         redis.opsForHash().putAll(key, hashMap);
-        redis.opsForList().rightPush(USER_IDX + msg.getUserId(), msg.getMessageId().toString());
+        redis.opsForList().rightPush(USER_IDX + msg.getReceiveUserId(), msg.getMessageId().toString());
     }
 
     @Override

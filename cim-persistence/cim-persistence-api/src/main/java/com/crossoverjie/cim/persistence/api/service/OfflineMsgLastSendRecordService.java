@@ -10,13 +10,13 @@ public interface OfflineMsgLastSendRecordService {
     /**
      * Save the last messageId of the latest batch of offline messages pushed to the client
      */
-    void saveLatestMessageId(Long userId, Long lastMessageId);
+    void saveLatestMessageId(Long receiveUserId, Long lastMessageId);
 
     /**
      * Obtain the latest messageId of a certain session
      *
-     * @param userId
+     * @param receiveUserId
      * @return
      */
-    String getLatestMessageId(Long userId);
+    String getLatestMessageId(Long receiveUserId);
 }

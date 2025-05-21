@@ -22,27 +22,27 @@ public interface OfflineMsgService {
     /**
      * After the client goes online, it retrieves messages in pages based on the cursor (the id of the last pushed offline message stored)
      *
-     * @param userId
+     * @param receiveUserId
      * @param limit
      * @return
      */
-    List<OfflineMsg> fetchOfflineMsgsWithCursor(Long userId, int limit);
+    List<OfflineMsg> fetchOfflineMsgsWithCursor(Long receiveUserId, int limit);
 
     /**
      * After the client goes online, it retrieves the id of the offline messages stored in the database
      *
-     * @param userId
+     * @param receiveUserId
      * @return messageIds
      */
-    List<Long> fetchOfflineMsgIdsWithCursor(Long userId);
+    List<Long> fetchOfflineMsgIdsWithCursor(Long receiveUserId);
 
     /**
      * After the client goes online, it updates the status of offline messages
      *
-     * @param userId
+     * @param receiveUserId
      * @param messageIds
      */
-    void updateStatus(Long userId, List<Long> messageIds);
+    void updateStatus(Long receiveUserId, List<Long> messageIds);
 
     /**
      * Batch insert offline messages

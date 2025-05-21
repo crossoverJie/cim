@@ -36,14 +36,14 @@ public class OfflineMsgDb implements OfflineMsgStore {
     }
 
     @Override
-    public List<OfflineMsg> fetch(Long userId) {
-        return offlineMsgService.fetchOfflineMsgsWithCursor(userId, FETCH_OFFLINE_MSG_LIMIT);
+    public List<OfflineMsg> fetch(Long receiveUserId) {
+        return offlineMsgService.fetchOfflineMsgsWithCursor(receiveUserId, FETCH_OFFLINE_MSG_LIMIT);
     }
 
     @Override
-    public void markDelivered(Long userId, List<Long> messageIds) {
-        offlineMsgService.updateStatus(userId, messageIds);
-        offlineMsgLastSendRecordService.saveLatestMessageId(userId, messageIds.get(messageIds.size() - 1));
+    public void markDelivered(Long receiveUserId, List<Long> messageIds) {
+        offlineMsgService.updateStatus(receiveUserId, messageIds);
+        offlineMsgLastSendRecordService.saveLatestMessageId(receiveUserId, messageIds.get(messageIds.size() - 1));
     }
 }
 

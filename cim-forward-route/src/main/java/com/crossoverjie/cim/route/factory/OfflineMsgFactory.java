@@ -38,7 +38,8 @@ public class OfflineMsgFactory {
                     .createdAt(LocalDateTime.now())
                     .properties(Map.of(
                             Constants.MetaKey.SEND_USER_ID, vo.getProperties().get(Constants.MetaKey.SEND_USER_ID),
-                            Constants.MetaKey.SEND_USER_NAME, vo.getProperties().get(Constants.MetaKey.SEND_USER_NAME)
+                            Constants.MetaKey.SEND_USER_NAME, vo.getProperties().get(Constants.MetaKey.SEND_USER_NAME),
+                            Constants.MetaKey.RECEIVE_USER_ID, vo.getProperties().get(Constants.MetaKey.RECEIVE_USER_ID)
                     ))
                     .build();
         } catch (Exception e) {

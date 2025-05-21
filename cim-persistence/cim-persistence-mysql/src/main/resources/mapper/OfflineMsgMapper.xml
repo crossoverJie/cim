@@ -4,7 +4,7 @@
 
     <insert id="insert" parameterType="com.crossoverjie.cim.persistence.api.pojo.OfflineMsg">
         INSERT INTO offline_msg (message_id,
-                                 user_id,
+                                 receive_user_id,
                                  content,
                                  message_type,
                                  status,
@@ -22,7 +22,7 @@
     <insert id="insertBatch" parameterType="java.util.List">
         INSERT INTO offline_msg (
         message_id,
-        user_id,
+        receive_user_id,
         content,
         message_type,
         status,
@@ -45,15 +45,15 @@
     <select id="fetchOfflineMsgsWithCursor" resultType="com.crossoverjie.cim.persistence.api.pojo.OfflineMsg">
         SELECT
         message_id,
-        user_id,
+        receive_user_id,
         content,
         message_type,
         status,
         created_at,
         properties
         FROM offline_msg
-        WHERE user_id = #{userId}
-        AND message_id &gt; COALESCE((select last_message_id from offline_msg_last_send_record where user_id = #{userId}),0)
+        WHERE receive_user_id = #{receiveUserId}
+        AND message_id &gt; COALESCE((select last_message_id from offline_msg_last_send_record where receive_user_id = #{receiveUserId}),0)
         ORDER BY message_id ASC
         LIMIT #{limit}
     </select>
@@ -62,15 +62,15 @@
         SELECT
         message_id
         FROM offline_msg
-        WHERE user_id = #{userId}
-        AND message_id &gt; (select last_message_id from offline_msg_last_send_record where user_id = #{userId})
+        WHERE receive_user_id = #{receiveUserId}
+        AND message_id &gt; (select last_message_id from offline_msg_last_send_record where receive_user_id = #{receiveUserId})
         ORDER BY message_id ASC
     </select>
 
     <update id="updateStatus" parameterType="map">
         UPDATE offline_msg
         SET status = 1
-        WHERE user_id = #{userId}
+        WHERE receive_user_id = #{receiveUserId}
         <if test="messageIds != null and !messageIds.isEmpty()">
             AND message_id IN
             <foreach item="id" collection="messageIds" open="(" separator="," close=")">
