@@ -1,5 +1,6 @@
 package com.crossoverjie.cim.server.api.vo.req;
 
+import com.crossoverjie.cim.common.protocol.BaseCommand;
 import com.crossoverjie.cim.common.req.BaseRequest;
 
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -7,6 +8,8 @@ import jakarta.validation.constraints.NotNull;
 
 import java.util.List;
 import java.util.Map;
+
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -17,6 +20,7 @@ import lombok.Setter;
  *         Date: 2018/05/21 15:56
  * @since JDK 1.8
  */
+@Builder
 public class SendMsgReqVO extends BaseRequest {
 
     @NotNull(message = "msg 不能为空")
@@ -31,6 +35,9 @@ public class SendMsgReqVO extends BaseRequest {
     @Schema(requiredMode = Schema.RequiredMode.REQUIRED, description = "userId", example = "11")
     private Long userId ;
 
+    @Schema(requiredMode = Schema.RequiredMode.REQUIRED, description = "cmd", example = "message")
+    private BaseCommand cmd;
+
     @Setter
     @Getter
     private Map<String, String> properties;
@@ -38,10 +45,25 @@ public class SendMsgReqVO extends BaseRequest {
     public SendMsgReqVO() {
     }
 
+    public BaseCommand getCmd() {
+        return cmd;
+    }
+
+    public void setCmd(BaseCommand cmd) {
+        this.cmd = cmd;
+    }
+
     public SendMsgReqVO(String msg, Long userId, List<String> batchMsg) {
         this.msg = msg;
         this.userId = userId;
         this.batchMsg = batchMsg;
+    }
+
+    public SendMsgReqVO(String msg, Long userId, List<String> batchMsg, BaseCommand cmd) {
+        this.msg = msg;
+        this.batchMsg = batchMsg;
+        this.userId = userId;
+        this.cmd = cmd;
     }
 
     public String getMsg() {

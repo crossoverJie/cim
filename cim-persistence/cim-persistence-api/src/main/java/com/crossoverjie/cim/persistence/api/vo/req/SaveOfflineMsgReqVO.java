@@ -1,4 +1,4 @@
-package com.crossoverjie.cim.server.api.vo.req;
+package com.crossoverjie.cim.persistence.api.vo.req;
 
 import com.crossoverjie.cim.common.req.BaseRequest;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -6,6 +6,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 import java.util.Map;
+@Data
 @Builder
 @AllArgsConstructor
 public class SaveOfflineMsgReqVO extends BaseRequest {
@@ -16,7 +17,7 @@ public class SaveOfflineMsgReqVO extends BaseRequest {
 
     @NotNull(message = "userId 不能为空")
     @Schema(requiredMode = Schema.RequiredMode.REQUIRED, description = "userId", example = "11")
-    private Long userId ;
+    private Long receive_user_id ;
 
     @Setter
     @Getter
@@ -25,32 +26,8 @@ public class SaveOfflineMsgReqVO extends BaseRequest {
     public SaveOfflineMsgReqVO() {
     }
 
-    public SaveOfflineMsgReqVO(String msg, Long userId) {
+    public SaveOfflineMsgReqVO(String msg, Long receive_user_id) {
         this.msg = msg;
-        this.userId = userId;
-    }
-
-    public String getMsg() {
-        return msg;
-    }
-
-    public void setMsg(String msg) {
-        this.msg = msg;
-    }
-
-    public long getUserId() {
-        return userId;
-    }
-
-    public void setUserId(long userId) {
-        this.userId = userId;
-    }
-
-    @Override
-    public String toString() {
-        return "SendMsgReqVO{" +
-                "msg='" + msg + '\'' +
-                ", userId=" + userId +
-                "} " + super.toString();
+        this.receive_user_id = receive_user_id;
     }
 }

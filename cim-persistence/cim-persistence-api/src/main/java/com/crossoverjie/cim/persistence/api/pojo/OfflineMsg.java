@@ -19,7 +19,7 @@ import java.util.Map;
 @Builder
 public class OfflineMsg {
     private Long messageId;
-    private Long userId;
+    private Long receiveUserId;
     //todo 如果是图片的话，存储和取数怎么处理
     private String content;
     private Integer messageType;   // 0: Text, 1: Image

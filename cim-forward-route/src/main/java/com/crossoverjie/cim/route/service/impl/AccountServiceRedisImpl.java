@@ -1,32 +1,21 @@
 package com.crossoverjie.cim.route.service.impl;
 
 import com.crossoverjie.cim.common.constant.Constants;
-import com.crossoverjie.cim.common.core.proxy.RpcProxyManager;
 import com.crossoverjie.cim.common.enums.StatusEnum;
-import com.crossoverjie.cim.common.exception.CIMException;
 import com.crossoverjie.cim.common.pojo.CIMUserInfo;
 import com.crossoverjie.cim.common.pojo.RouteInfo;
 import com.crossoverjie.cim.common.protocol.BaseCommand;
 import com.crossoverjie.cim.common.util.RouteInfoParseUtil;
-import com.crossoverjie.cim.persistence.api.annotation.RedisLock;
-import com.crossoverjie.cim.persistence.api.pojo.OfflineMsg;
-import com.crossoverjie.cim.persistence.api.service.OfflineMsgStore;
 import com.crossoverjie.cim.route.api.vo.req.ChatReqVO;
 import com.crossoverjie.cim.route.api.vo.req.LoginReqVO;
-import com.crossoverjie.cim.route.api.vo.req.P2PReqVO;
 import com.crossoverjie.cim.route.api.vo.res.CIMServerResVO;
 import com.crossoverjie.cim.route.api.vo.res.RegisterInfoResVO;
-import com.crossoverjie.cim.route.factory.OfflineMsgFactory;
 import com.crossoverjie.cim.route.service.AccountService;
 import com.crossoverjie.cim.route.service.UserInfoCacheService;
 import com.crossoverjie.cim.server.api.ServerApi;
-import com.crossoverjie.cim.server.api.vo.req.SaveOfflineMsgReqVO;
 import com.crossoverjie.cim.server.api.vo.req.SendMsgReqVO;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
-import okhttp3.OkHttpClient;
-import okhttp3.Response;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.redis.connection.RedisConnection;
 import org.springframework.data.redis.core.Cursor;
@@ -37,12 +26,8 @@ import org.springframework.scripting.support.ResourceScriptSource;
 import org.springframework.stereotype.Service;
 
 import java.nio.charset.StandardCharsets;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
-import static com.crossoverjie.cim.common.enums.StatusEnum.OFF_LINE;
 import static com.crossoverjie.cim.route.constant.Constant.*;
 
 /**
@@ -64,12 +49,6 @@ public class AccountServiceRedisImpl implements AccountService {
 
     @Resource
     private ServerApi serverApi;
-
-    @Resource
-    private OfflineMsgStore offlineMsgStore;
-
-    @Resource
-    private OfflineMsgFactory offlineMsgFactory;
 
     @Override
     public RegisterInfoResVO register(RegisterInfoResVO info) {
@@ -173,7 +152,7 @@ public class AccountServiceRedisImpl implements AccountService {
         cimUserInfo.ifPresent(sendUserInfo -> {
             String url = "http://" + cimServerResVO.getIp() + ":" + cimServerResVO.getHttpPort();
             SendMsgReqVO vo =
-                    new SendMsgReqVO(chatReqVO.getMsg(), chatReqVO.getUserId(), chatReqVO.getBatchMsg());
+                    new SendMsgReqVO(chatReqVO.getMsg(), chatReqVO.getUserId(), chatReqVO.getBatchMsg(), BaseCommand.MESSAGE);
             vo.setProperties(Map.of(
                     Constants.MetaKey.SEND_USER_ID, String.valueOf(sendUserId),
                     Constants.MetaKey.SEND_USER_NAME, sendUserInfo.getUserName(),
@@ -182,62 +161,6 @@ public class AccountServiceRedisImpl implements AccountService {
             serverApi.sendMsg(vo, url);
 
         });
-    }
-
-
-    private String getServerUrl(CIMServerResVO cimServerResVO) {
-        String url = "http://" + cimServerResVO.getIp() + ":" + cimServerResVO.getHttpPort();
-        return url;
-    }
-
-    @Override
-    public void sendOfflineMsgs(CIMServerResVO cimServerResVO, Long receiveUserId) {
-
-        String url = getServerUrl(cimServerResVO);
-//        serverApi.sendOfflineMsgs(OfflineMsgReqVO.builder().receiveUserId(receiveUserId).build(), url);
-        this.fetchOfflineMsgs(receiveUserId, url);
-
-    }
-
-    @RedisLock(key = "T(java.lang.String).format('lock:offlineMsg:%s', #receiveUserId)",
-            waitTime = 5, leaseTime = 30)
-    public void fetchOfflineMsgs(Long receiveUserId, String url) {
-
-        List<OfflineMsg> offlineMsgs = offlineMsgStore.fetch(receiveUserId);
-        if (offlineMsgs.isEmpty()) {
-            return;
-        }
-        offlineMsgs.sort(Comparator.comparing(OfflineMsg::getCreatedAt));
-
-        for (OfflineMsg offlineMsg : offlineMsgs) {
-            SendMsgReqVO sendMsgReqVO = new SendMsgReqVO(offlineMsg.getContent(), offlineMsg.getUserId(), BaseCommand.OFFLINE, offlineMsg.getProperties());
-            // todo sendMsg中的requestId是userId，这个会不会有问题
-            serverApi.sendMsg(sendMsgReqVO, url);
-        }
-
-        //todo How to ensure that the message will definitely arrive
-        offlineMsgStore.markDelivered(receiveUserId, offlineMsgs.stream().map(OfflineMsg::getMessageId).toList());
-    }
-
-
-    @RedisLock(key = "T(java.lang.String).format('lock:offlineMsg:%s', #p2pRequest.userId)",
-            waitTime = 5, leaseTime = 30)
-    @Override
-    public void saveOfflineMsg(CIMServerResVO cimServerResVO, P2PReqVO p2pRequest) {
-
-        Optional<CIMUserInfo> cimUserInfo = userInfoCacheService.loadUserInfoByUserId(p2pRequest.getReceiveUserId());
-
-        cimUserInfo.ifPresent(userInfo -> {
-            SaveOfflineMsgReqVO saveOfflineMsgReqVO = SaveOfflineMsgReqVO.builder()
-                    .msg(p2pRequest.getMsg())
-                    .userId(p2pRequest.getReceiveUserId())
-                    .properties(Map.of(
-                            Constants.MetaKey.USER_NAME, userInfo.getUserName())
-                    ).build();
-            OfflineMsg offlineMsg = offlineMsgFactory.createFromVo(saveOfflineMsgReqVO);
-            offlineMsgStore.save(offlineMsg);
-        });
-
     }
 
     @Override

@@ -73,8 +73,6 @@ public interface AccountService {
      */
     void offLine(Long userId);
 
-    void sendOfflineMsgs(CIMServerResVO cimServerResVO, Long receiveUserId);
 
-    void saveOfflineMsg(CIMServerResVO cimServerResVO, P2PReqVO p2pRequest);
 
 }

@@ -4,10 +4,7 @@ import com.crossoverjie.cim.common.core.proxy.DynamicUrl;
 import com.crossoverjie.cim.common.enums.StatusEnum;
 import com.crossoverjie.cim.common.res.BaseResponse;
 import com.crossoverjie.cim.server.api.ServerApi;
-import com.crossoverjie.cim.server.api.vo.req.OfflineMsgReqVO;
-import com.crossoverjie.cim.server.api.vo.req.SaveOfflineMsgReqVO;
 import com.crossoverjie.cim.server.api.vo.req.SendMsgReqVO;
-import com.crossoverjie.cim.server.api.vo.res.OfflineMsgResVO;
 import com.crossoverjie.cim.server.api.vo.res.SendMsgResVO;
 import com.crossoverjie.cim.server.server.CIMServer;
 import io.swagger.v3.oas.annotations.Operation;
@@ -55,29 +52,5 @@ public class IndexController implements ServerApi {
         res.setDataBody(sendMsgResVO) ;
         return res ;
     }
-
-//    @Override
-//    @Operation(summary = "Push offline msgs to client")
-//    @RequestMapping(value = "sendOfflineMsgs",method = RequestMethod.POST)
-//    @ResponseBody
-//    public BaseResponse<OfflineMsgResVO> sendOfflineMsgs(@RequestBody OfflineMsgReqVO offlineMsgReqVO, @DynamicUrl String url){
-//        BaseResponse<OfflineMsgResVO> res = new BaseResponse();
-//        cimServer.sendOfflineMsgs(offlineMsgReqVO.getReceiveUserId()) ;
-//
-//        OfflineMsgResVO offlineMsgResVO = new OfflineMsgResVO() ;
-//        offlineMsgResVO.setMsg("OK") ;
-//        res.setCode(StatusEnum.SUCCESS.getCode()) ;
-//        res.setMessage(StatusEnum.SUCCESS.getMessage()) ;
-//        res.setDataBody(offlineMsgResVO) ;
-//        return res ;
-//    }
-
-//    @Override
-//    @Operation(summary = "save offline msgs")
-//    @RequestMapping(value = "saveOfflineMsg",method = RequestMethod.POST)
-//    @ResponseBody
-//    public void saveOfflineMsg(@RequestBody SaveOfflineMsgReqVO vo, @DynamicUrl String url) {
-//        cimServer.saveOfflineMsg(vo);
-//    }
 
 }

@@ -12,14 +12,12 @@ import com.crossoverjie.cim.common.res.NULLBody;
 import com.crossoverjie.cim.common.route.algorithm.RouteHandle;
 import com.crossoverjie.cim.common.util.RouteInfoParseUtil;
 import com.crossoverjie.cim.route.api.RouteApi;
-import com.crossoverjie.cim.route.api.vo.req.ChatReqVO;
-import com.crossoverjie.cim.route.api.vo.req.LoginReqVO;
-import com.crossoverjie.cim.route.api.vo.req.P2PReqVO;
-import com.crossoverjie.cim.route.api.vo.req.RegisterInfoReqVO;
+import com.crossoverjie.cim.route.api.vo.req.*;
 import com.crossoverjie.cim.route.api.vo.res.CIMServerResVO;
 import com.crossoverjie.cim.route.api.vo.res.RegisterInfoResVO;
 import com.crossoverjie.cim.route.service.AccountService;
 import com.crossoverjie.cim.route.service.CommonBizService;
+import com.crossoverjie.cim.route.service.OfflineMsgPushService;
 import com.crossoverjie.cim.route.service.UserInfoCacheService;
 import com.crossoverjie.cim.server.api.ServerApi;
 import io.swagger.v3.oas.annotations.Operation;
@@ -67,6 +65,9 @@ public class RouteController implements RouteApi {
 
     @Resource
     private ServerApi serverApi;
+
+    @Resource
+    private OfflineMsgPushService offlineMsgPushService;
 
 
     @Operation(summary = "群聊 API")
@@ -118,7 +119,7 @@ public class RouteController implements RouteApi {
             //获取接收消息用户的路由信息
             Optional<CIMServerResVO> cimServerResVO = accountService.loadRouteRelatedByUserId(p2pRequest.getReceiveUserId());
             if (cimServerResVO.isEmpty()) {
-                // todo save offline msg
+                offlineMsgPushService.saveOfflineMsg(p2pRequest);
                 throw new CIMException(OFF_LINE);
             }
 
@@ -245,9 +246,11 @@ public class RouteController implements RouteApi {
 
         try {
             //获取接收消息用户的路由信息
-            CIMServerResVO cimServerResVO = accountService.loadRouteRelatedByUserId(offlineMsgReqVO.getReceiveUserId());
+            Optional<CIMServerResVO> cimServerResVO = accountService.loadRouteRelatedByUserId(offlineMsgReqVO.getReceiveUserId());
 
-            accountService.sendOfflineMsgs(cimServerResVO, offlineMsgReqVO.getReceiveUserId());
+            cimServerResVO.ifPresent(cimServerRes -> {
+                offlineMsgPushService.fetchOfflineMsgs(cimServerRes, offlineMsgReqVO.getReceiveUserId());
+            });
 
             res.setCode(StatusEnum.SUCCESS.getCode());
             res.setMessage(StatusEnum.SUCCESS.getMessage());
