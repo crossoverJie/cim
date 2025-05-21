@@ -12,7 +12,10 @@ import com.crossoverjie.cim.common.res.NULLBody;
 import com.crossoverjie.cim.common.route.algorithm.RouteHandle;
 import com.crossoverjie.cim.common.util.RouteInfoParseUtil;
 import com.crossoverjie.cim.route.api.RouteApi;
-import com.crossoverjie.cim.route.api.vo.req.*;
+import com.crossoverjie.cim.route.api.vo.req.ChatReqVO;
+import com.crossoverjie.cim.route.api.vo.req.LoginReqVO;
+import com.crossoverjie.cim.route.api.vo.req.P2PReqVO;
+import com.crossoverjie.cim.route.api.vo.req.RegisterInfoReqVO;
 import com.crossoverjie.cim.route.api.vo.res.CIMServerResVO;
 import com.crossoverjie.cim.route.api.vo.res.RegisterInfoResVO;
 import com.crossoverjie.cim.route.service.AccountService;
@@ -21,12 +24,10 @@ import com.crossoverjie.cim.route.service.UserInfoCacheService;
 import com.crossoverjie.cim.server.api.ServerApi;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.annotation.Resource;
-
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -89,7 +90,7 @@ public class RouteController implements RouteApi {
             }
 
             // Push message
-            ChatReqVO chatVO = new ChatReqVO(userId, groupReqVO.getMsg(), BaseCommand.MESSAGE);
+            ChatReqVO chatVO = new ChatReqVO(userId, groupReqVO.getMsg(), null);
             accountService.pushMsg(cimServerResVO, groupReqVO.getUserId(), chatVO);
 
         }
@@ -114,13 +115,16 @@ public class RouteController implements RouteApi {
         BaseResponse<NULLBody> res = new BaseResponse();
 
         try {
-
             //获取接收消息用户的路由信息
-            CIMServerResVO cimServerResVO = accountService.loadRouteRelatedByUserId(p2pRequest.getReceiveUserId());
+            Optional<CIMServerResVO> cimServerResVO = accountService.loadRouteRelatedByUserId(p2pRequest.getReceiveUserId());
+            if (cimServerResVO.isEmpty()) {
+                // todo save offline msg
+                throw new CIMException(OFF_LINE);
+            }
 
             //p2pRequest.getReceiveUserId()==>消息接收者的 userID
-            ChatReqVO chatVO = new ChatReqVO(p2pRequest.getReceiveUserId(), p2pRequest.getMsg(), BaseCommand.MESSAGE);
-            accountService.pushMsg(cimServerResVO, p2pRequest.getUserId(), chatVO);
+            ChatReqVO chatVO = new ChatReqVO(p2pRequest.getReceiveUserId(), p2pRequest.getMsg(), p2pRequest.getBatchMsg());
+            accountService.pushMsg(cimServerResVO.get(), p2pRequest.getUserId(), chatVO);
 
             res.setCode(StatusEnum.SUCCESS.getCode());
             res.setMessage(StatusEnum.SUCCESS.getMessage());
@@ -137,14 +141,14 @@ public class RouteController implements RouteApi {
     @RequestMapping(value = "offLine", method = RequestMethod.POST)
     @ResponseBody()
     @Override
-    public BaseResponse<NULLBody> offLine(@RequestBody ChatReqVO groupReqVO) {
+    public BaseResponse<NULLBody> offLine(@RequestBody ChatReqVO chatReqVO) {
         BaseResponse<NULLBody> res = new BaseResponse();
 
-        Optional<CIMUserInfo> cimUserInfo = userInfoCacheService.loadUserInfoByUserId(groupReqVO.getUserId());
+        Optional<CIMUserInfo> cimUserInfo = userInfoCacheService.loadUserInfoByUserId(chatReqVO.getUserId());
 
         cimUserInfo.ifPresent(userInfo -> {
-            log.info("user [{}] offline!", userInfo.toString());
-            accountService.offLine(groupReqVO.getUserId());
+            log.info("user [{}] offline!", userInfo);
+            accountService.offLine(chatReqVO.getUserId());
         });
 
         res.setCode(StatusEnum.SUCCESS.getCode());

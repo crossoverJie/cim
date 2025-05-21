@@ -1,6 +1,5 @@
 package com.crossoverjie.cim.route.api.vo.req;
 
-import com.crossoverjie.cim.common.protocol.BaseCommand;
 import com.crossoverjie.cim.common.req.BaseRequest;
 
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -9,6 +8,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+
+import java.util.List;
 
 /**
  * Function: Google Protocol 编解码发送
@@ -32,13 +33,8 @@ public class ChatReqVO extends BaseRequest {
     @Schema(requiredMode = Schema.RequiredMode.REQUIRED, description = "msg", example = "hello")
     private String msg ;
 
-    @Schema(requiredMode = Schema.RequiredMode.REQUIRED, description = "cmd", example = "11")
-    private BaseCommand cmd;
+    private List<String> batchMsg;
 
-    public ChatReqVO(Long userId, String msg) {
-        this.userId = userId;
-        this.msg = msg;
-    }
 
     @Override
     public String toString() {

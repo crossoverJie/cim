@@ -72,7 +72,7 @@ public class RouteManager {
     }
 
     public void offLine(Long userId) {
-        ChatReqVO vo = new ChatReqVO(userId, "offLine");
+        ChatReqVO vo = new ChatReqVO(userId, "offLine", null);
         routeApi.offLine(vo);
     }
 

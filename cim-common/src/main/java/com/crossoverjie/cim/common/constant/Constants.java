@@ -22,10 +22,10 @@ public class Constants {
     public static final String COUNTER_CLIENT_PUSH_COUNT = "counter.client.push.count" ;
 
     public static class MetaKey {
-        public static final String USER_ID = "userId" ;
-        public static final String USER_NAME = "userName" ;
         public static final String SEND_USER_ID = "sendUserId" ;
         public static final String SEND_USER_NAME = "sendUserName" ;
+        public static final String RECEIVE_USER_ID = "receiveUserId" ;
+        public static final String RECEIVE_USER_NAME = "receiveUserName" ;
     }
 
     //从数据库读取离线消息的每次获取量

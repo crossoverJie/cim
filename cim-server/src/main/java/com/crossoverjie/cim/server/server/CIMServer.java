@@ -1,5 +1,6 @@
 package com.crossoverjie.cim.server.server;
 
+import com.crossoverjie.cim.common.protocol.BaseCommand;
 import com.crossoverjie.cim.common.protocol.Request;
 import com.crossoverjie.cim.server.api.vo.req.SendMsgReqVO;
 import com.crossoverjie.cim.server.init.CIMServerInitializer;
@@ -14,12 +15,8 @@ import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
-
 import java.net.InetSocketAddress;
-
-import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -27,7 +24,7 @@ import org.springframework.stereotype.Component;
  * Function:
  *
  * @author crossoverJie
- * Date: 21/05/2018 00:30
+ *         Date: 21/05/2018 00:30
  * @since JDK 1.8
  */
 @Component
@@ -41,6 +38,7 @@ public class CIMServer {
 
     @Value("${cim.server.port}")
     private int nettyPort;
+
 
     /**
      * 启动 cim server
@@ -79,8 +77,7 @@ public class CIMServer {
 
     /**
      * Push msg to client.
-     *
-     * @param sendMsgReqVO 消息
+     * @param sendMsgReqVO message body
      */
     public void sendMsg(SendMsgReqVO sendMsgReqVO) {
         NioSocketChannel socketChannel = SessionSocketHolder.get(sendMsgReqVO.getUserId());
@@ -89,15 +86,23 @@ public class CIMServer {
             log.error("client {} offline!", sendMsgReqVO.getUserId());
             return;
         }
-        Request protocol = Request.newBuilder()
+
+        Request.Builder requestBuilder = Request.newBuilder()
                 .setRequestId(sendMsgReqVO.getUserId())
-                .setReqMsg(sendMsgReqVO.getMsg())
                 .putAllProperties(sendMsgReqVO.getProperties())
-                .setCmd(sendMsgReqVO.getCmd())
-                .build();
+                .setCmd(BaseCommand.MESSAGE);
+
+        boolean isBatch = sendMsgReqVO.getBatchMsg() != null && sendMsgReqVO.getBatchMsg().size() > 0;
+        if (isBatch) {
+            requestBuilder.addAllBatchReqMsg(sendMsgReqVO.getBatchMsg());
+        } else {
+            requestBuilder.setReqMsg(sendMsgReqVO.getMsg());
+        }
+
+        Request protocol = requestBuilder.build();
 
         ChannelFuture future = socketChannel.writeAndFlush(protocol);
         future.addListener((ChannelFutureListener) channelFuture ->
-                log.info("server push msg:[{}]", sendMsgReqVO.toString()));
+                log.info("server push {} msg:[{}], socketChannel:{}", isBatch ? "batch" : "single", sendMsgReqVO, socketChannel));
     }
 }
