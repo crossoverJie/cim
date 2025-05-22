@@ -24,6 +24,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.crossoverjie.cim.common.constant.Constants.OFFLINE_MSG_DELIVERED;
+import static com.crossoverjie.cim.common.constant.Constants.OFFLINE_MSG_PENDING;
 
 /**
  * @author zhongcanyu
@@ -88,6 +89,8 @@ public class OfflineMsgBufferServiceImpl implements OfflineMsgBufferService {
                 offlineMsgs.add(msg);
             }
         }
+
+        offlineMsgs=offlineMsgs.stream().filter(msg -> msg.getStatus() == OFFLINE_MSG_PENDING).collect(Collectors.toList());
         return offlineMsgs;
     }
 
