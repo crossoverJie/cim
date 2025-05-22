@@ -11,7 +11,7 @@
                                  created_at,
                                  properties)
         VALUES (#{messageId},
-                #{userId},
+                #{receiveUserId},
                 #{content},
                 #{messageType},
                 #{status},
