@@ -6,6 +6,6 @@ CREATE TABLE offline_msg (
                              message_type INT,
                              status TINYINT,  -- 0: Pending, 1: Acked
                              created_at DATETIME,
-                             properties VARCHAR(2000),  -- 使用 JSON 格式存储 Map
+                             properties VARCHAR(2000),
                              INDEX idx_receive_user_id (receive_user_id)
 );
