@@ -42,13 +42,11 @@ public class RedisLockAspect {
         Method method = sig.getMethod();
         RedisLock ann = method.getAnnotation(RedisLock.class);
 
-        // 1) 解析 key 的 SpEL
         EvaluationContext ctx = new MethodBasedEvaluationContext(
                 pjp.getThis(), method, pjp.getArgs(), nameDiscoverer);
         String lockKey = parser.parseExpression(ann.key())
                 .getValue(ctx, String.class);
 
-        // 2) 获取 Redisson 锁
         RLock lock = redisson.getLock(lockKey);
 
         boolean acquired = lock.tryLock(ann.waitTime(), ann.leaseTime(), TimeUnit.SECONDS);
@@ -58,10 +56,8 @@ public class RedisLockAspect {
 
         try {
             log.info("method: {} - lock acquired, key: {}", method.getName(), lockKey);
-            // 3) 执行业务方法
             return pjp.proceed();
         } finally {
-            // 4) 释放锁
             lock.unlock();
             log.info("method: {} - lock released, key: {}", method.getName(), lockKey);
         }

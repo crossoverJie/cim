@@ -24,7 +24,6 @@ public class CIMClientHandleInitializer extends ChannelInitializer<Channel> {
                 // google Protobuf
                 .addLast(new ProtobufVarint32FrameDecoder())
                 .addLast(new ProtobufDecoder(Response.getDefaultInstance()))
-                //处理只打印出4条日志的问题
                 .addLast(new ProtobufVarint32LengthFieldPrepender())
                 .addLast(new ProtobufEncoder())
                 .addLast(cimClientHandle)
