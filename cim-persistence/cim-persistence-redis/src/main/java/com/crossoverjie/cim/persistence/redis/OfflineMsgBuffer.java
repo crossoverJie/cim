@@ -65,7 +65,7 @@ public class OfflineMsgBuffer implements OfflineMsgStore {
         List<OfflineMsg> msgsFromDb = new ArrayList<>();
 
         try {
-            msgsFromBuffer = buffer.getOfflineMsgs(userId);
+            msgsFromBuffer = buffer.getOfflineMsgs(userId, false);
         } catch (Exception e) {
             log.error("get offline msg in the redis error", e);
             bufferAvailable = false;

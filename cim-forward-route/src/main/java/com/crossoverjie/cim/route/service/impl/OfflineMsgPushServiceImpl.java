@@ -22,6 +22,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+
 @Slf4j
 @Service
 public class OfflineMsgPushServiceImpl implements OfflineMsgPushService {
@@ -58,7 +59,7 @@ public class OfflineMsgPushServiceImpl implements OfflineMsgPushService {
                 .properties(offlineMsgs.get(0).getProperties())
                 .build();
 
-        serverApi.sendMsg(msgReqVO,url);
+        serverApi.sendMsg(msgReqVO, url);
 
         //todo How to ensure that the message will definitely arrive
         offlineMsgStore.markDelivered(receiveUserId, offlineMsgs.stream().map(OfflineMsg::getMessageId).toList());

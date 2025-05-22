@@ -8,6 +8,11 @@ import com.crossoverjie.cim.route.api.vo.res.CIMServerResVO;
  */
 public interface OfflineMsgPushService {
 
+    /**
+     * fetch offline messages
+     * @param cimServerResVO
+     * @param receiveUserId
+     */
     void fetchOfflineMsgs(CIMServerResVO cimServerResVO, Long receiveUserId);
 
     /**

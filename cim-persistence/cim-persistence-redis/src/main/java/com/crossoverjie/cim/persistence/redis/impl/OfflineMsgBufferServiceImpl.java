@@ -71,7 +71,7 @@ public class OfflineMsgBufferServiceImpl implements OfflineMsgBufferService {
     }
 
     @Override
-    public List<OfflineMsg> getOfflineMsgs(Long userId) {
+    public List<OfflineMsg> getOfflineMsgs(Long userId, boolean includeAcked) {
         String idxKey = USER_IDX + userId;
         List<String> ids = redis.opsForList().range(idxKey, 0, -1)
                 .stream()
@@ -90,7 +90,9 @@ public class OfflineMsgBufferServiceImpl implements OfflineMsgBufferService {
             }
         }
 
-        offlineMsgs=offlineMsgs.stream().filter(msg -> msg.getStatus() == OFFLINE_MSG_PENDING).collect(Collectors.toList());
+        if (!includeAcked) {
+            offlineMsgs = offlineMsgs.stream().filter(msg -> msg.getStatus() == OFFLINE_MSG_PENDING).collect(Collectors.toList());
+        }
         return offlineMsgs;
     }
 
@@ -98,7 +100,7 @@ public class OfflineMsgBufferServiceImpl implements OfflineMsgBufferService {
     @Override
     @RedisLock(key = "T(java.lang.String).format('lock:offlineMsg:%s', #userId)", waitTime = 5, leaseTime = 30)
     public void migrateOfflineMsgToDb(Long userId) {
-        List<OfflineMsg> offlineMsgs = getOfflineMsgs(userId);
+        List<OfflineMsg> offlineMsgs = getOfflineMsgs(userId, true);
 
         if (CollectionUtils.isEmpty(offlineMsgs)) {
             return;
