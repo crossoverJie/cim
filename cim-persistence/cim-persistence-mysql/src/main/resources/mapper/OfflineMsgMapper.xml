@@ -32,7 +32,7 @@
         <foreach collection="offlineMsgs" item="item" separator=",">
             (
             #{item.messageId},
-            #{item.userId},
+            #{item.receiveUserId},
             #{item.content},
             #{item.messageType},
             #{item.status},
