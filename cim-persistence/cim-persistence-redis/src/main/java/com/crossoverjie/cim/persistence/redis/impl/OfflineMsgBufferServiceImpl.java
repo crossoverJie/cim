@@ -67,7 +67,9 @@ public class OfflineMsgBufferServiceImpl implements OfflineMsgBufferService {
     @Override
     public void markDelivered(Long messageId) {
         String key = MSG_KEY + messageId;
-        redis.opsForHash().put(key, "status", OFFLINE_MSG_DELIVERED);
+        if (Boolean.TRUE.equals(redis.hasKey(key))) {
+            redis.opsForHash().put(key, "status", OFFLINE_MSG_DELIVERED);
+        }
     }
 
     @Override
