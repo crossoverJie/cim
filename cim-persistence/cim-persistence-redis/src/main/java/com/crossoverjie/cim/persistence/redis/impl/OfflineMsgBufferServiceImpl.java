@@ -112,14 +112,14 @@ public class OfflineMsgBufferServiceImpl implements OfflineMsgBufferService {
         offlineMsgs.removeIf(msg -> dbIds.contains(msg.getMessageId()));
         if (CollectionUtils.isEmpty(offlineMsgs)) {
             log.info("no offline msg to migrate");
-            clearOfflineMsg(userId, offlineMsgs);
+            cleanOfflineMsgs(userId, offlineMsgs);
             return;
         }
         offlineMsgService.insertBatch(offlineMsgs);
-        clearOfflineMsg(userId, offlineMsgs);
+        cleanOfflineMsgs(userId, offlineMsgs);
     }
 
-    public void clearOfflineMsg(Long userId, List<OfflineMsg> offlineMsgs) {
+    public void cleanOfflineMsgs(Long userId, List<OfflineMsg> offlineMsgs) {
         offlineMsgs.forEach(msg -> deleteOfflineMsgFromBuffer(msg.getMessageId()));
         redis.delete(USER_IDX + userId);
     }
