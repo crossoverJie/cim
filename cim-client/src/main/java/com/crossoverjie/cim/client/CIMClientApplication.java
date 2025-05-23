@@ -16,7 +16,6 @@ public class CIMClientApplication implements CommandLineRunner{
 
 	public static void main(String[] args) {
         SpringApplication.run(CIMClientApplication.class, args);
-		log.info("this log for create a PR to test CI");
 		log.info("Client start success");
 	}
 
