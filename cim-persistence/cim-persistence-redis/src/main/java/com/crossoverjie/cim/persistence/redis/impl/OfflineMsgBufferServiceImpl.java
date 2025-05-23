@@ -93,7 +93,7 @@ public class OfflineMsgBufferServiceImpl implements OfflineMsgBufferService {
         }
 
         if (!includeAcked) {
-            offlineMsgs = offlineMsgs.stream().filter(msg -> msg.getStatus() == OFFLINE_MSG_PENDING).collect(Collectors.toList());
+            offlineMsgs = offlineMsgs.stream().filter(msg -> OFFLINE_MSG_PENDING.equals(msg.getStatus())).collect(Collectors.toList());
         }
         return offlineMsgs;
     }
@@ -120,7 +120,7 @@ public class OfflineMsgBufferServiceImpl implements OfflineMsgBufferService {
     }
 
     public void clearOfflineMsg(Long userId, List<OfflineMsg> offlineMsgs) {
-        offlineMsgs.stream().forEach(msg -> deleteOfflineMsgFromBuffer(msg.getMessageId()));
+        offlineMsgs.forEach(msg -> deleteOfflineMsgFromBuffer(msg.getMessageId()));
         redis.delete(USER_IDX + userId);
     }
 
