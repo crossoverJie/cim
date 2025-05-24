@@ -19,6 +19,11 @@
 
 
     <dependencies>
+        <dependency>
+            <groupId>org.redisson</groupId>
+            <artifactId>redisson-spring-boot-starter</artifactId>
+            <version>3.22.0</version>
+        </dependency>
 
         <dependency>
             <groupId>com.google.protobuf</groupId>
@@ -87,6 +92,5 @@
         </dependency>
 
     </dependencies>
-
 
 </project>

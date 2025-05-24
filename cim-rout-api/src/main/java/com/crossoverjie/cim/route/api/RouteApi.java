@@ -4,12 +4,10 @@ import com.crossoverjie.cim.common.core.proxy.Request;
 import com.crossoverjie.cim.common.pojo.CIMUserInfo;
 import com.crossoverjie.cim.common.res.BaseResponse;
 import com.crossoverjie.cim.common.res.NULLBody;
-import com.crossoverjie.cim.route.api.vo.req.ChatReqVO;
-import com.crossoverjie.cim.route.api.vo.req.LoginReqVO;
-import com.crossoverjie.cim.route.api.vo.req.P2PReqVO;
-import com.crossoverjie.cim.route.api.vo.req.RegisterInfoReqVO;
+import com.crossoverjie.cim.route.api.vo.req.*;
 import com.crossoverjie.cim.route.api.vo.res.CIMServerResVO;
 import com.crossoverjie.cim.route.api.vo.res.RegisterInfoResVO;
+
 import java.util.Set;
 
 /**
@@ -74,5 +72,7 @@ public interface RouteApi {
     @Request(method = Request.GET)
     BaseResponse<Set<CIMUserInfo>> onlineUser() throws Exception;
 
+
+    BaseResponse<NULLBody> fetchOfflineMsgs(OfflineMsgReqVO offlineMsgReqVO);
     // TODO: 2024/8/19  Get cache server & metastore server
 }

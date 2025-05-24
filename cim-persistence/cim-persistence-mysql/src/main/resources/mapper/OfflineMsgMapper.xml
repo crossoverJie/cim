@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.crossoverjie.cim.persistence.mysql.offlinemsg.mapper.OfflineMsgMapper">
+
+    <insert id="insert" parameterType="com.crossoverjie.cim.persistence.api.pojo.OfflineMsg">
+        INSERT INTO offline_msg (message_id,
+                                 receive_user_id,
+                                 content,
+                                 message_type,
+                                 status,
+                                 created_at,
+                                 properties)
+        VALUES (#{messageId},
+                #{receiveUserId},
+                #{content},
+                #{messageType},
+                #{status},
+                #{createdAt},
+                #{properties, typeHandler=com.crossoverjie.cim.persistence.mysql.util.MapToJsonTypeHandler})
+    </insert>
+
+    <insert id="insertBatch" parameterType="java.util.List">
+        INSERT INTO offline_msg (
+        message_id,
+        receive_user_id,
+        content,
+        message_type,
+        status,
+        created_at,
+        properties
+        ) VALUES
+        <foreach collection="offlineMsgs" item="item" separator=",">
+            (
+            #{item.messageId},
+            #{item.receiveUserId},
+            #{item.content},
+            #{item.messageType},
+            #{item.status},
+            #{item.createdAt},
+            #{item.properties, typeHandler=com.crossoverjie.cim.persistence.mysql.util.MapToJsonTypeHandler}
+            )
+        </foreach>
+    </insert>
+
+    <select id="fetchOfflineMsgsWithCursor" resultType="com.crossoverjie.cim.persistence.api.pojo.OfflineMsg">
+        SELECT
+        message_id,
+        receive_user_id,
+        content,
+        message_type,
+        status,
+        created_at,
+        properties
+        FROM offline_msg
+        WHERE receive_user_id = #{receiveUserId}
+        AND message_id &gt; COALESCE((select last_message_id from offline_msg_last_send_record where receive_user_id = #{receiveUserId}),0)
+        ORDER BY message_id ASC
+        LIMIT #{limit}
+    </select>
+
+    <select id="fetchOfflineMsgIdsWithCursor" resultType="java.lang.Long" parameterType="java.lang.Long">
+        SELECT
+        message_id
+        FROM offline_msg
+        WHERE receive_user_id = #{receiveUserId}
+        AND message_id &gt; (select last_message_id from offline_msg_last_send_record where receive_user_id = #{receiveUserId})
+        ORDER BY message_id ASC
+    </select>
+
+    <update id="updateStatus" parameterType="map">
+        UPDATE offline_msg
+        SET status = 1
+        WHERE receive_user_id = #{receiveUserId}
+        <if test="messageIds != null and !messageIds.isEmpty()">
+            AND message_id IN
+            <foreach item="id" collection="messageIds" open="(" separator="," close=")">
+                #{id}
+            </foreach>
+        </if>
+    </update>
+</mapper>
+

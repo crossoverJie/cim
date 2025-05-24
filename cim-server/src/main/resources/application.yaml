@@ -15,7 +15,7 @@ springdoc:
 logging:
   level:
     root: info
-  
+
 # enable zk
 app:
   zk:
@@ -32,3 +32,5 @@ cim:
     url: http://localhost:8083/ # route url suggested that this is Nginx address
   heartbeat:
     time: 30 # cim heartbeat time(seconds)
+
+

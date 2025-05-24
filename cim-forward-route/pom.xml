@@ -25,6 +25,29 @@
 
         <dependency>
             <groupId>com.crossoverjie.netty</groupId>
+            <artifactId>cim-persistence-api</artifactId>
+            <version>1.0.0-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.crossoverjie.netty</groupId>
+            <artifactId>cim-persistence-mysql</artifactId>
+            <version>1.0.0-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.crossoverjie.netty</groupId>
+            <artifactId>cim-persistence-redis</artifactId>
+            <version>1.0.0-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-aop</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.crossoverjie.netty</groupId>
             <artifactId>cim-common</artifactId>
         </dependency>
 
@@ -74,6 +97,13 @@
         <dependency>
             <groupId>com.redis</groupId>
             <artifactId>testcontainers-redis</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.testcontainers</groupId>
+            <artifactId>mysql</artifactId>
+            <version>1.19.7</version>
             <scope>test</scope>
         </dependency>
 

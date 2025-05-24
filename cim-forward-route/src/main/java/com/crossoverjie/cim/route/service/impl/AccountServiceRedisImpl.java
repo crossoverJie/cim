@@ -2,9 +2,9 @@ package com.crossoverjie.cim.route.service.impl;
 
 import com.crossoverjie.cim.common.constant.Constants;
 import com.crossoverjie.cim.common.enums.StatusEnum;
-import com.crossoverjie.cim.common.exception.CIMException;
 import com.crossoverjie.cim.common.pojo.CIMUserInfo;
 import com.crossoverjie.cim.common.pojo.RouteInfo;
+import com.crossoverjie.cim.common.protocol.BaseCommand;
 import com.crossoverjie.cim.common.util.RouteInfoParseUtil;
 import com.crossoverjie.cim.route.api.vo.req.ChatReqVO;
 import com.crossoverjie.cim.route.api.vo.req.LoginReqVO;
@@ -26,12 +26,8 @@ import org.springframework.scripting.support.ResourceScriptSource;
 import org.springframework.stereotype.Service;
 
 import java.nio.charset.StandardCharsets;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
-import static com.crossoverjie.cim.common.enums.StatusEnum.OFF_LINE;
 import static com.crossoverjie.cim.route.constant.Constant.*;
 
 /**
@@ -156,7 +152,7 @@ public class AccountServiceRedisImpl implements AccountService {
         cimUserInfo.ifPresent(sendUserInfo -> {
             String url = "http://" + cimServerResVO.getIp() + ":" + cimServerResVO.getHttpPort();
             SendMsgReqVO vo =
-                    new SendMsgReqVO(chatReqVO.getMsg(), chatReqVO.getUserId(), chatReqVO.getBatchMsg());
+                    new SendMsgReqVO(chatReqVO.getMsg(), chatReqVO.getUserId(), chatReqVO.getBatchMsg(), BaseCommand.MESSAGE);
             vo.setProperties(Map.of(
                     Constants.MetaKey.SEND_USER_ID, String.valueOf(sendUserId),
                     Constants.MetaKey.SEND_USER_NAME, sendUserInfo.getUserName(),

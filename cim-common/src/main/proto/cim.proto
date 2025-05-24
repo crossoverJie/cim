@@ -23,4 +23,5 @@ enum BaseCommand{
   LOGIN_REQUEST = 0;
   MESSAGE = 1;
   PING = 2;
+  OFFLINE = 3;
 }

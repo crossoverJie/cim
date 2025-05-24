@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.crossoverjie.cim.persistence.mysql.offlinemsg.mapper.OfflineMsgLastSendRecordMapper">
+
+    <insert id="saveLatestMessageId">
+        INSERT INTO offline_msg_last_send_record
+            (receive_user_id, last_message_id, updated_at)
+        VALUES
+            (#{receiveUserId}, #{lastMessageId}, NOW())
+            ON DUPLICATE KEY UPDATE
+                                 last_message_id = #{lastMessageId},
+                                 updated_at = NOW()
+    </insert>
+
+    <!-- 查询用户的最新消息ID -->
+    <select id="getLatestMessageId" resultType="java.lang.String">
+        SELECT last_message_id
+        FROM offline_msg_last_send_record
+        WHERE receive_user_id = #{receiveUserId}
+    </select>
+</mapper>
+

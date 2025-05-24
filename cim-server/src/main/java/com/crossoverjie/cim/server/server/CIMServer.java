@@ -90,7 +90,7 @@ public class CIMServer {
         Request.Builder requestBuilder = Request.newBuilder()
                 .setRequestId(sendMsgReqVO.getUserId())
                 .putAllProperties(sendMsgReqVO.getProperties())
-                .setCmd(BaseCommand.MESSAGE);
+                .setCmd(sendMsgReqVO.getCmd());
 
         boolean isBatch = sendMsgReqVO.getBatchMsg() != null && sendMsgReqVO.getBatchMsg().size() > 0;
         if (isBatch) {

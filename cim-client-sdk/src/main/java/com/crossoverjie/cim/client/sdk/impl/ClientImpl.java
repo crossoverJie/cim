@@ -1,11 +1,10 @@
 package com.crossoverjie.cim.client.sdk.impl;
 
 import static com.crossoverjie.cim.common.enums.StatusEnum.RECONNECT_FAIL;
-import com.crossoverjie.cim.client.sdk.Client;
-import com.crossoverjie.cim.client.sdk.ClientState;
-import com.crossoverjie.cim.client.sdk.ReConnectManager;
-import com.crossoverjie.cim.client.sdk.RouteManager;
+
+import com.crossoverjie.cim.client.sdk.*;
 import com.crossoverjie.cim.client.sdk.io.CIMClientHandleInitializer;
+import com.crossoverjie.cim.common.data.construct.RingBufferWheel;
 import com.crossoverjie.cim.common.exception.CIMException;
 import com.crossoverjie.cim.common.kit.HeartBeatHandler;
 import com.crossoverjie.cim.common.pojo.CIMUserInfo;
@@ -28,13 +27,7 @@ import io.netty.util.concurrent.DefaultThreadFactory;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.ThreadFactory;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 import java.util.function.Consumer;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
@@ -93,6 +86,16 @@ public class ClientImpl extends ClientState implements Client {
         clientMap.put(conf.getAuth().getUserId(), this);
 
         connectServer(v -> this.conf.getEvent().info("Login success!"));
+
+        postConnectionSetup();
+    }
+
+    /**
+     * 1. Pull offline messages from the server
+     */
+    private void postConnectionSetup() {
+        new RingBufferWheel(Executors.newFixedThreadPool(1))
+                .addTask(new FetchOfflineMsgJob(routeManager, conf));
     }
 
     private void connectServer(Consumer<Void> success) {

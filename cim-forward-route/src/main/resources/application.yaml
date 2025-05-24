@@ -11,6 +11,14 @@ spring:
           max-idle: 100
           max-wait: 1000
           min-idle: 10
+
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/cim-test?useUnicode=true&characterEncoding=utf8&serverTimezone=GMT%2B8
+    username: root
+    password: ${DB_PASSWORD}
+
+
 # web port
 server:
   port: 8083
@@ -46,4 +54,16 @@ app:
 
       consitenthash: com.crossoverjie.cim.common.route.algorithm.consistenthash.TreeMapConsistentHash
 
+mybatis:
+  configuration:
+    map-underscore-to-camel-case: true # 自动驼峰转换
+  type-aliases-package: com.crossoverjie.cim.persistence.api.pojo # 实体类包路径
+  mapper-locations: classpath*:mapper/**/*.xml
+  global-config:
+    db-config:
+      id-type: auto
+
+offline:
+  store:
+    mode: bufferingDB
 
