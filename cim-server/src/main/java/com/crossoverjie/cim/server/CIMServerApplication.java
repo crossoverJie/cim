@@ -19,7 +19,6 @@ import java.net.InetAddress;
  * @author crossoverJie
  */
 @EnableScheduling
-//
 @SpringBootApplication(exclude = {
 		DataSourceAutoConfiguration.class,
 		RedissonAutoConfiguration.class

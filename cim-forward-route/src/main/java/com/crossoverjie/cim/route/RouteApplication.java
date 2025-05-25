@@ -15,7 +15,10 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @SpringBootApplication
 @EnableScheduling
 @MapperScan("com.crossoverjie.cim.persistence.mysql.offlinemsg.mapper")
-@ComponentScan("com.crossoverjie.cim")
+@ComponentScan(basePackages = {
+		"com.crossoverjie.cim.route",
+		"com.crossoverjie.cim.persistence"
+})
 public class RouteApplication implements CommandLineRunner{
 
 	public static void main(String[] args) {
