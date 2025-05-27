@@ -77,7 +77,7 @@ public class OfflineMsgPushServiceImpl implements OfflineMsgPushService {
         cimUserInfo.ifPresent(userInfo -> {
             SaveOfflineMsgReqVO saveOfflineMsgReqVO = SaveOfflineMsgReqVO.builder()
                     .msg(p2pRequest.getMsg())
-                    .receive_user_id(p2pRequest.getReceiveUserId())
+                    .receiveUserId(p2pRequest.getReceiveUserId())
                     .properties(Map.of(
                             Constants.MetaKey.SEND_USER_ID, cimUserInfo.get().getUserId().toString(),
                             Constants.MetaKey.SEND_USER_NAME, cimUserInfo.get().getUserName(),

@@ -31,7 +31,7 @@ public class OfflineMsgFactory {
             Long msgId = idWorker.nextId();
             return OfflineMsg.builder()
                     .messageId(msgId)
-                    .receiveUserId(vo.getReceive_user_id())
+                    .receiveUserId(vo.getReceiveUserId())
                     .content(vo.getMsg())
                     .messageType(MSG_TYPE_TEXT)
                     .status(OFFLINE_MSG_PENDING)
