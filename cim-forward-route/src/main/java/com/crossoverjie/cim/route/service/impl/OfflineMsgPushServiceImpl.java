@@ -40,8 +40,6 @@ public class OfflineMsgPushServiceImpl implements OfflineMsgPushService {
     private ServerApi serverApi;
 
     @Override
-    @RedisLock(key = "T(java.lang.String).format('lock:offlineMsg:%s', #receiveUserId)",
-            waitTime = 5, leaseTime = 30)
     public void fetchOfflineMsgs(CIMServerResVO cimServerResVO, Long receiveUserId) {
 
         String url = "http://" + cimServerResVO.getIp() + ":" + cimServerResVO.getHttpPort();
@@ -61,7 +59,6 @@ public class OfflineMsgPushServiceImpl implements OfflineMsgPushService {
 
         serverApi.sendMsg(msgReqVO, url);
 
-        //todo How to ensure that the message will definitely arrive
         offlineMsgStore.markDelivered(receiveUserId, offlineMsgs.stream().map(OfflineMsg::getMessageId).toList());
 
     }
