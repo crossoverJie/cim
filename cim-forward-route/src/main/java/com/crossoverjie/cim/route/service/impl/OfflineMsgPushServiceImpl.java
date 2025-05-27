@@ -79,8 +79,8 @@ public class OfflineMsgPushServiceImpl implements OfflineMsgPushService {
                     .msg(p2pRequest.getMsg())
                     .receiveUserId(p2pRequest.getReceiveUserId())
                     .properties(Map.of(
-                            Constants.MetaKey.SEND_USER_ID, cimUserInfo.get().getUserId().toString(),
-                            Constants.MetaKey.SEND_USER_NAME, cimUserInfo.get().getUserName(),
+                            Constants.MetaKey.SEND_USER_ID, userInfo.getUserId().toString(),
+                            Constants.MetaKey.SEND_USER_NAME, userInfo.getUserName(),
                             Constants.MetaKey.RECEIVE_USER_ID, p2pRequest.getReceiveUserId().toString()
                     )).build();
             OfflineMsg offlineMsg = offlineMsgFactory.createFromVo(saveOfflineMsgReqVO);
