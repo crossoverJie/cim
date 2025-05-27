@@ -5,7 +5,6 @@ import com.crossoverjie.cim.common.exception.CIMException;
 import com.crossoverjie.cim.persistence.api.pojo.OfflineMsg;
 import com.crossoverjie.cim.persistence.api.util.SnowflakeIdWorker;
 import com.crossoverjie.cim.persistence.api.vo.req.SaveOfflineMsgReqVO;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -19,7 +18,7 @@ public class OfflineMsgFactory {
 
     private final SnowflakeIdWorker idWorker;
 
-    public OfflineMsgFactory(SnowflakeIdWorker idWorker, ObjectMapper objectMapper) {
+    public OfflineMsgFactory(SnowflakeIdWorker idWorker) {
         this.idWorker = idWorker;
     }
 
