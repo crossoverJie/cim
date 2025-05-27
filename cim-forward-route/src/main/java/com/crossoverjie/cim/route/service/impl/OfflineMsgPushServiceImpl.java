@@ -44,22 +44,25 @@ public class OfflineMsgPushServiceImpl implements OfflineMsgPushService {
 
         String url = "http://" + cimServerResVO.getIp() + ":" + cimServerResVO.getHttpPort();
 
-        List<OfflineMsg> offlineMsgs = offlineMsgStore.fetch(receiveUserId);
-        if (offlineMsgs.isEmpty()) {
-            return;
+        while (true) {
+            List<OfflineMsg> offlineMsgs = offlineMsgStore.fetch(receiveUserId);
+            if (offlineMsgs == null || offlineMsgs.isEmpty()) {
+                break;
+            }
+            offlineMsgs.sort(Comparator.comparing(OfflineMsg::getCreatedAt));
+
+            SendMsgReqVO msgReqVO = SendMsgReqVO
+                    .builder()
+                    .userId(receiveUserId)
+                    .cmd(BaseCommand.OFFLINE).batchMsg(offlineMsgs.stream().map(OfflineMsg::getContent).toList())
+                    .properties(offlineMsgs.get(0).getProperties())
+                    .build();
+
+            serverApi.sendMsg(msgReqVO, url);
+
+            offlineMsgStore.markDelivered(receiveUserId, offlineMsgs.stream().map(OfflineMsg::getMessageId).toList());
         }
-        offlineMsgs.sort(Comparator.comparing(OfflineMsg::getCreatedAt));
 
-        SendMsgReqVO msgReqVO = SendMsgReqVO
-                .builder()
-                .userId(receiveUserId)
-                .cmd(BaseCommand.OFFLINE).batchMsg(offlineMsgs.stream().map(OfflineMsg::getContent).toList())
-                .properties(offlineMsgs.get(0).getProperties())
-                .build();
-
-        serverApi.sendMsg(msgReqVO, url);
-
-        offlineMsgStore.markDelivered(receiveUserId, offlineMsgs.stream().map(OfflineMsg::getMessageId).toList());
 
     }
 
