@@ -20,7 +20,6 @@ import java.util.List;
  * @description
  */
 @Slf4j
-//@Service
 public class OfflineMsgBuffer implements OfflineMsgStore {
 
     private final OfflineMsgStore db;
@@ -31,11 +30,8 @@ public class OfflineMsgBuffer implements OfflineMsgStore {
         this.buffer = buffer;
     }
 
-    //todo restore mechanism? 数据库要是连接异常，那估计短时间内都连接不上？那重试机制还有必要嘛。不如等redis补偿
-
     @Override
     public void save(OfflineMsg offlineMsg) {
-        //todo 延迟下发风险：存储redis后，执行定时任务（将buffer的数据传到db）前，redis异常，那数据会延迟下发（等redis恢复再下发）。
         boolean bufferAvailable = true;
         try {
             buffer.saveOfflineMsgInBuffer(offlineMsg);

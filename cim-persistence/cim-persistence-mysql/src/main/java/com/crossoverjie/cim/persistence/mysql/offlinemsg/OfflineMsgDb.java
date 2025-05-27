@@ -19,7 +19,6 @@ import static com.crossoverjie.cim.common.constant.Constants.FETCH_OFFLINE_MSG_L
  * @date 2025/5/18
  * @description
  */
-//@Service
 public class OfflineMsgDb implements OfflineMsgStore {
 
     private final OfflineMsgService offlineMsgService;
