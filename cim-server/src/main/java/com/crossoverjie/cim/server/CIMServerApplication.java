@@ -5,10 +5,12 @@ import com.crossoverjie.cim.server.config.AppConfiguration;
 import com.crossoverjie.cim.server.kit.RegistryMetaStore;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
+import org.redisson.spring.starter.RedissonAutoConfiguration;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
 import java.net.InetAddress;
@@ -17,7 +19,10 @@ import java.net.InetAddress;
  * @author crossoverJie
  */
 @EnableScheduling
-@SpringBootApplication
+@SpringBootApplication(exclude = {
+		DataSourceAutoConfiguration.class,
+		RedissonAutoConfiguration.class
+})
 @Slf4j
 public class CIMServerApplication implements CommandLineRunner{
 

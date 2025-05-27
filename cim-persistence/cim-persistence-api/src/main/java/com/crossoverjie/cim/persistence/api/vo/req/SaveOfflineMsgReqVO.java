@@ -7,6 +7,7 @@ import lombok.*;
 
 import java.util.Map;
 @Data
+@EqualsAndHashCode(callSuper = true)
 @Builder
 @AllArgsConstructor
 public class SaveOfflineMsgReqVO extends BaseRequest {
@@ -17,17 +18,10 @@ public class SaveOfflineMsgReqVO extends BaseRequest {
 
     @NotNull(message = "userId 不能为空")
     @Schema(requiredMode = Schema.RequiredMode.REQUIRED, description = "userId", example = "11")
-    private Long receive_user_id ;
+    private Long receiveUserId;
 
     @Setter
     @Getter
     private Map<String, String> properties;
 
-    public SaveOfflineMsgReqVO() {
-    }
-
-    public SaveOfflineMsgReqVO(String msg, Long receive_user_id) {
-        this.msg = msg;
-        this.receive_user_id = receive_user_id;
-    }
 }

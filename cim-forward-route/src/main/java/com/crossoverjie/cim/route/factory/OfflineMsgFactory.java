@@ -18,11 +18,9 @@ import static com.crossoverjie.cim.common.constant.Constants.OFFLINE_MSG_PENDING
 public class OfflineMsgFactory {
 
     private final SnowflakeIdWorker idWorker;
-    private final ObjectMapper objectMapper;
 
     public OfflineMsgFactory(SnowflakeIdWorker idWorker, ObjectMapper objectMapper) {
         this.idWorker = idWorker;
-        this.objectMapper = objectMapper;
     }
 
     public OfflineMsg createFromVo(SaveOfflineMsgReqVO vo) {
@@ -31,7 +29,7 @@ public class OfflineMsgFactory {
             Long msgId = idWorker.nextId();
             return OfflineMsg.builder()
                     .messageId(msgId)
-                    .receiveUserId(vo.getReceive_user_id())
+                    .receiveUserId(vo.getReceiveUserId())
                     .content(vo.getMsg())
                     .messageType(MSG_TYPE_TEXT)
                     .status(OFFLINE_MSG_PENDING)

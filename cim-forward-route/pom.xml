@@ -102,6 +102,13 @@
 
         <dependency>
             <groupId>org.testcontainers</groupId>
+            <artifactId>mysql</artifactId>
+            <version>1.19.7</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.testcontainers</groupId>
             <artifactId>testcontainers</artifactId>
         </dependency>
         <dependency>
