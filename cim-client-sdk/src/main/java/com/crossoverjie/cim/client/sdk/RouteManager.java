@@ -5,7 +5,6 @@ import com.crossoverjie.cim.common.core.proxy.RpcProxyManager;
 import com.crossoverjie.cim.common.enums.StatusEnum;
 import com.crossoverjie.cim.common.exception.CIMException;
 import com.crossoverjie.cim.common.pojo.CIMUserInfo;
-import com.crossoverjie.cim.common.protocol.BaseCommand;
 import com.crossoverjie.cim.common.res.BaseResponse;
 import com.crossoverjie.cim.common.res.NULLBody;
 import com.crossoverjie.cim.route.api.RouteApi;
