@@ -3,7 +3,8 @@ package com.crossoverjie.cim.client.sdk.impl;
 import static com.crossoverjie.cim.common.enums.StatusEnum.RECONNECT_FAIL;
 
 import com.crossoverjie.cim.client.sdk.Client;
-import com.crossoverjie.cim.client.sdk.ClientConfigurationData;
+import com.crossoverjie.cim.client.sdk.ClientState;
+import com.crossoverjie.cim.client.sdk.FetchOfflineMsgJob;
 import com.crossoverjie.cim.client.sdk.ReConnectManager;
 import com.crossoverjie.cim.client.sdk.RouteManager;
 import com.crossoverjie.cim.client.sdk.io.CIMClientHandleInitializer;
