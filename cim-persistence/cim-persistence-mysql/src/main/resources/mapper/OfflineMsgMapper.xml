@@ -52,7 +52,7 @@
         created_at,
         properties
         FROM offline_msg
-        WHERE receive_user_id = #{receiveUserId}
+        WHERE receive_user_id = #{receiveUserId} and status=0
         AND message_id &gt; COALESCE((select last_message_id from offline_msg_last_send_record where receive_user_id = #{receiveUserId}),0)
         ORDER BY message_id ASC
         LIMIT #{limit}
