@@ -245,7 +245,7 @@ public class RouteController implements RouteApi {
         BaseResponse<NULLBody> res = new BaseResponse();
 
         try {
-            //获取接收消息用户的路由信息
+            // Get the routing information of the user receiving the message
             Optional<CIMServerResVO> cimServerResVO = accountService.loadRouteRelatedByUserId(offlineMsgReqVO.getReceiveUserId());
 
             cimServerResVO.ifPresent(cimServerRes -> {
