@@ -1,23 +1,21 @@
 package com.crossoverjie.cim.route;
 
 import lombok.extern.slf4j.Slf4j;
-import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.context.annotation.ComponentScan;
-import org.springframework.scheduling.annotation.EnableScheduling;
 
 /**
  * @author crossoverJie
  */
 @Slf4j
-@SpringBootApplication
-@EnableScheduling
-@MapperScan("com.crossoverjie.cim.persistence.mysql.offlinemsg.mapper")
+@SpringBootApplication(exclude = DataSourceAutoConfiguration.class)
 @ComponentScan(basePackages = {
 		"com.crossoverjie.cim.route",
-		"com.crossoverjie.cim.persistence"
+		"com.crossoverjie.cim.persistence",
+		"com.crossoverjie.cim.common"
 })
 public class RouteApplication implements CommandLineRunner{
 

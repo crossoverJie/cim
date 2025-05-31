@@ -1,18 +1,22 @@
 package com.crossoverjie.cim.persistence.redis;
 
-import com.crossoverjie.cim.common.enums.StatusEnum;
-import com.crossoverjie.cim.common.exception.CIMException;
 import com.crossoverjie.cim.persistence.api.pojo.OfflineMsg;
-import com.crossoverjie.cim.persistence.api.service.OfflineMsgBufferService;
 import com.crossoverjie.cim.persistence.api.service.OfflineMsgStore;
-import com.crossoverjie.cim.persistence.mysql.offlinemsg.OfflineMsgDb;
-import com.crossoverjie.cim.persistence.redis.impl.OfflineMsgBufferServiceImpl;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.stereotype.Service;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.hash.Jackson2HashMapper;
+import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+import static com.crossoverjie.cim.common.constant.Constants.OFFLINE_MSG_DELIVERED;
+import static com.crossoverjie.cim.common.constant.Constants.OFFLINE_MSG_PENDING;
 
 /**
  * @author zhongcanyu
@@ -22,88 +26,55 @@ import java.util.List;
 @Slf4j
 public class OfflineMsgBuffer implements OfflineMsgStore {
 
-    private final OfflineMsgStore db;
-    private final OfflineMsgBufferService buffer;
+    private static final String MSG_KEY = "offline:msg:";
+    private static final String USER_IDX = "offline:msg:user:";
 
-    public OfflineMsgBuffer(OfflineMsgDb offlineMsgDb, OfflineMsgBufferServiceImpl buffer) {
-        this.db = offlineMsgDb;
-        this.buffer = buffer;
-    }
+    @Autowired
+    private RedisTemplate<String, Object> redis;
+    @Autowired
+    private ObjectMapper mapper;
+    @Autowired
+    private Jackson2HashMapper hashMapper;
 
     @Override
-    public void save(OfflineMsg offlineMsg) {
-        boolean bufferAvailable = true;
-        try {
-            buffer.saveOfflineMsgInBuffer(offlineMsg);
-        } catch (Exception e) {
-            bufferAvailable = false;
-            log.error("save offline msg in the buffer error", e);
-        }
+    public void save(OfflineMsg msg) {
+        String key = MSG_KEY + msg.getMessageId();
 
-        if (!bufferAvailable) {
-            try {
-                db.save(offlineMsg);
-            } catch (Exception e) {
-                log.error("save offline msg in the database error", e);
-                throw new CIMException(StatusEnum.OFFLINE_MESSAGE_STORAGE_ERROR);
-            }
-
-        }
+        Map<String, Object> hashMap = hashMapper.toHash(msg);
+        redis.opsForHash().putAll(key, hashMap);
+        redis.opsForList().rightPush(USER_IDX + msg.getReceiveUserId(), msg.getMessageId().toString());
     }
 
     @Override
     public List<OfflineMsg> fetch(Long userId) {
-        boolean bufferAvailable = true;
-        boolean dbAvailable = true;
+        String idxKey = USER_IDX + userId;
+        List<String> ids = redis.opsForList().range(idxKey, 0, -1)
+                .stream()
+                .map(Object::toString)
+                .collect(Collectors.toList());
+        if (CollectionUtils.isEmpty(ids))
+            return Collections.emptyList();
 
-        List<OfflineMsg> msgs = new ArrayList<>();
-        List<OfflineMsg> msgsFromBuffer = new ArrayList<>();
-        List<OfflineMsg> msgsFromDb = new ArrayList<>();
-
-        try {
-            msgsFromBuffer = buffer.getOfflineMsgs(userId, false);
-        } catch (Exception e) {
-            log.error("get offline msg in the redis error", e);
-            bufferAvailable = false;
+        List<OfflineMsg> offlineMsgs = new ArrayList<>();
+        for (String id : ids) {
+            String key = MSG_KEY + id;
+            Map<Object, Object> map = redis.opsForHash().entries(key);
+            if (!map.isEmpty()) {
+                OfflineMsg msg = mapper.convertValue(map, OfflineMsg.class);
+                offlineMsgs.add(msg);
+            }
         }
-
-        try {
-            msgsFromDb = db.fetch(userId);
-        } catch (Exception e) {
-            log.error("get offline msg in the database error", e);
-            dbAvailable = false;
-        }
-
-        if (!bufferAvailable && !dbAvailable) {
-            throw new CIMException(StatusEnum.OFFLINE_MESSAGE_RETRIEVAL_ERROR);
-        }
-
-        msgs.addAll(msgsFromBuffer);
-        msgs.addAll(msgsFromDb);
-        return msgs;
+        offlineMsgs = offlineMsgs.stream().filter(msg -> OFFLINE_MSG_PENDING.equals(msg.getStatus())).collect(Collectors.toList());
+        return offlineMsgs;
     }
 
     @Override
     public void markDelivered(Long userId, List<Long> messageIds) {
-        boolean bufferAvailable = true;
-        boolean dbAvailable = true;
-
-        try {
-            messageIds.stream().forEach(id -> buffer.markDelivered(id));
-        } catch (Exception e) {
-            log.error("mark offline msg as delivered in the redis error", e);
-            bufferAvailable = false;
-        }
-
-        try {
-            db.markDelivered(userId, messageIds);
-        } catch (Exception e) {
-            log.error("mark offline msg as delivered in the database error", e);
-            dbAvailable = false;
-        }
-
-        if (!bufferAvailable && !dbAvailable) {
-            throw new CIMException(StatusEnum.OFFLINE_MESSAGE_DELIVERY_ERROR);
-        }
+        messageIds.stream().forEach(messageId -> {
+            String key = MSG_KEY + messageId;
+            if (Boolean.TRUE.equals(redis.hasKey(key))) {
+                redis.opsForHash().put(key, "status", OFFLINE_MSG_DELIVERED);
+            }
+        });
     }
 }

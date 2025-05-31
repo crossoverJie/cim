@@ -3,7 +3,7 @@ package com.crossoverjie.cim.route.factory;
 import com.crossoverjie.cim.common.constant.Constants;
 import com.crossoverjie.cim.common.exception.CIMException;
 import com.crossoverjie.cim.persistence.api.pojo.OfflineMsg;
-import com.crossoverjie.cim.persistence.api.util.SnowflakeIdWorker;
+import com.crossoverjie.cim.common.util.SnowflakeIdWorker;
 import com.crossoverjie.cim.persistence.api.vo.req.SaveOfflineMsgReqVO;
 import org.springframework.stereotype.Service;
 

@@ -3,7 +3,6 @@ package com.crossoverjie.cim.route.service.impl;
 import com.crossoverjie.cim.common.constant.Constants;
 import com.crossoverjie.cim.common.pojo.CIMUserInfo;
 import com.crossoverjie.cim.common.protocol.BaseCommand;
-import com.crossoverjie.cim.persistence.api.annotation.RedisLock;
 import com.crossoverjie.cim.persistence.api.pojo.OfflineMsg;
 import com.crossoverjie.cim.persistence.api.service.OfflineMsgStore;
 import com.crossoverjie.cim.persistence.api.vo.req.SaveOfflineMsgReqVO;
@@ -67,8 +66,6 @@ public class OfflineMsgPushServiceImpl implements OfflineMsgPushService {
     }
 
 
-    @RedisLock(key = "T(java.lang.String).format('lock:offlineMsg:%s', #p2pRequest.userId)",
-            waitTime = 5, leaseTime = 30)
     @Override
     public void saveOfflineMsg(P2PReqVO p2pRequest) {
 

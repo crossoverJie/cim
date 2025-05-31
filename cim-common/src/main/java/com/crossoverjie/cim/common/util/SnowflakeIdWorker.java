@@ -1,4 +1,4 @@
-package com.crossoverjie.cim.persistence.api.util;
+package com.crossoverjie.cim.common.util;
 
 import org.springframework.stereotype.Component;
 

@@ -12,11 +12,11 @@ spring:
           max-wait: 1000
           min-idle: 10
 
-  datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/cim-test?useUnicode=true&characterEncoding=utf8&serverTimezone=GMT%2B8
-    username: root
-    password: ${DB_PASSWORD}
+#  datasource:
+#    driver-class-name: com.mysql.cj.jdbc.Driver
+#    url: jdbc:mysql://localhost:3306/cim-test?useUnicode=true&characterEncoding=utf8&serverTimezone=GMT%2B8
+#    username: root
+#    password: zcyzcy159162
 
 
 # web port
@@ -65,5 +65,5 @@ mybatis:
 
 offline:
   store:
-    mode: bufferingDB
+    mode: redis
 

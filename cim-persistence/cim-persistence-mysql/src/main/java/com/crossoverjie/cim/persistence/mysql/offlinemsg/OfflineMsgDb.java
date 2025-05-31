@@ -1,14 +1,9 @@
 package com.crossoverjie.cim.persistence.mysql.offlinemsg;
 
 import com.crossoverjie.cim.persistence.api.pojo.OfflineMsg;
-import com.crossoverjie.cim.persistence.api.service.OfflineMsgLastSendRecordService;
-import com.crossoverjie.cim.persistence.api.service.OfflineMsgService;
 import com.crossoverjie.cim.persistence.api.service.OfflineMsgStore;
-import com.crossoverjie.cim.persistence.mysql.offlinemsg.impl.OfflineMsgServiceImpl;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.stereotype.Repository;
-import org.springframework.stereotype.Service;
+import com.crossoverjie.cim.persistence.mysql.offlinemsg.mapper.OfflineMsgLastSendRecordMapper;
+import com.crossoverjie.cim.persistence.mysql.offlinemsg.mapper.OfflineMsgMapper;
 
 import java.util.List;
 
@@ -21,28 +16,28 @@ import static com.crossoverjie.cim.common.constant.Constants.FETCH_OFFLINE_MSG_L
  */
 public class OfflineMsgDb implements OfflineMsgStore {
 
-    private final OfflineMsgService offlineMsgService;
-    private final OfflineMsgLastSendRecordService offlineMsgLastSendRecordService;
+    private final OfflineMsgMapper offlineMsgMapper;
+    private final OfflineMsgLastSendRecordMapper offlineMsgLastSendRecordMapper;
 
-    public OfflineMsgDb(OfflineMsgService offlineMsgService, OfflineMsgLastSendRecordService offlineMsgLastSendRecordService) {
-        this.offlineMsgService = offlineMsgService;
-        this.offlineMsgLastSendRecordService = offlineMsgLastSendRecordService;
+    public OfflineMsgDb(OfflineMsgMapper offlineMsgMapper, OfflineMsgLastSendRecordMapper offlineMsgLastSendRecordMapper) {
+        this.offlineMsgMapper = offlineMsgMapper;
+        this.offlineMsgLastSendRecordMapper = offlineMsgLastSendRecordMapper;
     }
 
     @Override
     public void save(OfflineMsg offlineMsg) {
-        offlineMsgService.save(offlineMsg);
+        offlineMsgMapper.insert(offlineMsg);
     }
 
     @Override
     public List<OfflineMsg> fetch(Long receiveUserId) {
-        return offlineMsgService.fetchOfflineMsgsWithCursor(receiveUserId, FETCH_OFFLINE_MSG_LIMIT);
+        return offlineMsgMapper.fetchOfflineMsgsWithCursor(receiveUserId, FETCH_OFFLINE_MSG_LIMIT);
     }
 
     @Override
     public void markDelivered(Long receiveUserId, List<Long> messageIds) {
-        offlineMsgService.updateStatus(receiveUserId, messageIds);
-        offlineMsgLastSendRecordService.saveLatestMessageId(receiveUserId, messageIds.get(messageIds.size() - 1));
+        offlineMsgMapper.updateStatus(receiveUserId, messageIds);
+        offlineMsgLastSendRecordMapper.saveLatestMessageId(receiveUserId, messageIds.get(messageIds.size() - 1));
     }
 }
 

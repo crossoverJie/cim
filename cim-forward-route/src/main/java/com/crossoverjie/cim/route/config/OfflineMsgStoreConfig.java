@@ -1,16 +1,12 @@
 package com.crossoverjie.cim.route.config;
 
-import com.crossoverjie.cim.persistence.api.service.OfflineMsgLastSendRecordService;
-import com.crossoverjie.cim.persistence.api.service.OfflineMsgService;
-import com.crossoverjie.cim.persistence.api.service.OfflineMsgStore;
 import com.crossoverjie.cim.persistence.mysql.offlinemsg.OfflineMsgDb;
+import com.crossoverjie.cim.persistence.mysql.offlinemsg.mapper.OfflineMsgLastSendRecordMapper;
+import com.crossoverjie.cim.persistence.mysql.offlinemsg.mapper.OfflineMsgMapper;
 import com.crossoverjie.cim.persistence.redis.OfflineMsgBuffer;
-import com.crossoverjie.cim.persistence.redis.impl.OfflineMsgBufferServiceImpl;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Primary;
 
 /**
  * @author zhongcanyu
@@ -21,21 +17,14 @@ import org.springframework.context.annotation.Primary;
 public class OfflineMsgStoreConfig {
 
     @Bean
-    public OfflineMsgDb offlineMsgDbStore(OfflineMsgService offlineMsgService, OfflineMsgLastSendRecordService offlineMsgLastSendRecordService) {
-        return new OfflineMsgDb(offlineMsgService, offlineMsgLastSendRecordService);
+    @ConditionalOnProperty(name = "offline.store.mode", havingValue = "mysql")
+    public OfflineMsgDb offlineMsgDbStore(OfflineMsgMapper offlineMsgMapper, OfflineMsgLastSendRecordMapper offlineMsgLastSendRecordMapper) {
+        return new OfflineMsgDb(offlineMsgMapper, offlineMsgLastSendRecordMapper);
     }
 
     @Bean
-    @ConditionalOnProperty(name = "offline.store.mode", havingValue = "bufferingDB")
-    public OfflineMsgBuffer offlineMsgBufferStore(OfflineMsgDb db, OfflineMsgBufferServiceImpl buffer) {
-        return new OfflineMsgBuffer(db, buffer);
-    }
-
-    @Bean
-    @Primary
-    public OfflineMsgStore offlineMsgStore(
-            @Autowired(required = false) OfflineMsgBuffer buffer,
-            OfflineMsgDb db) {
-        return (buffer != null) ? buffer : db;
+    @ConditionalOnProperty(name = "offline.store.mode", havingValue = "redis")
+    public OfflineMsgBuffer offlineMsgBufferStore() {
+        return new OfflineMsgBuffer();
     }
 }
