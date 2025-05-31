@@ -64,4 +64,4 @@ mybatis:
 
 offline:
   store:
-    mode: redis
+    mode: mysql
