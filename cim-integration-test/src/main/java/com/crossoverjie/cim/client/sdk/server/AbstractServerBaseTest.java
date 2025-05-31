@@ -6,6 +6,7 @@ import java.time.Duration;
 import java.util.HashMap;
 import java.util.Map;
 import lombok.Getter;
+import org.redisson.spring.starter.RedissonAutoConfiguration;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.context.ConfigurableApplicationContext;
@@ -33,7 +34,8 @@ public abstract class AbstractServerBaseTest {
         SpringApplication server = new SpringApplication(CIMServerApplication.class);
         String[] args = new String[]{
                 "--app.zk.addr=" + zookeeperAddr,
-                "--spring.autoconfigure.exclude=" + DataSourceAutoConfiguration.class.getName()
+                "--spring.autoconfigure.exclude=" + DataSourceAutoConfiguration.class.getName(),
+                "--spring.autoconfigure.exclude=" + RedissonAutoConfiguration.class.getName()
         };
         singleRun = server.run(args);
     }
@@ -52,7 +54,8 @@ public abstract class AbstractServerBaseTest {
                 "--cim.server.port=11211",
                 "--server.port=8081",
                 "--app.zk.addr=" + zookeeperAddr,
-                "--spring.autoconfigure.exclude=" + DataSourceAutoConfiguration.class.getName()
+                "--spring.autoconfigure.exclude=" + DataSourceAutoConfiguration.class.getName(),
+                "--spring.autoconfigure.exclude=" + RedissonAutoConfiguration.class.getName()
         };
         ConfigurableApplicationContext run1 = server.run(args1);
         runMap.put(Integer.parseInt("11211"), run1);
@@ -63,7 +66,8 @@ public abstract class AbstractServerBaseTest {
                 "--cim.server.port=11212",
                 "--server.port=8082",
                 "--app.zk.addr=" + zookeeperAddr,
-                "--spring.autoconfigure.exclude=" + DataSourceAutoConfiguration.class.getName()
+                "--spring.autoconfigure.exclude=" + DataSourceAutoConfiguration.class.getName(),
+                "--spring.autoconfigure.exclude=" + RedissonAutoConfiguration.class.getName()
         };
         ConfigurableApplicationContext run2 = server2.run(args2);
         runMap.put(Integer.parseInt("11212"), run2);
