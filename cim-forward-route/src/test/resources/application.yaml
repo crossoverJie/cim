@@ -61,3 +61,7 @@ mybatis:
   global-config:
     db-config:
       id-type: auto
+
+offline:
+  store:
+    mode: redis
