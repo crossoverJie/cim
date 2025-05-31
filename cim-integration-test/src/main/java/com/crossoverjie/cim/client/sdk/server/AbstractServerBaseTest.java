@@ -52,6 +52,7 @@ public abstract class AbstractServerBaseTest {
                 "--cim.server.port=11211",
                 "--server.port=8081",
                 "--app.zk.addr=" + zookeeperAddr,
+                "--spring.autoconfigure.exclude=" + DataSourceAutoConfiguration.class.getName()
         };
         ConfigurableApplicationContext run1 = server.run(args1);
         runMap.put(Integer.parseInt("11211"), run1);
@@ -62,6 +63,7 @@ public abstract class AbstractServerBaseTest {
                 "--cim.server.port=11212",
                 "--server.port=8082",
                 "--app.zk.addr=" + zookeeperAddr,
+                "--spring.autoconfigure.exclude=" + DataSourceAutoConfiguration.class.getName()
         };
         ConfigurableApplicationContext run2 = server2.run(args2);
         runMap.put(Integer.parseInt("11212"), run2);
