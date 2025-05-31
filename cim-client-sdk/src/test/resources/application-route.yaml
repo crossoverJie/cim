@@ -48,4 +48,7 @@ app:
 
       consitenthash: com.crossoverjie.cim.common.route.algorithm.consistenthash.TreeMapConsistentHash
 
+offline:
+  store:
+    mode: redis
 
