@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.Map;
 import lombok.Getter;
 import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.utility.DockerImageName;
@@ -30,7 +31,11 @@ public abstract class AbstractServerBaseTest {
         zooKeeperContainer.start();
         zookeeperAddr = String.format("%s:%d", zooKeeperContainer.getHost(), zooKeeperContainer.getMappedPort(ZooKeeperContainer.DEFAULT_CLIENT_PORT));
         SpringApplication server = new SpringApplication(CIMServerApplication.class);
-        singleRun = server.run("--app.zk.addr=" + zookeeperAddr);
+        String[] args = new String[]{
+                "--app.zk.addr=" + zookeeperAddr,
+                "--spring.autoconfigure.exclude=" + DataSourceAutoConfiguration.class.getName()
+        };
+        singleRun = server.run(args);
     }
     public void stopSingle(){
         singleRun.close();
