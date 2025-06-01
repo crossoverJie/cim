@@ -1,12 +1,10 @@
 package com.crossoverjie.cim.route.controller;
 
-import com.crossoverjie.cim.common.constant.Constants;
 import com.crossoverjie.cim.common.enums.StatusEnum;
 import com.crossoverjie.cim.common.exception.CIMException;
 import com.crossoverjie.cim.common.metastore.MetaStore;
 import com.crossoverjie.cim.common.pojo.CIMUserInfo;
 import com.crossoverjie.cim.common.pojo.RouteInfo;
-import com.crossoverjie.cim.common.protocol.BaseCommand;
 import com.crossoverjie.cim.common.res.BaseResponse;
 import com.crossoverjie.cim.common.res.NULLBody;
 import com.crossoverjie.cim.common.route.algorithm.RouteHandle;
@@ -17,7 +15,7 @@ import com.crossoverjie.cim.route.api.vo.res.CIMServerResVO;
 import com.crossoverjie.cim.route.api.vo.res.RegisterInfoResVO;
 import com.crossoverjie.cim.route.service.AccountService;
 import com.crossoverjie.cim.route.service.CommonBizService;
-import com.crossoverjie.cim.route.service.OfflineMsgPushService;
+import com.crossoverjie.cim.route.service.OfflineMsgService;
 import com.crossoverjie.cim.route.service.UserInfoCacheService;
 import com.crossoverjie.cim.server.api.ServerApi;
 import io.swagger.v3.oas.annotations.Operation;
@@ -27,7 +25,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -67,7 +64,7 @@ public class RouteController implements RouteApi {
     private ServerApi serverApi;
 
     @Resource
-    private OfflineMsgPushService offlineMsgPushService;
+    private OfflineMsgService offlineMsgService;
 
 
     @Operation(summary = "群聊 API")
@@ -119,7 +116,7 @@ public class RouteController implements RouteApi {
             //获取接收消息用户的路由信息
             Optional<CIMServerResVO> cimServerResVO = accountService.loadRouteRelatedByUserId(p2pRequest.getReceiveUserId());
             if (cimServerResVO.isEmpty()) {
-                offlineMsgPushService.saveOfflineMsg(p2pRequest);
+                offlineMsgService.saveOfflineMsg(p2pRequest);
                 throw new CIMException(OFF_LINE);
             }
 
@@ -249,7 +246,7 @@ public class RouteController implements RouteApi {
             Optional<CIMServerResVO> cimServerResVO = accountService.loadRouteRelatedByUserId(offlineMsgReqVO.getReceiveUserId());
 
             cimServerResVO.ifPresent(cimServerRes -> {
-                offlineMsgPushService.fetchOfflineMsgs(cimServerRes, offlineMsgReqVO.getReceiveUserId());
+                offlineMsgService.fetchOfflineMsgs(cimServerRes, offlineMsgReqVO.getReceiveUserId());
             });
 
             res.setCode(StatusEnum.SUCCESS.getCode());

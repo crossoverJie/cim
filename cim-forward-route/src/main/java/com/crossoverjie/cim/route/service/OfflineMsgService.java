@@ -6,7 +6,7 @@ import com.crossoverjie.cim.route.api.vo.res.CIMServerResVO;
 /**
  * Offline message push service
  */
-public interface OfflineMsgPushService {
+public interface OfflineMsgService {
 
     /**
      * fetch offline messages

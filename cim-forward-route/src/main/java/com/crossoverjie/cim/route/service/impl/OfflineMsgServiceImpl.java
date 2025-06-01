@@ -9,7 +9,7 @@ import com.crossoverjie.cim.persistence.api.vo.req.SaveOfflineMsgReqVO;
 import com.crossoverjie.cim.route.api.vo.req.P2PReqVO;
 import com.crossoverjie.cim.route.api.vo.res.CIMServerResVO;
 import com.crossoverjie.cim.route.factory.OfflineMsgFactory;
-import com.crossoverjie.cim.route.service.OfflineMsgPushService;
+import com.crossoverjie.cim.route.service.OfflineMsgService;
 import com.crossoverjie.cim.route.service.UserInfoCacheService;
 import com.crossoverjie.cim.server.api.ServerApi;
 import com.crossoverjie.cim.server.api.vo.req.SendMsgReqVO;
@@ -24,7 +24,7 @@ import java.util.Optional;
 
 @Slf4j
 @Service
-public class OfflineMsgPushServiceImpl implements OfflineMsgPushService {
+public class OfflineMsgServiceImpl implements OfflineMsgService {
 
     @Resource
     private OfflineMsgStore offlineMsgStore;
