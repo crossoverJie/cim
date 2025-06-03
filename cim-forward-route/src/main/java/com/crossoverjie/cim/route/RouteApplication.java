@@ -14,8 +14,7 @@ import org.springframework.context.annotation.ComponentScan;
 @SpringBootApplication(exclude = DataSourceAutoConfiguration.class)
 @ComponentScan(basePackages = {
 		"com.crossoverjie.cim.route",
-		"com.crossoverjie.cim.persistence",
-		"com.crossoverjie.cim.common"
+		"com.crossoverjie.cim.persistence"
 })
 public class RouteApplication implements CommandLineRunner{
 
