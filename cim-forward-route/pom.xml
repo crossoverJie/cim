@@ -41,11 +41,6 @@
             <version>${project.version}</version>
         </dependency>
 
-<!--        <dependency>-->
-<!--            <groupId>org.springframework.boot</groupId>-->
-<!--            <artifactId>spring-boot-starter-aop</artifactId>-->
-<!--        </dependency>-->
-
         <dependency>
             <groupId>com.crossoverjie.netty</groupId>
             <artifactId>cim-common</artifactId>
