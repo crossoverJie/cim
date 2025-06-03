@@ -62,6 +62,8 @@ public class ClientImpl extends ClientState implements Client {
     @Getter
     private final Request heartBeatPacket;
 
+    private RingBufferWheel ringBufferWheel;
+
     // Client connected server info
     private CIMServerResVO serverInfo;
 
@@ -98,8 +100,8 @@ public class ClientImpl extends ClientState implements Client {
      * 1. Pull offline messages from the server
      */
     private void postConnectionSetup() {
-        new RingBufferWheel(Executors.newFixedThreadPool(1))
-                .addTask(new FetchOfflineMsgJob(routeManager, conf));
+        ringBufferWheel = new RingBufferWheel(Executors.newFixedThreadPool(1));
+        ringBufferWheel.addTask(new FetchOfflineMsgJob(routeManager, conf));
     }
 
     private void connectServer(Consumer<Void> success) {
@@ -233,6 +235,7 @@ public class ClientImpl extends ClientState implements Client {
         super.setState(ClientState.State.Closed);
         this.routeManager.offLine(this.getAuth().getUserId());
         this.clientMap.remove(this.getAuth().getUserId());
+        ringBufferWheel.stop(true);
     }
 
     @Override
