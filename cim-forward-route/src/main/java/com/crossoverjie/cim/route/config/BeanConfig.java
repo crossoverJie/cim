@@ -7,6 +7,7 @@ import com.crossoverjie.cim.common.metastore.ZkMetaStoreImpl;
 import com.crossoverjie.cim.common.pojo.CIMUserInfo;
 import com.crossoverjie.cim.common.route.algorithm.RouteHandle;
 import com.crossoverjie.cim.common.route.algorithm.consistenthash.AbstractConsistentHash;
+import com.crossoverjie.cim.common.util.SnowflakeIdWorker;
 import com.crossoverjie.cim.server.api.ServerApi;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.cache.CacheBuilder;
@@ -140,5 +141,10 @@ public class BeanConfig {
     @Bean
     public ServerApi serverApi(OkHttpClient okHttpClient) {
         return RpcProxyManager.create(ServerApi.class, okHttpClient);
+    }
+
+    @Bean
+    public SnowflakeIdWorker snowflakeIdWorker() {
+        return new SnowflakeIdWorker();
     }
 }

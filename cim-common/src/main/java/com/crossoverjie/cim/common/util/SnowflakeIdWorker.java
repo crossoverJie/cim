@@ -1,13 +1,10 @@
 package com.crossoverjie.cim.common.util;
 
-import org.springframework.stereotype.Component;
-
 /**
  * @author zhongcanyu
  * @date 2025/5/18
  * @description
  */
-@Component
 public class SnowflakeIdWorker {
     private final long workerId = 1L;
     private final static long EPOCH = 1622505600000L;
