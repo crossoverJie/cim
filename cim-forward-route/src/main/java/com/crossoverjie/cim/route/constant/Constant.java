@@ -26,7 +26,7 @@ public final class Constant {
     public final static String LOGIN_STATUS_PREFIX = "login-status";
 
 
-    public final static class OfflineModel {
+    public final static class OfflineStoreMode {
         /**
          * redis
          */

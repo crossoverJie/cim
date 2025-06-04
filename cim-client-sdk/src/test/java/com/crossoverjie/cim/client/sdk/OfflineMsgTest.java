@@ -14,7 +14,6 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
@@ -26,7 +25,7 @@ public class OfflineMsgTest extends AbstractRouteBaseTest {
     @Test
     public void testP2POfflineChatRedis() throws Exception {
         super.starSingleServer();
-        super.startRoute(Constant.OfflineModel.REDIS);
+        super.startRoute(Constant.OfflineStoreMode.REDIS);
         String routeUrl = "http://localhost:8083";
         String cj = "cj";
         String ls = "ls";

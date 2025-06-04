@@ -36,7 +36,7 @@ public class ClientTest extends AbstractRouteBaseTest {
     @Test
     public void groupChat() throws Exception {
         super.starSingleServer();
-        super.startRoute(Constant.OfflineModel.REDIS);
+        super.startRoute(Constant.OfflineStoreMode.REDIS);
         String routeUrl = "http://localhost:8083";
         String cj = "crossoverJie";
         String zs = "zs";
@@ -109,7 +109,7 @@ public class ClientTest extends AbstractRouteBaseTest {
     @Test
     public void testP2PChat() throws Exception {
         super.starSingleServer();
-        super.startRoute(Constant.OfflineModel.REDIS);
+        super.startRoute(Constant.OfflineStoreMode.REDIS);
         String routeUrl = "http://localhost:8083";
         String cj = "cj";
         String zs = "zs";
@@ -240,7 +240,7 @@ public class ClientTest extends AbstractRouteBaseTest {
     @Test
     public void testReconnect() throws Exception {
         super.startTwoServer();
-        super.startRoute(Constant.OfflineModel.REDIS);
+        super.startRoute(Constant.OfflineStoreMode.REDIS);
 
         String routeUrl = "http://localhost:8083";
         String cj = "cj";
@@ -324,7 +324,7 @@ public class ClientTest extends AbstractRouteBaseTest {
     @Test
     public void offLineAndOnline() throws Exception {
         super.starSingleServer();
-        super.startRoute(Constant.OfflineModel.REDIS);
+        super.startRoute(Constant.OfflineStoreMode.REDIS);
         String routeUrl = "http://localhost:8083";
         String cj = "crossoverJie";
         String zs = "zs";
@@ -402,7 +402,7 @@ public class ClientTest extends AbstractRouteBaseTest {
     @Test
     public void testClose() throws Exception {
         super.starSingleServer();
-        super.startRoute(Constant.OfflineModel.REDIS);
+        super.startRoute(Constant.OfflineStoreMode.REDIS);
         String routeUrl = "http://localhost:8083";
         String cj = "crossoverJie";
         Long id = super.registerAccount(cj);
@@ -432,7 +432,7 @@ public class ClientTest extends AbstractRouteBaseTest {
     @Test
     public void testIncorrectUser() throws Exception {
         super.starSingleServer();
-        super.startRoute(Constant.OfflineModel.REDIS);
+        super.startRoute(Constant.OfflineStoreMode.REDIS);
         String routeUrl = "http://localhost:8083";
         String cj = "xx";
         long id = 100L;

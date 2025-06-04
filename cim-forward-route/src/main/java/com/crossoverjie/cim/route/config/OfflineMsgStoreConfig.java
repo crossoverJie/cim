@@ -18,13 +18,13 @@ import org.springframework.context.annotation.Configuration;
 public class OfflineMsgStoreConfig {
 
     @Bean
-    @ConditionalOnProperty(name = "offline.store.mode", havingValue = Constant.OfflineModel.MYSQL)
+    @ConditionalOnProperty(name = "offline.store.mode", havingValue = Constant.OfflineStoreMode.MYSQL)
     public OfflineMsgDb offlineMsgDbStore(OfflineMsgMapper offlineMsgMapper, OfflineMsgLastSendRecordMapper offlineMsgLastSendRecordMapper) {
         return new OfflineMsgDb(offlineMsgMapper, offlineMsgLastSendRecordMapper);
     }
 
     @Bean
-    @ConditionalOnProperty(name = "offline.store.mode", havingValue = Constant.OfflineModel.REDIS)
+    @ConditionalOnProperty(name = "offline.store.mode", havingValue = Constant.OfflineStoreMode.REDIS)
     public OfflineMsgBuffer offlineMsgBufferStore() {
         return new OfflineMsgBuffer();
     }
