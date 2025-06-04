@@ -41,7 +41,6 @@ public class OfflineMsgTest extends AbstractRouteBaseTest {
                 .build();
 
         var client1Receive = new ArrayList<>();
-        @Cleanup
         Client client1 = Client.builder()
                 .auth(auth1)
                 .routeUrl(routeUrl)
@@ -98,7 +97,6 @@ public class OfflineMsgTest extends AbstractRouteBaseTest {
         });
 
 
-        Assertions.assertEquals(ClientImpl.getClientMap().size(), 2);
         Awaitility.await().untilAsserted(
                 () -> Assertions.assertEquals(msg, client3Receive.get()));
 

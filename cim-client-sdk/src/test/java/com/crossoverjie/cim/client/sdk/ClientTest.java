@@ -104,6 +104,8 @@ public class ClientTest extends AbstractRouteBaseTest {
         Awaitility.await().untilAsserted(
                 () -> Assertions.assertEquals(msg, client2Receive.get()));
         super.stopSingle();
+        client1.close();
+        client2.close();
     }
 
     @Test
@@ -319,6 +321,8 @@ public class ClientTest extends AbstractRouteBaseTest {
         Awaitility.await()
                 .untilAsserted(() -> Assertions.assertEquals(msg, client2Receive.get()));
         super.stopTwoServer();
+        client1.close();
+        client2.close();
     }
 
     @Test
@@ -397,6 +401,8 @@ public class ClientTest extends AbstractRouteBaseTest {
                 () -> Assertions.assertEquals(msg, client2Receive.get()));
 
         super.stopSingle();
+        client1.close();
+        client2.close();
     }
 
     @Test
