@@ -116,6 +116,7 @@ public class RouteController implements RouteApi {
             //获取接收消息用户的路由信息
             Optional<CIMServerResVO> cimServerResVO = accountService.loadRouteRelatedByUserId(p2pRequest.getReceiveUserId());
             if (cimServerResVO.isEmpty()) {
+                log.warn("userId={} not online, save offline msg", p2pRequest.getReceiveUserId());
                 offlineMsgService.saveOfflineMsg(p2pRequest);
                 throw new CIMException(OFF_LINE);
             }
