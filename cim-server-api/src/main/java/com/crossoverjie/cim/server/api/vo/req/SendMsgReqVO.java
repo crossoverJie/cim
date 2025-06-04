@@ -35,9 +35,11 @@ public class SendMsgReqVO extends BaseRequest {
 
     @NotNull(message = "userId 不能为空")
     @Schema(requiredMode = Schema.RequiredMode.REQUIRED, description = "userId", example = "11")
+    @Getter
     private Long userId ;
 
     @Schema(requiredMode = Schema.RequiredMode.REQUIRED, description = "cmd", example = "message")
+    @Getter
     private BaseCommand cmd;
 
     @Setter
@@ -45,20 +47,6 @@ public class SendMsgReqVO extends BaseRequest {
     private Map<String, String> properties;
 
     public SendMsgReqVO() {
-    }
-
-    public BaseCommand getCmd() {
-        return cmd;
-    }
-
-    public void setCmd(BaseCommand cmd) {
-        this.cmd = cmd;
-    }
-
-    public SendMsgReqVO(String msg, Long userId, List<String> batchMsg) {
-        this.msg = msg;
-        this.userId = userId;
-        this.batchMsg = batchMsg;
     }
 
     public SendMsgReqVO(String msg, Long userId, List<String> batchMsg, BaseCommand cmd) {
@@ -76,13 +64,6 @@ public class SendMsgReqVO extends BaseRequest {
         this.msg = msg;
     }
 
-    public long getUserId() {
-        return userId;
-    }
-
-    public void setUserId(long userId) {
-        this.userId = userId;
-    }
 
     @Override
     public String toString() {
@@ -90,6 +71,7 @@ public class SendMsgReqVO extends BaseRequest {
                 "msg='" + msg + '\'' +
                 ", batchMsg=" + batchMsg +
                 ", userId=" + userId +
+                ", cmd=" + cmd +
                 ", properties=" + properties +
                 '}';
     }
