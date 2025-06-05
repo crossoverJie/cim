@@ -1,17 +1,9 @@
 package com.crossoverjie.cim.client.sdk.route;
 
-import com.crossoverjie.cim.client.sdk.server.AbstractServerBaseTest;
-import com.crossoverjie.cim.common.res.BaseResponse;
 import com.crossoverjie.cim.route.RouteApplication;
-import com.crossoverjie.cim.route.api.RouteApi;
-import com.crossoverjie.cim.route.api.vo.req.RegisterInfoReqVO;
-import com.crossoverjie.cim.route.api.vo.res.RegisterInfoResVO;
 import com.crossoverjie.cim.route.constant.Constant;
-import com.redis.testcontainers.RedisContainer;
 import org.springframework.boot.SpringApplication;
-import org.springframework.context.ConfigurableApplicationContext;
 import org.testcontainers.containers.MySQLContainer;
-import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.utility.DockerImageName;
 import org.testcontainers.utility.MountableFile;
 
@@ -20,16 +12,14 @@ import org.testcontainers.utility.MountableFile;
  * @date 2025/6/5
  * @description
  */
-public abstract class OfflineStoreBaseTest extends AbstractServerBaseTest {
-
-    @Container
-    RedisContainer redis = new RedisContainer(DockerImageName.parse("redis:7.4.0"));
+public class OfflineMsgStoreRouteBaseTest extends AbstractRouteBaseTest {
 
     private MySQLContainer<?> mysql;
 
-    private ConfigurableApplicationContext run;
-
+    @Override
     public void startRoute(String offlineModel) {
+        redis.start();
+        SpringApplication route = new SpringApplication(RouteApplication.class);
         String[] args;
         if(Constant.OfflineStoreMode.MYSQL.equals(offlineModel)){
             mysql = new MySQLContainer<>(DockerImageName.parse("mysql:8.0.31"))
@@ -62,28 +52,15 @@ public abstract class OfflineStoreBaseTest extends AbstractServerBaseTest {
             };
         }
 
-        redis.start();
-        SpringApplication route = new SpringApplication(RouteApplication.class);
         route.setAdditionalProfiles("route");
         run = route.run(args);
     }
 
+    @Override
     public void close(){
         if (mysql != null) {
             mysql.stop();
         }
         super.close();
-        redis.close();
-        run.close();
-    }
-
-    public Long registerAccount(String userName) throws Exception {
-        // register user
-        RouteApi routeApi = com.crossoverjie.cim.route.util.SpringBeanFactory.getBean(RouteApi.class);
-        RegisterInfoReqVO reqVO = new RegisterInfoReqVO();
-        reqVO.setUserName(userName);
-        BaseResponse<RegisterInfoResVO> account =
-                routeApi.registerAccount(reqVO);
-        return account.getDataBody().getUserId();
     }
 }

@@ -17,7 +17,7 @@ public abstract class AbstractRouteBaseTest extends AbstractServerBaseTest {
     @Container
     RedisContainer redis = new RedisContainer(DockerImageName.parse("redis:7.4.0"));
 
-    private ConfigurableApplicationContext run;
+    protected ConfigurableApplicationContext run;
     public void startRoute(String offlineModel) {
         redis.start();
         SpringApplication route = new SpringApplication(RouteApplication.class);
