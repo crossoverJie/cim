@@ -9,8 +9,7 @@ import com.crossoverjie.cim.route.api.vo.res.CIMServerResVO;
 import com.crossoverjie.cim.route.constant.Constant;
 import lombok.extern.slf4j.Slf4j;
 import org.awaitility.Awaitility;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 
 import java.util.ArrayList;
 import java.util.Optional;
@@ -19,9 +18,11 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 
 @Slf4j
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class OfflineMsgTest extends OfflineMsgStoreRouteBaseTest {
 
     @Test
+    @Order(1)
     public void testP2POfflineChatRedis() throws Exception {
         super.starSingleServer();
         super.startRoute(Constant.OfflineStoreMode.REDIS);
@@ -140,6 +141,7 @@ public class OfflineMsgTest extends OfflineMsgStoreRouteBaseTest {
     }
 
     @Test
+    @Order(2)
     public void testP2POfflineChatMysql() throws Exception {
         super.starSingleServer();
         super.startRoute(Constant.OfflineStoreMode.MYSQL);
