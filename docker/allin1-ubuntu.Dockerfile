@@ -25,7 +25,7 @@ initLimit=5\n\
 syncLimit=2\n" > /opt/zookeeper/conf/zoo.cfg
 
 # wait-for-it.sh
-ADD https://raw.githubusercontent.com/vishnubob/wait-for-it/master/wait-for-it.sh /wait-for-it.sh
+COPY wait-for-it.sh /wait-for-it.sh
 RUN chmod +x /wait-for-it.sh
 
 # copy java app

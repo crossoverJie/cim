@@ -29,7 +29,8 @@ public final class HttpClient{
 
         Response response = okHttpClient.newCall(request).execute();
         if (!response.isSuccessful()) {
-            throw new IOException("RPC failed unexpected code " + response);
+            throw new IOException("request url [" + url + "], params [" + params +"] failed, response code: " + response.code()
+                    + ", message: " + response.message());
         }
 
         return response;

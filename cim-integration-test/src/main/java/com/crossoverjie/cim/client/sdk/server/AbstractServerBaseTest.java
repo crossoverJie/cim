@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.Map;
 import lombok.Getter;
 import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.utility.DockerImageName;
@@ -30,7 +31,11 @@ public abstract class AbstractServerBaseTest {
         zooKeeperContainer.start();
         zookeeperAddr = String.format("%s:%d", zooKeeperContainer.getHost(), zooKeeperContainer.getMappedPort(ZooKeeperContainer.DEFAULT_CLIENT_PORT));
         SpringApplication server = new SpringApplication(CIMServerApplication.class);
-        singleRun = server.run("--app.zk.addr=" + zookeeperAddr);
+        String[] args = new String[]{
+                "--app.zk.addr=" + zookeeperAddr,
+                "--spring.autoconfigure.exclude=" + DataSourceAutoConfiguration.class.getName()
+        };
+        singleRun = server.run(args);
     }
     public void stopSingle(){
         singleRun.close();
@@ -47,6 +52,7 @@ public abstract class AbstractServerBaseTest {
                 "--cim.server.port=11211",
                 "--server.port=8081",
                 "--app.zk.addr=" + zookeeperAddr,
+                "--spring.autoconfigure.exclude=" + DataSourceAutoConfiguration.class.getName()
         };
         ConfigurableApplicationContext run1 = server.run(args1);
         runMap.put(Integer.parseInt("11211"), run1);
@@ -57,6 +63,7 @@ public abstract class AbstractServerBaseTest {
                 "--cim.server.port=11212",
                 "--server.port=8082",
                 "--app.zk.addr=" + zookeeperAddr,
+                "--spring.autoconfigure.exclude=" + DataSourceAutoConfiguration.class.getName()
         };
         ConfigurableApplicationContext run2 = server2.run(args2);
         runMap.put(Integer.parseInt("11212"), run2);

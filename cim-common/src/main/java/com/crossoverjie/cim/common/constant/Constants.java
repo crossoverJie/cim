@@ -28,4 +28,15 @@ public class Constants {
         public static final String RECEIVE_USER_NAME = "receiveUserName" ;
     }
 
+    //从数据库读取离线消息的每次获取量
+    public static final Integer FETCH_OFFLINE_MSG_LIMIT = 100 ;
+
+    public static final Integer OFFLINE_MSG_PENDING = 0 ;
+
+    public static final Integer OFFLINE_MSG_DELIVERED = 1 ;
+
+    public static final Integer MSG_TYPE_TEXT = 0 ;
+
+    public static final Integer MSG_TYPE_IMAGE = 1 ;
+
 }

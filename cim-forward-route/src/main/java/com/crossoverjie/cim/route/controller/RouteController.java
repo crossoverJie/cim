@@ -10,15 +10,14 @@ import com.crossoverjie.cim.common.res.NULLBody;
 import com.crossoverjie.cim.common.route.algorithm.RouteHandle;
 import com.crossoverjie.cim.common.util.RouteInfoParseUtil;
 import com.crossoverjie.cim.route.api.RouteApi;
-import com.crossoverjie.cim.route.api.vo.req.ChatReqVO;
-import com.crossoverjie.cim.route.api.vo.req.LoginReqVO;
-import com.crossoverjie.cim.route.api.vo.req.P2PReqVO;
-import com.crossoverjie.cim.route.api.vo.req.RegisterInfoReqVO;
+import com.crossoverjie.cim.route.api.vo.req.*;
 import com.crossoverjie.cim.route.api.vo.res.CIMServerResVO;
 import com.crossoverjie.cim.route.api.vo.res.RegisterInfoResVO;
 import com.crossoverjie.cim.route.service.AccountService;
 import com.crossoverjie.cim.route.service.CommonBizService;
+import com.crossoverjie.cim.route.service.OfflineMsgService;
 import com.crossoverjie.cim.route.service.UserInfoCacheService;
+import com.crossoverjie.cim.server.api.ServerApi;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.annotation.Resource;
 import java.util.List;
@@ -26,7 +25,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -61,6 +59,13 @@ public class RouteController implements RouteApi {
 
     @Resource
     private RouteHandle routeHandle;
+
+    @Resource
+    private ServerApi serverApi;
+
+    @Resource
+    private OfflineMsgService offlineMsgService;
+
 
     @Operation(summary = "群聊 API")
     @RequestMapping(value = "groupRoute", method = RequestMethod.POST)
@@ -111,7 +116,8 @@ public class RouteController implements RouteApi {
             //获取接收消息用户的路由信息
             Optional<CIMServerResVO> cimServerResVO = accountService.loadRouteRelatedByUserId(p2pRequest.getReceiveUserId());
             if (cimServerResVO.isEmpty()) {
-                // todo save offline msg
+                log.warn("userId={} not online, save offline msg", p2pRequest.getReceiveUserId());
+                offlineMsgService.saveOfflineMsg(p2pRequest);
                 throw new CIMException(OFF_LINE);
             }
 
@@ -226,6 +232,31 @@ public class RouteController implements RouteApi {
         res.setDataBody(cimUserInfos);
         res.setCode(StatusEnum.SUCCESS.getCode());
         res.setMessage(StatusEnum.SUCCESS.getMessage());
+        return res;
+    }
+
+    @Operation(summary = "Client fetch offline messages")
+    @RequestMapping(value = "fetchOfflineMsgs", method = RequestMethod.POST)
+    @ResponseBody()
+    @Override
+    public BaseResponse<NULLBody> fetchOfflineMsgs(@RequestBody OfflineMsgReqVO offlineMsgReqVO) {
+        BaseResponse<NULLBody> res = new BaseResponse();
+
+        try {
+            // Get the routing information of the user receiving the message
+            Optional<CIMServerResVO> cimServerResVO = accountService.loadRouteRelatedByUserId(offlineMsgReqVO.getReceiveUserId());
+
+            cimServerResVO.ifPresent(cimServerRes -> {
+                offlineMsgService.fetchOfflineMsgs(cimServerRes, offlineMsgReqVO.getReceiveUserId());
+            });
+
+            res.setCode(StatusEnum.SUCCESS.getCode());
+            res.setMessage(StatusEnum.SUCCESS.getMessage());
+
+        } catch (CIMException e) {
+            res.setCode(e.getErrorCode());
+            res.setMessage(e.getErrorMessage());
+        }
         return res;
     }
 }

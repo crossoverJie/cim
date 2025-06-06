@@ -67,6 +67,10 @@ public class CIMClientHandle extends SimpleChannelInboundHandler<Response> {
         if (msg.getCmd() != BaseCommand.PING) {
             String receiveUserId = msg.getPropertiesMap().get(Constants.MetaKey.RECEIVE_USER_ID);
             ClientImpl client = ClientImpl.getClientMap().get(Long.valueOf(receiveUserId));
+            if (client == null) {
+                log.error("client not found for userId: {}", receiveUserId);
+                return;
+            }
             // callback
             client.getConf().getCallbackThreadPool().execute(() -> {
                 log.info("client address: {} :{}", ctx.channel().remoteAddress(), client);

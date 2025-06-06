@@ -125,9 +125,7 @@ docker run --rm --name redis -d -p 6379:6379 redis:7.4.0
 ```shell
 git clone https://github.com/crossoverJie/cim.git
 cd cim
-mvn clean package -DskipTests=true
-cd cim-common
-mvn install -DskipTests=true
+mvn clean install -DskipTests=true
 cd cim-server && cim-client && cim-forward-route
 mvn clean package spring-boot:repackage -DskipTests=true
 ```

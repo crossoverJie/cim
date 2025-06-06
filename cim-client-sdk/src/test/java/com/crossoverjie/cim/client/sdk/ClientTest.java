@@ -15,6 +15,8 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
+
+import com.crossoverjie.cim.route.constant.Constant;
 import lombok.Cleanup;
 import lombok.extern.slf4j.Slf4j;
 import org.awaitility.Awaitility;
@@ -34,7 +36,7 @@ public class ClientTest extends AbstractRouteBaseTest {
     @Test
     public void groupChat() throws Exception {
         super.starSingleServer();
-        super.startRoute();
+        super.startRoute(Constant.OfflineStoreMode.REDIS);
         String routeUrl = "http://localhost:8083";
         String cj = "crossoverJie";
         String zs = "zs";
@@ -102,12 +104,14 @@ public class ClientTest extends AbstractRouteBaseTest {
         Awaitility.await().untilAsserted(
                 () -> Assertions.assertEquals(msg, client2Receive.get()));
         super.stopSingle();
+        client1.close();
+        client2.close();
     }
 
     @Test
     public void testP2PChat() throws Exception {
         super.starSingleServer();
-        super.startRoute();
+        super.startRoute(Constant.OfflineStoreMode.REDIS);
         String routeUrl = "http://localhost:8083";
         String cj = "cj";
         String zs = "zs";
@@ -238,7 +242,7 @@ public class ClientTest extends AbstractRouteBaseTest {
     @Test
     public void testReconnect() throws Exception {
         super.startTwoServer();
-        super.startRoute();
+        super.startRoute(Constant.OfflineStoreMode.REDIS);
 
         String routeUrl = "http://localhost:8083";
         String cj = "cj";
@@ -317,12 +321,14 @@ public class ClientTest extends AbstractRouteBaseTest {
         Awaitility.await()
                 .untilAsserted(() -> Assertions.assertEquals(msg, client2Receive.get()));
         super.stopTwoServer();
+        client1.close();
+        client2.close();
     }
 
     @Test
     public void offLineAndOnline() throws Exception {
         super.starSingleServer();
-        super.startRoute();
+        super.startRoute(Constant.OfflineStoreMode.REDIS);
         String routeUrl = "http://localhost:8083";
         String cj = "crossoverJie";
         String zs = "zs";
@@ -395,12 +401,14 @@ public class ClientTest extends AbstractRouteBaseTest {
                 () -> Assertions.assertEquals(msg, client2Receive.get()));
 
         super.stopSingle();
+        client1.close();
+        client2.close();
     }
 
     @Test
     public void testClose() throws Exception {
         super.starSingleServer();
-        super.startRoute();
+        super.startRoute(Constant.OfflineStoreMode.REDIS);
         String routeUrl = "http://localhost:8083";
         String cj = "crossoverJie";
         Long id = super.registerAccount(cj);
@@ -430,7 +438,7 @@ public class ClientTest extends AbstractRouteBaseTest {
     @Test
     public void testIncorrectUser() throws Exception {
         super.starSingleServer();
-        super.startRoute();
+        super.startRoute(Constant.OfflineStoreMode.REDIS);
         String routeUrl = "http://localhost:8083";
         String cj = "xx";
         long id = 100L;

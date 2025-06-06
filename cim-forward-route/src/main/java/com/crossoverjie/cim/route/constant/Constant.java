@@ -26,4 +26,17 @@ public final class Constant {
     public final static String LOGIN_STATUS_PREFIX = "login-status";
 
 
+    public final static class OfflineStoreMode {
+        /**
+         * redis
+         */
+        public final static String REDIS="redis";
+
+        /**
+         * mysql
+         */
+        public final static String MYSQL="mysql";
+    }
+
+
 }
