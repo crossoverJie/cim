@@ -13,5 +13,4 @@ public interface OfflineMsgLastSendRecordMapper {
 
     void saveLatestMessageId(@Param("receiveUserId") Long receiveUserId,@Param("lastMessageId") Long lastMessageId);
 
-    String getLatestMessageId(@Param("receiveUserId") Long receiveUserId);
 }

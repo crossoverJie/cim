@@ -11,12 +11,5 @@
                                  last_message_id = #{lastMessageId},
                                  updated_at = NOW()
     </insert>
-
-    <!-- 查询用户的最新消息ID -->
-    <select id="getLatestMessageId" resultType="java.lang.String">
-        SELECT last_message_id
-        FROM offline_msg_last_send_record
-        WHERE receive_user_id = #{receiveUserId}
-    </select>
 </mapper>
 
