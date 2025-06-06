@@ -9,6 +9,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.hash.Jackson2HashMapper;
 import org.springframework.util.CollectionUtils;
 
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -42,7 +43,9 @@ public class OfflineMsgBuffer implements OfflineMsgStore {
 
         Map<String, Object> hashMap = hashMapper.toHash(msg);
         redis.opsForHash().putAll(key, hashMap);
+        redis.expire(key, Duration.ofDays(7));
         redis.opsForList().rightPush(USER_IDX + msg.getReceiveUserId(), msg.getMessageId().toString());
+        redis.expire(USER_IDX + msg.getReceiveUserId(), Duration.ofDays(7));
     }
 
     @Override
