@@ -22,7 +22,7 @@ public class OfflineMsgStoreRouteBaseTest extends AbstractRouteBaseTest {
         SpringApplication route = new SpringApplication(RouteApplication.class);
         String[] args;
         if(Constant.OfflineStoreMode.MYSQL.equals(offlineModel)){
-            mysql = new MySQLContainer<>(DockerImageName.parse("mysql:8.0.31"))
+            mysql = new MySQLContainer<>(DockerImageName.parse("mysql:8.0.33"))
                     .withDatabaseName("cim-test")
                     .withUsername("cimUserName")
                     .withPassword("cimPassWord")
