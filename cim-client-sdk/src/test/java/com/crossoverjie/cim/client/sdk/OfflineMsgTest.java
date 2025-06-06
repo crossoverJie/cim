@@ -18,11 +18,9 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 
 @Slf4j
-@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class OfflineMsgTest extends OfflineMsgStoreRouteBaseTest {
 
     @Test
-    @Order(1)
     public void testP2POfflineChatRedis() throws Exception {
         super.starSingleServer();
         super.startRoute(Constant.OfflineStoreMode.REDIS);
@@ -134,14 +132,14 @@ public class OfflineMsgTest extends OfflineMsgStoreRouteBaseTest {
                 () -> Assertions.assertEquals(offlineMsg, client3Receive.get()));
 
         // close
-        super.stopSingle();
         client1.close();
         client3.close();
+        super.close();
+        super.stopSingle();
         Assertions.assertEquals(ClientImpl.getClientMap().size(), 0);
     }
 
     @Test
-    @Order(2)
     public void testP2POfflineChatMysql() throws Exception {
         super.starSingleServer();
         super.startRoute(Constant.OfflineStoreMode.MYSQL);
@@ -253,9 +251,10 @@ public class OfflineMsgTest extends OfflineMsgStoreRouteBaseTest {
                 () -> Assertions.assertEquals(offlineMsg, client3Receive.get()));
 
         // close
-        super.stopSingle();
         client1.close();
         client3.close();
+        super.close();
+        super.stopSingle();
         Assertions.assertEquals(ClientImpl.getClientMap().size(), 0);
     }
 }
