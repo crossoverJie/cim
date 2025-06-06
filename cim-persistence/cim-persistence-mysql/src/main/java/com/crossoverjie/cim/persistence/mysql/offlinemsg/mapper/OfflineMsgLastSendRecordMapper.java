@@ -11,6 +11,6 @@ import org.apache.ibatis.annotations.Param;
 @Mapper
 public interface OfflineMsgLastSendRecordMapper {
 
-    void saveLatestMessageId(@Param("receiveUserId") Long receiveUserId,@Param("lastMessageId") Long lastMessageId);
+    void saveLatestMessageId(@Param("receiveUserId") Long receiveUserId, @Param("lastMessageId") Long lastMessageId);
 
 }
