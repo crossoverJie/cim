@@ -17,7 +17,6 @@ import java.util.Map;
  * @date 2025/5/18
  * @description
  */
-@Service
 public class MapToJsonTypeHandler extends BaseTypeHandler<Map<String, String>> {
     private static final ObjectMapper objectMapper = new ObjectMapper();
 
