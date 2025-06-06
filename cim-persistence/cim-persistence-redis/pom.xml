@@ -20,12 +20,6 @@
             <artifactId>cim-persistence-api</artifactId>
             <version>${project.version}</version>
         </dependency>
-
-        <dependency>
-            <groupId>com.crossoverjie.netty</groupId>
-            <artifactId>cim-persistence-mysql</artifactId>
-            <version>${project.version}</version>
-        </dependency>
     </dependencies>
 
     <build>
