@@ -42,6 +42,8 @@ public class CIMClientHandle extends SimpleChannelInboundHandler<Response> {
     public void channelActive(ChannelHandlerContext ctx) {
         ClientImpl.getClient().getConf().getEvent().debug("ChannelActive");
         ClientImpl.getClient().setState(ClientState.State.Ready);
+
+        // 发送认证报文
     }
 
     @Override

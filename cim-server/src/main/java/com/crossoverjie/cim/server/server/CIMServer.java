@@ -15,16 +15,17 @@ import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
-import java.net.InetSocketAddress;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+
+import java.net.InetSocketAddress;
 
 /**
  * Function:
  *
  * @author crossoverJie
- *         Date: 21/05/2018 00:30
+ * Date: 21/05/2018 00:30
  * @since JDK 1.8
  */
 @Component
@@ -53,9 +54,10 @@ public class CIMServer {
                 .group(boss, work)
                 .channel(NioServerSocketChannel.class)
                 .localAddress(new InetSocketAddress(nettyPort))
+                .childOption(ChannelOption.TCP_NODELAY, Boolean.FALSE)
                 //保持长连接
                 .childOption(ChannelOption.SO_KEEPALIVE, true)
-                .childHandler(new CIMServerInitializer());
+                .childHandler(new CIMServerInitializer(Boolean.TRUE));
 
         ChannelFuture future = bootstrap.bind().sync();
         if (future.isSuccess()) {
@@ -77,9 +79,10 @@ public class CIMServer {
 
     /**
      * Push msg to client.
+     *
      * @param sendMsgReqVO 消息
      */
-    public void sendMsg(SendMsgReqVO sendMsgReqVO){
+    public void sendMsg(SendMsgReqVO sendMsgReqVO) {
         NioSocketChannel socketChannel = SessionSocketHolder.get(sendMsgReqVO.getUserId());
 
         if (null == socketChannel) {

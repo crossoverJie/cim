@@ -1,7 +1,9 @@
 package com.crossoverjie.cim.server.init;
 
+import com.crossoverjie.cim.common.enums.ChannelAttributeKeys;
 import com.crossoverjie.cim.common.protocol.Request;
 import com.crossoverjie.cim.server.handle.CIMServerHandle;
+import com.crossoverjie.cim.server.handle.ClientAuthHandler;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelInitializer;
 import io.netty.handler.codec.protobuf.ProtobufDecoder;
@@ -9,17 +11,28 @@ import io.netty.handler.codec.protobuf.ProtobufEncoder;
 import io.netty.handler.codec.protobuf.ProtobufVarint32FrameDecoder;
 import io.netty.handler.codec.protobuf.ProtobufVarint32LengthFieldPrepender;
 import io.netty.handler.timeout.IdleStateHandler;
+import org.apache.commons.lang3.BooleanUtils;
 
 /**
  * Function:
  *
  * @author crossoverJie
- *         Date: 17/05/2018 18:51
+ * Date: 17/05/2018 18:51
  * @since JDK 1.8
  */
 public class CIMServerInitializer extends ChannelInitializer<Channel> {
 
-    private final CIMServerHandle cimServerHandle = new CIMServerHandle() ;
+    private final CIMServerHandle cimServerHandle = new CIMServerHandle();
+
+
+    /**
+     * 是否开启连接鉴权
+     */
+    private final Boolean authInChannelActive;
+
+    public CIMServerInitializer(Boolean authInChannelActive) {
+        this.authInChannelActive = authInChannelActive;
+    }
 
     @Override
     protected void initChannel(Channel ch) throws Exception {
@@ -31,7 +44,13 @@ public class CIMServerInitializer extends ChannelInitializer<Channel> {
                 .addLast(new ProtobufVarint32FrameDecoder())
                 .addLast(new ProtobufDecoder(Request.getDefaultInstance()))
                 .addLast(new ProtobufVarint32LengthFieldPrepender())
-                .addLast(new ProtobufEncoder())
-                .addLast(cimServerHandle);
+                .addLast(new ProtobufEncoder());
+        // 链接鉴权的 Handler 高于服务端 Handler
+        if (BooleanUtils.isTrue(authInChannelActive)) {
+            ch.pipeline().addLast(new ClientAuthHandler());
+        } else {
+            ch.attr(ChannelAttributeKeys.AUTH_RES).set(Boolean.TRUE);
+        }
+        ch.pipeline().addLast(cimServerHandle);
     }
 }

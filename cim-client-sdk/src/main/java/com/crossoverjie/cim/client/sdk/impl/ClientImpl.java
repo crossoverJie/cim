@@ -1,6 +1,5 @@
 package com.crossoverjie.cim.client.sdk.impl;
 
-import static com.crossoverjie.cim.common.enums.StatusEnum.RECONNECT_FAIL;
 import com.crossoverjie.cim.client.sdk.Client;
 import com.crossoverjie.cim.client.sdk.ClientState;
 import com.crossoverjie.cim.client.sdk.ReConnectManager;
@@ -24,17 +23,15 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.util.concurrent.DefaultThreadFactory;
-import java.util.Optional;
-import java.util.Set;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.ThreadFactory;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
-import java.util.function.Consumer;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
+
+import java.util.Optional;
+import java.util.Set;
+import java.util.concurrent.*;
+import java.util.function.Consumer;
+
+import static com.crossoverjie.cim.common.enums.StatusEnum.RECONNECT_FAIL;
 
 @Slf4j
 public class ClientImpl extends ClientState implements Client {
@@ -160,7 +157,18 @@ public class ClientImpl extends ClientState implements Client {
                 .handler(new CIMClientHandleInitializer());
         ChannelFuture sync;
         try {
-            sync = bootstrap.connect(cimServer.getIp(), cimServer.getCimServerPort()).sync();
+            sync = bootstrap.connect(cimServer.getIp(), cimServer.getCimServerPort()).sync().addListener(new ChannelFutureListener() {
+                @Override
+                public void operationComplete(ChannelFuture future) throws Exception {
+                    Request authReq = Request.newBuilder()
+                            .setReqMsg(cimServer.getAuthToken())
+                            .build();
+
+                    // 客户端只管发送就好,认证失败会由服务端断开链接
+                    // TODO:会不会有消息提前发送
+                    future.channel().writeAndFlush(authReq);
+                }
+            });
             if (sync.isSuccess()) {
                 this.conf.getEvent().info("Start cim client success!");
                 channel = (SocketChannel) sync.channel();
@@ -190,6 +198,7 @@ public class ClientImpl extends ClientState implements Client {
      * 2. reconnect.
      * 3. shutdown reconnect job.
      * 4. reset reconnect state.
+     *
      * @throws Exception
      */
     public void reconnect() throws Exception {
