@@ -29,9 +29,8 @@ COPY wait-for-it.sh /wait-for-it.sh
 RUN chmod +x /wait-for-it.sh
 
 # copy java app
-# todo replace with github release link
-COPY cim-server-1.0.0-SNAPSHOT.jar /cim-server.jar
-COPY cim-forward-route-1.0.0-SNAPSHOT.jar /cim-route.jar
+ADD https://github.com/crossoverJie/cim/releases/download/v2.1.0/cim-server-1.0.0-SNAPSHOT.jar /cim-server.jar
+ADD https://github.com/crossoverJie/cim/releases/download/v2.1.0/cim-forward-route-1.0.0-SNAPSHOT.jar /cim-route.jar
 
 RUN mkdir -p /var/log/supervisor
 COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf

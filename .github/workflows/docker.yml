@@ -38,7 +38,7 @@ jobs:
           platforms: linux/amd64,linux/arm64,linux/arm/v7
           push: true
           tags: |
-            ghcr.io/${{ github.repository_owner }}/allin1-ubuntu:latest
-            ghcr.io/${{ github.repository_owner }}/allin1-ubuntu:${{ github.run_id }}
+            ghcr.io/crossoverjie/allin1-ubuntu:latest
+            ghcr.io/crossoverjie/allin1-ubuntu:${{ github.run_id }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
