@@ -108,8 +108,8 @@ IM client terminal, a command can be started and initiated to communicate with o
 Use allin1 docker to start the server:
 
 ```shell
-docker pull crossoverjie/cim-allin1:latest
-docker run -p 2181:2181 -p 6379:6379 -p 8083:8083 --rm --name cim-allin1  crossoverjie/cim-allin1:latest
+docker pull docker pull ghcr.io/crossoverjie/allin1-ubuntu:latest
+docker run -p 2181:2181 -p 6379:6379 -p 8083:8083 --rm --name cim-allin1  ghcr.io/crossoverjie/allin1-ubuntu:latest
 ```
 
 ### Build in local
