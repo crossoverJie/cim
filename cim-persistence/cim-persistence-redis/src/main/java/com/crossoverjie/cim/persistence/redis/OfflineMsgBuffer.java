@@ -1,23 +1,20 @@
 package com.crossoverjie.cim.persistence.redis;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.TypeReference;
+import com.crossoverjie.cim.common.enums.StatusEnum;
+import com.crossoverjie.cim.common.exception.CIMException;
 import com.crossoverjie.cim.persistence.api.pojo.OfflineMsg;
 import com.crossoverjie.cim.persistence.api.service.OfflineMsgStore;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.crossoverjie.cim.persistence.redis.kit.OfflineMsgScriptExecutor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.hash.Jackson2HashMapper;
 import org.springframework.util.CollectionUtils;
 
-import java.time.Duration;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
-import static com.crossoverjie.cim.common.constant.Constants.OFFLINE_MSG_DELIVERED;
-import static com.crossoverjie.cim.common.constant.Constants.OFFLINE_MSG_PENDING;
+import static com.crossoverjie.cim.persistence.redis.constant.Constant.*;
+
 
 /**
  * @author zhongcanyu
@@ -27,57 +24,48 @@ import static com.crossoverjie.cim.common.constant.Constants.OFFLINE_MSG_PENDING
 @Slf4j
 public class OfflineMsgBuffer implements OfflineMsgStore {
 
-    private static final String MSG_KEY = "offline:msg:";
-    private static final String USER_IDX = "offline:msg:user:";
+    private final int messageTtlDays;
+    private final OfflineMsgScriptExecutor scriptExecutor;
 
-    @Autowired
-    private RedisTemplate<String, Object> redis;
-    @Autowired
-    private ObjectMapper mapper;
-    @Autowired
-    private Jackson2HashMapper hashMapper;
+    public OfflineMsgBuffer(OfflineMsgScriptExecutor scriptExecutor, Integer configuredDays) {
+        this.messageTtlDays = ensureValidTtlOrDefault(configuredDays);
+        this.scriptExecutor = scriptExecutor;
+    }
+
+    private int ensureValidTtlOrDefault(Integer configuredDays) {
+        return (configuredDays != null && configuredDays > 0) ? configuredDays : OFFLINE_MSG_TTL_DAYS;
+    }
 
     @Override
     public void save(OfflineMsg msg) {
-        String key = MSG_KEY + msg.getMessageId();
-
-        Map<String, Object> hashMap = hashMapper.toHash(msg);
-        redis.opsForHash().putAll(key, hashMap);
-        redis.expire(key, Duration.ofDays(7));
-        redis.opsForList().rightPush(USER_IDX + msg.getReceiveUserId(), msg.getMessageId().toString());
-        redis.expire(USER_IDX + msg.getReceiveUserId(), Duration.ofDays(7));
+        try {
+            scriptExecutor.saveOfflineMsg(msg, messageTtlDays);
+        } catch (Exception e) {
+            throw new CIMException(StatusEnum.OFFLINE_MESSAGE_STORAGE_ERROR);
+        }
     }
 
     @Override
     public List<OfflineMsg> fetch(Long userId) {
-        String idxKey = USER_IDX + userId;
-        List<String> ids = redis.opsForList().range(idxKey, 0, -1)
-                .stream()
-                .map(Object::toString)
-                .collect(Collectors.toList());
-        if (CollectionUtils.isEmpty(ids))
-            return Collections.emptyList();
-
-        List<OfflineMsg> offlineMsgs = new ArrayList<>();
-        for (String id : ids) {
-            String key = MSG_KEY + id;
-            Map<Object, Object> map = redis.opsForHash().entries(key);
-            if (!map.isEmpty()) {
-                OfflineMsg msg = mapper.convertValue(map, OfflineMsg.class);
-                offlineMsgs.add(msg);
-            }
+        try {
+            List<String> jsonResult = scriptExecutor.fetchOfflineMsgs(userId, FETCH_OFFLINE_MSG_SIZE);
+            List<OfflineMsg> offlineMsgs = jsonResult.stream().map(json -> JSON.parseObject(json, new TypeReference<OfflineMsg>() {
+            })).collect(Collectors.toList());
+            return offlineMsgs;
+        } catch (Exception e) {
+            throw new CIMException(StatusEnum.OFFLINE_MESSAGE_FETCH_ERROR);
         }
-        offlineMsgs = offlineMsgs.stream().filter(msg -> OFFLINE_MSG_PENDING.equals(msg.getStatus())).collect(Collectors.toList());
-        return offlineMsgs;
     }
 
     @Override
     public void markDelivered(Long userId, List<Long> messageIds) {
-        messageIds.stream().forEach(messageId -> {
-            String key = MSG_KEY + messageId;
-            if (Boolean.TRUE.equals(redis.hasKey(key))) {
-                redis.opsForHash().put(key, "status", OFFLINE_MSG_DELIVERED);
-            }
-        });
+        if (CollectionUtils.isEmpty(messageIds)) {
+            return;
+        }
+        try {
+            scriptExecutor.deleteOfflineMsg(userId, messageIds);
+        } catch (Exception e) {
+            throw new CIMException(StatusEnum.OFFLINE_MESSAGE_DELETE_ERROR);
+        }
     }
 }

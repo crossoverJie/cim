@@ -35,9 +35,9 @@ public enum StatusEnum {
 
     OFFLINE_MESSAGE_STORAGE_ERROR("9200", "Offline message storage error!"),
 
-    OFFLINE_MESSAGE_RETRIEVAL_ERROR("9201", "Offline message retrieval error!"),
+    OFFLINE_MESSAGE_FETCH_ERROR("9201", "Offline message fetch error!"),
 
-    OFFLINE_MESSAGE_DELIVERY_ERROR("9202", "Offline message delivery error!"),
+    OFFLINE_MESSAGE_DELETE_ERROR("9202", "Offline message delete error!"),
 
     ;
 
