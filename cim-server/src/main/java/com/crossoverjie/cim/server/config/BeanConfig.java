@@ -6,6 +6,7 @@ import com.crossoverjie.cim.common.metastore.ZkMetaStoreImpl;
 import com.crossoverjie.cim.common.protocol.BaseCommand;
 import com.crossoverjie.cim.common.protocol.Request;
 import com.crossoverjie.cim.route.api.RouteApi;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.annotation.Resource;
 import java.util.concurrent.TimeUnit;
 import okhttp3.OkHttpClient;
@@ -43,7 +44,6 @@ public class BeanConfig {
     public MetaStore metaStore() {
         return new ZkMetaStoreImpl();
     }
-
 
     /**
      * 创建心跳单例

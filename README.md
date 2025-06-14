@@ -24,7 +24,7 @@
 - [ ] Support single node startup(Contains no components).
 - [ ] Third-party components support replacement(Redis/Zookeeper, etc.).
 - [ ] Support web client(websocket).
-- [ ] Support docker container.
+- [x] Support docker container.
 - [ ] Support kubernetes operation.
 - [ ] Supports binary client(build with golang).
 
@@ -103,7 +103,17 @@ IM client terminal, a command can be started and initiated to communicate with o
 - Server push message to Client2
 
 
-## 快速启动
+## Quick start
+
+Use allin1 docker to start the server:
+
+```shell
+docker pull docker pull ghcr.io/crossoverjie/allin1-ubuntu:latest
+docker run -p 2181:2181 -p 6379:6379 -p 8083:8083 --rm --name cim-allin1  ghcr.io/crossoverjie/allin1-ubuntu:latest
+```
+
+### Build in local
+```shell
 
 首先需要安装 `Zookeeper、Redis` 并保证网络通畅。
 
@@ -115,7 +125,7 @@ docker run --rm --name redis -d -p 6379:6379 redis:7.4.0
 ```shell
 git clone https://github.com/crossoverJie/cim.git
 cd cim
-mvn clean package -DskipTests=true
+mvn clean install -DskipTests=true
 cd cim-server && cim-client && cim-forward-route
 mvn clean package spring-boot:repackage -DskipTests=true
 ```

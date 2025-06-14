@@ -3,10 +3,12 @@ package com.crossoverjie.cim.route.service;
 import com.crossoverjie.cim.common.enums.StatusEnum;
 import com.crossoverjie.cim.route.api.vo.req.ChatReqVO;
 import com.crossoverjie.cim.route.api.vo.req.LoginReqVO;
+import com.crossoverjie.cim.route.api.vo.req.P2PReqVO;
 import com.crossoverjie.cim.route.api.vo.res.CIMServerResVO;
 import com.crossoverjie.cim.route.api.vo.res.RegisterInfoResVO;
 
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * Function: 账户服务
@@ -48,11 +50,11 @@ public interface AccountService {
     Map<Long, CIMServerResVO> loadRouteRelated() ;
 
     /**
-     * 获取某个用户的路有关系
+     * Get user route info
      * @param userId
-     * @return 获取某个用户的路有关系
+     * @return route info
      */
-    CIMServerResVO loadRouteRelatedByUserId(Long userId) ;
+    Optional<CIMServerResVO> loadRouteRelatedByUserId(Long userId) ;
 
 
     /**
@@ -70,4 +72,7 @@ public interface AccountService {
      * @throws Exception
      */
     void offLine(Long userId);
+
+
+
 }

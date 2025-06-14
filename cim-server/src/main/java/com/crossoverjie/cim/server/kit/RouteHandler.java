@@ -61,7 +61,7 @@ public class RouteHandler {
      * @throws IOException
      */
     public void clearRouteInfo(CIMUserInfo userInfo) {
-        ChatReqVO vo = new ChatReqVO(userInfo.getUserId(), userInfo.getUserName());
+        ChatReqVO vo = new ChatReqVO(userInfo.getUserId(), userInfo.getUserName(), null);
         routeApi.offLine(vo);
     }
 

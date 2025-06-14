@@ -1,26 +1,21 @@
 package com.crossoverjie.cim.route.service.impl;
 
 import com.crossoverjie.cim.common.constant.Constants;
-import com.crossoverjie.cim.common.core.proxy.RpcProxyManager;
 import com.crossoverjie.cim.common.enums.StatusEnum;
-import com.crossoverjie.cim.common.exception.CIMException;
 import com.crossoverjie.cim.common.pojo.CIMUserInfo;
 import com.crossoverjie.cim.common.pojo.RouteInfo;
+import com.crossoverjie.cim.common.protocol.BaseCommand;
 import com.crossoverjie.cim.common.util.RouteInfoParseUtil;
 import com.crossoverjie.cim.route.api.vo.req.ChatReqVO;
 import com.crossoverjie.cim.route.api.vo.req.LoginReqVO;
 import com.crossoverjie.cim.route.api.vo.res.CIMServerResVO;
 import com.crossoverjie.cim.route.api.vo.res.RegisterInfoResVO;
-import com.crossoverjie.cim.route.constant.Constant;
 import com.crossoverjie.cim.route.service.AccountService;
 import com.crossoverjie.cim.route.service.UserInfoCacheService;
 import com.crossoverjie.cim.server.api.ServerApi;
 import com.crossoverjie.cim.server.api.vo.req.SendMsgReqVO;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
-import okhttp3.OkHttpClient;
-import okhttp3.Response;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.redis.connection.RedisConnection;
 import org.springframework.data.redis.core.Cursor;
@@ -36,7 +31,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-import static com.crossoverjie.cim.common.enums.StatusEnum.OFF_LINE;
 import static com.crossoverjie.cim.route.constant.Constant.*;
 
 /**
@@ -131,17 +125,17 @@ public class AccountServiceRedisImpl implements AccountService {
     }
 
     @Override
-    public CIMServerResVO loadRouteRelatedByUserId(Long userId) {
+    public Optional<CIMServerResVO> loadRouteRelatedByUserId(Long userId) {
         String value = redisTemplate.opsForValue().get(ROUTE_PREFIX + userId);
 
         if (value == null) {
-            throw new CIMException(OFF_LINE);
+            return Optional.empty();
         }
 
         RouteInfo parse = RouteInfoParseUtil.parse(value);
         CIMServerResVO cimServerResVO =
                 new CIMServerResVO(parse.getIp(), parse.getCimServerPort(), parse.getHttpPort());
-        return cimServerResVO;
+        return Optional.of(cimServerResVO);
     }
 
     private void parseServerInfo(Map<Long, CIMServerResVO> routes, String key) {
@@ -155,16 +149,17 @@ public class AccountServiceRedisImpl implements AccountService {
 
 
     @Override
-    public void pushMsg(CIMServerResVO cimServerResVO, long sendUserId, ChatReqVO groupReqVO) {
+    public void pushMsg(CIMServerResVO cimServerResVO, long sendUserId, ChatReqVO chatReqVO) {
         Optional<CIMUserInfo> cimUserInfo = userInfoCacheService.loadUserInfoByUserId(sendUserId);
 
-        cimUserInfo.ifPresent(userInfo -> {
+        cimUserInfo.ifPresent(sendUserInfo -> {
             String url = "http://" + cimServerResVO.getIp() + ":" + cimServerResVO.getHttpPort();
             SendMsgReqVO vo =
-                    new SendMsgReqVO(groupReqVO.getMsg(), groupReqVO.getUserId());
+                    new SendMsgReqVO(chatReqVO.getMsg(), chatReqVO.getUserId(), chatReqVO.getBatchMsg(), BaseCommand.MESSAGE);
             vo.setProperties(Map.of(
-                    Constants.MetaKey.USER_ID, String.valueOf(sendUserId),
-                    Constants.MetaKey.USER_NAME, userInfo.getUserName())
+                    Constants.MetaKey.SEND_USER_ID, String.valueOf(sendUserId),
+                    Constants.MetaKey.SEND_USER_NAME, sendUserInfo.getUserName(),
+                    Constants.MetaKey.RECEIVE_USER_ID, String.valueOf(chatReqVO.getUserId()))
             );
             serverApi.sendMsg(vo, url);
 

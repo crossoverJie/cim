@@ -17,14 +17,15 @@ public abstract class AbstractRouteBaseTest extends AbstractServerBaseTest {
     @Container
     RedisContainer redis = new RedisContainer(DockerImageName.parse("redis:7.4.0"));
 
-    private ConfigurableApplicationContext run;
-    public void startRoute() {
+    protected ConfigurableApplicationContext run;
+    public void startRoute(String offlineModel) {
         redis.start();
         SpringApplication route = new SpringApplication(RouteApplication.class);
         String[] args = new String[]{
                 "--spring.data.redis.host=" + redis.getHost(),
                 "--spring.data.redis.port=" + redis.getMappedPort(6379),
                 "--app.zk.addr=" + super.getZookeeperAddr(),
+                "--offline.store.model=" + offlineModel,
         };
         route.setAdditionalProfiles("route");
         run = route.run(args);

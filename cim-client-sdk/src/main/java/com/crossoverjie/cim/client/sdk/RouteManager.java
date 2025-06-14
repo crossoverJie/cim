@@ -10,6 +10,7 @@ import com.crossoverjie.cim.common.res.NULLBody;
 import com.crossoverjie.cim.route.api.RouteApi;
 import com.crossoverjie.cim.route.api.vo.req.ChatReqVO;
 import com.crossoverjie.cim.route.api.vo.req.LoginReqVO;
+import com.crossoverjie.cim.route.api.vo.req.OfflineMsgReqVO;
 import com.crossoverjie.cim.route.api.vo.req.P2PReqVO;
 import com.crossoverjie.cim.route.api.vo.res.CIMServerResVO;
 import java.util.Optional;
@@ -70,12 +71,17 @@ public class RouteManager {
     }
 
     public void offLine(Long userId) {
-        ChatReqVO vo = new ChatReqVO(userId, "offLine");
+        ChatReqVO vo = new ChatReqVO(userId, "offLine", null);
         routeApi.offLine(vo);
     }
 
     public Set<CIMUserInfo> onlineUser() throws Exception {
         BaseResponse<Set<CIMUserInfo>> onlineUsersResVO = routeApi.onlineUser();
         return onlineUsersResVO.getDataBody();
+    }
+
+    public void fetchOfflineMsgs(Long userId){
+        OfflineMsgReqVO offlineMsgReqVO = OfflineMsgReqVO.builder().receiveUserId(userId).build();
+        routeApi.fetchOfflineMsgs(offlineMsgReqVO);
     }
 }

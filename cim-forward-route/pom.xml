@@ -25,6 +25,24 @@
 
         <dependency>
             <groupId>com.crossoverjie.netty</groupId>
+            <artifactId>cim-persistence-api</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.crossoverjie.netty</groupId>
+            <artifactId>cim-persistence-mysql</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.crossoverjie.netty</groupId>
+            <artifactId>cim-persistence-redis</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.crossoverjie.netty</groupId>
             <artifactId>cim-common</artifactId>
         </dependency>
 
@@ -74,6 +92,12 @@
         <dependency>
             <groupId>com.redis</groupId>
             <artifactId>testcontainers-redis</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.testcontainers</groupId>
+            <artifactId>mysql</artifactId>
             <scope>test</scope>
         </dependency>
 

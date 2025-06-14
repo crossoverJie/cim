@@ -23,14 +23,14 @@ cim:
   route:
     url: http://localhost:8083 # route url suggested that this is Nginx address
   user: # cim userId and userName
-    id: 1725714450795
-    userName: cj4
+    id: 1747309836375
+    userName: yuge
   callback:
     thread:
       queue:
-        size: 2
+        size: 10
       pool:
-        size: 2
+        size: 1
   heartbeat:
     time: 60 # cim heartbeat time (seconds)
   reconnect:

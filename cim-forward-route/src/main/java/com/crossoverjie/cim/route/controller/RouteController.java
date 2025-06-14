@@ -12,15 +12,14 @@ import com.crossoverjie.cim.common.res.NULLBody;
 import com.crossoverjie.cim.common.route.algorithm.RouteHandle;
 import com.crossoverjie.cim.common.util.RouteInfoParseUtil;
 import com.crossoverjie.cim.route.api.RouteApi;
-import com.crossoverjie.cim.route.api.vo.req.ChatReqVO;
-import com.crossoverjie.cim.route.api.vo.req.LoginReqVO;
-import com.crossoverjie.cim.route.api.vo.req.P2PReqVO;
-import com.crossoverjie.cim.route.api.vo.req.RegisterInfoReqVO;
+import com.crossoverjie.cim.route.api.vo.req.*;
 import com.crossoverjie.cim.route.api.vo.res.CIMServerResVO;
 import com.crossoverjie.cim.route.api.vo.res.RegisterInfoResVO;
 import com.crossoverjie.cim.route.service.AccountService;
 import com.crossoverjie.cim.route.service.CommonBizService;
+import com.crossoverjie.cim.route.service.OfflineMsgService;
 import com.crossoverjie.cim.route.service.UserInfoCacheService;
+import com.crossoverjie.cim.server.api.ServerApi;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
@@ -34,6 +33,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+
+import static com.crossoverjie.cim.common.enums.StatusEnum.OFF_LINE;
 
 /**
  * Function:
@@ -62,6 +63,13 @@ public class RouteController implements RouteApi {
     @Resource
     private RouteHandle routeHandle;
 
+    @Resource
+    private ServerApi serverApi;
+
+    @Resource
+    private OfflineMsgService offlineMsgService;
+
+
     @Operation(summary = "群聊 API")
     @RequestMapping(value = "groupRoute", method = RequestMethod.POST)
     @ResponseBody()
@@ -83,7 +91,7 @@ public class RouteController implements RouteApi {
             }
 
             // Push message
-            ChatReqVO chatVO = new ChatReqVO(userId, groupReqVO.getMsg());
+            ChatReqVO chatVO = new ChatReqVO(userId, groupReqVO.getMsg(), null);
             accountService.pushMsg(cimServerResVO, groupReqVO.getUserId(), chatVO);
 
         }
@@ -109,11 +117,16 @@ public class RouteController implements RouteApi {
 
         try {
             //获取接收消息用户的路由信息
-            CIMServerResVO cimServerResVO = accountService.loadRouteRelatedByUserId(p2pRequest.getReceiveUserId());
+            Optional<CIMServerResVO> cimServerResVO = accountService.loadRouteRelatedByUserId(p2pRequest.getReceiveUserId());
+            if (cimServerResVO.isEmpty()) {
+                log.warn("userId={} not online, save offline msg", p2pRequest.getReceiveUserId());
+                offlineMsgService.saveOfflineMsg(p2pRequest);
+                throw new CIMException(OFF_LINE);
+            }
 
             //p2pRequest.getReceiveUserId()==>消息接收者的 userID
-            ChatReqVO chatVO = new ChatReqVO(p2pRequest.getReceiveUserId(), p2pRequest.getMsg());
-            accountService.pushMsg(cimServerResVO, p2pRequest.getUserId(), chatVO);
+            ChatReqVO chatVO = new ChatReqVO(p2pRequest.getReceiveUserId(), p2pRequest.getMsg(), p2pRequest.getBatchMsg());
+            accountService.pushMsg(cimServerResVO.get(), p2pRequest.getUserId(), chatVO);
 
             res.setCode(StatusEnum.SUCCESS.getCode());
             res.setMessage(StatusEnum.SUCCESS.getMessage());
@@ -130,14 +143,14 @@ public class RouteController implements RouteApi {
     @RequestMapping(value = "offLine", method = RequestMethod.POST)
     @ResponseBody()
     @Override
-    public BaseResponse<NULLBody> offLine(@RequestBody ChatReqVO groupReqVO) {
+    public BaseResponse<NULLBody> offLine(@RequestBody ChatReqVO chatReqVO) {
         BaseResponse<NULLBody> res = new BaseResponse();
 
-        Optional<CIMUserInfo> cimUserInfo = userInfoCacheService.loadUserInfoByUserId(groupReqVO.getUserId());
+        Optional<CIMUserInfo> cimUserInfo = userInfoCacheService.loadUserInfoByUserId(chatReqVO.getUserId());
 
         cimUserInfo.ifPresent(userInfo -> {
-            log.info("user [{}] offline!", userInfo.toString());
-            accountService.offLine(groupReqVO.getUserId());
+            log.info("user [{}] offline!", userInfo);
+            accountService.offLine(chatReqVO.getUserId());
         });
 
         res.setCode(StatusEnum.SUCCESS.getCode());
@@ -228,6 +241,31 @@ public class RouteController implements RouteApi {
         res.setDataBody(cimUserInfos);
         res.setCode(StatusEnum.SUCCESS.getCode());
         res.setMessage(StatusEnum.SUCCESS.getMessage());
+        return res;
+    }
+
+    @Operation(summary = "Client fetch offline messages")
+    @RequestMapping(value = "fetchOfflineMsgs", method = RequestMethod.POST)
+    @ResponseBody()
+    @Override
+    public BaseResponse<NULLBody> fetchOfflineMsgs(@RequestBody OfflineMsgReqVO offlineMsgReqVO) {
+        BaseResponse<NULLBody> res = new BaseResponse();
+
+        try {
+            // Get the routing information of the user receiving the message
+            Optional<CIMServerResVO> cimServerResVO = accountService.loadRouteRelatedByUserId(offlineMsgReqVO.getReceiveUserId());
+
+            cimServerResVO.ifPresent(cimServerRes -> {
+                offlineMsgService.fetchOfflineMsgs(cimServerRes, offlineMsgReqVO.getReceiveUserId());
+            });
+
+            res.setCode(StatusEnum.SUCCESS.getCode());
+            res.setMessage(StatusEnum.SUCCESS.getMessage());
+
+        } catch (CIMException e) {
+            res.setCode(e.getErrorCode());
+            res.setMessage(e.getErrorMessage());
+        }
         return res;
     }
 }
