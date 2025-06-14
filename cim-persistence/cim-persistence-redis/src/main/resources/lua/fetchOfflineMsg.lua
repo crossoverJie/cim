@@ -1,7 +1,7 @@
-local userId = KEYS[1]
-local rangeSize = ARGV[1]
-local msgPrefix = "offline:msg:"
-local userIdxPrefix = "offline:msg:user:"
+local userId = ARGV[1]
+local rangeSize = ARGV[2]
+local msgPrefix = KEYS[1]
+local userIdxPrefix = KEYS[2]
 local userListKey = userIdxPrefix .. userId
 
 local ids = redis.call('LRANGE', userListKey, 0, rangeSize - 1)
