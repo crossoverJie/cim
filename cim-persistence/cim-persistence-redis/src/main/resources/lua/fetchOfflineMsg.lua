@@ -1,0 +1,18 @@
+local userId = KEYS[1]
+local rangeSize = ARGV[1]
+local msgPrefix = "offline:msg:"
+local userIdxPrefix = "offline:msg:user:"
+local userListKey = userIdxPrefix .. userId
+
+local ids = redis.call('LRANGE', userListKey, 0, rangeSize - 1)
+
+local result = {}
+for i, id in ipairs(ids) do
+  local msgKey = msgPrefix .. id
+  local serializedMsg = redis.call('GET', msgKey)
+
+  if serializedMsg then
+    table.insert(result, serializedMsg)
+  end
+end
+return result
