@@ -15,7 +15,7 @@ public enum RegistryType {
 
     private final String memo;
 
-    RegistryType(String memo, String code) {
+    RegistryType(String code, String memo) {
         this.memo = memo;
         this.code = code;
     }
