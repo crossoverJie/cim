@@ -24,6 +24,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -173,28 +174,31 @@ public class RouteController implements RouteApi {
         StatusEnum status = accountService.login(loginReqVO);
         res.setCode(status.getCode());
         res.setMessage(status.getMessage());
-        if (status != StatusEnum.SUCCESS) {
+        if (status != StatusEnum.SUCCESS && status != StatusEnum.REPEAT_LOGIN) {
             return res;
         }
 
         // check server available
+        RouteInfo routeInfo = new RouteInfo();
         Set<String> availableServerList = metaStore.getAvailableServerList();
-        String key = String.valueOf(loginReqVO.getUserId());
-        String server =
-                routeHandle.routeServer(List.copyOf(availableServerList), key);
-        log.info("userInfo=[{}] route server info=[{}]", loginReqVO, server);
+        if (!CollectionUtils.isEmpty(availableServerList)) {
+            String key = String.valueOf(loginReqVO.getUserId());
+            String server =
+                    routeHandle.routeServer(List.copyOf(availableServerList), key);
+            log.info("userInfo=[{}] route server info=[{}]", loginReqVO, server);
 
-        RouteInfo routeInfo = RouteInfoParseUtil.parse(server);
-        routeInfo = commonBizService.checkServerAvailable(routeInfo, key);
+            routeInfo = RouteInfoParseUtil.parse(server);
+            routeInfo = commonBizService.checkServerAvailable(routeInfo, key);
 
-        //保存路由信息
-        accountService.saveRouteInfo(loginReqVO, server);
+            //保存路由信息
+            accountService.saveRouteInfo(loginReqVO, server);
+        }
 
         // 颁发认证 Token
         PayloadVO pv = new PayloadVO();
         pv.setUserId(loginReqVO.getUserId());
         pv.setUserName(loginReqVO.getUserName());
-        final String token = JwtUtils.generateToken(pv);
+        final String token = JwtUtils.generateToken(loginReqVO.getUserId(),pv);
 
         CIMServerResVO vo =
                 new CIMServerResVO(routeInfo.getIp(), routeInfo.getCimServerPort(), routeInfo.getHttpPort(), token);

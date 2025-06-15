@@ -19,4 +19,7 @@ public final class RouteInfo {
     private String ip ;
     private Integer cimServerPort;
     private Integer httpPort;
+
+    public RouteInfo() {
+    }
 }

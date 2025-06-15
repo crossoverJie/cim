@@ -1,12 +1,6 @@
 package com.crossoverjie.cim.client.sdk.impl;
 
-import static com.crossoverjie.cim.common.enums.StatusEnum.RECONNECT_FAIL;
-
-import com.crossoverjie.cim.client.sdk.Client;
-import com.crossoverjie.cim.client.sdk.ClientState;
-import com.crossoverjie.cim.client.sdk.FetchOfflineMsgJob;
-import com.crossoverjie.cim.client.sdk.ReConnectManager;
-import com.crossoverjie.cim.client.sdk.RouteManager;
+import com.crossoverjie.cim.client.sdk.*;
 import com.crossoverjie.cim.client.sdk.io.CIMClientHandleInitializer;
 import com.crossoverjie.cim.common.data.construct.RingBufferWheel;
 import com.crossoverjie.cim.common.exception.CIMException;
@@ -29,9 +23,10 @@ import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.util.concurrent.DefaultThreadFactory;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
-
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.*;
@@ -136,16 +131,23 @@ public class ClientImpl extends ClientState implements Client {
      */
     private CompletableFuture<Boolean> doConnectServer() {
         CompletableFuture<Boolean> future = new CompletableFuture<>();
-        this.userLogin(future).ifPresentOrElse((cimServer) -> {
-            this.doConnectServer(cimServer, future);
-            this.loginServer();
-            this.serverInfo = cimServer;
-            future.complete(true);
-        }, () -> {
-            this.conf.getEvent().error("Login fail!, cannot get server info!");
-            this.conf.getEvent().fatal(this);
-            future.complete(false);
-        });
+        this.userLogin(future) // 从路由服务中获取链接信息
+                .ifPresentOrElse((cimServer) -> {
+                    if (StringUtils.isBlank(cimServer.getAuthToken())) {
+                        future.complete(false);
+                        this.conf.getEvent().error("Login fail!, auth token is blank!");
+                        this.conf.getEvent().fatal(this);
+                        return;
+                    }
+                    getAuth().setAuthToken(cimServer.getAuthToken());
+                    this.doConnectServer(future);
+                    this.loginServer();
+                    future.complete(true);
+                }, () -> {
+                    this.conf.getEvent().error("Login fail!, cannot get server info!");
+                    this.conf.getEvent().fatal(this);
+                    future.complete(false);
+                });
         return future;
     }
 
@@ -160,8 +162,7 @@ public class ClientImpl extends ClientState implements Client {
 
         CIMServerResVO cimServer = null;
         try {
-            cimServer = routeManager.getServer(loginReqVO);
-            log.info("cimServer=[{}]", cimServer);
+            serverInfo = cimServer = routeManager.getServer(loginReqVO);
         } catch (Exception e) {
             log.error("login fail", e);
             future.completeExceptionally(e);
@@ -171,25 +172,21 @@ public class ClientImpl extends ClientState implements Client {
 
     private final EventLoopGroup group = new NioEventLoopGroup(0, new DefaultThreadFactory("cim-work"));
 
-    private void doConnectServer(CIMServerResVO cimServer, CompletableFuture<Boolean> future) {
+    private void doConnectServer(CompletableFuture<Boolean> future) {
         Bootstrap bootstrap = new Bootstrap();
         bootstrap.group(group)
                 .channel(NioSocketChannel.class)
-                .handler(new CIMClientHandleInitializer());
+                .handler(new CIMClientHandleInitializer(Boolean.TRUE, getAuth()));
         ChannelFuture sync;
         try {
-            sync = bootstrap.connect(cimServer.getIp(), cimServer.getCimServerPort()).sync().addListener(new ChannelFutureListener() {
-                @Override
-                public void operationComplete(ChannelFuture future) throws Exception {
-                    Request authReq = Request.newBuilder()
-                            .setReqMsg(cimServer.getAuthToken())
-                            .build();
-
-                    // 客户端只管发送就好,认证失败会由服务端断开链接
-                    // TODO:会不会有消息提前发送
-                    future.channel().writeAndFlush(authReq);
-                }
-            });
+            final String host = getHost();
+            final Integer port = getPort();
+            if (StringUtils.isBlank(host) || Objects.isNull(port)) {
+                this.conf.getEvent().error("cim server host or port is null");
+                future.complete(false);
+                return;
+            }
+            sync = bootstrap.connect(host, port).sync();
             if (sync.isSuccess()) {
                 this.conf.getEvent().info("Start cim client success!");
                 channel = (SocketChannel) sync.channel();
@@ -215,7 +212,7 @@ public class ClientImpl extends ClientState implements Client {
     }
 
     /**
-     * 1. clear route information.
+     * . clear route information.
      * 2. reconnect.
      * 3. shutdown reconnect job.
      * 4. reset reconnect state.
@@ -251,6 +248,17 @@ public class ClientImpl extends ClientState implements Client {
         this.routeManager.offLine(this.getAuth().getUserId());
         this.clientMap.remove(this.getAuth().getUserId());
         ringBufferWheel.stop(true);
+    }
+
+    @Override
+    public String getHost() {
+        // 优先使用直连的方式
+        return StringUtils.isNoneBlank(conf.getHost()) ? conf.getHost() : serverInfo.getIp();
+    }
+
+    @Override
+    public Integer getPort() {
+        return Objects.nonNull(conf.getServerPort()) ? conf.getServerPort() : serverInfo.getCimServerPort();
     }
 
     @Override

@@ -1,29 +1,51 @@
 package com.crossoverjie.cim.client.sdk.io;
 
+import com.crossoverjie.cim.client.sdk.impl.ClientConfigurationData;
+import com.crossoverjie.cim.common.handler.ChannelInboundDebugHandler;
+import com.crossoverjie.cim.common.handler.ChannelOutboundDebugHandler;
 import com.crossoverjie.cim.common.protocol.Response;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelInitializer;
+import io.netty.channel.ChannelPipeline;
 import io.netty.handler.codec.protobuf.ProtobufDecoder;
 import io.netty.handler.codec.protobuf.ProtobufEncoder;
 import io.netty.handler.codec.protobuf.ProtobufVarint32FrameDecoder;
 import io.netty.handler.codec.protobuf.ProtobufVarint32LengthFieldPrepender;
 import io.netty.handler.timeout.IdleStateHandler;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 public class CIMClientHandleInitializer extends ChannelInitializer<Channel> {
 
-    private final CIMClientHandle cimClientHandle = new CIMClientHandle();
+    private final Boolean debug;
+
+    private final ClientConfigurationData.Auth auth;
+
+    public CIMClientHandleInitializer(Boolean debug, ClientConfigurationData.Auth auth) {
+        super();
+        this.auth = auth;
+        this.debug = debug;
+    }
 
     @Override
     protected void initChannel(Channel ch) {
-        ch.pipeline()
-                .addLast(new IdleStateHandler(0, 10, 0))
+        final ChannelPipeline pip = ch.pipeline();
+        pip.addLast(new IdleStateHandler(0, 10, 0));
 
-                // google Protobuf
-                .addLast(new ProtobufVarint32FrameDecoder())
-                .addLast(new ProtobufDecoder(Response.getDefaultInstance()))
-                .addLast(new ProtobufVarint32LengthFieldPrepender())
+        // decoder
+        if (debug) {
+            pip.addLast(ChannelInboundDebugHandler.INSTANCE);
+        }
+        pip.addLast(new ProtobufVarint32FrameDecoder())
+                .addLast(new ProtobufDecoder(Response.getDefaultInstance()));
+
+        // encoder
+        if (debug) {
+            pip.addLast(ChannelOutboundDebugHandler.INSTANCE);
+        }
+        pip.addLast(new ProtobufVarint32LengthFieldPrepender())
                 .addLast(new ProtobufEncoder())
-                .addLast(cimClientHandle)
+                .addLast(new CIMClientHandle(auth))
         ;
     }
 }

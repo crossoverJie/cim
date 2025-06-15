@@ -1,22 +1,29 @@
 package com.crossoverjie.cim.client.sdk.io;
 
 import com.crossoverjie.cim.client.sdk.ClientState;
+import com.crossoverjie.cim.client.sdk.impl.ClientConfigurationData;
 import com.crossoverjie.cim.client.sdk.impl.ClientImpl;
 import com.crossoverjie.cim.common.constant.Constants;
 import com.crossoverjie.cim.common.protocol.BaseCommand;
+import com.crossoverjie.cim.common.protocol.Request;
 import com.crossoverjie.cim.common.protocol.Response;
 import com.crossoverjie.cim.common.util.NettyAttrUtil;
-import io.netty.channel.ChannelFutureListener;
-import io.netty.channel.ChannelHandler;
-import io.netty.channel.ChannelHandlerContext;
-import io.netty.channel.SimpleChannelInboundHandler;
+import io.netty.channel.*;
 import io.netty.handler.timeout.IdleState;
 import io.netty.handler.timeout.IdleStateEvent;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.zookeeper.common.StringUtils;
 
 @ChannelHandler.Sharable
 @Slf4j
 public class CIMClientHandle extends SimpleChannelInboundHandler<Response> {
+
+
+    private final ClientConfigurationData.Auth auth;
+
+    public CIMClientHandle(ClientConfigurationData.Auth auth) {
+        this.auth = auth;
+    }
 
     @Override
     public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
@@ -41,10 +48,37 @@ public class CIMClientHandle extends SimpleChannelInboundHandler<Response> {
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) {
+
+        // 获取认证信息
+        // channelActive 执行时间过早,所以这些属性没办法放在 channel 上
+        final String token = auth.getAuthToken();
+        if (StringUtils.isBlank(token)) {
+            log.error("auth token is blank!");
+            throw new RuntimeException("auth failure");
+        }
+        final long userId = auth.getUserId();
+
+        // 连接建立之后就发送认证请求
+        Request authReq = Request.newBuilder()
+                .setRequestId(userId)
+                .setCmd(BaseCommand.LOGIN_REQUEST)
+                .setReqMsg(token)
+                .build();
+
+        ctx.writeAndFlush(authReq).syncUninterruptibly().addListener(new ChannelFutureListener() {
+            @Override
+            public void operationComplete(ChannelFuture future) throws Exception {
+                if (future.isSuccess()) {
+                    log.info("auth msg send success!");
+                } else {
+                    log.error("auth msg send failure!");
+                    ctx.channel().close();  // 认证失败关闭连接
+                }
+            }
+        });
+
         ClientImpl.getClient().getConf().getEvent().debug("ChannelActive");
         ClientImpl.getClient().setState(ClientState.State.Ready);
-
-        // 发送认证报文
     }
 
     @Override
@@ -77,7 +111,7 @@ public class CIMClientHandle extends SimpleChannelInboundHandler<Response> {
             client.getConf().getCallbackThreadPool().execute(() -> {
                 log.info("client address: {} :{}", ctx.channel().remoteAddress(), client);
                 MessageListener messageListener = client.getConf().getMessageListener();
-                if (msg.getBatchResMsgCount() >0 ){
+                if (msg.getBatchResMsgCount() > 0) {
                     for (int i = 0; i < msg.getBatchResMsgCount(); i++) {
                         messageListener.received(client, msg.getPropertiesMap(), msg.getBatchResMsg(i));
                     }

@@ -8,6 +8,12 @@ import io.netty.util.AttributeKey;
  **/
 public interface ChannelAttributeKeys {
 
+    /**
+     * 认证的 Token
+     * <p>
+     * 在客户端保存
+     */
+    AttributeKey<String> AUTH_TOKEN = AttributeKey.newInstance("auth_token");
 
     /**
      * 认证结果

@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
  * Function:
  *
  * @author crossoverJie
- *         Date: 2018/8/24 01:43
+ * Date: 2018/8/24 01:43
  * @since JDK 1.8
  */
 @Component
@@ -19,32 +19,39 @@ public class AppConfiguration {
     @Value("${app.zk.addr}")
     private String zkAddr;
 
-    @Value("${app.zk.switch}")
-    private boolean zkSwitch;
-
     @Value("${cim.server.port}")
     private int cimServerPort;
 
     @Value("${cim.route.url}")
-    private String routeUrl ;
+    private String routeUrl;
+
+    /**
+     * 链接服务端注册类型
+     * <p>
+     * no: 不注册（客户端直连模式
+     * zk: zookeeper 存储
+     */
+    @Value("${register.type:no}")
+    private String registerType;
 
     public String getRouteUrl() {
         return routeUrl;
     }
 
+    @Value("${cim.heartbeat.time}")
+    private long heartBeatTime;
+
+    @Value("${app.zk.connect.timeout}")
+    private int zkConnectTimeout;
+
+
     public void setRouteUrl(String routeUrl) {
         this.routeUrl = routeUrl;
     }
 
-    @Value("${cim.heartbeat.time}")
-    private long heartBeatTime ;
-    
-    @Value("${app.zk.connect.timeout}")
-    private int zkConnectTimeout;
-    
     public int getZkConnectTimeout() {
-		return zkConnectTimeout;
-	}
+        return zkConnectTimeout;
+    }
 
     public String getZkRoot() {
         return zkRoot;
@@ -62,13 +69,6 @@ public class AppConfiguration {
         this.zkAddr = zkAddr;
     }
 
-    public boolean isZkSwitch() {
-        return zkSwitch;
-    }
-
-    public void setZkSwitch(boolean zkSwitch) {
-        this.zkSwitch = zkSwitch;
-    }
 
     public int getCimServerPort() {
         return cimServerPort;
@@ -84,5 +84,19 @@ public class AppConfiguration {
 
     public void setHeartBeatTime(long heartBeatTime) {
         this.heartBeatTime = heartBeatTime;
+    }
+
+    public String getRegisterType() {
+        return registerType;
+    }
+
+    public AppConfiguration setRegisterType(String registerType) {
+        this.registerType = registerType;
+        return this;
+    }
+
+    public AppConfiguration setZkConnectTimeout(int zkConnectTimeout) {
+        this.zkConnectTimeout = zkConnectTimeout;
+        return this;
     }
 }

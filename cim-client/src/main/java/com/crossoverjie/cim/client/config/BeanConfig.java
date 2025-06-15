@@ -10,17 +10,13 @@ import com.crossoverjie.cim.client.service.impl.MsgCallBackListener;
 import com.crossoverjie.cim.common.data.construct.RingBufferWheel;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import jakarta.annotation.Resource;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.ThreadFactory;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
 import okhttp3.OkHttpClient;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+
+import java.util.concurrent.*;
 
 /**
  * Function:bean 配置
@@ -41,6 +37,14 @@ public class BeanConfig {
     @Resource
     private MsgLogger msgLogger;
 
+    @Value("${cim.direct.host:127.0.0.1}")
+    private String host;
+
+    @Value("${cim.direct.tcp.port:8099}")
+    private Integer port;
+
+    @Value("${cim.direct.http.port:8081}")
+    private Integer httpPort;
 
     @Bean
     public Client buildClient(@Qualifier("callBackThreadPool") ThreadPoolExecutor callbackThreadPool,
@@ -50,7 +54,11 @@ public class BeanConfig {
                 .writeTimeout(3, TimeUnit.SECONDS)
                 .retryOnConnectionFailure(true).build();
 
-        return Client.builder()
+        ClientConfigurationData conf = new ClientConfigurationData();
+        conf.setHost(host);
+        conf.setServerPort(port);
+        conf.setHttpPort(httpPort);
+        return Client.builder(conf)
                 .auth(ClientConfigurationData.Auth.builder()
                         .userName(appConfiguration.getUserName())
                         .userId(appConfiguration.getUserId())

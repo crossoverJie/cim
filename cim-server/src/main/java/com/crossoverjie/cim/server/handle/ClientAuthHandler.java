@@ -1,7 +1,5 @@
 package com.crossoverjie.cim.server.handle;
 
-import com.alibaba.fastjson.JSONObject;
-import com.auth0.jwt.interfaces.DecodedJWT;
 import com.crossoverjie.cim.common.auth.JwtUtils;
 import com.crossoverjie.cim.common.auth.jwt.dto.PayloadVO;
 import com.crossoverjie.cim.common.enums.ChannelAttributeKeys;
@@ -42,12 +40,10 @@ public class ClientAuthHandler extends SimpleChannelInboundHandler<Request> {
         }
 
         try {
-            final DecodedJWT decodedJWT = JwtUtils.verifyToken(autoToken);
-            final String raw = decodedJWT.getPayload();
-            final PayloadVO payload = JSONObject.parseObject(raw, PayloadVO.class);
-            attr.set(Boolean.TRUE);
+            final PayloadVO payload = JwtUtils.verifyToken(autoToken);
             ctx.channel().attr(ChannelAttributeKeys.USER_ID).set(payload.getUserId());
             ctx.channel().attr(ChannelAttributeKeys.USER_NAME).set(payload.getUserName());
+            attr.set(Boolean.TRUE);
             // 认证成功之后移除自身
             ctx.pipeline().remove(this);
             ctx.write("auto success ,welcome !");

@@ -1,6 +1,5 @@
 package com.crossoverjie.cim.server.server;
 
-import com.crossoverjie.cim.common.protocol.BaseCommand;
 import com.crossoverjie.cim.common.protocol.Request;
 import com.crossoverjie.cim.server.api.vo.req.SendMsgReqVO;
 import com.crossoverjie.cim.server.init.CIMServerInitializer;
@@ -57,9 +56,9 @@ public class CIMServer {
                 .childOption(ChannelOption.TCP_NODELAY, Boolean.FALSE)
                 //保持长连接
                 .childOption(ChannelOption.SO_KEEPALIVE, true)
-                .childHandler(new CIMServerInitializer(Boolean.TRUE));
+                .childHandler(new CIMServerInitializer(Boolean.TRUE, Boolean.TRUE));
 
-        ChannelFuture future = bootstrap.bind().sync();
+        ChannelFuture future = bootstrap.bind(8099).sync();
         if (future.isSuccess()) {
             log.info("Start cim server success!!!");
         }
