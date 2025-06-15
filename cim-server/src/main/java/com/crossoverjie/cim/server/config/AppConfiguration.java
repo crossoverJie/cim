@@ -32,7 +32,7 @@ public class AppConfiguration {
      * no: 不注册（客户端直连模式
      * zk: zookeeper 存储
      */
-    @Value("${register.type:no}")
+    @Value("${cim.register.type:ZK}")
     private RegistryType registerType;
 
     public String getRouteUrl() {

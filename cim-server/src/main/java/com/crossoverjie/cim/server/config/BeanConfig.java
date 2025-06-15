@@ -46,7 +46,7 @@ public class BeanConfig {
      * 在以 ZK 作为元数据存储的时候才需要
      */
     @Bean
-    @ConditionalOnProperty(value = "meta.store.type", havingValue = "zk", matchIfMissing = false)
+    @ConditionalOnProperty(value = "cim.register.type", havingValue = "ZK", matchIfMissing = false)
     public MetaStore metaStore() {
         return new ZkMetaStoreImpl();
     }

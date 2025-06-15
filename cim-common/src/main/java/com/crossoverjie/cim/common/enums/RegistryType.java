@@ -8,7 +8,7 @@ public enum RegistryType {
 
     NO("no", "不使用注册中心"),
 
-    ZOOKEEPER("zk", "使用zookeeper注册中心");
+    ZK("zk", "使用zookeeper注册中心");
 
 
     private final String code;

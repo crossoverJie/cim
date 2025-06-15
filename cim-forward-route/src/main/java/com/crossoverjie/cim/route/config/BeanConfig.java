@@ -1,6 +1,7 @@
 package com.crossoverjie.cim.route.config;
 
 import com.crossoverjie.cim.common.core.proxy.RpcProxyManager;
+import com.crossoverjie.cim.common.enums.RegistryType;
 import com.crossoverjie.cim.common.metastore.MetaStore;
 import com.crossoverjie.cim.common.metastore.NoMetaStoreImpl;
 import com.crossoverjie.cim.common.metastore.ZkConfiguration;
@@ -46,16 +47,16 @@ public class BeanConfig {
     @Resource
     private AppConfiguration appConfiguration;
 
-    @Value("${cim.register.type:no}")
-    private String registerType;
+    @Value("${cim.register.type:ZK}")
+    private RegistryType registerType;
 
 
     @Bean
     public MetaStore metaStore() throws Exception {
         switch (registerType) {
-            case "no":
+            case NO:
                 return new NoMetaStoreImpl();
-            case "zk":
+            case ZK:
                 MetaStore metaStore = new ZkMetaStoreImpl();
                 ExponentialBackoffRetry retryPolicy = new ExponentialBackoffRetry(1000, 3);
                 metaStore.initialize(ZkConfiguration.builder()
