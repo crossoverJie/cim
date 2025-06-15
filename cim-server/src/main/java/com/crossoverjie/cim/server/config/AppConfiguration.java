@@ -1,5 +1,6 @@
 package com.crossoverjie.cim.server.config;
 
+import com.crossoverjie.cim.common.enums.RegistryType;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -32,7 +33,7 @@ public class AppConfiguration {
      * zk: zookeeper 存储
      */
     @Value("${register.type:no}")
-    private String registerType;
+    private RegistryType registerType;
 
     public String getRouteUrl() {
         return routeUrl;
@@ -86,11 +87,11 @@ public class AppConfiguration {
         this.heartBeatTime = heartBeatTime;
     }
 
-    public String getRegisterType() {
+    public RegistryType getRegisterType() {
         return registerType;
     }
 
-    public AppConfiguration setRegisterType(String registerType) {
+    public AppConfiguration setRegisterType(RegistryType registerType) {
         this.registerType = registerType;
         return this;
     }

@@ -42,7 +42,7 @@ public class RegistryMetaStore implements Runnable {
     @Override
     public void run() {
 
-        if (StringUtils.equals(appConfiguration.getRegisterType(), RegistryType.NO)) {
+        if (StringUtils.equals(appConfiguration.getRegisterType().getCode(), RegistryType.NO.getCode())) {
             log.info("Skip registry to metaStore");
             return;
         }

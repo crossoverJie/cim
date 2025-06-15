@@ -21,9 +21,9 @@ public interface Client extends Closeable {
         return new ClientBuilderImpl();
     }
 
-    String getHost();
+    String checkHost();
 
-    Integer getPort();
+    Integer checkPort();
 
     default void sendP2P(P2PReqVO p2PReqVO) throws Exception {
         sendP2PAsync(p2PReqVO).get();

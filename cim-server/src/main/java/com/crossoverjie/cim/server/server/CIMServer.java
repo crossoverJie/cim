@@ -32,11 +32,11 @@ import java.net.InetSocketAddress;
 public class CIMServer {
 
 
-    private EventLoopGroup boss = new NioEventLoopGroup();
-    private EventLoopGroup work = new NioEventLoopGroup();
+    private final EventLoopGroup boss = new NioEventLoopGroup(1);
+    private final EventLoopGroup work = new NioEventLoopGroup();
 
 
-    @Value("${cim.server.port}")
+    @Value("${cim.server.port:8099}")
     private int nettyPort;
 
 
@@ -53,12 +53,11 @@ public class CIMServer {
                 .group(boss, work)
                 .channel(NioServerSocketChannel.class)
                 .localAddress(new InetSocketAddress(nettyPort))
-                .childOption(ChannelOption.TCP_NODELAY, Boolean.FALSE)
                 //保持长连接
                 .childOption(ChannelOption.SO_KEEPALIVE, true)
                 .childHandler(new CIMServerInitializer(Boolean.TRUE, Boolean.TRUE));
 
-        ChannelFuture future = bootstrap.bind(8099).sync();
+        ChannelFuture future = bootstrap.bind(nettyPort).sync();
         if (future.isSuccess()) {
             log.info("Start cim server success!!!");
         }

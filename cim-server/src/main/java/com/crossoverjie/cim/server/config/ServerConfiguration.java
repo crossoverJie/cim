@@ -19,6 +19,8 @@ public class ServerConfiguration {
      * 链接服务端注册类型
      * <p>
      * zk: zookeeper 存储
+     *
+     * @see com.crossoverjie.cim.common.enums.RegistryType 注册类型
      */
     @Value("${register.type:no}")
     private Boolean registerType;

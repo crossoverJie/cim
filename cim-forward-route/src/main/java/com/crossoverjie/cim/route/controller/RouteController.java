@@ -179,6 +179,7 @@ public class RouteController implements RouteApi {
         }
 
         // check server available
+        // 可以不返回,直接使用直连方式
         RouteInfo routeInfo = new RouteInfo();
         Set<String> availableServerList = metaStore.getAvailableServerList();
         if (!CollectionUtils.isEmpty(availableServerList)) {
@@ -198,7 +199,7 @@ public class RouteController implements RouteApi {
         PayloadVO pv = new PayloadVO();
         pv.setUserId(loginReqVO.getUserId());
         pv.setUserName(loginReqVO.getUserName());
-        final String token = JwtUtils.generateToken(loginReqVO.getUserId(),pv);
+        final String token = JwtUtils.generateToken(loginReqVO.getUserId(), pv);
 
         CIMServerResVO vo =
                 new CIMServerResVO(routeInfo.getIp(), routeInfo.getCimServerPort(), routeInfo.getHttpPort(), token);

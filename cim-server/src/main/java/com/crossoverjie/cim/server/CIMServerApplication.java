@@ -39,7 +39,7 @@ public class CIMServerApplication implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        if (StringUtils.equals(appConfiguration.getRegisterType(), RegistryType.NO)) {
+        if (StringUtils.equals(appConfiguration.getRegisterType().getCode(), RegistryType.NO.getCode())) {
             log.info("no register type,client need direct connection!");
             return;
         }

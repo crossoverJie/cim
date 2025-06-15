@@ -35,6 +35,8 @@ public class ClientConfigurationData {
     public static class Auth {
         private long userId;
         private String userName;
+
+        @JsonIgnore
         private String authToken;
     }
 

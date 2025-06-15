@@ -7,8 +7,10 @@ import com.crossoverjie.cim.client.sdk.io.MessageListener;
 import com.crossoverjie.cim.client.sdk.io.ReconnectCheck;
 import com.crossoverjie.cim.client.sdk.io.backoff.BackoffStrategy;
 import com.crossoverjie.cim.common.util.StringUtil;
-import java.util.concurrent.ThreadPoolExecutor;
 import okhttp3.OkHttpClient;
+
+import java.util.Objects;
+import java.util.concurrent.ThreadPoolExecutor;
 
 public class ClientBuilderImpl implements ClientBuilder {
 
@@ -18,10 +20,12 @@ public class ClientBuilderImpl implements ClientBuilder {
     public ClientBuilderImpl() {
         this(new ClientConfigurationData());
     }
+
     public ClientBuilderImpl(ClientConfigurationData conf) {
+        Objects.requireNonNull(conf, "ClientConfigurationData must not be null");
         this.conf = conf;
     }
-    
+
     @Override
     public Client build() {
         return new ClientImpl(conf);
@@ -29,7 +33,7 @@ public class ClientBuilderImpl implements ClientBuilder {
 
     @Override
     public ClientBuilder auth(ClientConfigurationData.Auth auth) {
-        if (auth.getUserId() <= 0 || StringUtil.isEmpty(auth.getUserName())){
+        if (auth.getUserId() <= 0 || StringUtil.isEmpty(auth.getUserName())) {
             throw new IllegalArgumentException("userId and userName must be set");
         }
         this.conf.setAuth(auth);

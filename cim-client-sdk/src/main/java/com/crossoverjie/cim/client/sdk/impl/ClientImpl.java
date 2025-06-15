@@ -179,8 +179,8 @@ public class ClientImpl extends ClientState implements Client {
                 .handler(new CIMClientHandleInitializer(Boolean.TRUE, getAuth()));
         ChannelFuture sync;
         try {
-            final String host = getHost();
-            final Integer port = getPort();
+            final String host = checkHost();
+            final Integer port = checkPort();
             if (StringUtils.isBlank(host) || Objects.isNull(port)) {
                 this.conf.getEvent().error("cim server host or port is null");
                 future.complete(false);
@@ -251,14 +251,22 @@ public class ClientImpl extends ClientState implements Client {
     }
 
     @Override
-    public String getHost() {
+    public String checkHost() {
         // 优先使用直连的方式
-        return StringUtils.isNoneBlank(conf.getHost()) ? conf.getHost() : serverInfo.getIp();
+        final String host = StringUtils.isNoneBlank(conf.getHost()) ? conf.getHost() : serverInfo.getIp();
+        if(StringUtils.isBlank(host)){
+            throw new IllegalArgumentException("cim server host is null");
+        }
+        return host;
     }
 
     @Override
-    public Integer getPort() {
-        return Objects.nonNull(conf.getServerPort()) ? conf.getServerPort() : serverInfo.getCimServerPort();
+    public Integer checkPort() {
+        final Integer port = Objects.nonNull(conf.getServerPort()) ? conf.getServerPort() : serverInfo.getCimServerPort();
+        if(Objects.isNull(port)){
+            throw new IllegalArgumentException("cim server port is null");
+        }
+        return port;
     }
 
     @Override

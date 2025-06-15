@@ -46,11 +46,12 @@ public class ClientAuthHandler extends SimpleChannelInboundHandler<Request> {
             attr.set(Boolean.TRUE);
             // 认证成功之后移除自身
             ctx.pipeline().remove(this);
-            ctx.write("auto success ,welcome !");
+            ctx.writeAndFlush("auto success ,welcome !");
+            return;
         } catch (Exception e) {
             log.error("client auto failure,e:", e);
         }
-        ctx.write("auto failure!");
+        ctx.writeAndFlush("auto failure!");
         ctx.close();
     }
 }
