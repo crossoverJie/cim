@@ -30,7 +30,7 @@ public class ChannelInboundDebugHandler extends ChannelInboundHandlerAdapter {
             ByteBuf buf = (ByteBuf) msg;
             String hexDump = ByteBufUtil.hexDump(buf);
             log.info("16进制报文内容：{}", hexDump);
-            // 然后尝试用protoc解析
+            // 用protoc解析
         }
         super.channelRead(ctx, msg);
     }
