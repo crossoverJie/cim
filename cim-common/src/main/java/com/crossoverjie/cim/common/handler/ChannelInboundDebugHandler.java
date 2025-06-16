@@ -22,6 +22,7 @@ public class ChannelInboundDebugHandler extends ChannelInboundHandlerAdapter {
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
         final Long userId = ctx.channel().attr(ChannelAttributeKeys.USER_ID).get();
         log.info("user id:{}, channel is inactive", userId);
+        ctx.fireChannelInactive();
     }
 
     @Override

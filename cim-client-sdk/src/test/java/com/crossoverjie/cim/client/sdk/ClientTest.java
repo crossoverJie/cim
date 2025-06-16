@@ -2,20 +2,13 @@ package com.crossoverjie.cim.client.sdk;
 
 import com.crossoverjie.cim.client.sdk.impl.ClientConfigurationData;
 import com.crossoverjie.cim.client.sdk.impl.ClientImpl;
+import com.crossoverjie.cim.client.sdk.io.MessageListener;
 import com.crossoverjie.cim.client.sdk.io.backoff.RandomBackoff;
 import com.crossoverjie.cim.client.sdk.route.AbstractRouteBaseTest;
 import com.crossoverjie.cim.common.constant.Constants;
 import com.crossoverjie.cim.common.pojo.CIMUserInfo;
 import com.crossoverjie.cim.route.api.vo.req.P2PReqVO;
 import com.crossoverjie.cim.route.api.vo.res.CIMServerResVO;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicReference;
-
 import com.crossoverjie.cim.route.constant.Constant;
 import lombok.Cleanup;
 import lombok.extern.slf4j.Slf4j;
@@ -23,6 +16,10 @@ import org.awaitility.Awaitility;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+
+import java.util.*;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicReference;
 
 @Slf4j
 public class ClientTest extends AbstractRouteBaseTest {
@@ -210,7 +207,7 @@ public class ClientTest extends AbstractRouteBaseTest {
         });
 
         // client2 send batch msg to client1
-        var batchMsg = List.of("a","b","c");
+        var batchMsg = List.of("a", "b", "c");
         client2.sendP2P(P2PReqVO.builder()
                 .receiveUserId(cjId)
                 .batchMsg(batchMsg)
@@ -241,9 +238,13 @@ public class ClientTest extends AbstractRouteBaseTest {
      */
     @Test
     public void testReconnect() throws Exception {
+        // 启动两个连接服务器
         super.startTwoServer();
+
+        // 启动路由服务器
         super.startRoute(Constant.OfflineStoreMode.REDIS);
 
+        // 注册两个账号
         String routeUrl = "http://localhost:8083";
         String cj = "cj";
         String zs = "zs";
@@ -259,6 +260,7 @@ public class ClientTest extends AbstractRouteBaseTest {
                 .build();
         var backoffStrategy = new RandomBackoff();
 
+        // 建立两个客户端
         @Cleanup
         Client client1 = Client.builder()
                 .auth(auth1)
@@ -276,10 +278,18 @@ public class ClientTest extends AbstractRouteBaseTest {
         Client client2 = Client.builder()
                 .auth(auth2)
                 .routeUrl(routeUrl)
-                .messageListener((client, properties, message) -> client2Receive.set(message))
+                .messageListener(new MessageListener() {
+                    @Override
+                    public void received(Client client, Map<String, String> properties, String msg) {
+                        System.out.println("|| ================  收到消息:" + msg);
+                        client2Receive.set(msg);
+                    }
+                })
                 .backoffStrategy(backoffStrategy)
                 .build();
         TimeUnit.SECONDS.sleep(3);
+
+        // 两个客户端连接成功
         ClientState.State state2 = client2.getState();
         Awaitility.await().atMost(10, TimeUnit.SECONDS)
                 .untilAsserted(() -> Assertions.assertEquals(ClientState.State.Ready, state2));
@@ -288,25 +298,25 @@ public class ClientTest extends AbstractRouteBaseTest {
         Assertions.assertTrue(serverInfo2.isPresent());
         System.out.println("client2 serverInfo = " + serverInfo2.get());
 
-        // send msg
+        // 发送消息并验证
         String msg = "hello";
         client1.sendGroup(msg);
         Awaitility.await()
                 .untilAsserted(() -> Assertions.assertEquals(msg, client2Receive.get()));
         client2Receive.set("");
-
-
         System.out.println("ready to restart server");
         TimeUnit.SECONDS.sleep(3);
         Optional<CIMServerResVO> serverInfo = client1.getServerInfo();
         Assertions.assertTrue(serverInfo.isPresent());
         System.out.println("server info = " + serverInfo.get());
 
+        // 关闭连接的服务
         super.stopServer(serverInfo.get().getCimServerPort());
         System.out.println("stop server success! " + serverInfo.get());
 
 
         // Waiting server stopped, and client reconnect.
+        // 应该会重连到另外一个服务
         TimeUnit.SECONDS.sleep(30);
         System.out.println("reconnect state: " + client1.getState());
         Awaitility.await().atMost(15, TimeUnit.SECONDS)
