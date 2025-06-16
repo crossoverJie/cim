@@ -1,7 +1,7 @@
 package com.crossoverjie.cim.client.sdk.route;
 
-import com.crossoverjie.cim.common.res.BaseResponse;
 import com.crossoverjie.cim.client.sdk.server.AbstractServerBaseTest;
+import com.crossoverjie.cim.common.res.BaseResponse;
 import com.crossoverjie.cim.route.RouteApplication;
 import com.crossoverjie.cim.route.api.RouteApi;
 import com.crossoverjie.cim.route.api.vo.req.RegisterInfoReqVO;
@@ -12,12 +12,15 @@ import org.springframework.context.ConfigurableApplicationContext;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.utility.DockerImageName;
 
+import java.util.Objects;
+
 public abstract class AbstractRouteBaseTest extends AbstractServerBaseTest {
 
     @Container
     RedisContainer redis = new RedisContainer(DockerImageName.parse("redis:7.4.0"));
 
     protected ConfigurableApplicationContext run;
+
     public void startRoute(String offlineModel) {
         redis.start();
         SpringApplication route = new SpringApplication(RouteApplication.class);
@@ -31,10 +34,12 @@ public abstract class AbstractRouteBaseTest extends AbstractServerBaseTest {
         run = route.run(args);
     }
 
-    public void close(){
+    public void close() {
         super.close();
         redis.close();
-        run.close();
+        if (Objects.nonNull(run)) {
+            run.close();
+        }
     }
 
     public Long registerAccount(String userName) throws Exception {
