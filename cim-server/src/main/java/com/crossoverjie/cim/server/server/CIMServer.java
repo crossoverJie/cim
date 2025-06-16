@@ -36,7 +36,7 @@ public class CIMServer {
     private final EventLoopGroup work = new NioEventLoopGroup();
 
 
-    @Value("${cim.server.port:8099}")
+    @Value("${cim.server.port}")
     private int nettyPort;
 
 
