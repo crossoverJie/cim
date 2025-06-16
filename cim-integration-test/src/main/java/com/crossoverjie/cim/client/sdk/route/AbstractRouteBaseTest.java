@@ -12,8 +12,6 @@ import org.springframework.context.ConfigurableApplicationContext;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.utility.DockerImageName;
 
-import java.util.Objects;
-
 public abstract class AbstractRouteBaseTest extends AbstractServerBaseTest {
 
     @Container
@@ -37,9 +35,7 @@ public abstract class AbstractRouteBaseTest extends AbstractServerBaseTest {
     public void close() {
         super.close();
         redis.close();
-        if (Objects.nonNull(run)) {
-            run.close();
-        }
+        run.close();
     }
 
     public Long registerAccount(String userName) throws Exception {

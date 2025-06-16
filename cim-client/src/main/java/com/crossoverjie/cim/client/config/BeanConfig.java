@@ -37,13 +37,13 @@ public class BeanConfig {
     @Resource
     private MsgLogger msgLogger;
 
-    @Value("${cim.direct.host:127.0.0.1}")
+    @Value("${cim.direct.host:}")
     private String host;
 
-    @Value("${cim.direct.tcp.port:8099}")
+    @Value("${cim.direct.tcp.port:}")
     private Integer port;
 
-    @Value("${cim.direct.http.port:8081}")
+    @Value("${cim.direct.http.port:}")
     private Integer httpPort;
 
     @Bean
