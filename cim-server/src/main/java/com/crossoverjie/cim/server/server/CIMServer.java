@@ -57,7 +57,7 @@ public class CIMServer {
                 .childOption(ChannelOption.SO_KEEPALIVE, true)
                 .childHandler(new CIMServerInitializer(Boolean.TRUE, Boolean.TRUE));
 
-        ChannelFuture future = bootstrap.bind(nettyPort).sync();
+        ChannelFuture future = bootstrap.bind().sync();
         if (future.isSuccess()) {
             log.info("Start cim server success!!!");
         }
