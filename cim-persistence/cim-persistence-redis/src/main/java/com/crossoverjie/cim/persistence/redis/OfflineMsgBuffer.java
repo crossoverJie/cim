@@ -1,13 +1,16 @@
 package com.crossoverjie.cim.persistence.redis;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONException;
 import com.alibaba.fastjson.TypeReference;
 import com.crossoverjie.cim.common.enums.StatusEnum;
 import com.crossoverjie.cim.common.exception.CIMException;
 import com.crossoverjie.cim.persistence.api.pojo.OfflineMsg;
 import com.crossoverjie.cim.persistence.api.service.OfflineMsgStore;
 import com.crossoverjie.cim.persistence.redis.kit.OfflineMsgScriptExecutor;
+import io.lettuce.core.RedisException;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.redis.serializer.SerializationException;
 import org.springframework.util.CollectionUtils;
 
 import java.util.*;
@@ -40,7 +43,8 @@ public class OfflineMsgBuffer implements OfflineMsgStore {
     public void save(OfflineMsg msg) {
         try {
             scriptExecutor.saveOfflineMsg(msg, messageTtlDays);
-        } catch (Exception e) {
+        } catch (SerializationException | RedisException e) {
+            log.error("Failed to save offline message", e);
             throw new CIMException(StatusEnum.OFFLINE_MESSAGE_STORAGE_ERROR);
         }
     }
@@ -52,7 +56,8 @@ public class OfflineMsgBuffer implements OfflineMsgStore {
             List<OfflineMsg> offlineMsgs = jsonResult.stream().map(json -> JSON.parseObject(json, new TypeReference<OfflineMsg>() {
             })).collect(Collectors.toList());
             return offlineMsgs;
-        } catch (Exception e) {
+        } catch (SerializationException | RedisException | JSONException e) {
+            log.error("Failed to fetch offline messages for userId: {}", userId, e);
             throw new CIMException(StatusEnum.OFFLINE_MESSAGE_FETCH_ERROR);
         }
     }
@@ -64,7 +69,8 @@ public class OfflineMsgBuffer implements OfflineMsgStore {
         }
         try {
             scriptExecutor.deleteOfflineMsg(userId, messageIds);
-        } catch (Exception e) {
+        } catch (RedisException e) {
+            log.error("Failed to delete offline messages for userId: {}", userId, e);
             throw new CIMException(StatusEnum.OFFLINE_MESSAGE_DELETE_ERROR);
         }
     }
