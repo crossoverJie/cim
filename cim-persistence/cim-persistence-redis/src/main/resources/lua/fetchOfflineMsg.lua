@@ -1,5 +1,5 @@
 local userId = ARGV[1]
-local rangeSize = ARGV[2]
+local rangeSize = tonumber(ARGV[2])
 local msgPrefix = KEYS[1]
 local userIdxPrefix = KEYS[2]
 local userListKey = userIdxPrefix .. userId
