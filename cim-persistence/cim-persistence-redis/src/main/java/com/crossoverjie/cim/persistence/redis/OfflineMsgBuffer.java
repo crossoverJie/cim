@@ -1,13 +1,12 @@
 package com.crossoverjie.cim.persistence.redis;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONException;
-import com.alibaba.fastjson.TypeReference;
 import com.crossoverjie.cim.common.enums.StatusEnum;
 import com.crossoverjie.cim.common.exception.CIMException;
 import com.crossoverjie.cim.persistence.api.pojo.OfflineMsg;
 import com.crossoverjie.cim.persistence.api.service.OfflineMsgStore;
 import com.crossoverjie.cim.persistence.redis.kit.OfflineMsgScriptExecutor;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.lettuce.core.RedisException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.serializer.SerializationException;
@@ -29,10 +28,12 @@ public class OfflineMsgBuffer implements OfflineMsgStore {
 
     private final int messageTtlDays;
     private final OfflineMsgScriptExecutor scriptExecutor;
+    private final ObjectMapper objectMapper;
 
-    public OfflineMsgBuffer(OfflineMsgScriptExecutor scriptExecutor, Integer configuredDays) {
+    public OfflineMsgBuffer(OfflineMsgScriptExecutor scriptExecutor, Integer configuredDays,ObjectMapper objectMapper) {
         this.messageTtlDays = ensureValidTtlOrDefault(configuredDays);
         this.scriptExecutor = scriptExecutor;
+        this.objectMapper = objectMapper;
     }
 
     private int ensureValidTtlOrDefault(Integer configuredDays) {
@@ -53,10 +54,17 @@ public class OfflineMsgBuffer implements OfflineMsgStore {
     public List<OfflineMsg> fetch(Long userId) {
         try {
             List<String> jsonResult = scriptExecutor.fetchOfflineMsgs(userId, FETCH_OFFLINE_MSG_SIZE);
-            List<OfflineMsg> offlineMsgs = jsonResult.stream().map(json -> JSON.parseObject(json, new TypeReference<OfflineMsg>() {
-            })).collect(Collectors.toList());
+            List<OfflineMsg> offlineMsgs = jsonResult.stream()
+                    .map(json -> {
+                        try {
+                            return objectMapper.readValue(json, OfflineMsg.class);
+                        } catch (JsonProcessingException e) {
+                            throw new RuntimeException("Failed to parse OfflineMsg JSON", e);
+                        }
+                    })
+                    .collect(Collectors.toList());
             return offlineMsgs;
-        } catch (SerializationException | RedisException | JSONException e) {
+        } catch (SerializationException | RedisException e) {
             log.error("Failed to fetch offline messages for userId: {}", userId, e);
             throw new CIMException(StatusEnum.OFFLINE_MESSAGE_FETCH_ERROR);
         }
