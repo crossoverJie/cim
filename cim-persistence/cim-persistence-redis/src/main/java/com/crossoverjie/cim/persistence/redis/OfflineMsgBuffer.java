@@ -5,13 +5,14 @@ import com.crossoverjie.cim.common.exception.CIMException;
 import com.crossoverjie.cim.persistence.api.pojo.OfflineMsg;
 import com.crossoverjie.cim.persistence.api.service.OfflineMsgStore;
 import com.crossoverjie.cim.persistence.redis.kit.OfflineMsgScriptExecutor;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.lettuce.core.RedisException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.serializer.SerializationException;
 import org.springframework.util.CollectionUtils;
 
+import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -30,7 +31,7 @@ public class OfflineMsgBuffer implements OfflineMsgStore {
     private final OfflineMsgScriptExecutor scriptExecutor;
     private final ObjectMapper objectMapper;
 
-    public OfflineMsgBuffer(OfflineMsgScriptExecutor scriptExecutor, Integer configuredDays,ObjectMapper objectMapper) {
+    public OfflineMsgBuffer(OfflineMsgScriptExecutor scriptExecutor, Integer configuredDays, ObjectMapper objectMapper) {
         this.messageTtlDays = ensureValidTtlOrDefault(configuredDays);
         this.scriptExecutor = scriptExecutor;
         this.objectMapper = objectMapper;
@@ -58,13 +59,13 @@ public class OfflineMsgBuffer implements OfflineMsgStore {
                     .map(json -> {
                         try {
                             return objectMapper.readValue(json, OfflineMsg.class);
-                        } catch (JsonProcessingException e) {
-                            throw new RuntimeException("Failed to parse OfflineMsg JSON", e);
+                        } catch (IOException e) {
+                            throw new UncheckedIOException(e);
                         }
                     })
                     .collect(Collectors.toList());
             return offlineMsgs;
-        } catch (SerializationException | RedisException e) {
+        } catch (UncheckedIOException | SerializationException | RedisException e) {
             log.error("Failed to fetch offline messages for userId: {}", userId, e);
             throw new CIMException(StatusEnum.OFFLINE_MESSAGE_FETCH_ERROR);
         }
