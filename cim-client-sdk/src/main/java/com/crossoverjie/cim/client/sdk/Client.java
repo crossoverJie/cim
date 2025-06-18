@@ -7,6 +7,7 @@ import com.crossoverjie.cim.route.api.vo.req.P2PReqVO;
 import com.crossoverjie.cim.route.api.vo.res.CIMServerResVO;
 
 import java.io.Closeable;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
@@ -14,6 +15,7 @@ import java.util.concurrent.CompletableFuture;
 public interface Client extends Closeable {
 
     static ClientBuilder builder(ClientConfigurationData conf) {
+        Objects.requireNonNull(conf, "ClientConfigurationData must not be null");
         return new ClientBuilderImpl(conf);
     }
 

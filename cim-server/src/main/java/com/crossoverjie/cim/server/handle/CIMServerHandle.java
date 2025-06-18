@@ -19,6 +19,7 @@ import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.handler.timeout.IdleState;
 import io.netty.handler.timeout.IdleStateEvent;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.BooleanUtils;
 
 /**
  * Function:
@@ -82,6 +83,13 @@ public class CIMServerHandle extends SimpleChannelInboundHandler<Request> {
             ctx.channel().attr(ChannelAttributeKeys.USER_NAME).set(msg.getReqMsg());
             log.info("client [{}] online success!!", msg.getReqMsg());
         }
+
+        if (BooleanUtils.isNotTrue(ctx.channel().attr(ChannelAttributeKeys.AUTH_RES).get())) {
+            log.error("channel do not through auth,good bye");
+            ctx.writeAndFlush("need auth client").addListener(ChannelFutureListener.CLOSE);
+            return;
+        }
+
 
         //心跳更新时间
         if (msg.getCmd() == BaseCommand.PING) {

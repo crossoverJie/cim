@@ -9,7 +9,8 @@ import com.crossoverjie.cim.route.api.vo.res.CIMServerResVO;
 import com.crossoverjie.cim.route.constant.Constant;
 import lombok.extern.slf4j.Slf4j;
 import org.awaitility.Awaitility;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.Optional;
@@ -122,9 +123,9 @@ public class OfflineMsgTest extends OfflineMsgStoreRouteBaseTest {
                 })
                 .build();
 
-        ClientState.State client3AgainState = client3.getState();
+        Client finalClient = client3;
         Awaitility.await().atMost(10, TimeUnit.SECONDS)
-                .untilAsserted(() -> Assertions.assertEquals(ClientState.State.Ready, client3AgainState));
+                .untilAsserted(() -> Assertions.assertEquals(ClientState.State.Ready, finalClient.getState()));
 
 
         // check offline message

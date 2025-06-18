@@ -4,6 +4,7 @@ import com.crossoverjie.cim.client.sdk.ClientState;
 import com.crossoverjie.cim.client.sdk.impl.ClientConfigurationData;
 import com.crossoverjie.cim.client.sdk.impl.ClientImpl;
 import com.crossoverjie.cim.common.constant.Constants;
+import com.crossoverjie.cim.common.enums.ChannelAttributeKeys;
 import com.crossoverjie.cim.common.protocol.BaseCommand;
 import com.crossoverjie.cim.common.protocol.Request;
 import com.crossoverjie.cim.common.protocol.Response;
@@ -54,7 +55,8 @@ public class CIMClientHandle extends SimpleChannelInboundHandler<Response> {
         final String token = auth.getAuthToken();
         if (StringUtils.isBlank(token)) {
             log.error("auth token is blank!");
-            throw new RuntimeException("auth failure");
+            ctx.close();
+            return;
         }
         final long userId = auth.getUserId();
 
@@ -69,16 +71,19 @@ public class CIMClientHandle extends SimpleChannelInboundHandler<Response> {
             @Override
             public void operationComplete(ChannelFuture future) throws Exception {
                 if (future.isSuccess()) {
-                    log.info("auth msg send success!");
+                    log.info("auth msg send success,userId:{},userName:{}", auth.getUserId(), auth.getUserName());
+                    ClientImpl.getClient().getConf().getEvent().debug("ChannelActive");
+                    ctx.channel().attr(ChannelAttributeKeys.USER_ID).set(userId);
+                    log.info("channel is active,userId:{}", userId);
+                    ClientImpl.getClient().setState(ClientState.State.Ready);
                 } else {
-                    log.error("auth msg send failure!");
+                    log.error("auth msg send failure,userId:{},userName:{}", auth.getUserId(), auth.getUserName());
                     ctx.channel().close();  // 认证失败关闭连接
                 }
             }
         });
 
-        ClientImpl.getClient().getConf().getEvent().debug("ChannelActive");
-        ClientImpl.getClient().setState(ClientState.State.Ready);
+
     }
 
     @Override

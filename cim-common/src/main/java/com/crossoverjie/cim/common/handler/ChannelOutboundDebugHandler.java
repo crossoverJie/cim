@@ -1,7 +1,5 @@
 package com.crossoverjie.cim.common.handler;
 
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.ByteBufUtil;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelOutboundHandlerAdapter;
@@ -20,12 +18,12 @@ public class ChannelOutboundDebugHandler extends ChannelOutboundHandlerAdapter {
 
     @Override
     public void write(ChannelHandlerContext ctx, Object msg, ChannelPromise promise) throws Exception {
-        if (msg instanceof ByteBuf) {
-            ByteBuf buf = (ByteBuf) msg;
-            String hexDump = ByteBufUtil.hexDump(buf);
-            log.info("16 进制报文内容: {}", hexDump);
+//        if (msg instanceof ByteBuf) {
+//            ByteBuf buf = (ByteBuf) msg;
+//            String hexDump = ByteBufUtil.hexDump(buf);
+//            log.info("16 进制报文内容: {}", hexDump);
             // 然后尝试用protoc解析
-        }
+//        }
         super.write(ctx, msg, promise);
     }
 }

@@ -1,8 +1,6 @@
 package com.crossoverjie.cim.common.handler;
 
 import com.crossoverjie.cim.common.enums.ChannelAttributeKeys;
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.ByteBufUtil;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
@@ -27,12 +25,12 @@ public class ChannelInboundDebugHandler extends ChannelInboundHandlerAdapter {
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-        if (msg instanceof ByteBuf) {
-            ByteBuf buf = (ByteBuf) msg;
-            String hexDump = ByteBufUtil.hexDump(buf);
-            log.info("16进制报文内容：{}", hexDump);
-            // 用protoc解析
-        }
+//        if (msg instanceof ByteBuf) {
+//            ByteBuf buf = (ByteBuf) msg;
+//            String hexDump = ByteBufUtil.hexDump(buf);
+//            log.info("16进制报文内容：{}", hexDump);
+//             用protoc解析
+//        }
         super.channelRead(ctx, msg);
     }
 }

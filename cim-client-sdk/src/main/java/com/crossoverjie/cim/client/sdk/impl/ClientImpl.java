@@ -131,7 +131,7 @@ public class ClientImpl extends ClientState implements Client {
      */
     private CompletableFuture<Boolean> doConnectServer() {
         CompletableFuture<Boolean> future = new CompletableFuture<>();
-        this.userLogin(future) // 从路由服务中获取链接信息
+        this.userLogin(future) // 登录成功之后会被记录在 serverInfo 中
                 .ifPresentOrElse((cimServer) -> {
                     if (StringUtils.isBlank(cimServer.getAuthToken())) {
                         future.complete(false);
