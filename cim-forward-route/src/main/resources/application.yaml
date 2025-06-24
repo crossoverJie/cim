@@ -66,4 +66,7 @@ mybatis:
 offline:
   store:
     mode: redis
+    redis:
+      expire:
+        message-ttl-days: 3
 
