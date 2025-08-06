@@ -13,16 +13,18 @@ import io.netty.util.Attribute;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.BooleanUtils;
 
+import java.util.Objects;
+
 /**
  * client auto Handler
  * <p>
  * This layer of handler is above the business handler, and the data flowing here must need to be authenticated, and after authentication, it will remove itself from the pipeline
  * <p>
- *     decoder.channelRead                                  encoder.write
- *           \                                                  /
- *      auto.channelRead                                 auto.write
- *            \                                             /
- *       cimServerHandle.channelRead      -->>      cimServerHandle.write
+ * decoder.channelRead                                  encoder.write
+ * \                                                  /
+ * auto.channelRead                                 auto.write
+ * \                                             /
+ * cimServerHandle.channelRead      -->>      cimServerHandle.write
  * <p>
  * <p>
  * TODO: 认证是否需要一个超时时间,因为有心跳包,如果超时时间内,心跳包就需要跳过验证
@@ -38,9 +40,19 @@ public class ClientAuthHandler extends ChannelDuplexHandler {
         final Attribute<Boolean> attr = ctx.channel().attr(ChannelAttributeKeys.AUTH_RES);
         if (BooleanUtils.isTrue(attr.get())) {
             // 已经认证过了就往下传递
+            super.channelRead(ctx, msg);
             return;
         }
 
+        if (Objects.isNull(msg)) {
+            log.warn("Received null message during authentication");
+            return;
+        }
+
+        if (!(msg instanceof Request)) {
+            log.warn("Received non-Request message during authentication: {}", msg.getClass());
+            return;
+        }
 
         // 处理 Token
         final String autoToken = ((Request) msg).getReqMsg();

@@ -1,5 +1,6 @@
 package com.crossoverjie.cim.common.auth.jwt.dto;
 
+import java.io.Serial;
 import java.io.Serializable;
 
 /**
@@ -7,6 +8,9 @@ import java.io.Serializable;
  * @date 2025/6/7
  **/
 public class PayloadVO implements Serializable {
+
+    @Serial
+    private static final long serialVersionUID = 1L;
 
     /**
      * 用户id
