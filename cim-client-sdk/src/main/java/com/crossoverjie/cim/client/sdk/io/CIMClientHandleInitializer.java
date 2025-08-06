@@ -45,7 +45,6 @@ public class CIMClientHandleInitializer extends ChannelInitializer<Channel> {
         }
         pip.addLast(new ProtobufVarint32LengthFieldPrepender())
                 .addLast(new ProtobufEncoder())
-                .addLast(new CIMClientHandle(auth))
-        ;
+                .addLast(new CIMClientHandle(auth));
     }
 }

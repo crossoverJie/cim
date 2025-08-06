@@ -15,6 +15,8 @@ import io.netty.handler.timeout.IdleStateEvent;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.zookeeper.common.StringUtils;
 
+import java.util.Objects;
+
 @ChannelHandler.Sharable
 @Slf4j
 public class CIMClientHandle extends SimpleChannelInboundHandler<Response> {
@@ -107,8 +109,8 @@ public class CIMClientHandle extends SimpleChannelInboundHandler<Response> {
 
         if (msg.getCmd() != BaseCommand.PING) {
             String receiveUserId = msg.getPropertiesMap().get(Constants.MetaKey.RECEIVE_USER_ID);
-            ClientImpl client = ClientImpl.getClientMap().get(Long.valueOf(receiveUserId));
-            if (client == null) {
+            ClientImpl client;
+            if ((Objects.isNull(receiveUserId) || ((client = ClientImpl.getClientMap().get(Long.valueOf(receiveUserId))) == null))) {
                 log.error("client not found for userId: {}", receiveUserId);
                 return;
             }

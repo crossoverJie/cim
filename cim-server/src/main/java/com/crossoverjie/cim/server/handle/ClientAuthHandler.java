@@ -41,6 +41,7 @@ public class ClientAuthHandler extends ChannelDuplexHandler {
             return;
         }
 
+
         // 处理 Token
         final String autoToken = ((Request) msg).getReqMsg();
         if (StringUtil.isEmpty(autoToken)) {

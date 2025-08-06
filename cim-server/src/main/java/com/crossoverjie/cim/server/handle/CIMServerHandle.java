@@ -1,11 +1,13 @@
 package com.crossoverjie.cim.server.handle;
 
+import com.crossoverjie.cim.common.constant.Constants;
 import com.crossoverjie.cim.common.enums.ChannelAttributeKeys;
 import com.crossoverjie.cim.common.exception.CIMException;
 import com.crossoverjie.cim.common.kit.HeartBeatHandler;
 import com.crossoverjie.cim.common.pojo.CIMUserInfo;
 import com.crossoverjie.cim.common.protocol.BaseCommand;
 import com.crossoverjie.cim.common.protocol.Request;
+import com.crossoverjie.cim.common.protocol.Response;
 import com.crossoverjie.cim.common.util.NettyAttrUtil;
 import com.crossoverjie.cim.server.kit.RouteHandler;
 import com.crossoverjie.cim.server.kit.ServerHeartBeatHandlerImpl;
@@ -31,6 +33,7 @@ import org.apache.commons.lang3.BooleanUtils;
 @ChannelHandler.Sharable
 @Slf4j
 public class CIMServerHandle extends SimpleChannelInboundHandler<Request> {
+    public static final String ERROR_MESSAGE = "client need send first data frame for auth !";
 
     /**
      * 取消绑定
@@ -72,6 +75,16 @@ public class CIMServerHandle extends SimpleChannelInboundHandler<Request> {
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, Request msg) throws Exception {
         log.info("received msg=[{}]", msg.toString());
+        if (BooleanUtils.isNotTrue(ctx.channel().attr(ChannelAttributeKeys.AUTH_RES).get())) {
+            log.error("channel do not through auth,good bye");
+            final Response error = Response.newBuilder()
+                    .setCmd(BaseCommand.MESSAGE)
+                    .setResMsg(ERROR_MESSAGE)
+                    .putProperties(Constants.MetaKey.RECEIVE_USER_ID, String.valueOf(msg.getRequestId()))
+                    .build();
+            ctx.writeAndFlush(error).addListener(ChannelFutureListener.CLOSE);
+            return;
+        }
 
         // 登陆请求是为了上报当前用户信息,可以和连接鉴权分开,链接鉴定权是鉴定客户端是否合法
         // 目前的合法性判断是走登陆借口返回的 authToken 验证
@@ -83,13 +96,6 @@ public class CIMServerHandle extends SimpleChannelInboundHandler<Request> {
             ctx.channel().attr(ChannelAttributeKeys.USER_NAME).set(msg.getReqMsg());
             log.info("client [{}] online success!!", msg.getReqMsg());
         }
-
-        if (BooleanUtils.isNotTrue(ctx.channel().attr(ChannelAttributeKeys.AUTH_RES).get())) {
-            log.error("channel do not through auth,good bye");
-            ctx.writeAndFlush("need auth client").addListener(ChannelFutureListener.CLOSE);
-            return;
-        }
-
 
         //心跳更新时间
         if (msg.getCmd() == BaseCommand.PING) {

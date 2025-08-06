@@ -6,10 +6,14 @@ import com.crossoverjie.cim.client.sdk.io.MessageListener;
 import com.crossoverjie.cim.client.sdk.io.backoff.RandomBackoff;
 import com.crossoverjie.cim.client.sdk.route.AbstractRouteBaseTest;
 import com.crossoverjie.cim.common.constant.Constants;
+import com.crossoverjie.cim.common.enums.ChannelAttributeKeys;
 import com.crossoverjie.cim.common.pojo.CIMUserInfo;
 import com.crossoverjie.cim.route.api.vo.req.P2PReqVO;
 import com.crossoverjie.cim.route.api.vo.res.CIMServerResVO;
 import com.crossoverjie.cim.route.constant.Constant;
+import com.crossoverjie.cim.server.handle.CIMServerHandle;
+import com.crossoverjie.cim.server.util.SessionSocketHolder;
+import io.netty.channel.socket.nio.NioSocketChannel;
 import lombok.Cleanup;
 import lombok.extern.slf4j.Slf4j;
 import org.awaitility.Awaitility;
@@ -20,6 +24,7 @@ import org.junit.jupiter.api.Test;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
+
 
 @Slf4j
 public class ClientTest extends AbstractRouteBaseTest {
@@ -49,10 +54,19 @@ public class ClientTest extends AbstractRouteBaseTest {
                 .userName(cj)
                 .build();
 
+        AtomicReference<String> recMsg = new AtomicReference<>();
+
         @Cleanup
         Client client1 = Client.builder()
                 .auth(auth1)
                 .routeUrl(routeUrl)     // routeUrl 也可以用于登录获取连接服务器地址
+                .messageListener(new MessageListener() {
+                    @Override
+                    public void received(Client client, Map<String, String> properties, String msg) {
+                        recMsg.set(msg);
+                        log.info("test case listener msg:{}", msg);
+                    }
+                })
                 .build();
         TimeUnit.SECONDS.sleep(3);
         Awaitility.await().atMost(10, TimeUnit.SECONDS)
@@ -61,10 +75,16 @@ public class ClientTest extends AbstractRouteBaseTest {
         Assertions.assertTrue(serverInfo.isPresent());
         System.out.println("client1 serverInfo = " + serverInfo.get());
 
-        String msg = "hello";
-        client1.sendGroup(msg);
+        NioSocketChannel socketChannel = SessionSocketHolder.get(id);
+        socketChannel.attr(ChannelAttributeKeys.AUTH_RES).set(null);
+
+
+        client1.sendGroup("ssdasaaa");     // 此时没有认证状态,客户端应该收到 need auth client 的
+        Awaitility.await().atMost(10, TimeUnit.SECONDS).untilAsserted(
+                () -> Assertions.assertEquals(CIMServerHandle.ERROR_MESSAGE, recMsg.get()));
         super.stopSingle();
-        client1.close();;
+        client1.close();
+        ;
     }
 
     @Test
