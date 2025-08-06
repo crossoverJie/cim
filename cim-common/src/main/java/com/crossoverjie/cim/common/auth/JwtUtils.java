@@ -54,8 +54,8 @@ public class JwtUtils {
                 .verify(token);
         try {
             final PayloadVO vo = new PayloadVO();
-            vo.setUserName(decodedObj.getClaim("userName").toString());
-            vo.setUserId(Long.valueOf(decodedObj.getClaim("userId").toString()));
+            vo.setUserName(decodedObj.getClaim("userName").as(String.class));
+            vo.setUserId(decodedObj.getClaim("userId").as(Long.class));
             return vo;
         } catch (Exception e) {
             log.warn("jwt auth token decode failure,token:{},e", token, e);
