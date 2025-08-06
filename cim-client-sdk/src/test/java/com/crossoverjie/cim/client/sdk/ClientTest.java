@@ -16,14 +16,10 @@ import org.awaitility.Awaitility;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.mock.mockito.MockBean;
 
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
-
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
 
 @Slf4j
 public class ClientTest extends AbstractRouteBaseTest {
@@ -34,12 +30,6 @@ public class ClientTest extends AbstractRouteBaseTest {
         super.close();
     }
 
-    @MockBean
-    private RouteManager routeManager;
-
-    /**
-     * 在未完成认证的时候拒绝读写操作
-     */
     @Test
     public void testClientAuthCanRead() throws Exception {
         // 启动 ZK 和连接服务器
@@ -59,13 +49,7 @@ public class ClientTest extends AbstractRouteBaseTest {
                 .userName(cj)
                 .build();
 
-        // mock 掉登录的返回值
-        CIMServerResVO vo = new CIMServerResVO();
-        vo.setIp("127.0.0.1");
-        vo.setHttpPort(8081);
-        vo.setCimServerPort(11211);
-        when(routeManager.getServer(any())).thenReturn(vo);
-
+        @Cleanup
         Client client1 = Client.builder()
                 .auth(auth1)
                 .routeUrl(routeUrl)     // routeUrl 也可以用于登录获取连接服务器地址
@@ -79,6 +63,8 @@ public class ClientTest extends AbstractRouteBaseTest {
 
         String msg = "hello";
         client1.sendGroup(msg);
+        super.stopSingle();
+        client1.close();;
     }
 
     @Test
