@@ -1,7 +1,9 @@
 package com.crossoverjie.cim.route.config;
 
 import com.crossoverjie.cim.common.core.proxy.RpcProxyManager;
+import com.crossoverjie.cim.common.enums.RegistryType;
 import com.crossoverjie.cim.common.metastore.MetaStore;
+import com.crossoverjie.cim.common.metastore.NoMetaStoreImpl;
 import com.crossoverjie.cim.common.metastore.ZkConfiguration;
 import com.crossoverjie.cim.common.metastore.ZkMetaStoreImpl;
 import com.crossoverjie.cim.common.pojo.CIMUserInfo;
@@ -16,6 +18,7 @@ import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.OkHttpClient;
 import org.apache.curator.retry.ExponentialBackoffRetry;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
@@ -44,19 +47,30 @@ public class BeanConfig {
     @Resource
     private AppConfiguration appConfiguration;
 
+    @Value("${cim.register.type:ZK}")
+    private RegistryType registerType;
+
+
     @Bean
     public MetaStore metaStore() throws Exception {
-        MetaStore metaStore = new ZkMetaStoreImpl();
-        ExponentialBackoffRetry retryPolicy = new ExponentialBackoffRetry(1000, 3);
-        metaStore.initialize(ZkConfiguration.builder()
-                .metaServiceUri(appConfiguration.getZkAddr())
-                .timeoutMs(appConfiguration.getZkConnectTimeout())
-                .retryPolicy(retryPolicy)
-                .build());
-        metaStore.listenServerList((root, currentChildren) -> {
-            log.info("Server list change, root=[{}], current server list=[{}]", root, currentChildren);
-        });
-        return metaStore;
+        switch (registerType) {
+            case NO:
+                return new NoMetaStoreImpl();
+            case ZK:
+                MetaStore metaStore = new ZkMetaStoreImpl();
+                ExponentialBackoffRetry retryPolicy = new ExponentialBackoffRetry(1000, 3);
+                metaStore.initialize(ZkConfiguration.builder()
+                        .metaServiceUri(appConfiguration.getZkAddr())
+                        .timeoutMs(appConfiguration.getZkConnectTimeout())
+                        .retryPolicy(retryPolicy)
+                        .build());
+                metaStore.listenServerList((root, currentChildren) -> {
+                    log.info("Server list change, root=[{}], current server list=[{}]", root, currentChildren);
+                });
+                return metaStore;
+            default:
+                throw new IllegalArgumentException("invalid register type");
+        }
     }
 
 
@@ -130,7 +144,7 @@ public class BeanConfig {
                     }
                 });
     }
-      
+
     @Bean
     public ServerApi serverApi(OkHttpClient okHttpClient) {
         return RpcProxyManager.create(ServerApi.class, okHttpClient);

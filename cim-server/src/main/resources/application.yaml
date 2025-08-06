@@ -2,11 +2,11 @@ spring:
   application:
     name:
       cim-server
-  
+
 # web port
 server:
   port: 8081
-  
+
 # enable swagger
 springdoc:
   swagger-ui:
@@ -26,6 +26,8 @@ app:
     root: /route # zk root path
 # cim server config
 cim:
+  register:
+    type: ZK
   server:
     port: 11211
   route:

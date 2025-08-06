@@ -1,7 +1,7 @@
 package com.crossoverjie.cim.client.sdk.route;
 
-import com.crossoverjie.cim.common.res.BaseResponse;
 import com.crossoverjie.cim.client.sdk.server.AbstractServerBaseTest;
+import com.crossoverjie.cim.common.res.BaseResponse;
 import com.crossoverjie.cim.route.RouteApplication;
 import com.crossoverjie.cim.route.api.RouteApi;
 import com.crossoverjie.cim.route.api.vo.req.RegisterInfoReqVO;
@@ -18,6 +18,7 @@ public abstract class AbstractRouteBaseTest extends AbstractServerBaseTest {
     RedisContainer redis = new RedisContainer(DockerImageName.parse("redis:7.4.0"));
 
     protected ConfigurableApplicationContext run;
+
     public void startRoute(String offlineModel) {
         redis.start();
         SpringApplication route = new SpringApplication(RouteApplication.class);
@@ -31,7 +32,7 @@ public abstract class AbstractRouteBaseTest extends AbstractServerBaseTest {
         run = route.run(args);
     }
 
-    public void close(){
+    public void close() {
         super.close();
         redis.close();
         run.close();

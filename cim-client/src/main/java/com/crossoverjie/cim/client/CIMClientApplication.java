@@ -11,19 +11,18 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  */
 @Slf4j
 @SpringBootApplication
-public class CIMClientApplication implements CommandLineRunner{
+public class CIMClientApplication implements CommandLineRunner {
 
 
-	public static void main(String[] args) {
+    public static void main(String[] args) {
         SpringApplication.run(CIMClientApplication.class, args);
-		log.info("Client start success");
-	}
+    }
 
-	@Override
-	public void run(String... args) {
-		Scan scan = new Scan() ;
-		Thread thread = new Thread(scan);
-		thread.setName("scan-thread");
-		thread.start();
-	}
+    @Override
+    public void run(String... args) {
+        Scan scan = new Scan();
+        Thread thread = new Thread(scan);
+        thread.setName("scan-thread");
+        thread.start();
+    }
 }

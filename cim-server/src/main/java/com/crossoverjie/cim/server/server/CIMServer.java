@@ -1,6 +1,5 @@
 package com.crossoverjie.cim.server.server;
 
-import com.crossoverjie.cim.common.protocol.BaseCommand;
 import com.crossoverjie.cim.common.protocol.Request;
 import com.crossoverjie.cim.server.api.vo.req.SendMsgReqVO;
 import com.crossoverjie.cim.server.init.CIMServerInitializer;
@@ -15,16 +14,17 @@ import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
-import java.net.InetSocketAddress;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+
+import java.net.InetSocketAddress;
 
 /**
  * Function:
  *
  * @author crossoverJie
- *         Date: 21/05/2018 00:30
+ * Date: 21/05/2018 00:30
  * @since JDK 1.8
  */
 @Component
@@ -32,8 +32,8 @@ import org.springframework.stereotype.Component;
 public class CIMServer {
 
 
-    private EventLoopGroup boss = new NioEventLoopGroup();
-    private EventLoopGroup work = new NioEventLoopGroup();
+    private final EventLoopGroup boss = new NioEventLoopGroup(1);
+    private final EventLoopGroup work = new NioEventLoopGroup();
 
 
     @Value("${cim.server.port}")
@@ -55,7 +55,7 @@ public class CIMServer {
                 .localAddress(new InetSocketAddress(nettyPort))
                 //保持长连接
                 .childOption(ChannelOption.SO_KEEPALIVE, true)
-                .childHandler(new CIMServerInitializer());
+                .childHandler(new CIMServerInitializer(Boolean.TRUE, Boolean.FALSE));
 
         ChannelFuture future = bootstrap.bind().sync();
         if (future.isSuccess()) {
@@ -77,6 +77,7 @@ public class CIMServer {
 
     /**
      * Push msg to client.
+     *
      * @param sendMsgReqVO message body
      */
     public void sendMsg(SendMsgReqVO sendMsgReqVO) {

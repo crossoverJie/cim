@@ -1,18 +1,19 @@
 package com.crossoverjie.cim.client.sdk.impl;
 
 import com.crossoverjie.cim.client.sdk.Event;
-import com.crossoverjie.cim.client.sdk.io.backoff.BackoffStrategy;
 import com.crossoverjie.cim.client.sdk.io.MessageListener;
-import com.crossoverjie.cim.client.sdk.io.backoff.RandomBackoff;
 import com.crossoverjie.cim.client.sdk.io.ReconnectCheck;
+import com.crossoverjie.cim.client.sdk.io.backoff.BackoffStrategy;
+import com.crossoverjie.cim.client.sdk.io.backoff.RandomBackoff;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import java.util.concurrent.ThreadPoolExecutor;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import okhttp3.OkHttpClient;
+
+import java.util.concurrent.ThreadPoolExecutor;
 
 @Data
 @NoArgsConstructor
@@ -20,14 +21,25 @@ import okhttp3.OkHttpClient;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ClientConfigurationData {
 
+    private boolean debug = false;
+
     private Auth auth;
+
+    private String host;
+
+    private Integer serverPort;
+
+    private Integer httpPort;
 
     @Data
     @AllArgsConstructor
     @Builder
-    public static class Auth{
+    public static class Auth {
         private long userId;
         private String userName;
+
+        @JsonIgnore
+        private String authToken;
     }
 
     private String routeUrl;

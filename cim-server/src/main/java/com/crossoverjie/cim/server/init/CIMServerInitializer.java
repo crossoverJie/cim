@@ -1,37 +1,76 @@
 package com.crossoverjie.cim.server.init;
 
+import com.crossoverjie.cim.common.enums.ChannelAttributeKeys;
+import com.crossoverjie.cim.common.handler.ChannelInboundDebugHandler;
+import com.crossoverjie.cim.common.handler.ChannelOutboundDebugHandler;
 import com.crossoverjie.cim.common.protocol.Request;
 import com.crossoverjie.cim.server.handle.CIMServerHandle;
+import com.crossoverjie.cim.server.handle.ClientAuthHandler;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelInitializer;
+import io.netty.channel.ChannelPipeline;
 import io.netty.handler.codec.protobuf.ProtobufDecoder;
 import io.netty.handler.codec.protobuf.ProtobufEncoder;
 import io.netty.handler.codec.protobuf.ProtobufVarint32FrameDecoder;
 import io.netty.handler.codec.protobuf.ProtobufVarint32LengthFieldPrepender;
 import io.netty.handler.timeout.IdleStateHandler;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.BooleanUtils;
 
 /**
  * Function:
  *
  * @author crossoverJie
- *         Date: 17/05/2018 18:51
+ * Date: 17/05/2018 18:51
  * @since JDK 1.8
  */
+@Slf4j
 public class CIMServerInitializer extends ChannelInitializer<Channel> {
 
-    private final CIMServerHandle cimServerHandle = new CIMServerHandle() ;
+    private final CIMServerHandle cimServerHandle = new CIMServerHandle();
+
+
+    /**
+     * use client auth
+     */
+    private final Boolean authInChannelActive;
+
+    /**
+     * debug model
+     */
+    private final Boolean debug;
+
+    public CIMServerInitializer(Boolean authInChannelActive, Boolean debug) {
+        this.authInChannelActive = authInChannelActive;
+        this.debug = debug;
+    }
 
     @Override
     protected void initChannel(Channel ch) throws Exception {
+        final ChannelPipeline pipeline = ch.pipeline();
+        //11 秒没有向客户端发送消息就发生心跳
+        pipeline.addLast(new IdleStateHandler(11, 0, 0));
 
-        ch.pipeline()
-                //11 秒没有向客户端发送消息就发生心跳
-                .addLast(new IdleStateHandler(11, 0, 0))
-                // google Protobuf 编解码
-                .addLast(new ProtobufVarint32FrameDecoder())
-                .addLast(new ProtobufDecoder(Request.getDefaultInstance()))
-                .addLast(new ProtobufVarint32LengthFieldPrepender())
-                .addLast(new ProtobufEncoder())
-                .addLast(cimServerHandle);
+        if (debug) {
+            pipeline.addLast(ChannelInboundDebugHandler.INSTANCE);
+        }
+        // google Protobuf decoder
+        pipeline.addLast(new ProtobufVarint32FrameDecoder())
+                .addLast(new ProtobufDecoder(Request.getDefaultInstance()));
+        if (debug) {
+            pipeline.addLast(ChannelOutboundDebugHandler.INSTANCE);
+        }
+        // google Protobuf encoder
+        pipeline.addLast(new ProtobufVarint32LengthFieldPrepender())
+                .addLast(new ProtobufEncoder());
+
+        // auth client
+        // this priority of the client authenticated handler is higher
+        if (BooleanUtils.isTrue(authInChannelActive)) {
+            pipeline.addLast(new ClientAuthHandler());
+        } else {
+            ch.attr(ChannelAttributeKeys.AUTH_RES).set(Boolean.TRUE);
+        }
+        pipeline.addLast(cimServerHandle);
     }
 }

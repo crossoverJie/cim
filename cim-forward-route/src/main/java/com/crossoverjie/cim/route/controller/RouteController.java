@@ -1,5 +1,7 @@
 package com.crossoverjie.cim.route.controller;
 
+import com.crossoverjie.cim.common.auth.JwtUtils;
+import com.crossoverjie.cim.common.auth.jwt.dto.PayloadVO;
 import com.crossoverjie.cim.common.enums.StatusEnum;
 import com.crossoverjie.cim.common.exception.CIMException;
 import com.crossoverjie.cim.common.metastore.MetaStore;
@@ -20,16 +22,18 @@ import com.crossoverjie.cim.route.service.UserInfoCacheService;
 import com.crossoverjie.cim.server.api.ServerApi;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.annotation.Resource;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 
 import static com.crossoverjie.cim.common.enums.StatusEnum.OFF_LINE;
 
@@ -170,25 +174,35 @@ public class RouteController implements RouteApi {
         StatusEnum status = accountService.login(loginReqVO);
         res.setCode(status.getCode());
         res.setMessage(status.getMessage());
-        if (status != StatusEnum.SUCCESS) {
+        if (status != StatusEnum.SUCCESS && status != StatusEnum.REPEAT_LOGIN) {
             return res;
         }
 
         // check server available
+        // 可以不返回,直接使用直连方式
+        RouteInfo routeInfo = new RouteInfo();
         Set<String> availableServerList = metaStore.getAvailableServerList();
-        String key = String.valueOf(loginReqVO.getUserId());
-        String server =
-                routeHandle.routeServer(List.copyOf(availableServerList), key);
-        log.info("userInfo=[{}] route server info=[{}]", loginReqVO, server);
+        if (!CollectionUtils.isEmpty(availableServerList)) {
+            String key = String.valueOf(loginReqVO.getUserId());
+            String server =
+                    routeHandle.routeServer(List.copyOf(availableServerList), key);
+            log.info("userInfo=[{}] route server info=[{}]", loginReqVO, server);
 
-        RouteInfo routeInfo = RouteInfoParseUtil.parse(server);
-        routeInfo = commonBizService.checkServerAvailable(routeInfo, key);
+            routeInfo = RouteInfoParseUtil.parse(server);
+            routeInfo = commonBizService.checkServerAvailable(routeInfo, key);
 
-        //保存路由信息
-        accountService.saveRouteInfo(loginReqVO, server);
+            //保存路由信息
+            accountService.saveRouteInfo(loginReqVO, server);
+        }
+
+        // 颁发认证 Token
+        PayloadVO pv = new PayloadVO();
+        pv.setUserId(loginReqVO.getUserId());
+        pv.setUserName(loginReqVO.getUserName());
+        final String token = JwtUtils.generateToken(loginReqVO.getUserId(), pv);
 
         CIMServerResVO vo =
-                new CIMServerResVO(routeInfo.getIp(), routeInfo.getCimServerPort(), routeInfo.getHttpPort());
+                new CIMServerResVO(routeInfo.getIp(), routeInfo.getCimServerPort(), routeInfo.getHttpPort(), token);
         res.setDataBody(vo);
         return res;
     }

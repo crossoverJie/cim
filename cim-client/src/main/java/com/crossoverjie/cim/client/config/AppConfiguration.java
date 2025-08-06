@@ -8,32 +8,34 @@ import org.springframework.stereotype.Component;
  * Function:
  *
  * @author crossoverJie
- *         Date: 2018/8/24 01:43
+ * Date: 2018/8/24 01:43
  * @since JDK 1.8
  */
 @Component
 @Data
 public class AppConfiguration {
 
-    @Value("${cim.user.id}")
+    @Value("${cim.user.id:1}")
     private Long userId;
 
-    @Value("${cim.user.userName}")
+    @Value("${cim.user.userName:test_cim}")
     private String userName;
 
     @Value("${cim.msg.logger.path}")
-    private String msgLoggerPath ;
+    private String msgLoggerPath;
 
     @Value("${cim.heartbeat.time}")
-    private long heartBeatTime ;
+    private long heartBeatTime;
 
     @Value("${cim.reconnect.count}")
     private int reconnectCount;
 
     @Value("${cim.route.url}")
     private String routeUrl;
+
     @Value("${cim.callback.thread.queue.size}")
     private int queueSize;
+
     @Value("${cim.callback.thread.pool.size}")
     private int poolSize;
 }
