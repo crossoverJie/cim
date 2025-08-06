@@ -3,14 +3,14 @@ package com.crossoverjie.cim.common.core.proxy;
 import com.crossoverjie.cim.common.exception.CIMException;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import java.io.Serializable;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import okhttp3.OkHttpClient;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
+
+import java.io.Serializable;
 
 class RpcProxyManagerTest {
 
@@ -53,38 +53,38 @@ class RpcProxyManagerTest {
         Assertions.assertEquals(response.getParsedBody().getAge(), 18);
         Assertions.assertEquals(response.getParsedBody().getCity(), "shenzhen");
         response = echo.echoTarget(request, url);
-        Assertions.assertEquals(response.getParsedBody().getName(), "crossoverJie");
+Assertions.assertEquals(response.getParsedBody().getName(), "crossoverJie");
 
-        String req = "/request";
-        response = echo.request("http://echo.free.beeceptor.com", request);
-        Assertions.assertEquals(response.getPath(), req);
-        Assertions.assertEquals(response.getParsedBody().getAge(), 18);
+String req = "/request";
+response = echo.request("http://echo.free.beeceptor.com", request);
+Assertions.assertEquals(response.getPath(), req);
+Assertions.assertEquals(response.getParsedBody().getAge(), 18);
 
-        Assertions.assertThrows(CIMException.class, () -> echo.echoTarget(request));
-    }
+Assertions.assertThrows(CIMException.class, () -> echo.echoTarget(request));
+}
 
-    @Test
-    public void testFail() {
-        OkHttpClient client = new OkHttpClient();
-        String url = "http://echo.free.beeceptor.com";
-        Echo echo = RpcProxyManager.create(Echo.class, url, client);
-        EchoRequest request = new EchoRequest();
-        request.setName("crossoverJie");
-        request.setAge(18);
-        request.setCity("shenzhen");
-        Assertions.assertThrows(IllegalArgumentException.class, () -> echo.fail(request, "test",""));
-    }
+@Test
+public void testFail() {
+OkHttpClient client = new OkHttpClient();
+String url = "http://echo.free.beeceptor.com";
+Echo echo = RpcProxyManager.create(Echo.class, url, client);
+EchoRequest request = new EchoRequest();
+request.setName("crossoverJie");
+request.setAge(18);
+request.setCity("shenzhen");
+Assertions.assertThrows(IllegalArgumentException.class, () -> echo.fail(request, "test",""));
+}
 
 
-    @Test
-    public void testGeneric() {
-        OkHttpClient client = new OkHttpClient();
-        String url = "http://echo.free.beeceptor.com";
-        Echo echo = RpcProxyManager.create(Echo.class, url, client);
-        EchoRequest request = new EchoRequest();
-        request.setName("crossoverJie");
-        request.setAge(18);
-        request.setCity("shenzhen");
+@Test
+public void testGeneric() {
+OkHttpClient client = new OkHttpClient();
+String url = "http://echo.free.beeceptor.com";
+Echo echo = RpcProxyManager.create(Echo.class, url, client);
+EchoRequest request = new EchoRequest();
+request.setName("crossoverJie");
+request.setAge(18);
+request.setCity("shenzhen");
         EchoGeneric<EchoResponse.HeadersDTO> response = echo.echoGeneric(request);
         Assertions.assertEquals(response.getHeaders().getHost(), "echo.free.beeceptor.com");
     }
@@ -172,6 +172,10 @@ class RpcProxyManagerTest {
             private String contentType;
             @JsonProperty("Accept-Encoding")
             private String acceptEncoding;
+            @JsonProperty("Upgrade-Insecure-Requests")
+            private String upgradeInsecureRequests;
+            @JsonProperty("Via")
+            private String via;
         }
 
         @NoArgsConstructor

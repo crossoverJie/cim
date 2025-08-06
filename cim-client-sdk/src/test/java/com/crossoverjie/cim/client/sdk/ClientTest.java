@@ -41,7 +41,7 @@ public class ClientTest extends AbstractRouteBaseTest {
      * 在未完成认证的时候拒绝读写操作
      */
     @Test
-    public void testClientNotAuthCanUnreadable() throws Exception {
+    public void testClientAuthCanRead() throws Exception {
         // 启动 ZK 和连接服务器
         super.starSingleServer();
 
