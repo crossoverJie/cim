@@ -18,6 +18,16 @@ public class PayloadVO implements Serializable {
      */
     private String userName;
 
+    /**
+     * 授权目标主机地址
+     */
+    private String host;
+
+    /**
+     * 授权目标主机端口
+     */
+    private Integer port;
+
     public Long getUserId() {
         return userId;
     }
@@ -33,6 +43,24 @@ public class PayloadVO implements Serializable {
 
     public PayloadVO setUserName(String userName) {
         this.userName = userName;
+        return this;
+    }
+
+    public String getHost() {
+        return host;
+    }
+
+    public PayloadVO setHost(String host) {
+        this.host = host;
+        return this;
+    }
+
+    public Integer getPort() {
+        return port;
+    }
+
+    public PayloadVO setPort(Integer port) {
+        this.port = port;
         return this;
     }
 }

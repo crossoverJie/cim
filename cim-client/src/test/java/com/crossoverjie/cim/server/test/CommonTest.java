@@ -11,29 +11,26 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.vdurmont.emoji.EmojiParser;
+import lombok.extern.slf4j.Slf4j;
+import okhttp3.OkHttpClient;
+import org.junit.Test;
+
 import java.io.IOException;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.nio.charset.Charset;
-import java.nio.file.Files;
-import java.nio.file.LinkOption;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardOpenOption;
+import java.nio.file.*;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
-import lombok.extern.slf4j.Slf4j;
-import okhttp3.OkHttpClient;
-import org.junit.Test;
 
 /**
  * Function:
  *
  * @author crossoverJie
- *         Date: 22/05/2018 18:44
+ * Date: 22/05/2018 18:44
  * @since JDK 1.8
  */
 @Slf4j
@@ -41,47 +38,46 @@ public class CommonTest {
 
 
 
-
     @Test
-    public void searchMsg2(){
-        StringBuilder sb = new StringBuilder() ;
+    public void searchMsg2() {
+        StringBuilder sb = new StringBuilder();
         String allMsg = "于是在之前的基础上我完善了一些内容，先来看看这个项目的介绍吧：\n" +
                 "\n" +
                 "CIM(CROSS-IM) 一款面向开发者的 IM(即时通讯)系统；同时提供了一些组件帮助开发者构建一款属于自己可水平扩展的 IM 。\n" +
                 "\n" +
-                "借助 CIM 你可以实现以下需求：" ;
+                "借助 CIM 你可以实现以下需求：";
 
-        String key = "CIM" ;
+        String key = "CIM";
 
         String[] split = allMsg.split("\n");
         for (String msg : split) {
-            if (msg.trim().contains(key)){
-                sb.append(msg).append("\n") ;
+            if (msg.trim().contains(key)) {
+                sb.append(msg).append("\n");
             }
         }
         int pos = 0;
 
         String result = sb.toString();
 
-        int count = 1 ;
-        int multiple = 2 ;
-        while((pos = result.indexOf(key, pos)) >= 0) {
+        int count = 1;
+        int multiple = 2;
+        while ((pos = result.indexOf(key, pos)) >= 0) {
 
-            log.info("{},{}",pos, pos + key.length());
+            log.info("{},{}", pos, pos + key.length());
 
             pos += key.length();
 
 
-            count ++ ;
+            count++;
         }
 
         System.out.println(sb.toString());
-        System.out.println(sb.toString().replace(key,"\033[31;4m" + key+"\033[0m"));
+        System.out.println(sb.toString().replace(key, "\033[31;4m" + key + "\033[0m"));
     }
 
     @Test
-    public void log(){
-        String msg = "hahahdsadsd" ;
+    public void log() {
+        String msg = "hahahdsadsd";
         LocalDate today = LocalDate.now();
         int year = today.getYear();
         int month = today.getMonthValue();
@@ -108,7 +104,7 @@ public class CommonTest {
     }
 
     @Test
-    public void emoji() throws Exception{
+    public void emoji() throws Exception {
         String str = "An :grinning:awesome :smiley:string &#128516;with a few :wink:emojis!";
         String result = EmojiParser.parseToUnicode(str);
         System.out.println(result);
@@ -125,16 +121,16 @@ public class CommonTest {
     }
 
     @Test
-    public void emoji2(){
-        String emostring ="😂";
+    public void emoji2() {
+        String emostring = "😂";
 
         String face_with_tears_of_joy = emostring.replaceAll("\uD83D\uDE02", "face with tears of joy");
         System.out.println(face_with_tears_of_joy);
 
-        System.out.println("======" + face_with_tears_of_joy.replaceAll("face with tears of joy","\uD83D\uDE02"));
+        System.out.println("======" + face_with_tears_of_joy.replaceAll("face with tears of joy", "\uD83D\uDE02"));
     }
 
-//    @Test
+    //    @Test
     public void deSerialize() throws Exception {
         RouteApi routeApi = RpcProxyManager.create(RouteApi.class, "http://localhost:8083", new OkHttpClient());
 
@@ -143,7 +139,7 @@ public class CommonTest {
         System.out.println(login.getDataBody());
 
         BaseResponse<Set<CIMUserInfo>> setBaseResponse = routeApi.onlineUser();
-        log.info("setBaseResponse={}",setBaseResponse.getDataBody());
+        log.info("setBaseResponse={}", setBaseResponse.getDataBody());
     }
 
     @Test
@@ -153,7 +149,7 @@ public class CommonTest {
         ObjectMapper objectMapper = new ObjectMapper();
         Class<?> generic = null;
         for (Method declaredMethod : RouteApi.class.getDeclaredMethods()) {
-            if (declaredMethod.getName().equals("login")){
+            if (declaredMethod.getName().equals("login")) {
                 Type returnType = declaredMethod.getGenericReturnType();
 
                 // check if the return type is a parameterized type
@@ -178,12 +174,12 @@ public class CommonTest {
     }
 
 
-    private static class Gen<T,R>{
+    private static class Gen<T, R> {
         private T t;
         private R r;
     }
 
-    interface TestInterface{
+    interface TestInterface {
         Gen<String, P2PReqVO> login();
     }
 
@@ -211,7 +207,8 @@ public class CommonTest {
     // 通过反射获取 BaseResponse<Set<CIMUserInfo>> 中的泛型类型
     public static Type getGenericTypeOfBaseResponse() {
         // 这里模拟你需要处理的 BaseResponse<Set<CIMUserInfo>>
-        ParameterizedType baseResponseType = (ParameterizedType) new TypeReference<BaseResponse<Set<CIMUserInfo>>>() {}.getType();
+        ParameterizedType baseResponseType = (ParameterizedType) new TypeReference<BaseResponse<Set<CIMUserInfo>>>() {
+        }.getType();
 
         // 获取 BaseResponse 的泛型参数，即 Set<CIMUserInfo>
         Type[] actualTypeArguments = baseResponseType.getActualTypeArguments();

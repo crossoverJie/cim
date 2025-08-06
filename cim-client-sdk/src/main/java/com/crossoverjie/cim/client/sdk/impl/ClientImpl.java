@@ -131,7 +131,7 @@ public class ClientImpl extends ClientState implements Client {
      */
     private CompletableFuture<Boolean> doConnectServer() {
         CompletableFuture<Boolean> future = new CompletableFuture<>();
-        this.userLogin(future) // 登录成功之后会被记录在 serverInfo 中
+        this.userLogin(future) // save serverInfo after login success
                 .ifPresentOrElse((cimServer) -> {
                     if (StringUtils.isBlank(cimServer.getAuthToken())) {
                         future.complete(false);
@@ -176,7 +176,7 @@ public class ClientImpl extends ClientState implements Client {
         Bootstrap bootstrap = new Bootstrap();
         bootstrap.group(group)
                 .channel(NioSocketChannel.class)
-                .handler(new CIMClientHandleInitializer(Boolean.TRUE, getAuth()));
+                .handler(new CIMClientHandleInitializer(conf.isDebug(), getAuth()));
         ChannelFuture sync;
         try {
             final String host = checkHost();
@@ -212,7 +212,7 @@ public class ClientImpl extends ClientState implements Client {
     }
 
     /**
-     * . clear route information.
+     * 1. clear route information.
      * 2. reconnect.
      * 3. shutdown reconnect job.
      * 4. reset reconnect state.
@@ -254,7 +254,7 @@ public class ClientImpl extends ClientState implements Client {
     public String checkHost() {
         // 优先使用直连的方式
         final String host = StringUtils.isNoneBlank(conf.getHost()) ? conf.getHost() : serverInfo.getIp();
-        if(StringUtils.isBlank(host)){
+        if (StringUtils.isBlank(host)) {
             throw new IllegalArgumentException("cim server host is null");
         }
         return host;
@@ -263,7 +263,7 @@ public class ClientImpl extends ClientState implements Client {
     @Override
     public Integer checkPort() {
         final Integer port = Objects.nonNull(conf.getServerPort()) ? conf.getServerPort() : serverInfo.getCimServerPort();
-        if(Objects.isNull(port)){
+        if (Objects.isNull(port)) {
             throw new IllegalArgumentException("cim server port is null");
         }
         return port;

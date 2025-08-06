@@ -21,6 +21,8 @@ import java.util.concurrent.ThreadPoolExecutor;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ClientConfigurationData {
 
+    private boolean debug = false;
+
     private Auth auth;
 
     private String host;

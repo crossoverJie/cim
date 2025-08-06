@@ -17,11 +17,11 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class CIMClientHandleInitializer extends ChannelInitializer<Channel> {
 
-    private final Boolean debug;
+    private final boolean debug;
 
     private final ClientConfigurationData.Auth auth;
 
-    public CIMClientHandleInitializer(Boolean debug, ClientConfigurationData.Auth auth) {
+    public CIMClientHandleInitializer(boolean debug, ClientConfigurationData.Auth auth) {
         super();
         this.auth = auth;
         this.debug = debug;

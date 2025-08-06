@@ -55,7 +55,7 @@ public class CIMServer {
                 .localAddress(new InetSocketAddress(nettyPort))
                 //保持长连接
                 .childOption(ChannelOption.SO_KEEPALIVE, true)
-                .childHandler(new CIMServerInitializer(Boolean.TRUE, Boolean.TRUE));
+                .childHandler(new CIMServerInitializer(Boolean.TRUE, Boolean.FALSE));
 
         ChannelFuture future = bootstrap.bind().sync();
         if (future.isSuccess()) {

@@ -16,10 +16,14 @@ import org.awaitility.Awaitility;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.mock.mockito.MockBean;
 
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
+
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
 
 @Slf4j
 public class ClientTest extends AbstractRouteBaseTest {
@@ -28,6 +32,53 @@ public class ClientTest extends AbstractRouteBaseTest {
     @AfterEach
     public void tearDown() {
         super.close();
+    }
+
+    @MockBean
+    private RouteManager routeManager;
+
+    /**
+     * 在未完成认证的时候拒绝读写操作
+     */
+    @Test
+    public void testClientNotAuthCanUnreadable() throws Exception {
+        // 启动 ZK 和连接服务器
+        super.starSingleServer();
+
+        // 启动转发服务
+        super.startRoute(Constant.OfflineStoreMode.REDIS);
+
+        // 转发服务地址
+        String routeUrl = "http://localhost:8083";
+
+        // 登录第一个用户
+        String cj = "crossoverJie";
+        Long id = super.registerAccount(cj);
+        var auth1 = ClientConfigurationData.Auth.builder()
+                .userId(id)
+                .userName(cj)
+                .build();
+
+        // mock 掉登录的返回值
+        CIMServerResVO vo = new CIMServerResVO();
+        vo.setIp("127.0.0.1");
+        vo.setHttpPort(8081);
+        vo.setCimServerPort(11211);
+        when(routeManager.getServer(any())).thenReturn(vo);
+
+        Client client1 = Client.builder()
+                .auth(auth1)
+                .routeUrl(routeUrl)     // routeUrl 也可以用于登录获取连接服务器地址
+                .build();
+        TimeUnit.SECONDS.sleep(3);
+        Awaitility.await().atMost(10, TimeUnit.SECONDS)
+                .untilAsserted(() -> Assertions.assertEquals(ClientState.State.Ready, client1.getState()));
+        Optional<CIMServerResVO> serverInfo = client1.getServerInfo();
+        Assertions.assertTrue(serverInfo.isPresent());
+        System.out.println("client1 serverInfo = " + serverInfo.get());
+
+        String msg = "hello";
+        client1.sendGroup(msg);
     }
 
     @Test
