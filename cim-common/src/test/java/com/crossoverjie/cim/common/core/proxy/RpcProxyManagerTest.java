@@ -43,6 +43,31 @@ class RpcProxyManagerTest {
     public void testUrl() {
         OkHttpClient client = new OkHttpClient();
         String url = "http://echo.free.beeceptor.com/sample-request?author=beeceptor";
+        /**
+         * {
+         *   "method": "POST",
+         *   "protocol": "http",
+         *   "host": "echo.free.beeceptor.com",
+         *   "path": "/sample-request?author=beeceptor",
+         *   "ip": "111.249.70.48:41382",
+         *   "headers": {
+         *     "Host": "echo.free.beeceptor.com",
+         *     "User-Agent": "okhttp/3.3.1",
+         *     "Content-Length": "50",
+         *     "Accept-Encoding": "gzip",
+         *     "Content-Type": "application/json; charset=utf-8",
+         *     "Via": "1.1 Caddy"
+         *   },
+         *   "parsedQueryParams": {
+         *     "author": "beeceptor"
+         *   },
+         *   "parsedBody": {
+         *     "city": "shenzhen",
+         *     "name": "crossoverJie",
+         *     "age": 18
+         *   }
+         * }
+         */
         Echo echo = RpcProxyManager.create(Echo.class, client);
         EchoRequest request = new EchoRequest();
         request.setName("crossoverJie");
@@ -172,6 +197,8 @@ class RpcProxyManagerTest {
             private String contentType;
             @JsonProperty("Accept-Encoding")
             private String acceptEncoding;
+            @JsonProperty("Via")
+            private String via;
         }
 
         @NoArgsConstructor
