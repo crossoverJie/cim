@@ -172,6 +172,8 @@ class RpcProxyManagerTest {
             private String contentType;
             @JsonProperty("Accept-Encoding")
             private String acceptEncoding;
+            @JsonProperty("Via")
+            private String via;
         }
 
         @NoArgsConstructor
