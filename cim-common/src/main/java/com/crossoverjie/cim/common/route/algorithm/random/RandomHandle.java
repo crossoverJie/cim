@@ -12,7 +12,7 @@ import java.util.concurrent.ThreadLocalRandom;
 /**
  * Function: 路由策略， 随机
  *
- * @Auther: jiangyunxiong
+ * @Author: jiangyunxiong
  * @Date: 2019/3/7 11:56
  * @since JDK 1.8
  */
