@@ -2,9 +2,7 @@ package com.crossoverjie.cim.route.service.impl;
 
 import com.crossoverjie.cim.common.pojo.CIMUserInfo;
 import com.crossoverjie.cim.route.service.UserInfoCacheService;
-import com.google.common.cache.CacheBuilder;
-import com.google.common.cache.CacheLoader;
-import com.google.common.cache.LoadingCache;
+import com.github.benmanes.caffeine.cache.LoadingCache;
 import jakarta.annotation.Resource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -41,7 +39,7 @@ public class UserInfoCacheServiceImpl implements UserInfoCacheService {
     @Override
     public Optional<CIMUserInfo> loadUserInfoByUserId(Long userId) {
         //Retrieve user information using a second-level cache.
-        return userInfoMap.getUnchecked(userId);
+        return userInfoMap.get(userId);
     }
 
     @Override

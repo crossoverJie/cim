@@ -2,9 +2,9 @@ package com.crossoverjie.cim.common.metastore;
 
 import com.crossoverjie.cim.common.pojo.RouteInfo;
 import com.crossoverjie.cim.common.util.RouteInfoParseUtil;
-import com.google.common.cache.CacheBuilder;
-import com.google.common.cache.CacheLoader;
-import com.google.common.cache.LoadingCache;
+import com.github.benmanes.caffeine.cache.CacheLoader;
+import com.github.benmanes.caffeine.cache.Caffeine;
+import com.github.benmanes.caffeine.cache.LoadingCache;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -30,12 +30,11 @@ public class ZkMetaStoreImpl implements MetaStore {
     @Override
     public void initialize(AbstractConfiguration<?> configuration) throws Exception {
         // TODO: 2024/8/19 Change to set or caffeine?
-        cache = CacheBuilder.newBuilder()
-                .concurrencyLevel(3)
+        cache = Caffeine.newBuilder()
                 .build(new CacheLoader<>() {
                     @Override
-                    public String load(String s) {
-                        return null;
+                    public String load(String key) throws Exception {
+                        return "";
                     }
                 });
         client = new ZkClient(configuration.getMetaServiceUri(), configuration.getTimeoutMs());
@@ -43,16 +42,7 @@ public class ZkMetaStoreImpl implements MetaStore {
 
     @Override
     public Set<String> getAvailableServerList() throws Exception {
-        if (cache.size() > 0) {
-            return cache.asMap().keySet();
-        }
-        List<String> coll = client.getChildren(ROOT);
-        Map<String, String> voidMap = coll.stream().collect(Collectors.toMap(
-                Function.identity(),
-                Function.identity()
-        ));
-        cache.putAll(voidMap);
-        return voidMap.keySet();
+        return cache.asMap().keySet();
     }
 
     @Override
@@ -86,9 +76,12 @@ public class ZkMetaStoreImpl implements MetaStore {
     @Override
     public synchronized void rebuildCache() throws Exception {
         cache.invalidateAll();
-
-        // Because of calling invalidateAll, this method will re-fetch the server list from zk.
-        this.getAvailableServerList();
+        List<String> coll = client.getChildren(ROOT);
+        Map<String, String> voidMap = coll.stream().collect(Collectors.toMap(
+                Function.identity(),
+                Function.identity()
+        ));
+        cache.putAll(voidMap);
 
     }
 
