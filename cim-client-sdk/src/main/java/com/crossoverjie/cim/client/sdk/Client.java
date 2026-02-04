@@ -13,7 +13,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
-
+import java.util.concurrent.TimeoutException;
 
 public interface Client extends Closeable {
 
@@ -44,7 +44,6 @@ public interface Client extends Closeable {
                         log.warn(msgWay + " message task completed with exception", throwable);
                     }
                 });
-    }
     }
 
     CompletableFuture<Void> sendGroupAsync(String msg);
