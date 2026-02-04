@@ -2,9 +2,8 @@ package com.crossoverjie.cim.common.metastore;
 
 import com.crossoverjie.cim.common.pojo.RouteInfo;
 import com.crossoverjie.cim.common.util.RouteInfoParseUtil;
-import com.github.benmanes.caffeine.cache.CacheLoader;
+import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
-import com.github.benmanes.caffeine.cache.LoadingCache;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -25,18 +24,11 @@ public class ZkMetaStoreImpl implements MetaStore {
 
     private ZkClient client;
 
-    LoadingCache<String, String> cache;
+    Cache<String, String> cache;
 
     @Override
     public void initialize(AbstractConfiguration<?> configuration) throws Exception {
-        // TODO: 2024/8/19 Change to set or caffeine?
-        cache = Caffeine.newBuilder()
-                .build(new CacheLoader<>() {
-                    @Override
-                    public String load(String key) throws Exception {
-                        return "";
-                    }
-                });
+        cache = Caffeine.newBuilder().build();
         client = new ZkClient(configuration.getMetaServiceUri(), configuration.getTimeoutMs());
     }
 
