@@ -42,7 +42,16 @@ public class ZkMetaStoreImpl implements MetaStore {
 
     @Override
     public Set<String> getAvailableServerList() throws Exception {
-        return cache.asMap().keySet();
+        if (cache.asMap().size() > 0) {
+            return cache.asMap().keySet();
+        }
+        List<String> coll = client.getChildren(ROOT);
+        Map<String, String> voidMap = coll.stream().collect(Collectors.toMap(
+                Function.identity(),
+                Function.identity()
+        ));
+        cache.putAll(voidMap);
+        return voidMap.keySet();
     }
 
     @Override
@@ -76,12 +85,7 @@ public class ZkMetaStoreImpl implements MetaStore {
     @Override
     public synchronized void rebuildCache() throws Exception {
         cache.invalidateAll();
-        List<String> coll = client.getChildren(ROOT);
-        Map<String, String> voidMap = coll.stream().collect(Collectors.toMap(
-                Function.identity(),
-                Function.identity()
-        ));
-        cache.putAll(voidMap);
+        this.getAvailableServerList();
 
     }
 
