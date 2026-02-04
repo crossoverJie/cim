@@ -34,20 +34,17 @@ public interface Client extends Closeable {
 
     };
     default void recordSendLog(CompletableFuture<Void> future, String msgWay){
-        future.whenComplete((result, throwable) -> {
-            if (throwable != null) {
-                log.warn(msgWay + " message task completed with exception", throwable);
-            } else {
-                log.info(msgWay + " message task completed successfully");
-            }
-
-        });
-
         future.orTimeout(10, TimeUnit.SECONDS)
-                .exceptionally(throwable -> {
-                    log.error(msgWay + " message processing timeout", throwable);
-                    return null;
+                .whenComplete((result, throwable) -> {
+                    if (throwable == null) {
+                        log.info(msgWay + " message task completed successfully");
+                    } else if (throwable instanceof TimeoutException) {
+                        log.error(msgWay + " message processing timeout", throwable);
+                    } else {
+                        log.warn(msgWay + " message task completed with exception", throwable);
+                    }
                 });
+    }
     }
 
     CompletableFuture<Void> sendGroupAsync(String msg);
