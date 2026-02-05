@@ -1,12 +1,12 @@
 package com.crossoverjie.cim.common.route.algorithm.consistenthash;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+
 import com.crossoverjie.cim.common.pojo.RouteInfo;
-import com.crossoverjie.cim.common.route.algorithm.RouteHandle;
 import com.crossoverjie.cim.common.util.RouteInfoParseUtil;
 import java.util.ArrayList;
 import java.util.List;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 class ConsistentHashHandleTest {
@@ -30,6 +30,7 @@ class ConsistentHashHandleTest {
         boolean contains = list.contains(parse);
         assertFalse(contains);
     }
+
     @Test
     void removeTreeMapExpireServer() {
         ConsistentHashHandle routeHandle = new ConsistentHashHandle();

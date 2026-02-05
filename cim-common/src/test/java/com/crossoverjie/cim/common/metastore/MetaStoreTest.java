@@ -1,6 +1,5 @@
 package com.crossoverjie.cim.common.metastore;
 
-
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import lombok.SneakyThrows;
@@ -12,11 +11,10 @@ import org.apache.curator.retry.ExponentialBackoffRetry;
 import org.apache.zookeeper.CreateMode;
 import org.apache.zookeeper.Watcher;
 import org.apache.zookeeper.data.Stat;
-import org.junit.Test;
 
 public class MetaStoreTest {
 
-    private static final String connectionString = "127.0.0.1:2181";
+    private static final String CONNECTION_STRING = "127.0.0.1:2181";
 
     // TODO: 2024/8/30 integration test
     @SneakyThrows
@@ -24,7 +22,7 @@ public class MetaStoreTest {
     public void testZk() {
         ExponentialBackoffRetry retryPolicy = new ExponentialBackoffRetry(1000, 3);
         CuratorFramework client = CuratorFrameworkFactory.builder()
-                .connectString(connectionString)
+                .connectString(CONNECTION_STRING)
                 .retryPolicy(retryPolicy)
                 .connectionTimeoutMs(5000)
                 .sessionTimeoutMs(5000)
@@ -94,8 +92,8 @@ public class MetaStoreTest {
 
     @SneakyThrows
 //    @Test
-    public void zkClientTest(){
-        ZkClient zkClient = new ZkClient(connectionString, 5000);
+    public void zkClientTest() {
+        ZkClient zkClient = new ZkClient(CONNECTION_STRING, 5000);
         zkClient.subscribeChildChanges("/cim", (parentPath, currentChildren) -> {
             System.out.println("parentPath = " + parentPath);
             System.out.println("currentChildren = " + currentChildren);

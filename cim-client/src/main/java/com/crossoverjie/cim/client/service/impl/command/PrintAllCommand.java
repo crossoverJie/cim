@@ -19,7 +19,7 @@ public class PrintAllCommand implements InnerCommand {
 
 
     @Resource
-    private Event event ;
+    private Event event;
 
     @Override
     public void process(String msg) {

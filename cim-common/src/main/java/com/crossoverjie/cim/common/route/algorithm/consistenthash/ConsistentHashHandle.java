@@ -16,7 +16,7 @@ import java.util.Map;
  * @since JDK 1.8
  */
 public class ConsistentHashHandle implements RouteHandle {
-    private AbstractConsistentHash hash ;
+    private AbstractConsistentHash hash;
 
     public void setHash(AbstractConsistentHash hash) {
         this.hash = hash;

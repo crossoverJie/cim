@@ -10,7 +10,6 @@ import lombok.NoArgsConstructor;
 import okhttp3.OkHttpClient;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 
 class RpcProxyManagerTest {
 
@@ -73,7 +72,7 @@ class RpcProxyManagerTest {
         request.setName("crossoverJie");
         request.setAge(18);
         request.setCity("shenzhen");
-        EchoResponse response = echo.echoTarget(url,request);
+        EchoResponse response = echo.echoTarget(url, request);
         Assertions.assertEquals(response.getParsedBody().getName(), "crossoverJie");
         Assertions.assertEquals(response.getParsedBody().getAge(), 18);
         Assertions.assertEquals(response.getParsedBody().getCity(), "shenzhen");
@@ -97,7 +96,7 @@ class RpcProxyManagerTest {
         request.setName("crossoverJie");
         request.setAge(18);
         request.setCity("shenzhen");
-        Assertions.assertThrows(IllegalArgumentException.class, () -> echo.fail(request, "test",""));
+        Assertions.assertThrows(IllegalArgumentException.class, () -> echo.fail(request, "test", ""));
     }
 
 
@@ -119,7 +118,7 @@ class RpcProxyManagerTest {
         EchoResponse echo(EchoRequest message);
 
         @Request(url = "sample-request?author=beeceptor")
-        EchoResponse echoTarget(@DynamicUrl(useMethodEndpoint = false) String url,  EchoRequest message);
+        EchoResponse echoTarget(@DynamicUrl(useMethodEndpoint = false) String url, EchoRequest message);
         EchoResponse echoTarget(EchoRequest message, @DynamicUrl(useMethodEndpoint = false) String url);
         @Request(url = "sample-request?author=beeceptor")
         EchoResponse echoTarget(@DynamicUrl EchoRequest message);
@@ -132,7 +131,7 @@ class RpcProxyManagerTest {
     }
 
     @Data
-    public static class EchoRequest{
+    public static class EchoRequest {
         private String name;
         private int age;
         private String city;
@@ -143,7 +142,7 @@ class RpcProxyManagerTest {
     @NoArgsConstructor
     public static class CIMServerResVO implements Serializable {
 
-        private String ip ;
+        private String ip;
         private Integer cimServerPort;
         private Integer httpPort;
 
@@ -163,7 +162,7 @@ class RpcProxyManagerTest {
 
     @NoArgsConstructor
     @Data
-    public static class EchoResponse{
+    public static class EchoResponse {
 
         @JsonProperty("method")
         private String method;

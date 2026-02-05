@@ -37,20 +37,20 @@ public class IndexController implements ServerApi {
      */
     @Override
     @Operation(summary = "Push msg to client")
-    @RequestMapping(value = "sendMsg",method = RequestMethod.POST)
+    @RequestMapping(value = "sendMsg", method = RequestMethod.POST)
     @ResponseBody
-    public BaseResponse<SendMsgResVO> sendMsg(@RequestBody SendMsgReqVO sendMsgReqVO, @DynamicUrl String url){
+    public BaseResponse<SendMsgResVO> sendMsg(@RequestBody SendMsgReqVO sendMsgReqVO, @DynamicUrl String url) {
         BaseResponse<SendMsgResVO> res = new BaseResponse();
-        cimServer.sendMsg(sendMsgReqVO) ;
+        cimServer.sendMsg(sendMsgReqVO);
 
         // TODO: 2024/5/30 metrics
 
-        SendMsgResVO sendMsgResVO = new SendMsgResVO() ;
-        sendMsgResVO.setMsg("OK") ;
-        res.setCode(StatusEnum.SUCCESS.getCode()) ;
-        res.setMessage(StatusEnum.SUCCESS.getMessage()) ;
-        res.setDataBody(sendMsgResVO) ;
-        return res ;
+        SendMsgResVO sendMsgResVO = new SendMsgResVO();
+        sendMsgResVO.setMsg("OK");
+        res.setCode(StatusEnum.SUCCESS.getCode());
+        res.setMessage(StatusEnum.SUCCESS.getMessage());
+        res.setDataBody(sendMsgResVO);
+        return res;
     }
 
 }

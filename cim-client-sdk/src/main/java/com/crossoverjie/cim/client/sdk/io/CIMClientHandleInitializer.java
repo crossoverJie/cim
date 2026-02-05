@@ -23,7 +23,6 @@ public class CIMClientHandleInitializer extends ChannelInitializer<Channel> {
                 .addLast(new ProtobufDecoder(Response.getDefaultInstance()))
                 .addLast(new ProtobufVarint32LengthFieldPrepender())
                 .addLast(new ProtobufEncoder())
-                .addLast(cimClientHandle)
-        ;
+                .addLast(cimClientHandle);
     }
 }

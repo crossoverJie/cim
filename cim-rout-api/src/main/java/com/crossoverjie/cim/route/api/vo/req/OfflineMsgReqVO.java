@@ -20,6 +20,6 @@ public class OfflineMsgReqVO {
 
     @NotNull(message = "userId can't be null")
     @Schema(requiredMode = Schema.RequiredMode.REQUIRED, description = "message received userId", example = "1545574049323")
-    private Long receiveUserId ;
+    private Long receiveUserId;
 
 }

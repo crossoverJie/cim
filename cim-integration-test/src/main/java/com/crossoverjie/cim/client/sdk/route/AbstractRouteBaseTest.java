@@ -31,7 +31,7 @@ public abstract class AbstractRouteBaseTest extends AbstractServerBaseTest {
         run = route.run(args);
     }
 
-    public void close(){
+    public void close() {
         super.close();
         redis.close();
         run.close();

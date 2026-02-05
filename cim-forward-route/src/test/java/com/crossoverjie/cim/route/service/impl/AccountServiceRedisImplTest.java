@@ -12,17 +12,17 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 @Slf4j
 @SpringBootTest(classes = RouteApplication.class)
-public class AccountServiceRedisImplTest extends AbstractBaseTest{
+public class AccountServiceRedisImplTest extends AbstractBaseTest {
 
     @Autowired
-    private AccountService accountService ;
+    private AccountService accountService;
 
     @Test
     public void loadRouteRelated() throws Exception {
         for (int i = 0; i < 100; i++) {
 
             Map<Long, CIMServerResVO> longCIMServerResVOMap = accountService.loadRouteRelated();
-            log.info("longCIMServerResVOMap={},cun={}" , JSON.toJSONString(longCIMServerResVOMap),i);
+            log.info("longCIMServerResVOMap={},cun={}", JSON.toJSONString(longCIMServerResVOMap),i);
         }
     }
 

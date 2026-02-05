@@ -17,7 +17,7 @@ public class OpenAIModelCommand implements InnerCommand {
 
 
     @Autowired
-    private MsgHandle msgHandle ;
+    private MsgHandle msgHandle;
 
     @Override
     public void process(String msg) {

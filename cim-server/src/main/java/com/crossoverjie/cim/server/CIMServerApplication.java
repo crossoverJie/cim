@@ -17,17 +17,17 @@ import java.net.InetAddress;
  */
 @SpringBootApplication
 @Slf4j
-public class CIMServerApplication implements CommandLineRunner{
+public class CIMServerApplication implements CommandLineRunner {
 
 
 	@Resource
-	private AppConfiguration appConfiguration ;
+	private AppConfiguration appConfiguration;
 
 	@Resource
 	private MetaStore metaStore;
 
 	@Value("${server.port}")
-	private int httpPort ;
+	private int httpPort;
 
 	public static void main(String[] args) {
         SpringApplication.run(CIMServerApplication.class, args);
@@ -37,8 +37,8 @@ public class CIMServerApplication implements CommandLineRunner{
 	@Override
 	public void run(String... args) throws Exception {
 		String addr = InetAddress.getLocalHost().getHostAddress();
-		Thread thread = new Thread(new RegistryMetaStore(metaStore, addr, appConfiguration.getCimServerPort(),httpPort));
+		Thread thread = new Thread(new RegistryMetaStore(metaStore, addr, appConfiguration.getCimServerPort(), httpPort));
 		thread.setName("registry-zk");
-		thread.start() ;
+		thread.start();
 	}
 }

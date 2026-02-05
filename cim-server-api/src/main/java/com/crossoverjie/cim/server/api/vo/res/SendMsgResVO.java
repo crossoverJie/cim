@@ -8,7 +8,7 @@ package com.crossoverjie.cim.server.api.vo.res;
  * @since JDK 1.8
  */
 public class SendMsgResVO {
-    private String msg ;
+    private String msg;
 
     public String getMsg() {
         return msg;

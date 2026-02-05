@@ -19,15 +19,15 @@ import org.springframework.stereotype.Service;
 public class QueryHistoryCommand implements InnerCommand {
 
     @Resource
-    private MsgLogger msgLogger ;
+    private MsgLogger msgLogger;
 
     @Resource
-    private Event event ;
+    private Event event;
 
     @Override
     public void process(String msg) {
         String[] split = msg.split(" ");
-        if (split.length < 2){
+        if (split.length < 2) {
             return;
         }
         String res = msgLogger.query(split[1]);

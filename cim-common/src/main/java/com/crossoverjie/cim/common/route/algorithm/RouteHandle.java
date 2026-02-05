@@ -19,7 +19,7 @@ public interface RouteHandle {
      * @return
      */
     // TODO: 2024/9/13 Use List<RouteInfo> instead of List<String> to make the code more type-safe
-    String routeServer(List<String> values,String key) ;
+    String routeServer(List<String> values, String key);
 
     List<String> removeExpireServer(RouteInfo routeInfo);
 }

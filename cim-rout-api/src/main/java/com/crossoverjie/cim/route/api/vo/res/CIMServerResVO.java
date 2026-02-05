@@ -1,7 +1,5 @@
 package com.crossoverjie.cim.route.api.vo.res;
 
-import com.crossoverjie.cim.common.pojo.RouteInfo;
-
 import java.io.Serializable;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -19,7 +17,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class CIMServerResVO implements Serializable {
 
-    private String ip ;
+    private String ip;
     private Integer cimServerPort;
     private Integer httpPort;
 

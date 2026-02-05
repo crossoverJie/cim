@@ -3,9 +3,15 @@ package com.crossoverjie.cim.persistence.api.vo.req;
 import com.crossoverjie.cim.common.req.BaseRequest;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.Map;
+
 @Data
 @EqualsAndHashCode(callSuper = true)
 @Builder
@@ -14,7 +20,7 @@ public class SaveOfflineMsgReqVO extends BaseRequest {
 
     @NotNull(message = "msg 不能为空")
     @Schema(requiredMode = Schema.RequiredMode.REQUIRED, description = "msg", example = "hello")
-    private String msg ;
+    private String msg;
 
     @NotNull(message = "userId 不能为空")
     @Schema(requiredMode = Schema.RequiredMode.REQUIRED, description = "userId", example = "11")

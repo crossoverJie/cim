@@ -4,7 +4,6 @@ import com.clevercloud.testcontainers.zookeeper.ZooKeeperContainer;
 import com.redis.testcontainers.RedisContainer;
 import java.time.Duration;
 import java.util.List;
-import org.junit.After;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.testcontainers.containers.MySQLContainer;
@@ -25,10 +24,10 @@ public class AbstractBaseTest {
 
     @Container
     static final ZooKeeperContainer
-            zooKeeperContainer = new ZooKeeperContainer(DEFAULT_IMAGE_NAME, DEFAULT_STARTUP_TIMEOUT);
+            ZOOKEEPER_CONTAINER = new ZooKeeperContainer(DEFAULT_IMAGE_NAME, DEFAULT_STARTUP_TIMEOUT);
 
     @Container
-    static final MySQLContainer<?> mysql = new MySQLContainer<>("mysql:8.0.33")
+    static final MySQLContainer<?> MYSQL = new MySQLContainer<>("mysql:8.0.33")
             .withDatabaseName("cim-test")
             .withUsername("cimUserName")
             .withPassword("cimPassWord")
@@ -40,30 +39,30 @@ public class AbstractBaseTest {
             .withReuse(true);
 
     @BeforeAll
-    public static void before(){
+    public static void before() {
         redis.setExposedPorts(List.of(6379));
         redis.setPortBindings(List.of("6379:6379"));
         redis.start();
 
-        zooKeeperContainer.setExposedPorts(List.of(2181));
-        zooKeeperContainer.setPortBindings(List.of("2181:2181"));
-        zooKeeperContainer.start();
+        ZOOKEEPER_CONTAINER.setExposedPorts(List.of(2181));
+        ZOOKEEPER_CONTAINER.setPortBindings(List.of("2181:2181"));
+        ZOOKEEPER_CONTAINER.start();
 
 
         // 启动 MySQL
-        mysql.start();
+        MYSQL.start();
 
         // 动态设置 Spring 数据源配置（如果使用 Spring Boot）
-        System.setProperty("spring.datasource.url", mysql.getJdbcUrl());
-        System.setProperty("spring.datasource.username", mysql.getUsername());
-        System.setProperty("spring.datasource.password", mysql.getPassword());
+        System.setProperty("spring.datasource.url", MYSQL.getJdbcUrl());
+        System.setProperty("spring.datasource.username", MYSQL.getUsername());
+        System.setProperty("spring.datasource.password", MYSQL.getPassword());
     }
 
     @AfterAll
-    public static void after(){
+    public static void after() {
         redis.stop();
-        zooKeeperContainer.stop();
-        mysql.stop();
+        ZOOKEEPER_CONTAINER.stop();
+        MYSQL.stop();
     }
 
 }

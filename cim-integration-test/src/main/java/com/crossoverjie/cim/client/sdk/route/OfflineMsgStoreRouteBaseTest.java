@@ -21,7 +21,7 @@ public class OfflineMsgStoreRouteBaseTest extends AbstractRouteBaseTest {
         redis.start();
         SpringApplication route = new SpringApplication(RouteApplication.class);
         String[] args;
-        if(Constant.OfflineStoreMode.MYSQL.equals(offlineModel)){
+        if (Constant.OfflineStoreMode.MYSQL.equals(offlineModel)) {
             mysql = new MySQLContainer<>(DockerImageName.parse("mysql:8.0.33"))
                     .withDatabaseName("cim-test")
                     .withUsername("cimUserName")
@@ -57,7 +57,7 @@ public class OfflineMsgStoreRouteBaseTest extends AbstractRouteBaseTest {
     }
 
     @Override
-    public void close(){
+    public void close() {
         if (mysql != null) {
             mysql.stop();
         }

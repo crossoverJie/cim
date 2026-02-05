@@ -9,7 +9,8 @@ import org.junit.Assert;
  * @project: cim
  */
 public class RangeCheckTestUtil {
-    public static void assertInRange (int value, int l, int r) {
+
+    public static void assertInRange(int value, int l, int r) {
         Assert.assertTrue(value >= l && value <= r);
     }
 }

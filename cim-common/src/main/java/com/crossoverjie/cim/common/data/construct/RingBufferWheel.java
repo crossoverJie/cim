@@ -179,7 +179,7 @@ public final class RingBufferWheel {
      * Same with method {@link #taskSize}
      * @return
      */
-    public int taskMapSize(){
+    public int taskMapSize() {
         return taskMap.size();
     }
 
@@ -323,7 +323,7 @@ public final class RingBufferWheel {
         /**
          * The unique ID of the task
          */
-        private int taskId ;
+        private int taskId;
 
         @Override
         public void run() {

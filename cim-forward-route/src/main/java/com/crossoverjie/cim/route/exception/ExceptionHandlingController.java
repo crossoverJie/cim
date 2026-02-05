@@ -24,7 +24,7 @@ public class ExceptionHandlingController {
         BaseResponse baseResponse = new BaseResponse();
         baseResponse.setCode(ex.getErrorCode());
         baseResponse.setMessage(ex.getMessage());
-        return baseResponse ;
+        return baseResponse;
     }
 
 }

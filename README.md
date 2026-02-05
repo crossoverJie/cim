@@ -290,6 +290,34 @@ java -jar cim-client-1.0.0-SNAPSHOT.jar --server.port=8084 --cim.user.id=上方�
 
 ## 联系作者
 
+## Contributing
+
+We welcome contributions! Before submitting a PR, please ensure your code passes the Checkstyle check.
+
+### Code Style
+
+This project uses [Checkstyle](https://checkstyle.org/) to enforce code style. The rules are defined in `checkstyle/checkstyle.xml`.
+
+**Run Checkstyle locally before committing:**
+
+```shell
+mvn checkstyle:check
+```
+
+**Key rules:**
+- Use spaces around `{`, `}`, and operators
+- No trailing whitespace
+- Files must end with a newline
+- Remove unused imports
+- Constants (`static final`) must be `UPPER_SNAKE_CASE`
+- Use Java-style array declarations: `String[] args` (not `String args[]`)
+
+**Skip Checkstyle for quick builds:**
+
+```shell
+mvn package -Dcheckstyle.skip=true
+```
+
 <div align="center">  
 
 <a href="https://t.zsxq.com/odQDJ" target="_blank"><img src="https://s2.loli.net/2024/05/17/zRkabDu2SKfChLX.png" alt="202405171520366.png"></a>

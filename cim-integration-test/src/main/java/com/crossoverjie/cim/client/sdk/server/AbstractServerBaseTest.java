@@ -37,13 +37,13 @@ public abstract class AbstractServerBaseTest {
         };
         singleRun = server.run(args);
     }
-    public void stopSingle(){
+    public void stopSingle() {
         singleRun.close();
     }
 
     private final Map<Integer, ConfigurableApplicationContext> runMap = new HashMap<>(2);
     public void startTwoServer() {
-        if (!zooKeeperContainer.isRunning()){
+        if (!zooKeeperContainer.isRunning()) {
             zooKeeperContainer.start();
         }
         zookeeperAddr = String.format("%s:%d", zooKeeperContainer.getHost(), zooKeeperContainer.getMappedPort(ZooKeeperContainer.DEFAULT_CLIENT_PORT));
@@ -74,10 +74,10 @@ public abstract class AbstractServerBaseTest {
         runMap.remove(port);
     }
     public void stopTwoServer() {
-        runMap.forEach((k,v) -> v.close());
+        runMap.forEach((k, v) -> v.close());
     }
 
-    public void close(){
+    public void close() {
         zooKeeperContainer.close();
     }
 

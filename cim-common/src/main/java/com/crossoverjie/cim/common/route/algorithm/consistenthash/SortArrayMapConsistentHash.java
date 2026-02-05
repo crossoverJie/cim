@@ -3,10 +3,7 @@ package com.crossoverjie.cim.common.route.algorithm.consistenthash;
 import com.crossoverjie.cim.common.data.construct.SortArrayMap;
 import com.google.common.annotations.VisibleForTesting;
 
-import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import java.util.TreeMap;
 
 /**
  * Function:自定义排序 Map 实现
@@ -22,7 +19,7 @@ public class SortArrayMapConsistentHash extends AbstractConsistentHash {
     /**
      * 虚拟节点数量
      */
-    private static final int VIRTUAL_NODE_SIZE = 2 ;
+    private static final int VIRTUAL_NODE_SIZE = 2;
 
     @Override
     public void add(long key, String value) {
@@ -34,7 +31,7 @@ public class SortArrayMapConsistentHash extends AbstractConsistentHash {
     }
 
     @Override
-    protected Map<String,String> remove(String value) {
+    protected Map<String, String> remove(String value) {
         sortArrayMap = sortArrayMap.remove(value);
         return sortArrayMap;
     }

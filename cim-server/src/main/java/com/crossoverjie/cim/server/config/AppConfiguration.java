@@ -26,7 +26,7 @@ public class AppConfiguration {
     private int cimServerPort;
 
     @Value("${cim.route.url}")
-    private String routeUrl ;
+    private String routeUrl;
 
     public String getRouteUrl() {
         return routeUrl;
@@ -37,11 +37,11 @@ public class AppConfiguration {
     }
 
     @Value("${cim.heartbeat.time}")
-    private long heartBeatTime ;
-    
+    private long heartBeatTime;
+
     @Value("${app.zk.connect.timeout}")
     private int zkConnectTimeout;
-    
+
     public int getZkConnectTimeout() {
 		return zkConnectTimeout;
 	}

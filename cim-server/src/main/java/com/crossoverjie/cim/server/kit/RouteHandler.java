@@ -1,20 +1,13 @@
 package com.crossoverjie.cim.server.kit;
 
-import com.crossoverjie.cim.common.core.proxy.RpcProxyManager;
 import com.crossoverjie.cim.common.pojo.CIMUserInfo;
 import com.crossoverjie.cim.route.api.RouteApi;
 import com.crossoverjie.cim.route.api.vo.req.ChatReqVO;
-import com.crossoverjie.cim.server.config.AppConfiguration;
 import com.crossoverjie.cim.server.util.SessionSocketHolder;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
-import okhttp3.OkHttpClient;
-import okhttp3.Response;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
-import java.io.IOException;
 
 /**
  * Function:
@@ -26,12 +19,6 @@ import java.io.IOException;
 @Component
 @Slf4j
 public class RouteHandler {
-
-    @Resource
-    private OkHttpClient okHttpClient;
-
-    @Resource
-    private AppConfiguration configuration;
 
     @Resource
     private RouteApi routeApi;

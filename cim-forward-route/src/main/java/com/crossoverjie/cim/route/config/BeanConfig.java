@@ -130,7 +130,7 @@ public class BeanConfig {
                     }
                 });
     }
-      
+
     @Bean
     public ServerApi serverApi(OkHttpClient okHttpClient) {
         return RpcProxyManager.create(ServerApi.class, okHttpClient);

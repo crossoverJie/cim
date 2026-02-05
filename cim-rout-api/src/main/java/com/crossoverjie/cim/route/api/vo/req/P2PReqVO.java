@@ -22,19 +22,19 @@ public class P2PReqVO extends BaseRequest {
 
     @NotNull(message = "userId can't be null")
     @Schema(requiredMode = Schema.RequiredMode.REQUIRED, description = "current send userId", example = "1545574049323")
-    private Long userId ;
+    private Long userId;
 
 
     @NotNull(message = "userId can't be null")
     @Schema(requiredMode = Schema.RequiredMode.REQUIRED, description = "message received userId", example = "1545574049323")
-    private Long receiveUserId ;
+    private Long receiveUserId;
 
 
 
 
     @NotNull(message = "msg can't be null")
     @Schema(requiredMode = Schema.RequiredMode.REQUIRED, description = "msg", example = "hello")
-    private String msg ;
+    private String msg;
 
     @Getter
     @Setter

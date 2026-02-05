@@ -75,7 +75,7 @@ public class CIMClientHandle extends SimpleChannelInboundHandler<Response> {
             client.getConf().getCallbackThreadPool().execute(() -> {
                 log.info("client address: {} :{}", ctx.channel().remoteAddress(), client);
                 MessageListener messageListener = client.getConf().getMessageListener();
-                if (msg.getBatchResMsgCount() >0 ){
+                if (msg.getBatchResMsgCount() > 0) {
                     for (int i = 0; i < msg.getBatchResMsgCount(); i++) {
                         messageListener.received(client, msg.getPropertiesMap(), msg.getBatchResMsg(i));
                     }

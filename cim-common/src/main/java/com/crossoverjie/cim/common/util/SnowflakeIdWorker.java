@@ -7,15 +7,15 @@ package com.crossoverjie.cim.common.util;
  */
 public class SnowflakeIdWorker {
     private final long workerId = 1L;
-    private final static long EPOCH = 1622505600000L;
+    private static final long EPOCH = 1622505600000L;
     private long sequence = 0L;
     private long lastTimestamp = -1L;
 
-    private final static long WORKER_ID_BITS = 10L;
-    private final static long SEQUENCE_BITS = 12L;
-    private final static long MAX_SEQUENCE = (1L << SEQUENCE_BITS) - 1;
-    private final static long WORKER_ID_SHIFT = SEQUENCE_BITS;
-    private final static long TIMESTAMP_SHIFT = SEQUENCE_BITS + WORKER_ID_BITS;
+    private static final long WORKER_ID_BITS = 10L;
+    private static final long SEQUENCE_BITS = 12L;
+    private static final long MAX_SEQUENCE = (1L << SEQUENCE_BITS) - 1;
+    private static final long WORKER_ID_SHIFT = SEQUENCE_BITS;
+    private static final long TIMESTAMP_SHIFT = SEQUENCE_BITS + WORKER_ID_BITS;
 
     private long tilNextMillis(long lastTs) {
         long ts = System.currentTimeMillis();
