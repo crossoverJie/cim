@@ -239,6 +239,29 @@ public class ClientImpl extends ClientState implements Client {
     }
 
     @Override
+    public void sendP2P(P2PReqVO p2PReqVO) throws Exception {
+        recordSendLog(sendP2PAsync(p2PReqVO), "P2P");
+    }
+
+    @Override
+    public void sendGroup(String msg) throws Exception {
+        recordSendLog(sendGroupAsync(msg), "GROUP");
+    }
+
+    private void recordSendLog(CompletableFuture<Void> future, String msgWay) {
+        future.orTimeout(10, TimeUnit.SECONDS)
+                .whenComplete((result, throwable) -> {
+                    if (throwable == null) {
+                        log.info(msgWay + " message task completed successfully");
+                    } else if (throwable instanceof TimeoutException) {
+                        log.error(msgWay + " message processing timeout", throwable);
+                    } else {
+                        log.warn(msgWay + " message task completed with exception", throwable);
+                    }
+                });
+    }
+
+    @Override
     public CompletableFuture<Void> sendP2PAsync(P2PReqVO p2PReqVO) {
         CompletableFuture<Void> future = new CompletableFuture<>();
         p2PReqVO.setUserId(this.conf.getAuth().getUserId());
