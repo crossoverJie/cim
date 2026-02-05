@@ -37,9 +37,7 @@ public enum StatusEnum {
 
     OFFLINE_MESSAGE_FETCH_ERROR("9201", "Offline message fetch error!"),
 
-    OFFLINE_MESSAGE_DELETE_ERROR("9202", "Offline message delete error!"),
-
-    ;
+    OFFLINE_MESSAGE_DELETE_ERROR("9202", "Offline message delete error!");
 
 
     /** 枚举值码 */

@@ -25,7 +25,7 @@ public class SwaggerConfig {
                 .version("1.0.0");
     }
 
-    private Contact contact () {
+    private Contact contact() {
         Contact contact = new Contact();
         contact.setName("crossoverJie");
         return contact;

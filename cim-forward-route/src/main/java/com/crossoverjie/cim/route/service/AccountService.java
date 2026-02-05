@@ -3,7 +3,6 @@ package com.crossoverjie.cim.route.service;
 import com.crossoverjie.cim.common.enums.StatusEnum;
 import com.crossoverjie.cim.route.api.vo.req.ChatReqVO;
 import com.crossoverjie.cim.route.api.vo.req.LoginReqVO;
-import com.crossoverjie.cim.route.api.vo.req.P2PReqVO;
 import com.crossoverjie.cim.route.api.vo.res.CIMServerResVO;
 import com.crossoverjie.cim.route.api.vo.res.RegisterInfoResVO;
 
@@ -33,7 +32,7 @@ public interface AccountService {
      * @return true 成功 false 失败
      * @throws Exception
      */
-    StatusEnum login(LoginReqVO loginReqVO) throws Exception ;
+    StatusEnum login(LoginReqVO loginReqVO) throws Exception;
 
     /**
      * 保存路由信息
@@ -41,20 +40,20 @@ public interface AccountService {
      * @param loginReqVO 用户信息
      * @throws Exception
      */
-    void saveRouteInfo(LoginReqVO loginReqVO ,String msg) throws Exception ;
+    void saveRouteInfo(LoginReqVO loginReqVO, String msg) throws Exception;
 
     /**
      * 加载所有用户的路有关系
      * @return 所有的路由关系
      */
-    Map<Long, CIMServerResVO> loadRouteRelated() ;
+    Map<Long, CIMServerResVO> loadRouteRelated();
 
     /**
      * Get user route info
      * @param userId
      * @return route info
      */
-    Optional<CIMServerResVO> loadRouteRelatedByUserId(Long userId) ;
+    Optional<CIMServerResVO> loadRouteRelatedByUserId(Long userId);
 
 
     /**
@@ -64,7 +63,7 @@ public interface AccountService {
      * @param sendUserId 发送者的ID
      * @throws Exception
      */
-    void pushMsg(CIMServerResVO cimServerResVO, long sendUserId , ChatReqVO groupReqVO);
+    void pushMsg(CIMServerResVO cimServerResVO, long sendUserId, ChatReqVO groupReqVO);
 
     /**
      * 用户下线

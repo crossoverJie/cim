@@ -23,7 +23,7 @@ public class MsgHandler implements MsgHandle {
 
 
     @Resource
-    private InnerCommandContext innerCommandContext ;
+    private InnerCommandContext innerCommandContext;
 
     @Resource
     private Client client;
@@ -81,7 +81,7 @@ public class MsgHandler implements MsgHandle {
         if (msg.startsWith(":")) {
 
             InnerCommand instance = innerCommandContext.getInstance(msg);
-            instance.process(msg) ;
+            instance.process(msg);
 
             return true;
 
@@ -97,7 +97,7 @@ public class MsgHandler implements MsgHandle {
 
     @Override
     public void closeAIModel() {
-        aiModel = false ;
+        aiModel = false;
     }
 
 }

@@ -19,7 +19,7 @@ import io.netty.handler.timeout.IdleStateHandler;
  */
 public class CIMServerInitializer extends ChannelInitializer<Channel> {
 
-    private final CIMServerHandle cimServerHandle = new CIMServerHandle() ;
+    private final CIMServerHandle cimServerHandle = new CIMServerHandle();
 
     @Override
     protected void initChannel(Channel ch) throws Exception {

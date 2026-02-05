@@ -4,7 +4,6 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.ibatis.type.BaseTypeHandler;
 import org.apache.ibatis.type.JdbcType;
-import org.springframework.stereotype.Service;
 
 import java.sql.CallableStatement;
 import java.sql.PreparedStatement;
@@ -18,12 +17,12 @@ import java.util.Map;
  * @description
  */
 public class MapToJsonTypeHandler extends BaseTypeHandler<Map<String, String>> {
-    private static final ObjectMapper objectMapper = new ObjectMapper();
+    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
     @Override
     public void setNonNullParameter(PreparedStatement ps, int i, Map<String, String> parameter, JdbcType jdbcType) throws SQLException {
         try {
-            String json = objectMapper.writeValueAsString(parameter);
+            String json = OBJECT_MAPPER.writeValueAsString(parameter);
             ps.setString(i, json);
         } catch (Exception e) {
             throw new SQLException("Failed to convert Map to JSON", e);
@@ -47,7 +46,7 @@ public class MapToJsonTypeHandler extends BaseTypeHandler<Map<String, String>> {
 
     private Map<String, String> parseJson(String json) {
         try {
-            return objectMapper.readValue(json, new TypeReference<Map<String, String>>() {});
+            return OBJECT_MAPPER.readValue(json, new TypeReference<Map<String, String>>() { });
         } catch (Exception e) {
             return null;
         }

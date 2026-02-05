@@ -1,12 +1,9 @@
 package com.crossoverjie.cim.common.data.construct;
 
-
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import io.netty.util.HashedWheelTimer;
 import io.netty.util.Timeout;
 import io.netty.util.TimerTask;
-import lombok.extern.slf4j.Slf4j;
-
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -14,6 +11,8 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+import lombok.extern.slf4j.Slf4j;
+
 @Slf4j
 public class RingBufferWheelTest {
 
@@ -23,7 +22,7 @@ public class RingBufferWheelTest {
 
     }
 
-    private static void test8() throws Exception{
+    private static void test8() throws Exception {
         ExecutorService executorService = Executors.newFixedThreadPool(2);
         RingBufferWheel wheel = new RingBufferWheel(executorService);
         while (true) {
@@ -50,37 +49,39 @@ public class RingBufferWheelTest {
 
         @Override
         public void run() {
+            // empty task
         }
     }
 
     private static void test1() throws InterruptedException {
-        ExecutorService executorService = Executors.newFixedThreadPool(2) ;
+        ExecutorService executorService = Executors.newFixedThreadPool(2);
 
-        RingBufferWheel.Task task = new Task() ;
+        RingBufferWheel.Task task = new Task();
         task.setKey(10);
-        RingBufferWheel wheel = new RingBufferWheel(executorService) ;
-        wheel.addTask(task) ;
+        RingBufferWheel wheel = new RingBufferWheel(executorService);
+        wheel.addTask(task);
 
-        task = new Task() ;
+        task = new Task();
         task.setKey(74);
-        wheel.addTask(task) ;
+        wheel.addTask(task);
 
-        while (true){
-            log.info("task size={}" , wheel.taskSize());
+        while (true) {
+            log.info("task size={}", wheel.taskSize());
             TimeUnit.SECONDS.sleep(1);
         }
     }
+
     private static void test2() throws InterruptedException {
-        ExecutorService executorService = Executors.newFixedThreadPool(2) ;
+        ExecutorService executorService = Executors.newFixedThreadPool(2);
 
-        RingBufferWheel.Task task = new Task() ;
+        RingBufferWheel.Task task = new Task();
         task.setKey(10);
-        RingBufferWheel wheel = new RingBufferWheel(executorService) ;
-        wheel.addTask(task) ;
+        RingBufferWheel wheel = new RingBufferWheel(executorService);
+        wheel.addTask(task);
 
-        task = new Task() ;
+        task = new Task();
         task.setKey(74);
-        wheel.addTask(task) ;
+        wheel.addTask(task);
 
         wheel.start();
 
@@ -100,17 +101,18 @@ public class RingBufferWheelTest {
 
 
     }
+
     private static void test3() throws InterruptedException {
-        ExecutorService executorService = Executors.newFixedThreadPool(2) ;
+        ExecutorService executorService = Executors.newFixedThreadPool(2);
 
-        RingBufferWheel.Task task = new Task() ;
+        RingBufferWheel.Task task = new Task();
         task.setKey(10);
-        RingBufferWheel wheel = new RingBufferWheel(executorService) ;
-        wheel.addTask(task) ;
+        RingBufferWheel wheel = new RingBufferWheel(executorService);
+        wheel.addTask(task);
 
-        task = new Task() ;
+        task = new Task();
         task.setKey(60);
-        wheel.addTask(task) ;
+        wheel.addTask(task);
 
 
         TimeUnit.SECONDS.sleep(2);
@@ -118,88 +120,91 @@ public class RingBufferWheelTest {
 
 
     }
-    private static void test4() throws InterruptedException {
-        ExecutorService executorService = Executors.newFixedThreadPool(2) ;
 
-        RingBufferWheel wheel = new RingBufferWheel(executorService) ;
+    private static void test4() throws InterruptedException {
+        ExecutorService executorService = Executors.newFixedThreadPool(2);
+
+        RingBufferWheel wheel = new RingBufferWheel(executorService);
 
         for (int i = 0; i < 65; i++) {
-            RingBufferWheel.Task task = new Job(i) ;
+            RingBufferWheel.Task task = new Job(i);
             task.setKey(i);
             wheel.addTask(task);
         }
 
         wheel.start();
 
-        log.info("task size={}",wheel.taskSize());
+        log.info("task size={}", wheel.taskSize());
 
         wheel.stop(false);
 
 
     }
-    private static void test5() throws InterruptedException {
-        ExecutorService executorService = Executors.newFixedThreadPool(2) ;
 
-        RingBufferWheel wheel = new RingBufferWheel(executorService,512) ;
+    private static void test5() throws InterruptedException {
+        ExecutorService executorService = Executors.newFixedThreadPool(2);
+
+        RingBufferWheel wheel = new RingBufferWheel(executorService, 512);
 
         for (int i = 0; i < 65; i++) {
-            RingBufferWheel.Task task = new Job(i) ;
+            RingBufferWheel.Task task = new Job(i);
             task.setKey(i);
             wheel.addTask(task);
         }
 
-        log.info("task size={}",wheel.taskSize());
+        log.info("task size={}", wheel.taskSize());
 
         wheel.stop(false);
 
 
     }
-    private static void test6() throws InterruptedException {
-        ExecutorService executorService = Executors.newFixedThreadPool(2) ;
 
-        RingBufferWheel wheel = new RingBufferWheel(executorService,512) ;
+    private static void test6() throws InterruptedException {
+        ExecutorService executorService = Executors.newFixedThreadPool(2);
+
+        RingBufferWheel wheel = new RingBufferWheel(executorService, 512);
 
         for (int i = 0; i < 10; i++) {
-            RingBufferWheel.Task task = new Job(i) ;
+            RingBufferWheel.Task task = new Job(i);
             task.setKey(i);
             wheel.addTask(task);
         }
 
         TimeUnit.SECONDS.sleep(5);
-        RingBufferWheel.Task task = new Job(15) ;
+        RingBufferWheel.Task task = new Job(15);
         task.setKey(15);
         wheel.addTask(task);
 
-        log.info("task size={}",wheel.taskSize());
+        log.info("task size={}", wheel.taskSize());
 
         wheel.stop(false);
     }
 
     private static void test7() throws InterruptedException {
-        ExecutorService executorService = Executors.newFixedThreadPool(2) ;
+        ExecutorService executorService = Executors.newFixedThreadPool(2);
 
-        RingBufferWheel wheel = new RingBufferWheel(executorService,512) ;
+        RingBufferWheel wheel = new RingBufferWheel(executorService, 512);
 
         for (int i = 0; i < 10; i++) {
-            RingBufferWheel.Task task = new Job(i) ;
+            RingBufferWheel.Task task = new Job(i);
             task.setKey(i);
             wheel.addTask(task);
         }
 
-        RingBufferWheel.Task task = new Job(15) ;
+        RingBufferWheel.Task task = new Job(15);
         task.setKey(15);
         int cancel = wheel.addTask(task);
 
         new Thread(() -> {
             boolean flag = wheel.cancel(cancel);
-            log.info("cancel id={},key={} result={}",cancel, task.getKey(), flag) ;
+            log.info("cancel id={},key={} result={}", cancel, task.getKey(), flag);
         }).start();
 
-        RingBufferWheel.Task task1 = new Job(20) ;
+        RingBufferWheel.Task task1 = new Job(20);
         task1.setKey(20);
-        wheel.addTask(task1) ;
+        wheel.addTask(task1);
 
-        log.info("task size={}",wheel.taskSize());
+        log.info("task size={}", wheel.taskSize());
 
         wheel.stop(false);
     }
@@ -211,17 +216,17 @@ public class RingBufferWheelTest {
                 .setNameFormat("msg-callback-%d")
                 .setDaemon(true)
                 .build();
-        ThreadPoolExecutor business = new ThreadPoolExecutor(4, 4, 1, TimeUnit.MILLISECONDS, queue,product);
+        ThreadPoolExecutor business = new ThreadPoolExecutor(4, 4, 1, TimeUnit.MILLISECONDS, queue, product);
 
-        ExecutorService executorService = Executors.newFixedThreadPool(10) ;
-        RingBufferWheel wheel = new RingBufferWheel(executorService) ;
+        ExecutorService executorService = Executors.newFixedThreadPool(10);
+        RingBufferWheel wheel = new RingBufferWheel(executorService);
 
         for (int i = 0; i < 10; i++) {
             business.execute(new Runnable() {
                 @Override
                 public void run() {
                     for (int i1 = 0; i1 < 30; i1++) {
-                        RingBufferWheel.Task task = new Job(i1) ;
+                        RingBufferWheel.Task task = new Job(i1);
                         task.setKey(i1);
                         wheel.addTask(task);
                     }
@@ -229,16 +234,16 @@ public class RingBufferWheelTest {
             });
         }
 
-        log.info("task size={}",wheel.taskSize());
+        log.info("task size={}", wheel.taskSize());
 
         wheel.stop(false);
 
 
     }
 
-    private static class Job extends RingBufferWheel.Task{
+    private static class Job extends RingBufferWheel.Task {
 
-        private int num ;
+        private int num;
 
         public Job(int num) {
             this.num = num;
@@ -246,11 +251,11 @@ public class RingBufferWheelTest {
 
         @Override
         public void run() {
-            log.info("number={}" , num);
+            log.info("number={}", num);
         }
     }
 
-    private static class Task extends RingBufferWheel.Task{
+    private static class Task extends RingBufferWheel.Task {
 
         @Override
         public void run() {
@@ -260,15 +265,15 @@ public class RingBufferWheelTest {
     }
 
 
-    public static void hashTimerTest(){
+    public static void hashTimerTest() {
 
         BlockingQueue<Runnable> queue = new LinkedBlockingQueue(10);
         ThreadFactory product = new ThreadFactoryBuilder()
                 .setNameFormat("msg-callback-%d")
                 .setDaemon(true)
                 .build();
-        ThreadPoolExecutor business = new ThreadPoolExecutor(4, 4, 1, TimeUnit.MILLISECONDS, queue,product);
-        HashedWheelTimer hashedWheelTimer = new HashedWheelTimer() ;
+        ThreadPoolExecutor business = new ThreadPoolExecutor(4, 4, 1, TimeUnit.MILLISECONDS, queue, product);
+        HashedWheelTimer hashedWheelTimer = new HashedWheelTimer();
 
         for (int i = 0; i < 10; i++) {
             int finalI = i;
@@ -282,7 +287,7 @@ public class RingBufferWheelTest {
                             public void run(Timeout timeout) throws Exception {
                                 log.info("====" + finalI);
                             }
-                        }, finalI,TimeUnit.SECONDS) ;
+                        }, finalI, TimeUnit.SECONDS);
                     }
                 }
             });

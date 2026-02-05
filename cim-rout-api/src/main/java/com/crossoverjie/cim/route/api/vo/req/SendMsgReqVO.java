@@ -16,11 +16,11 @@ public class SendMsgReqVO extends BaseRequest {
 
     @NotNull(message = "msg 不能为空")
     @Schema(requiredMode = Schema.RequiredMode.REQUIRED, description = "msg", example = "hello")
-    private String msg ;
+    private String msg;
 
     @NotNull(message = "id 不能为空")
     @Schema(requiredMode = Schema.RequiredMode.REQUIRED, description = "id", example = "11")
-    private long id ;
+    private long id;
 
     public String getMsg() {
         return msg;

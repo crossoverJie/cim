@@ -1,10 +1,12 @@
 package com.crossoverjie.cim.common.route.algorithm.consistenthash;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.TreeMap;
 import org.junit.Assert;
 import org.junit.Test;
-
-import java.lang.reflect.Field;
-import java.util.*;
 
 public class TreeMapConsistentHashTest {
 
@@ -12,16 +14,16 @@ public class TreeMapConsistentHashTest {
 
     @Test
     public void getFirstNodeValue() {
-        AbstractConsistentHash map = new TreeMapConsistentHash() ;
+        AbstractConsistentHash map = new TreeMapConsistentHash();
 
         List<String> strings = new ArrayList<>();
         for (int i = 0; i < 10; i++) {
-            strings.add("127.0.0." + i) ;
+            strings.add("127.0.0." + i);
         }
-        String PROCESS = map.process(strings, "zhangsan");
+        String process1 = map.process(strings, "zhangsan");
         for (int i = 0; i < 100; i++) {
             String process = map.process(strings, "zhangsan");
-            Assert.assertEquals(PROCESS, process);
+            Assert.assertEquals(process1, process);
         }
     }
 
@@ -29,38 +31,38 @@ public class TreeMapConsistentHashTest {
 
     @Test
     public void getFirstNodeValue2() {
-        AbstractConsistentHash map = new TreeMapConsistentHash() ;
+        AbstractConsistentHash map = new TreeMapConsistentHash();
 
         List<String> strings = new ArrayList<>();
         for (int i = 0; i < 10; i++) {
-            strings.add("127.0.0." + i) ;
+            strings.add("127.0.0." + i);
         }
-        String PROCESS = map.process(strings,"zhangsan2");
+        String process1 = map.process(strings, "zhangsan2");
         for (int i = 0; i < 100; i++) {
             String process = map.process(strings, "zhangsan2");
-            Assert.assertEquals(PROCESS, process);
+            Assert.assertEquals(process1, process);
         }
     }
 
 
     @Test
     public void getFirstNodeValue3() {
-        AbstractConsistentHash map = new TreeMapConsistentHash() ;
+        AbstractConsistentHash map = new TreeMapConsistentHash();
 
         List<String> strings = new ArrayList<>();
         for (int i = 0; i < 10; i++) {
-            strings.add("127.0.0." + i) ;
+            strings.add("127.0.0." + i);
         }
-        String PROCESS = map.process(strings,"1551253899106");
+        String process1 = map.process(strings, "1551253899106");
         for (int i = 0; i < 100; i++) {
             String process = map.process(strings, "1551253899106");
-            Assert.assertEquals(PROCESS, process);
+            Assert.assertEquals(process1, process);
         }
     }
 
     @Test
     public void getFirstNodeValue4() {
-        AbstractConsistentHash map = new TreeMapConsistentHash() ;
+        AbstractConsistentHash map = new TreeMapConsistentHash();
 
         List<String> strings = new ArrayList<>();
         for (int i = 0; i < 10; i++) {
@@ -68,7 +70,7 @@ public class TreeMapConsistentHashTest {
         }
         Set<String> processes = new HashSet<>();
         for (int i = 0; i < 10; i++) {
-            String process = map.process(strings,"zhangsan" + i);
+            String process = map.process(strings, "zhangsan" + i);
             processes.add(process);
         }
         RangeCheckTestUtil.assertInRange(processes.size(), 2, 10);
@@ -83,7 +85,7 @@ public class TreeMapConsistentHashTest {
             strings.add("127.0.0." + i);
         }
 
-        String process = map.process(strings,"zhangsan");
+        String process = map.process(strings, "zhangsan");
 
         TreeMap treeMap = map.getTreeMap();
         int virtualNodeSize = 2;

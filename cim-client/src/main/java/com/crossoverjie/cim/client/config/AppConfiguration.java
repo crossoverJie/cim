@@ -22,10 +22,10 @@ public class AppConfiguration {
     private String userName;
 
     @Value("${cim.msg.logger.path}")
-    private String msgLoggerPath ;
+    private String msgLoggerPath;
 
     @Value("${cim.heartbeat.time}")
-    private long heartBeatTime ;
+    private long heartBeatTime;
 
     @Value("${cim.reconnect.count}")
     private int reconnectCount;

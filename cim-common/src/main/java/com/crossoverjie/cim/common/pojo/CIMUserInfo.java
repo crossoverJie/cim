@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CIMUserInfo {
-    private Long userId ;
-    private String userName ;
+    private Long userId;
+    private String userName;
 
 }

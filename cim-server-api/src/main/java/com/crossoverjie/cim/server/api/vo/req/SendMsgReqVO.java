@@ -27,7 +27,7 @@ public class SendMsgReqVO extends BaseRequest {
 
     @NotNull(message = "msg 不能为空")
     @Schema(requiredMode = Schema.RequiredMode.REQUIRED, description = "msg", example = "hello")
-    private String msg ;
+    private String msg;
 
     @Getter
     @Setter
@@ -36,7 +36,7 @@ public class SendMsgReqVO extends BaseRequest {
     @NotNull(message = "userId 不能为空")
     @Schema(requiredMode = Schema.RequiredMode.REQUIRED, description = "userId", example = "11")
     @Getter
-    private Long userId ;
+    private Long userId;
 
     @Schema(requiredMode = Schema.RequiredMode.REQUIRED, description = "cmd", example = "message")
     @Getter

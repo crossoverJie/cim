@@ -52,13 +52,13 @@ public class OfflineMsgScriptExecutor {
         DELETE_OFFLINE_MSG_SCRIPT.setResultType(Long.class);
     }
 
-    public Long saveOfflineMsg(OfflineMsg msg, Integer MESSAGE_TTL_DAYS) {
+    public Long saveOfflineMsg(OfflineMsg msg, Integer messageTtlDays) {
         List<String> keys = Arrays.asList(MSG_KEY, USER_IDX);
         List<Object> allArgs = new ArrayList<>();
         allArgs.add(msg.getMessageId());
         allArgs.add(msg.getReceiveUserId());
         allArgs.add(serialize(msg));
-        allArgs.add(Duration.ofDays(MESSAGE_TTL_DAYS).getSeconds());
+        allArgs.add(Duration.ofDays(messageTtlDays).getSeconds());
 
         return redisTemplate.execute(SAVE_OFFLINE_MSG_SCRIPT, keys, allArgs.toArray());
     }

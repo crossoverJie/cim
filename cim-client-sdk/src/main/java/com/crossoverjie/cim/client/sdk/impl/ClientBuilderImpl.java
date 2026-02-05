@@ -21,7 +21,7 @@ public class ClientBuilderImpl implements ClientBuilder {
     public ClientBuilderImpl(ClientConfigurationData conf) {
         this.conf = conf;
     }
-    
+
     @Override
     public Client build() {
         return new ClientImpl(conf);
@@ -29,7 +29,7 @@ public class ClientBuilderImpl implements ClientBuilder {
 
     @Override
     public ClientBuilder auth(ClientConfigurationData.Auth auth) {
-        if (auth.getUserId() <= 0 || StringUtil.isEmpty(auth.getUserName())){
+        if (auth.getUserId() <= 0 || StringUtil.isEmpty(auth.getUserName())) {
             throw new IllegalArgumentException("userId and userName must be set");
         }
         this.conf.setAuth(auth);

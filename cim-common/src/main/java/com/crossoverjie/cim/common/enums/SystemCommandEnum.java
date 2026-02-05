@@ -12,18 +12,16 @@ import java.util.Map;
  */
 public enum SystemCommandEnum {
 
-            ALL(":all       ","获取所有命令","PrintAllCommand"),
-    ONLINE_USER(":olu       ","获取所有在线用户","PrintOnlineUsersCommand"),
-           QUIT(":q!        ","退出程序","ShutDownCommand"),
-          QUERY(":q         ","【:q 关键字】查询聊天记录","QueryHistoryCommand"),
-             AI(":ai        ","开启 AI 模式","OpenAIModelCommand"),
-            QAI(":qai       ","关闭 AI 模式","CloseAIModelCommand"),
-         PREFIX(":pu        ","模糊匹配用户","PrefixSearchCommand"),
-          EMOJI(":emoji     ","emoji 表情列表","EmojiCommand"),
-           INFO(":info      ","获取客户端信息","EchoInfoCommand"),
-      DELAY_MSG(":delay     ","delay message, :delay [msg] [delayTime]","DelayMsgCommand")
-
-    ;
+            ALL(":all       ", "获取所有命令", "PrintAllCommand"),
+    ONLINE_USER(":olu       ", "获取所有在线用户", "PrintOnlineUsersCommand"),
+           QUIT(":q!        ", "退出程序", "ShutDownCommand"),
+          QUERY(":q         ", "【:q 关键字】查询聊天记录", "QueryHistoryCommand"),
+             AI(":ai        ", "开启 AI 模式", "OpenAIModelCommand"),
+            QAI(":qai       ", "关闭 AI 模式", "CloseAIModelCommand"),
+         PREFIX(":pu        ", "模糊匹配用户", "PrefixSearchCommand"),
+          EMOJI(":emoji     ", "emoji 表情列表", "EmojiCommand"),
+           INFO(":info      ", "获取客户端信息", "EchoInfoCommand"),
+      DELAY_MSG(":delay     ", "delay message, :delay [msg] [delayTime]", "DelayMsgCommand");
 
     /** 枚举值码 */
     private final String commandType;
@@ -34,7 +32,7 @@ public enum SystemCommandEnum {
     /**
      * 实现类
      */
-    private final String clazz ;
+    private final String clazz;
 
 
     /**
@@ -45,7 +43,7 @@ public enum SystemCommandEnum {
     private SystemCommandEnum(String commandType, String desc, String clazz) {
         this.commandType = commandType;
         this.desc = desc;
-        this.clazz = clazz ;
+        this.clazz = clazz;
     }
 
     /**
@@ -92,22 +90,21 @@ public enum SystemCommandEnum {
      *
      * @return 全部枚举值码。
      */
-    public static Map<String,String> getAllStatusCode() {
-        Map<String,String> map = new HashMap<String, String>(16) ;
+    public static Map<String, String> getAllStatusCode() {
+        Map<String, String> map = new HashMap<String, String>(16);
         for (SystemCommandEnum status : values()) {
-            map.put(status.getCommandType(),status.getDesc()) ;
+            map.put(status.getCommandType(), status.getDesc());
         }
         return map;
     }
 
-    public static Map<String,String> getAllClazz() {
-        Map<String,String> map = new HashMap<String, String>(16) ;
+    public static Map<String, String> getAllClazz() {
+        Map<String, String> map = new HashMap<String, String>(16);
         for (SystemCommandEnum status : values()) {
-            map.put(status.getCommandType().trim(),"com.crossoverjie.cim.client.service.impl.command." + status.getClazz()) ;
+            map.put(status.getCommandType().trim(), "com.crossoverjie.cim.client.service.impl.command." + status.getClazz());
         }
         return map;
     }
-
 
 
 }

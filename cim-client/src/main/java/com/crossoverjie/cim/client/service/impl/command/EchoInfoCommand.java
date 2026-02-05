@@ -20,7 +20,7 @@ public class EchoInfoCommand implements InnerCommand {
     private Client client;
 
     @Resource
-    private Event event ;
+    private Event event;
 
     @Override
     public void process(String msg) {

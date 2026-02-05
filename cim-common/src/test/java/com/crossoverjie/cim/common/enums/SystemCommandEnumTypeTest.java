@@ -1,8 +1,7 @@
 package com.crossoverjie.cim.common.enums;
 
-import org.junit.Test;
-
 import java.util.Map;
+import org.junit.Test;
 
 public class SystemCommandEnumTypeTest {
 

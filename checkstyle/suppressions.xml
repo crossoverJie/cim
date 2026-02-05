@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<!DOCTYPE suppressions PUBLIC
+        "-//Checkstyle//DTD SuppressionFilter Configuration 1.2//EN"
+        "https://checkstyle.org/dtds/suppressions_1_2.dtd">
+
+<!--
+    CIM Project Checkstyle Suppressions
+    Exemptions for generated code and specific patterns
+-->
+<suppressions>
+    <!-- Suppress all checks for generated protobuf files -->
+    <suppress files=".*[/\\]generated[/\\].*" checks=".*"/>
+    <suppress files=".*[/\\]target[/\\].*" checks=".*"/>
+
+    <!-- Suppress naming checks for protobuf generated classes -->
+    <suppress files=".*Proto\.java$" checks=".*"/>
+    <suppress files=".*Grpc\.java$" checks=".*"/>
+
+    <!-- Suppress line length for long string literals in tests -->
+    <suppress files=".*Test\.java$" checks="LineLength"/>
+    <suppress files=".*Tests\.java$" checks="LineLength"/>
+
+    <!-- Suppress star import check for test files (allow static imports for assertions) -->
+    <suppress files=".*Test\.java$" checks="AvoidStarImport"/>
+    <suppress files=".*Tests\.java$" checks="AvoidStarImport"/>
+</suppressions>

@@ -24,9 +24,9 @@ public class PrefixSearchCommand implements InnerCommand {
 
 
     @Resource
-    private Client client ;
+    private Client client;
     @Resource
-    private Event event ;
+    private Event event;
 
     @Override
     public void process(String msg) {
@@ -43,7 +43,7 @@ public class PrefixSearchCommand implements InnerCommand {
 
             for (String res : list) {
                 res = res.replace(key, "\033[31;4m" + key + "\033[0m");
-                event.info(res) ;
+                event.info(res);
             }
 
         } catch (Exception e) {

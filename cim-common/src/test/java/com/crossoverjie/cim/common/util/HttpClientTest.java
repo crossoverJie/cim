@@ -1,23 +1,22 @@
 package com.crossoverjie.cim.common.util;
 
 import com.alibaba.fastjson.JSONObject;
+import java.io.IOException;
+import java.util.concurrent.TimeUnit;
 import okhttp3.OkHttpClient;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.io.IOException;
-import java.util.concurrent.TimeUnit;
-
 public class HttpClientTest {
 
-    private OkHttpClient okHttpClient ;
+    private OkHttpClient okHttpClient;
 
     @Before
-    public void before(){
+    public void before() {
         OkHttpClient.Builder builder = new OkHttpClient.Builder();
         builder.connectTimeout(30, TimeUnit.SECONDS)
                 .readTimeout(10, TimeUnit.SECONDS)
-                .writeTimeout(10,TimeUnit.SECONDS)
+                .writeTimeout(10, TimeUnit.SECONDS)
                 .retryOnConnectionFailure(true);
         okHttpClient = builder.build();
     }

@@ -25,20 +25,21 @@ public class ProtocolTest {
 
     /**
      * 编码
-     * @param protocol
-     * @return
+     * @param protocol protocol
+     * @return byte array
      */
-    public static byte[] encode(Request protocol){
-        return protocol.toByteArray() ;
+    public static byte[] encode(Request protocol) {
+        return protocol.toByteArray();
     }
 
     /**
      * 解码
-     * @param bytes
-     * @return
-     * @throws InvalidProtocolBufferException
+     * @param bytes bytes
+     * @return Request
+     * @throws InvalidProtocolBufferException exception
      */
     public static Request decode(byte[] bytes) throws InvalidProtocolBufferException {
         return Request.parseFrom(bytes);
     }
 }
+

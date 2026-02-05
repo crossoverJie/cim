@@ -11,7 +11,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  */
 @Slf4j
 @SpringBootApplication
-public class CIMClientApplication implements CommandLineRunner{
+public class CIMClientApplication implements CommandLineRunner {
 
 
 	public static void main(String[] args) {
@@ -21,7 +21,7 @@ public class CIMClientApplication implements CommandLineRunner{
 
 	@Override
 	public void run(String... args) {
-		Scan scan = new Scan() ;
+		Scan scan = new Scan();
 		Thread thread = new Thread(scan);
 		thread.setName("scan-thread");
 		thread.start();

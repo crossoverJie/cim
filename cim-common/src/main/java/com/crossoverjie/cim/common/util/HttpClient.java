@@ -15,12 +15,12 @@ import java.io.IOException;
  * Date: 2020-04-25 00:39
  * @since JDK 1.8
  */
-public final class HttpClient{
+public final class HttpClient {
 
-    private static MediaType mediaType = MediaType.parse("application/json");
+    private static final MediaType MEDIA_TYPE = MediaType.parse("application/json");
 
     public static Response post(OkHttpClient okHttpClient, String params, String url) throws IOException {
-        RequestBody requestBody = RequestBody.create(mediaType, params);
+        RequestBody requestBody = RequestBody.create(MEDIA_TYPE, params);
 
         Request request = new Request.Builder()
                 .url(url)
@@ -29,7 +29,7 @@ public final class HttpClient{
 
         Response response = okHttpClient.newCall(request).execute();
         if (!response.isSuccessful()) {
-            throw new IOException("request url [" + url + "], params [" + params +"] failed, response code: " + response.code()
+            throw new IOException("request url [" + url + "], params [" + params + "] failed, response code: " + response.code()
                     + ", message: " + response.message());
         }
 

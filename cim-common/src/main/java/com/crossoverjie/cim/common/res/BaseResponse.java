@@ -7,16 +7,16 @@ import com.crossoverjie.cim.common.util.StringUtil;
 
 import java.io.Serializable;
 
-public class BaseResponse<T> implements Serializable{
+public class BaseResponse<T> implements Serializable {
 	private String code;
-	
+
 	private String message;
 
 	/**
 	 * 请求号
 	 */
 	private String reqNo;
-	
+
 	private T dataBody;
 
 	public BaseResponse() {}
@@ -43,23 +43,24 @@ public class BaseResponse<T> implements Serializable{
 		this.dataBody = dataBody;
 	}
 
-	public static <T> BaseResponse<T> create(T t){
+	public static <T> BaseResponse<T> create(T t) {
 		return new BaseResponse<T>(t);
 	}
 
-	public static <T> BaseResponse<T> create(T t, StatusEnum statusEnum){
+	public static <T> BaseResponse<T> create(T t, StatusEnum statusEnum) {
 		return new BaseResponse<T>(statusEnum.getCode(), statusEnum.getMessage(), t);
 	}
 
-	public static <T> BaseResponse<T> createSuccess(T t, String message){
-		return new BaseResponse<T>(StatusEnum.SUCCESS.getCode(), StringUtil.isNullOrEmpty(message) ? StatusEnum.SUCCESS.getMessage() : message, t);
+	public static <T> BaseResponse<T> createSuccess(T t, String message) {
+		String msg = StringUtil.isNullOrEmpty(message) ? StatusEnum.SUCCESS.getMessage() : message;
+		return new BaseResponse<T>(StatusEnum.SUCCESS.getCode(), msg, t);
 	}
 
-	public static <T> BaseResponse<T> createFail(T t, String message){
+	public static <T> BaseResponse<T> createFail(T t, String message) {
 		return new BaseResponse<T>(StatusEnum.FAIL.getCode(), StringUtil.isNullOrEmpty(message) ? StatusEnum.FAIL.getMessage() : message, t);
 	}
 
-	public static <T> BaseResponse<T> create(T t, StatusEnum statusEnum, String message){
+	public static <T> BaseResponse<T> create(T t, StatusEnum statusEnum, String message) {
 
 		return new BaseResponse<T>(statusEnum.getCode(), message, t);
 	}

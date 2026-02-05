@@ -1,8 +1,5 @@
 package com.crossoverjie.cim.route.service;
 
-import com.crossoverjie.cim.common.enums.StatusEnum;
-import com.crossoverjie.cim.common.exception.CIMException;
-import com.crossoverjie.cim.common.metastore.MetaStore;
 import com.crossoverjie.cim.common.pojo.RouteInfo;
 import com.crossoverjie.cim.common.route.algorithm.RouteHandle;
 import com.crossoverjie.cim.common.util.RouteInfoParseUtil;
@@ -33,7 +30,7 @@ public class CommonBizService {
      * @param routeInfo
      */
     @SneakyThrows
-    public RouteInfo checkServerAvailable(RouteInfo routeInfo, String userId){
+    public RouteInfo checkServerAvailable(RouteInfo routeInfo, String userId) {
         boolean reachable = NetAddressIsReachable.checkAddressReachable(routeInfo.getIp(), routeInfo.getCimServerPort(), 1000);
         if (!reachable) {
             log.error("ip={}, port={} are not available, remove it.", routeInfo.getIp(), routeInfo.getCimServerPort());
