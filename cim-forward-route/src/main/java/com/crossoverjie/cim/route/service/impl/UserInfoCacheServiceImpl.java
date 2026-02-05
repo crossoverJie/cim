@@ -4,6 +4,7 @@ import com.crossoverjie.cim.common.pojo.CIMUserInfo;
 import com.crossoverjie.cim.route.service.UserInfoCacheService;
 import com.google.common.cache.LoadingCache;
 import jakarta.annotation.Resource;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
@@ -22,6 +23,7 @@ import static com.crossoverjie.cim.route.constant.Constant.LOGIN_STATUS_PREFIX;
  * @since JDK 1.8
  */
 
+@Slf4j
 @Service
 public class UserInfoCacheServiceImpl implements UserInfoCacheService {
 
@@ -52,9 +54,12 @@ public class UserInfoCacheServiceImpl implements UserInfoCacheService {
             if (set == null) {
                 set = new HashSet<>(64);
             }
-            Optional<CIMUserInfo> cimUserInfo = loadUserInfoByUserId(Long.valueOf(member));
-
-            cimUserInfo.ifPresent(set::add);
+            try {
+                Optional<CIMUserInfo> cimUserInfo = loadUserInfoByUserId(Long.valueOf(member));
+                cimUserInfo.ifPresent(set::add);
+            } catch (NumberFormatException e) {
+                log.warn("Invalid user ID format in Redis set: {}", member, e);
+            }
         }
 
         return set;
