@@ -107,10 +107,12 @@ public class SortArrayMap extends AbstractMap<String, String> {
         }
     }
 
+    @Override
     public int size() {
         return size;
     }
 
+    @Override
     public void clear() {
         buckets = new Node[DEFAULT_SIZE];
         size = 0;
