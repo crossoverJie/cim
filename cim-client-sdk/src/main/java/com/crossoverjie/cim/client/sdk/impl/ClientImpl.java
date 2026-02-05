@@ -39,6 +39,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import java.util.function.Consumer;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
@@ -259,11 +260,11 @@ public class ClientImpl extends ClientState implements Client {
         future.orTimeout(10, TimeUnit.SECONDS)
                 .whenComplete((result, throwable) -> {
                     if (throwable == null) {
-                        log.info(msgWay + " message task completed successfully");
+                        log.info("{} message task completed successfully", msgWay);
                     } else if (throwable instanceof TimeoutException) {
-                        log.error(msgWay + " message processing timeout", throwable);
+                        log.error("{} message processing timeout", msgWay, throwable);
                     } else {
-                        log.warn(msgWay + " message task completed with exception", throwable);
+                        log.warn("{} message task completed with exception", msgWay, throwable);
                     }
                 });
     }
