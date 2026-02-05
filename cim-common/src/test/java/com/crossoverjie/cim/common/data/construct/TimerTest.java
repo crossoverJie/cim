@@ -1,9 +1,8 @@
 package com.crossoverjie.cim.common.data.construct;
 
-import lombok.extern.slf4j.Slf4j;
-
 import java.util.Timer;
 import java.util.TimerTask;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * Function:
@@ -17,19 +16,20 @@ public class TimerTest {
 
     public static void main(String[] args) {
         log.info("start");
-        Timer timer = new Timer() ;
+        Timer timer = new Timer();
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
                 log.info("test");
             }
-        },50000);
+        }, 50000);
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
                 log.info("test");
             }
-        },30000);
+        }, 30000);
 
     }
 }
+

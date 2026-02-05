@@ -28,7 +28,9 @@ public class OfflineMsgStoreConfig {
 
     @Bean
     @ConditionalOnProperty(name = "offline.store.mode", havingValue = Constant.OfflineStoreMode.REDIS)
-    public OfflineMsgBuffer offlineMsgBufferStore(OfflineMsgScriptExecutor scriptExecutor, @Value("${offline.store.redis.expire.message-ttl-days}") Integer configuredDays, ObjectMapper objectMapper) {
+    public OfflineMsgBuffer offlineMsgBufferStore(OfflineMsgScriptExecutor scriptExecutor,
+            @Value("${offline.store.redis.expire.message-ttl-days}") Integer configuredDays,
+            ObjectMapper objectMapper) {
         return new OfflineMsgBuffer(scriptExecutor, configuredDays, objectMapper);
     }
 }

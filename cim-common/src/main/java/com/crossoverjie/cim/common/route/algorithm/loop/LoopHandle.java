@@ -6,7 +6,6 @@ import com.crossoverjie.cim.common.pojo.RouteInfo;
 import com.crossoverjie.cim.common.route.algorithm.RouteHandle;
 
 import com.crossoverjie.cim.common.util.RouteInfoParseUtil;
-import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -23,9 +22,9 @@ public class LoopHandle implements RouteHandle {
     private List<String> values;
 
     @Override
-    public String routeServer(List<String> values,String key) {
+    public String routeServer(List<String> values, String key) {
         if (values.size() == 0) {
-            throw new CIMException(StatusEnum.SERVER_NOT_AVAILABLE) ;
+            throw new CIMException(StatusEnum.SERVER_NOT_AVAILABLE);
         }
         this.values = values;
         Long position = index.incrementAndGet() % values.size();

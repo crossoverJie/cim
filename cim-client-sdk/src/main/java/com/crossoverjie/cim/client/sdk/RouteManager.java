@@ -13,7 +13,6 @@ import com.crossoverjie.cim.route.api.vo.req.LoginReqVO;
 import com.crossoverjie.cim.route.api.vo.req.OfflineMsgReqVO;
 import com.crossoverjie.cim.route.api.vo.req.P2PReqVO;
 import com.crossoverjie.cim.route.api.vo.res.CIMServerResVO;
-import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import okhttp3.OkHttpClient;
@@ -80,7 +79,7 @@ public class RouteManager {
         return onlineUsersResVO.getDataBody();
     }
 
-    public void fetchOfflineMsgs(Long userId){
+    public void fetchOfflineMsgs(Long userId) {
         OfflineMsgReqVO offlineMsgReqVO = OfflineMsgReqVO.builder().receiveUserId(userId).build();
         routeApi.fetchOfflineMsgs(offlineMsgReqVO);
     }

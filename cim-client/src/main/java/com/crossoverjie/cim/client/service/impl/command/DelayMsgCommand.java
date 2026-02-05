@@ -23,22 +23,22 @@ public class DelayMsgCommand implements InnerCommand {
     private Event event;
 
     @Resource
-    private MsgHandle msgHandle ;
+    private MsgHandle msgHandle;
 
     @Resource
-    private RingBufferWheel ringBufferWheel ;
+    private RingBufferWheel ringBufferWheel;
 
     @Override
     public void process(String msg) {
-        if (msg.split(" ").length <=2){
-            event.info("incorrect commond, :delay [msg] [delayTime]") ;
-            return ;
+        if (msg.split(" ").length <= 2) {
+            event.info("incorrect commond, :delay [msg] [delayTime]");
+            return;
         }
 
-        String message = msg.split(" ")[1] ;
+        String message = msg.split(" ")[1];
         int delayTime = Integer.parseInt(msg.split(" ")[2]);
 
-        RingBufferWheel.Task task = new DelayMsgJob(message) ;
+        RingBufferWheel.Task task = new DelayMsgJob(message);
         task.setKey(delayTime);
         ringBufferWheel.addTask(task);
         event.info(msg);
@@ -46,9 +46,9 @@ public class DelayMsgCommand implements InnerCommand {
 
 
 
-    private class DelayMsgJob extends RingBufferWheel.Task{
+    private class DelayMsgJob extends RingBufferWheel.Task {
 
-        private String msg ;
+        private String msg;
 
         public DelayMsgJob(String msg) {
             this.msg = msg;
@@ -59,7 +59,7 @@ public class DelayMsgCommand implements InnerCommand {
             try {
                 msgHandle.sendMsg(msg);
             } catch (Exception e) {
-                log.error("Delay message send error",e);
+                log.error("Delay message send error", e);
             }
         }
     }

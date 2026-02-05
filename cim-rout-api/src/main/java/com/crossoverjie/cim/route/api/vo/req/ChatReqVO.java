@@ -26,12 +26,12 @@ public class ChatReqVO extends BaseRequest {
 
     @NotNull(message = "userId 不能为空")
     @Schema(requiredMode = Schema.RequiredMode.REQUIRED, description = "userId", example = "1545574049323")
-    private Long userId ;
+    private Long userId;
 
 
     @NotNull(message = "msg 不能为空")
     @Schema(requiredMode = Schema.RequiredMode.REQUIRED, description = "msg", example = "hello")
-    private String msg ;
+    private String msg;
 
     private List<String> batchMsg;
 

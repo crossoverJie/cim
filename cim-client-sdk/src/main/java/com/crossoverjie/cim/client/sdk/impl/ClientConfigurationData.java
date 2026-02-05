@@ -25,7 +25,7 @@ public class ClientConfigurationData {
     @Data
     @AllArgsConstructor
     @Builder
-    public static class Auth{
+    public static class Auth {
         private long userId;
         private String userName;
     }

@@ -12,7 +12,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 @Slf4j
 @SpringBootTest(classes = RouteApplication.class)
-public class UserInfoCacheServiceImplTest extends AbstractBaseTest{
+public class UserInfoCacheServiceImplTest extends AbstractBaseTest {
 
     @Autowired
     private UserInfoCacheService userInfoCacheService;
@@ -24,7 +24,7 @@ public class UserInfoCacheServiceImplTest extends AbstractBaseTest{
     }
 
     @Test
-    public void onlineUser(){
+    public void onlineUser() {
         Set<CIMUserInfo> cimUserInfos = userInfoCacheService.onlineUser();
         log.info("cimUserInfos={}", JSON.toJSONString(cimUserInfos));
     }

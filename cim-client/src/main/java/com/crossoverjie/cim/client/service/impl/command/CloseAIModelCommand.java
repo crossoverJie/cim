@@ -18,10 +18,10 @@ public class CloseAIModelCommand implements InnerCommand {
 
 
     @Resource
-    private MsgHandle msgHandle ;
+    private MsgHandle msgHandle;
 
     @Resource
-    private Event event ;
+    private Event event;
 
     @Override
     public void process(String msg) {

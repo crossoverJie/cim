@@ -16,5 +16,5 @@ public interface HeartBeatHandler {
      * @param ctx
      * @throws Exception
      */
-    void process(ChannelHandlerContext ctx) throws Exception ;
+    void process(ChannelHandlerContext ctx) throws Exception;
 }

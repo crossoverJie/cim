@@ -20,14 +20,14 @@ import org.springframework.stereotype.Service;
 public class EmojiCommand implements InnerCommand {
 
     @Resource
-    private Event event ;
+    private Event event;
 
 
     @Override
     public void process(String msg) {
-        if (msg.split(" ").length <=1){
-            event.info("incorrect commond, :emoji [option]") ;
-            return ;
+        if (msg.split(" ").length <= 1) {
+            event.info("incorrect commond, :emoji [option]");
+            return;
         }
         String value = msg.split(" ")[1];
         if (value != null) {

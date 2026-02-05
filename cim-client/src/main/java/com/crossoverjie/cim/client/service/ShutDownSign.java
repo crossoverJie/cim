@@ -11,16 +11,16 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class ShutDownSign {
-    private boolean isCommand ;
+    private boolean isCommand;
 
     /**
      * Set user exit sign.
      */
-    public void shutdown(){
-        isCommand = true ;
+    public void shutdown() {
+        isCommand = true;
     }
 
-    public boolean checkStatus(){
-        return isCommand ;
+    public boolean checkStatus() {
+        return isCommand;
     }
 }

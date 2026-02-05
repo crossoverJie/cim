@@ -22,7 +22,7 @@ public class RegistryMetaStore implements Runnable {
 
     private MetaStore metaStore;
 
-    private AppConfiguration appConfiguration ;
+    private AppConfiguration appConfiguration;
 
     private String ip;
     private int cimServerPort;
@@ -30,16 +30,16 @@ public class RegistryMetaStore implements Runnable {
     public RegistryMetaStore(MetaStore metaStore, String ip, int cimServerPort, int httpPort) {
         this.ip = ip;
         this.cimServerPort = cimServerPort;
-        this.httpPort = httpPort ;
+        this.httpPort = httpPort;
         this.metaStore = metaStore;
-        appConfiguration = SpringBeanFactory.getBean(AppConfiguration.class) ;
+        appConfiguration = SpringBeanFactory.getBean(AppConfiguration.class);
     }
 
     @SneakyThrows
     @Override
     public void run() {
 
-        if (!appConfiguration.isZkSwitch()){
+        if (!appConfiguration.isZkSwitch()) {
             log.info("Skip registry to metaStore");
             return;
         }

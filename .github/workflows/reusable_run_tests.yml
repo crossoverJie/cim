@@ -20,6 +20,9 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
           cache: maven
+      - name: Run Checkstyle
+        run: mvn checkstyle:check --file pom.xml
+        continue-on-error: true
       - name: Build with Maven
         run: mvn -B package --file pom.xml
       - name: Upload coverage reports to Codecov

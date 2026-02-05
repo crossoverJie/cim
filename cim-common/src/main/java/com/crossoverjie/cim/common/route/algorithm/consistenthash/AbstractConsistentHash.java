@@ -20,14 +20,14 @@ public abstract class AbstractConsistentHash {
      * @param key
      * @param value
      */
-    protected abstract void add(long key,String value);
+    protected abstract void add(long key, String value);
 
     /**
      * remove node
      * @param value node
      * @return current data
      */
-    protected abstract Map<String,String> remove(String value);
+    protected abstract Map<String, String> remove(String value);
 
     /**
      * Clear old data in the structure
@@ -37,7 +37,7 @@ public abstract class AbstractConsistentHash {
     /**
      * 排序节点，数据结构自身支持排序可以不用重写
      */
-    protected void sort(){}
+    protected void sort() { }
 
     /**
      * 根据当前的 key 通过一致性 hash 算法的规则取出一个节点
@@ -52,7 +52,7 @@ public abstract class AbstractConsistentHash {
      * @param key
      * @return
      */
-    public String process(List<String> values,String key){
+    public String process(List<String> values, String key) {
         // fix https://github.com/crossoverJie/cim/issues/79
         clear();
         for (String value : values) {
@@ -60,7 +60,7 @@ public abstract class AbstractConsistentHash {
         }
         sort();
 
-        return getFirstNodeValue(key) ;
+        return getFirstNodeValue(key);
     }
 
     /**
@@ -68,7 +68,7 @@ public abstract class AbstractConsistentHash {
      * @param value
      * @return
      */
-    public Long hash(String value){
+    public Long hash(String value) {
         MessageDigest md5;
         try {
             md5 = MessageDigest.getInstance("MD5");

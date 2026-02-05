@@ -31,7 +31,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-import static com.crossoverjie.cim.route.constant.Constant.*;
+import static com.crossoverjie.cim.route.constant.Constant.ACCOUNT_PREFIX;
+import static com.crossoverjie.cim.route.constant.Constant.LOGIN_STATUS_PREFIX;
+import static com.crossoverjie.cim.route.constant.Constant.ROUTE_PREFIX;
 
 /**
  * Function:

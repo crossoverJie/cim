@@ -12,7 +12,8 @@ on:
   push:
     branches: [ "master" ]
   pull_request:
-    branches: [ "master" ]
+    # Run on all pull requests regardless of target branch to support stacked PRs
+    branches: [ "**" ]
 
 jobs:
   build:

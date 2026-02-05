@@ -11,9 +11,9 @@ import lombok.AllArgsConstructor;
  * @since JDK 1.8
  */
 @AllArgsConstructor
-public class LoginReqVO extends BaseRequest{
-    private Long userId ;
-    private String userName ;
+public class LoginReqVO extends BaseRequest {
+    private Long userId;
+    private String userName;
 
     public Long getUserId() {
         return userId;

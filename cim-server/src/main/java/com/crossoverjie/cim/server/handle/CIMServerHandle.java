@@ -42,12 +42,12 @@ public class CIMServerHandle extends SimpleChannelInboundHandler<Request> {
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
         //可能出现业务判断离线后再次触发 channelInactive
         CIMUserInfo userInfo = SessionSocketHolder.getUserId((NioSocketChannel) ctx.channel());
-        if (userInfo != null){
-            log.warn("[{}] trigger channelInactive offline!",userInfo.getUserName());
+        if (userInfo != null) {
+            log.warn("[{}] trigger channelInactive offline!", userInfo.getUserName());
 
             //Clear route info and offline.
             RouteHandler routeHandler = SpringBeanFactory.getBean(RouteHandler.class);
-            routeHandler.userOffLine(userInfo,(NioSocketChannel) ctx.channel());
+            routeHandler.userOffLine(userInfo, (NioSocketChannel) ctx.channel());
 
             ctx.channel().close();
         }
@@ -61,8 +61,8 @@ public class CIMServerHandle extends SimpleChannelInboundHandler<Request> {
 
                 log.info("!!READER_IDLE!!");
 
-                HeartBeatHandler heartBeatHandler = SpringBeanFactory.getBean(ServerHeartBeatHandlerImpl.class) ;
-                heartBeatHandler.process(ctx) ;
+                HeartBeatHandler heartBeatHandler = SpringBeanFactory.getBean(ServerHeartBeatHandlerImpl.class);
+                heartBeatHandler.process(ctx);
             }
         }
         super.userEventTriggered(ctx, evt);
@@ -82,8 +82,8 @@ public class CIMServerHandle extends SimpleChannelInboundHandler<Request> {
         }
 
         //心跳更新时间
-        if (msg.getCmd() == BaseCommand.PING){
-            NettyAttrUtil.updateReaderTime(ctx.channel(),System.currentTimeMillis());
+        if (msg.getCmd() == BaseCommand.PING) {
+            NettyAttrUtil.updateReaderTime(ctx.channel(), System.currentTimeMillis());
             //向客户端响应 pong 消息
             Request heartBeat = SpringBeanFactory.getBean("heartBeat", Request.class);
             ctx.writeAndFlush(heartBeat).addListeners((ChannelFutureListener) future -> {
@@ -91,7 +91,7 @@ public class CIMServerHandle extends SimpleChannelInboundHandler<Request> {
                     log.error("IO error,close Channel");
                     future.channel().close();
                 }
-            }) ;
+            });
         }
 
     }

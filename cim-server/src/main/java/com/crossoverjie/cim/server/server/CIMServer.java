@@ -1,6 +1,5 @@
 package com.crossoverjie.cim.server.server;
 
-import com.crossoverjie.cim.common.protocol.BaseCommand;
 import com.crossoverjie.cim.common.protocol.Request;
 import com.crossoverjie.cim.server.api.vo.req.SendMsgReqVO;
 import com.crossoverjie.cim.server.init.CIMServerInitializer;

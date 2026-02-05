@@ -43,45 +43,45 @@ public class CommonTest {
 
 
     @Test
-    public void searchMsg2(){
-        StringBuilder sb = new StringBuilder() ;
+    public void searchMsg2() {
+        StringBuilder sb = new StringBuilder();
         String allMsg = "于是在之前的基础上我完善了一些内容，先来看看这个项目的介绍吧：\n" +
                 "\n" +
                 "CIM(CROSS-IM) 一款面向开发者的 IM(即时通讯)系统；同时提供了一些组件帮助开发者构建一款属于自己可水平扩展的 IM 。\n" +
                 "\n" +
-                "借助 CIM 你可以实现以下需求：" ;
+                "借助 CIM 你可以实现以下需求：";
 
-        String key = "CIM" ;
+        String key = "CIM";
 
         String[] split = allMsg.split("\n");
         for (String msg : split) {
-            if (msg.trim().contains(key)){
-                sb.append(msg).append("\n") ;
+            if (msg.trim().contains(key)) {
+                sb.append(msg).append("\n");
             }
         }
         int pos = 0;
 
         String result = sb.toString();
 
-        int count = 1 ;
-        int multiple = 2 ;
-        while((pos = result.indexOf(key, pos)) >= 0) {
+        int count = 1;
+        int multiple = 2;
+        while ((pos = result.indexOf(key, pos)) >= 0) {
 
             log.info("{},{}",pos, pos + key.length());
 
             pos += key.length();
 
 
-            count ++ ;
+            count++;
         }
 
         System.out.println(sb.toString());
-        System.out.println(sb.toString().replace(key,"\033[31;4m" + key+"\033[0m"));
+        System.out.println(sb.toString().replace(key, "\033[31;4m" + key + "\033[0m"));
     }
 
     @Test
-    public void log(){
-        String msg = "hahahdsadsd" ;
+    public void log() {
+        String msg = "hahahdsadsd";
         LocalDate today = LocalDate.now();
         int year = today.getYear();
         int month = today.getMonthValue();
@@ -108,7 +108,7 @@ public class CommonTest {
     }
 
     @Test
-    public void emoji() throws Exception{
+    public void emoji() throws Exception {
         String str = "An :grinning:awesome :smiley:string &#128516;with a few :wink:emojis!";
         String result = EmojiParser.parseToUnicode(str);
         System.out.println(result);
@@ -125,13 +125,13 @@ public class CommonTest {
     }
 
     @Test
-    public void emoji2(){
-        String emostring ="😂";
+    public void emoji2() {
+        String emostring = "😂";
 
-        String face_with_tears_of_joy = emostring.replaceAll("\uD83D\uDE02", "face with tears of joy");
-        System.out.println(face_with_tears_of_joy);
+        String faceWithTearsOfJoy = emostring.replaceAll("\uD83D\uDE02", "face with tears of joy");
+        System.out.println(faceWithTearsOfJoy);
 
-        System.out.println("======" + face_with_tears_of_joy.replaceAll("face with tears of joy","\uD83D\uDE02"));
+        System.out.println("======" + faceWithTearsOfJoy.replaceAll("face with tears of joy","\uD83D\uDE02"));
     }
 
 //    @Test
@@ -153,7 +153,7 @@ public class CommonTest {
         ObjectMapper objectMapper = new ObjectMapper();
         Class<?> generic = null;
         for (Method declaredMethod : RouteApi.class.getDeclaredMethods()) {
-            if (declaredMethod.getName().equals("login")){
+            if (declaredMethod.getName().equals("login")) {
                 Type returnType = declaredMethod.getGenericReturnType();
 
                 // check if the return type is a parameterized type
@@ -178,12 +178,12 @@ public class CommonTest {
     }
 
 
-    private static class Gen<T,R>{
+    private static class Gen<T, R> {
         private T t;
         private R r;
     }
 
-    interface TestInterface{
+    interface TestInterface {
         Gen<String, P2PReqVO> login();
     }
 

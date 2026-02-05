@@ -1,15 +1,16 @@
 package com.crossoverjie.cim.common.route.algorithm.random;
 
 import static org.junit.jupiter.api.Assertions.*;
+
 import com.crossoverjie.cim.common.pojo.RouteInfo;
 import com.crossoverjie.cim.common.route.algorithm.RouteHandle;
-import com.crossoverjie.cim.common.route.algorithm.loop.LoopHandle;
 import com.crossoverjie.cim.common.util.RouteInfoParseUtil;
 import java.util.ArrayList;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 
 class RandomHandleTest {
+
     @Test
     void removeExpireServer() {
         RouteHandle routeHandle = new RandomHandle();

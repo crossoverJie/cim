@@ -41,7 +41,7 @@ public class ShutDownCommand implements InnerCommand {
     private ShutDownSign shutDownSign;
 
     @Resource
-    private RingBufferWheel ringBufferWheel ;
+    private RingBufferWheel ringBufferWheel;
 
     @Override
     public void process(String msg) throws Exception {

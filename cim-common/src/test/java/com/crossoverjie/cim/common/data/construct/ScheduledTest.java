@@ -1,11 +1,10 @@
 package com.crossoverjie.cim.common.data.construct;
 
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
-import lombok.extern.slf4j.Slf4j;
-
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * Function:
@@ -22,7 +21,8 @@ public class ScheduledTest {
         ThreadFactory scheduled = new ThreadFactoryBuilder()
                 .setNameFormat("scheduled-%d")
                 .build();
-        ScheduledThreadPoolExecutor scheduledExecutorService = new ScheduledThreadPoolExecutor(2,scheduled) ;
-        scheduledExecutorService.schedule(() -> log.info("scheduled........."),3, TimeUnit.SECONDS) ;
+        ScheduledThreadPoolExecutor scheduledExecutorService = new ScheduledThreadPoolExecutor(2, scheduled);
+        scheduledExecutorService.schedule(() -> log.info("scheduled........."), 3, TimeUnit.SECONDS);
     }
 }
+

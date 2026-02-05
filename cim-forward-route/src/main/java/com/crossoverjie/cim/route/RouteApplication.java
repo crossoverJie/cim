@@ -16,7 +16,7 @@ import org.springframework.context.annotation.ComponentScan;
 		"com.crossoverjie.cim.route",
 		"com.crossoverjie.cim.persistence"
 })
-public class RouteApplication implements CommandLineRunner{
+public class RouteApplication implements CommandLineRunner {
 
 	public static void main(String[] args) {
         SpringApplication.run(RouteApplication.class, args);

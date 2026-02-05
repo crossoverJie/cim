@@ -1,8 +1,5 @@
 package com.crossoverjie.cim.client.service;
 
-import com.crossoverjie.cim.route.api.vo.req.ChatReqVO;
-import com.crossoverjie.cim.route.api.vo.req.P2PReqVO;
-
 /**
  * Function:消息处理器
  *

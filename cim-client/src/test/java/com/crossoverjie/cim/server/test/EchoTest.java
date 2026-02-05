@@ -75,7 +75,7 @@ public class EchoTest {
         for (int i = 0; i < place.length; i++) {
             int index = msg.indexOf("{}", k);
 
-            if (index == -1){
+            if (index == -1) {
                 return msg;
             }
 

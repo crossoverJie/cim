@@ -13,10 +13,11 @@ import org.springframework.util.CollectionUtils;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
-import java.util.*;
+import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.crossoverjie.cim.persistence.redis.constant.Constant.*;
+import static com.crossoverjie.cim.persistence.redis.constant.Constant.FETCH_OFFLINE_MSG_SIZE;
+import static com.crossoverjie.cim.persistence.redis.constant.Constant.OFFLINE_MSG_TTL_DAYS;
 
 
 /**

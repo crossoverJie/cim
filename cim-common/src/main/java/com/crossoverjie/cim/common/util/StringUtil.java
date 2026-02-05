@@ -24,6 +24,6 @@ public class StringUtil {
     }
 
     public static String formatLike(String str) {
-        return isNotEmpty(str)?"%" + str + "%":null;
+        return isNotEmpty(str) ? "%" + str + "%" : null;
     }
 }

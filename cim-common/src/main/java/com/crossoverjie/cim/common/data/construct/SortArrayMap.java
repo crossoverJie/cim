@@ -3,8 +3,6 @@ package com.crossoverjie.cim.common.data.construct;
 import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Comparator;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import org.apache.curator.shaded.com.google.common.collect.Sets;
@@ -45,7 +43,7 @@ public class SortArrayMap extends AbstractMap<String, String> {
         buckets[size++] = node;
     }
 
-    public SortArrayMap remove(String value){
+    public SortArrayMap remove(String value) {
         List<Node> list = new ArrayList<>(Arrays.asList(buckets));
         list.removeIf(next -> next != null && next.value.equals(value));
         buckets = list.toArray(new Node[0]);
@@ -71,11 +69,11 @@ public class SortArrayMap extends AbstractMap<String, String> {
      * @return
      */
     public String firstNodeValue(long key) {
-        if (size == 0){
-            return null ;
+        if (size == 0) {
+            return null;
         }
         for (Node bucket : buckets) {
-            if (bucket == null){
+            if (bucket == null) {
                 break;
             }
             if (bucket.key >= key) {
@@ -109,13 +107,15 @@ public class SortArrayMap extends AbstractMap<String, String> {
         }
     }
 
+    @Override
     public int size() {
         return size;
     }
 
-    public void clear(){
+    @Override
+    public void clear() {
         buckets = new Node[DEFAULT_SIZE];
-        size = 0 ;
+        size = 0;
     }
 
     @Override
@@ -131,7 +131,7 @@ public class SortArrayMap extends AbstractMap<String, String> {
     public Set<String> keySet() {
         Set<String> set = Sets.newHashSet();
         for (Node bucket : buckets) {
-            if (bucket == null){
+            if (bucket == null) {
                 continue;
             }
             set.add(bucket.value);

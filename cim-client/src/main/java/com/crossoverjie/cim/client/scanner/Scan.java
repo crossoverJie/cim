@@ -17,15 +17,15 @@ import lombok.SneakyThrows;
 public class Scan implements Runnable {
 
 
-    private final MsgHandle msgHandle ;
+    private final MsgHandle msgHandle;
 
-    private final MsgLogger msgLogger ;
-    private final Event event ;
+    private final MsgLogger msgLogger;
+    private final Event event;
 
     public Scan() {
-        this.msgHandle = SpringBeanFactory.getBean(MsgHandle.class) ;
-        this.msgLogger = SpringBeanFactory.getBean(MsgLogger.class) ;
-        this.event = SpringBeanFactory.getBean(Event.class) ;
+        this.msgHandle = SpringBeanFactory.getBean(MsgHandle.class);
+        this.msgLogger = SpringBeanFactory.getBean(MsgLogger.class);
+        this.event = SpringBeanFactory.getBean(Event.class);
     }
 
     @SneakyThrows
@@ -40,14 +40,14 @@ public class Scan implements Runnable {
             }
 
             // internal cmd
-            if (msgHandle.innerCommand(msg)){
+            if (msgHandle.innerCommand(msg)) {
                 continue;
             }
 
-            msgHandle.sendMsg(msg) ;
+            msgHandle.sendMsg(msg);
 
             // write to log
-            msgLogger.log(msg) ;
+            msgLogger.log(msg);
 
             event.info(msg);
         }

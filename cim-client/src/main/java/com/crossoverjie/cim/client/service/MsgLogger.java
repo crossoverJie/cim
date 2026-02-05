@@ -13,18 +13,18 @@ public interface MsgLogger {
      * write log
      * @param msg
      */
-    void log(String msg) ;
+    void log(String msg);
 
 
     /**
      * 停止写入
      */
-    void stop() ;
+    void stop();
 
     /**
      * 查询聊天记录
      * @param key 关键字
      * @return
      */
-    String query(String key) ;
+    String query(String key);
 }

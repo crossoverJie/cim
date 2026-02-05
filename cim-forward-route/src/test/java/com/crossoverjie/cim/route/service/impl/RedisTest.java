@@ -12,11 +12,11 @@ import org.springframework.data.redis.core.RedisTemplate;
 public class RedisTest extends AbstractBaseTest {
 
     @Autowired
-    private RedisTemplate<String,String> redisTemplate ;
+    private RedisTemplate<String,String> redisTemplate;
 
     @Test
-    public void test(){
-        redisTemplate.opsForValue().set("test","test") ;
+    public void test() {
+        redisTemplate.opsForValue().set("test","test");
         String test = redisTemplate.opsForValue().get("test");
         Assertions.assertEquals("test",test);
     }

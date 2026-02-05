@@ -1,6 +1,7 @@
 package com.crossoverjie.cim.common.route.algorithm.loop;
 
 import static org.junit.jupiter.api.Assertions.*;
+
 import com.crossoverjie.cim.common.pojo.RouteInfo;
 import com.crossoverjie.cim.common.route.algorithm.RouteHandle;
 import com.crossoverjie.cim.common.util.RouteInfoParseUtil;

@@ -10,12 +10,12 @@ public final class Constant {
     /**
      * The number of messages captured from redis each time
      */
-    public final static Integer FETCH_OFFLINE_MSG_SIZE = 100;
+    public static final Integer FETCH_OFFLINE_MSG_SIZE = 100;
 
     /**
      * Default expire time for offline message
      */
-    public final static Integer OFFLINE_MSG_TTL_DAYS = 7;
+    public static final Integer OFFLINE_MSG_TTL_DAYS = 7;
 
     /**
      * Redis key prefix for offline message

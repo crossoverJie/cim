@@ -1,127 +1,130 @@
 package com.crossoverjie.cim.common.route.algorithm.consistenthash;
 
 import com.crossoverjie.cim.common.data.construct.SortArrayMap;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import org.junit.Assert;
 import org.junit.Test;
-
-import java.lang.reflect.Field;
-import java.util.*;
 
 public class SortArrayMapConsistentHashTest {
 
     @Test
     public void getFirstNodeValue() {
-        AbstractConsistentHash map = new SortArrayMapConsistentHash() ;
+        AbstractConsistentHash map = new SortArrayMapConsistentHash();
 
         List<String> strings = new ArrayList<>();
         for (int i = 0; i < 10; i++) {
-            strings.add("127.0.0." + i) ;
+            strings.add("127.0.0." + i);
         }
-        String PROCESS = map.process(strings, "zhangsan");
+        String process1 = map.process(strings, "zhangsan");
         for (int i = 0; i < 100; i++) {
             String process = map.process(strings, "zhangsan");
-            Assert.assertEquals(PROCESS, process);
+            Assert.assertEquals(process1, process);
         }
     }
 
     @Test
     public void getFirstNodeValue2() {
-        AbstractConsistentHash map = new SortArrayMapConsistentHash() ;
+        AbstractConsistentHash map = new SortArrayMapConsistentHash();
 
         List<String> strings = new ArrayList<>();
         for (int i = 0; i < 10; i++) {
-            strings.add("127.0.0." + i) ;
+            strings.add("127.0.0." + i);
         }
 
-        String PROCESS = map.process(strings,"zhangsan2");
+        String process1 = map.process(strings, "zhangsan2");
         for (int i = 0; i < 100; i++) {
             String process = map.process(strings, "zhangsan2");
-            Assert.assertEquals(PROCESS, process);
+            Assert.assertEquals(process1, process);
         }
     }
 
     @Test
     public void getFirstNodeValue3() {
-        AbstractConsistentHash map = new SortArrayMapConsistentHash() ;
+        AbstractConsistentHash map = new SortArrayMapConsistentHash();
 
         List<String> strings = new ArrayList<>();
         for (int i = 0; i < 10; i++) {
-            strings.add("127.0.0." + i) ;
+            strings.add("127.0.0." + i);
         }
-        String PROCESS = map.process(strings,"1551253899106");
+        String process1 = map.process(strings, "1551253899106");
         for (int i = 0; i < 100; i++) {
             String process = map.process(strings, "1551253899106");
-            Assert.assertEquals(PROCESS, process);
+            Assert.assertEquals(process1, process);
         }
     }
 
 
     @Test
     public void getFirstNodeValue4() {
-        AbstractConsistentHash map = new SortArrayMapConsistentHash() ;
+        AbstractConsistentHash map = new SortArrayMapConsistentHash();
 
         List<String> strings = new ArrayList<>();
-        strings.add("45.78.28.220:9000:8081") ;
-        strings.add("45.78.28.220:9100:9081") ;
+        strings.add("45.78.28.220:9000:8081");
+        strings.add("45.78.28.220:9100:9081");
 
 
-        String PROCESS = map.process(strings,"1551253899106");
+        String process1 = map.process(strings, "1551253899106");
         for (int i = 0; i < 100; i++) {
             String process = map.process(strings, "1551253899106");
-            Assert.assertEquals(PROCESS, process);
+            Assert.assertEquals(process1, process);
         }
     }
+
     @Test
     public void getFirstNodeValue5() {
-        AbstractConsistentHash map = new SortArrayMapConsistentHash() ;
+        AbstractConsistentHash map = new SortArrayMapConsistentHash();
 
         List<String> strings = new ArrayList<>();
-        strings.add("45.78.28.220:9000:8081") ;
-        strings.add("45.78.28.220:9100:9081") ;
-        strings.add("45.78.28.220:9100:10081") ;
+        strings.add("45.78.28.220:9000:8081");
+        strings.add("45.78.28.220:9100:9081");
+        strings.add("45.78.28.220:9100:10081");
 
-        String PROCESS = map.process(strings,"1551253899106");
+        String process1 = map.process(strings, "1551253899106");
         for (int i = 0; i < 100; i++) {
             String process = map.process(strings, "1551253899106");
-            Assert.assertEquals(PROCESS, process);
+            Assert.assertEquals(process1, process);
         }
     }
 
     @Test
     public void getFirstNodeValue6() {
-        AbstractConsistentHash map = new SortArrayMapConsistentHash() ;
+        AbstractConsistentHash map = new SortArrayMapConsistentHash();
 
         List<String> strings = new ArrayList<>();
-        strings.add("45.78.28.220:9000:8081") ;
-        strings.add("45.78.28.220:9100:9081") ;
-        strings.add("45.78.28.220:9100:10081") ;
+        strings.add("45.78.28.220:9000:8081");
+        strings.add("45.78.28.220:9100:9081");
+        strings.add("45.78.28.220:9100:10081");
 
-        String PROCESS = map.process(strings,"1551253899106");
+        String process1 = map.process(strings, "1551253899106");
         for (int i = 0; i < 100; i++) {
             String process = map.process(strings, "1551253899106");
-            Assert.assertEquals(PROCESS, process);
+            Assert.assertEquals(process1, process);
         }
     }
+
     @Test
     public void getFirstNodeValue7() {
-        AbstractConsistentHash map = new SortArrayMapConsistentHash() ;
+        AbstractConsistentHash map = new SortArrayMapConsistentHash();
 
         List<String> strings = new ArrayList<>();
-        strings.add("45.78.28.220:9000:8081") ;
-        strings.add("45.78.28.220:9100:9081") ;
-        strings.add("45.78.28.220:9100:10081") ;
-        strings.add("45.78.28.220:9100:00081") ;
+        strings.add("45.78.28.220:9000:8081");
+        strings.add("45.78.28.220:9100:9081");
+        strings.add("45.78.28.220:9100:10081");
+        strings.add("45.78.28.220:9100:00081");
 
-        String PROCESS = map.process(strings,"1551253899106");
+        String process1 = map.process(strings, "1551253899106");
         for (int i = 0; i < 100; i++) {
             String process = map.process(strings, "1551253899106");
-            Assert.assertEquals(PROCESS, process);
+            Assert.assertEquals(process1, process);
         }
     }
 
     @Test
     public void getFirstNodeValue8() {
-        AbstractConsistentHash map = new SortArrayMapConsistentHash() ;
+        AbstractConsistentHash map = new SortArrayMapConsistentHash();
 
         List<String> strings = new ArrayList<>();
         for (int i = 0; i < 10; i++) {
@@ -129,7 +132,7 @@ public class SortArrayMapConsistentHashTest {
         }
         Set<String> processes = new HashSet<>();
         for (int i = 0; i < 10; i++) {
-            String process = map.process(strings,"zhangsan" + i);
+            String process = map.process(strings, "zhangsan" + i);
             processes.add(process);
         }
         RangeCheckTestUtil.assertInRange(processes.size(), 2, 10);
@@ -144,7 +147,7 @@ public class SortArrayMapConsistentHashTest {
             strings.add("127.0.0." + i);
         }
 
-        String process = map.process(strings,"zhangsan");
+        String process = map.process(strings, "zhangsan");
 
         SortArrayMap sortArrayMap = map.getSortArrayMap();
         int virtualNodeSize = 2;

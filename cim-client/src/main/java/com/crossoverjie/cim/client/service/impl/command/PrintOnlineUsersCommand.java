@@ -21,10 +21,10 @@ import org.springframework.stereotype.Service;
 public class PrintOnlineUsersCommand implements InnerCommand {
 
     @Resource
-    private Client client ;
+    private Client client;
 
     @Resource
-    private Event event ;
+    private Event event;
 
     @Override
     public void process(String msg) {
@@ -33,7 +33,7 @@ public class PrintOnlineUsersCommand implements InnerCommand {
 
             event.info("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
             for (CIMUserInfo onlineUser : onlineUsers) {
-                event.info("userId={}=====userName={}",onlineUser.getUserId(),onlineUser.getUserName());
+                event.info("userId={}=====userName={}", onlineUser.getUserId(), onlineUser.getUserName());
             }
             event.info("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
 
