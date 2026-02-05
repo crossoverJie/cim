@@ -58,7 +58,7 @@ public class UserInfoCacheServiceImpl implements UserInfoCacheService {
                 Optional<CIMUserInfo> cimUserInfo = loadUserInfoByUserId(Long.valueOf(member));
                 cimUserInfo.ifPresent(set::add);
             } catch (NumberFormatException e) {
-                log.warn("Invalid user ID format in Redis set: {}", member, e);
+                log.warn("Skipping invalid user ID format in Redis set: {}", member);
             }
         }
 
