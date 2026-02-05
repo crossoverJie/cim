@@ -39,6 +39,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import java.util.function.Consumer;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
@@ -243,6 +244,29 @@ public class ClientImpl extends ClientState implements Client {
         this.routeManager.offLine(this.getAuth().getUserId());
         this.clientMap.remove(this.getAuth().getUserId());
         ringBufferWheel.stop(true);
+    }
+
+    @Override
+    public void sendP2P(P2PReqVO p2PReqVO) throws Exception {
+        recordSendLog(sendP2PAsync(p2PReqVO), "P2P");
+    }
+
+    @Override
+    public void sendGroup(String msg) throws Exception {
+        recordSendLog(sendGroupAsync(msg), "GROUP");
+    }
+
+    private void recordSendLog(CompletableFuture<Void> future, String msgWay) {
+        future.orTimeout(10, TimeUnit.SECONDS)
+                .whenComplete((result, throwable) -> {
+                    if (throwable == null) {
+                        log.info("{} message task completed successfully", msgWay);
+                    } else if (throwable instanceof TimeoutException) {
+                        log.error("{} message processing timeout", msgWay, throwable);
+                    } else {
+                        log.warn("{} message task completed with exception", msgWay, throwable);
+                    }
+                });
     }
 
     @Override

@@ -9,9 +9,9 @@ import com.crossoverjie.cim.common.route.algorithm.RouteHandle;
 import com.crossoverjie.cim.common.route.algorithm.consistenthash.AbstractConsistentHash;
 import com.crossoverjie.cim.common.util.SnowflakeIdWorker;
 import com.crossoverjie.cim.server.api.ServerApi;
-import com.google.common.cache.CacheBuilder;
-import com.google.common.cache.CacheLoader;
-import com.google.common.cache.LoadingCache;
+import com.github.benmanes.caffeine.cache.CacheLoader;
+import com.github.benmanes.caffeine.cache.Caffeine;
+import com.github.benmanes.caffeine.cache.LoadingCache;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.OkHttpClient;
@@ -113,10 +113,9 @@ public class BeanConfig {
 
     @Bean("userInfoCache")
     public LoadingCache<Long, Optional<CIMUserInfo>> userInfoCache(RedisTemplate<String, String> redisTemplate) {
-        return CacheBuilder.newBuilder()
+        return Caffeine.newBuilder()
                 .initialCapacity(64)
                 .maximumSize(1024)
-                .concurrencyLevel(Runtime.getRuntime().availableProcessors())
                 .expireAfterWrite(10, TimeUnit.MINUTES)
                 .build(new CacheLoader<>() {
                     @Override
