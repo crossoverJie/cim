@@ -105,15 +105,40 @@ IM client terminal, a command can be started and initiated to communicate with o
 
 ## Quick start
 
-Use allin1 docker to start the server:
+### Docker
+
+`allin1` 镜像内置了 Zookeeper、Redis、cim-server、cim-forward-route 四个服务，使用 [Supervisor](http://supervisord.org/) 统一管理，开箱即用。
+
+**支持平台：** linux/amd64, linux/arm64, linux/arm/v7
+
+**端口说明：**
+
+| Port | Service | Description |
+|------|---------|-------------|
+| 2181 | Zookeeper | 服务注册与发现 |
+| 6379 | Redis | 数据缓存 |
+| 8083 | Route Server | HTTP API 路由服务 |
+
+拉取镜像并启动：
 
 ```shell
-docker pull docker pull ghcr.io/crossoverjie/allin1-ubuntu:latest
-docker run -p 2181:2181 -p 6379:6379 -p 8083:8083 --rm --name cim-allin1  ghcr.io/crossoverjie/allin1-ubuntu:latest
+docker pull ghcr.io/crossoverjie/allin1-ubuntu:latest
+docker run -p 2181:2181 -p 6379:6379 -p 8083:8083 --rm --name cim-allin1 ghcr.io/crossoverjie/allin1-ubuntu:latest
+```
+
+容器启动后，可参考下方 [注册账号](#注册账号) 和 [启动客户端](#启动客户端) 章节快速体验完整的 IM 流程。
+
+### Build Docker image locally
+
+如果需要从源码构建镜像：
+
+```shell
+# 在项目根目录执行
+docker build -t cim-allin1:latest -f docker/allin1-ubuntu.Dockerfile .
+docker run -p 2181:2181 -p 6379:6379 -p 8083:8083 --rm --name cim-allin1 cim-allin1:latest
 ```
 
 ### Build in local
-```shell
 
 首先需要安装 `Zookeeper、Redis` 并保证网络通畅。
 
