@@ -1,23 +1,25 @@
 
 
-<div align="center">  
 
-<img src="https://i.loli.net/2020/02/21/rfOGvKlTcHCmM92.png"  /> 
+<div align="center">
+
+<img src="https://i.loli.net/2020/02/21/rfOGvKlTcHCmM92.png"  />
 <br/>
 
 [![codecov](https://codecov.io/gh/crossoverJie/cim/graph/badge.svg?token=oW5Gd1oKmf)](https://codecov.io/gh/crossoverJie/cim)
 [![Build Status](https://img.shields.io/badge/cim-cross--im-brightgreen.svg)](https://github.com/crossoverJie/cim)
 [![](https://badge.juejin.im/entry/5c2c000e6fb9a049f5713e26/likes.svg?style=flat-square)](https://juejin.im/post/5c2bffdc51882509181395d7)
 
-📘[介绍](#介绍) |📽[视频演示](#视频演示) | 🏖[TODO LIST](#todo-list) | 🌈[系统架构](#系统架构) |💡[流程图](#流程图)|🌁[快速启动](#快速启动)|👨🏻‍✈️[内置命令](#客户端内置命令)|🎤[通信](#群聊私聊)|❓[QA](https://github.com/crossoverJie/cim/blob/master/doc/QA.md)|💌[联系作者](#联系作者)
+📘[Introduction](#introduction) |📽[Video Demo](#video-demo) | 🏖[TODO LIST](#todo-list) | 🌈[Architecture](#architecture) |💡[Flow Chart](#flow-chart)|🌁[Quick Start](#quick-start)|👨🏻‍✈️[Built-in Commands](#built-in-commands)|🎤[Chat](#group-chatprivate-chat)|❓[QA](https://github.com/crossoverJie/cim/blob/master/doc/QA.md)|💌[Contact](#contact)
 
+[中文文档](README-zh.md)
 
 </div>
 <br/>
 
 # V2.0
-- [x] Upgrade to JDK17 & springboot3.0 
-- [x] Client SDK 
+- [x] Upgrade to JDK17 & springboot3.0
+- [x] Client SDK
 - [ ] Client use [picocli](https://picocli.info/) instead of springboot.
 - [x] Support integration testing.
 - [ ] Integrate OpenTelemetry .
@@ -36,35 +38,35 @@ Using `CIM`, you can achieve the following requirements:
 - Message push middleware for `APP`.
 - Message middleware for `IOT` massive connection scenarios.
 
-> If you have any questions during use or development, you can [contact me](#联系作者).
+> If you have any questions during use or development, you can [contact the author](#contact).
 
-## 视频演示
+## Video Demo
 
-> 点击下方链接可以查看视频版 Demo。
+> Click the links below to watch the video demo.
 
 | YouTube | Bilibili|
-| :------:| :------: | 
-| [群聊](https://youtu.be/_9a4lIkQ5_o) [私聊](https://youtu.be/kfEfQFPLBTQ) | [群聊](https://www.bilibili.com/video/av39405501) [私聊](https://www.bilibili.com/video/av39405821) | 
+| :------:| :------: |
+| [Group Chat](https://youtu.be/_9a4lIkQ5_o) [Private Chat](https://youtu.be/kfEfQFPLBTQ) | [Group Chat](https://www.bilibili.com/video/av39405501) [Private Chat](https://www.bilibili.com/video/av39405821) |
 | <img src="https://i.loli.net//2019//05//08//5cd1d9e788004.jpg"  height="295px" />  | <img src="https://i.loli.net//2019//05//08//5cd1da2f943c5.jpg" height="295px" />
 
 ![demo.gif](pic/demo.gif)
 
 ## TODO LIST
 
-* [x] [群聊](#群聊)
-* [x] [私聊](#私聊)
-* [x] [内置命令](#客户端内置命令)
-* [x] [聊天记录查询](#聊天记录查询)。
-* [x] [一键开启价值 2 亿的 `AI` 模式](#ai-模式)
-* [x] 使用 `Google Protocol Buffer` 高效编解码
-* [x] 根据实际情况灵活的水平扩容、缩容
-* [x] 服务端自动剔除离线客户端
-* [x] 客户端自动重连
-* [x] [延时消息](#延时消息)
-* [x] SDK 开发包
-* [ ] 分组群聊
-* [ ] 离线消息
-* [ ] 消息加密
+* [x] [Group Chat](#group-chat)
+* [x] [Private Chat](#private-chat)
+* [x] [Built-in Commands](#built-in-commands)
+* [x] [Chat History Query](#chat-history-query)
+* [x] [AI Mode](#ai-mode)
+* [x] Efficient encoding/decoding with `Google Protocol Buffer`
+* [x] Flexible horizontal scaling based on actual needs
+* [x] Server-side automatic removal of offline clients
+* [x] Client automatic reconnection
+* [x] [Delayed Messages](#delayed-messages)
+* [x] SDK development package
+* [ ] Group categorization
+* [ ] Offline messages
+* [ ] Message encryption
 
 
 
@@ -103,44 +105,44 @@ IM client terminal, a command can be started and initiated to communicate with o
 - Server push message to Client2
 
 
-## Quick start
+## Quick Start
 
 ### Docker
 
-`allin1` 镜像内置了 Zookeeper、Redis、cim-server、cim-forward-route 四个服务，使用 [Supervisor](http://supervisord.org/) 统一管理，开箱即用。
+The `allin1` image comes with Zookeeper, Redis, cim-server, and cim-forward-route pre-installed, all managed by [Supervisor](http://supervisord.org/) for an out-of-the-box experience.
 
-**支持平台：** linux/amd64, linux/arm64, linux/arm/v7
+**Supported platforms:** linux/amd64, linux/arm64, linux/arm/v7
 
-**端口说明：**
+**Port mapping:**
 
 | Port | Service | Description |
 |------|---------|-------------|
-| 2181 | Zookeeper | 服务注册与发现 |
-| 6379 | Redis | 数据缓存 |
-| 8083 | Route Server | HTTP API 路由服务 |
+| 2181 | Zookeeper | Service registration & discovery |
+| 6379 | Redis | Data caching |
+| 8083 | Route Server | HTTP API routing service |
 
-拉取镜像并启动：
+Pull the image and start the container:
 
 ```shell
 docker pull ghcr.io/crossoverjie/allin1-ubuntu:latest
 docker run -p 2181:2181 -p 6379:6379 -p 8083:8083 --rm --name cim-allin1 ghcr.io/crossoverjie/allin1-ubuntu:latest
 ```
 
-容器启动后，可参考下方 [注册账号](#注册账号) 和 [启动客户端](#启动客户端) 章节快速体验完整的 IM 流程。
+After the container starts, refer to the [Register Account](#register-account) and [Start Client](#start-client) sections below to experience the full IM workflow.
 
-### Build Docker image locally
+### Build Docker Image Locally
 
-如果需要从源码构建镜像：
+To build the Docker image from source:
 
 ```shell
-# 在项目根目录执行
+# Run from the project root directory
 docker build -t cim-allin1:latest -f docker/allin1-ubuntu.Dockerfile .
 docker run -p 2181:2181 -p 6379:6379 -p 8083:8083 --rm --name cim-allin1 cim-allin1:latest
 ```
 
-### Build in local
+### Build from Source
 
-首先需要安装 `Zookeeper、Redis` 并保证网络通畅。
+First, install `Zookeeper` and `Redis` and ensure the network is accessible.
 
 ```shell
 docker run --rm --name zookeeper -d -p 2181:2181 zookeeper:3.9.2
@@ -155,57 +157,57 @@ cd cim-server && cim-client && cim-forward-route
 mvn clean package spring-boot:repackage -DskipTests=true
 ```
 
-### 部署 IM-server(cim-server)
+### Deploy IM-server (cim-server)
 
 ```shell
 cp /cim/cim-server/target/cim-server-1.0.0-SNAPSHOT.jar /xx/work/server0/
 cd /xx/work/server0/
-nohup java -jar  /root/work/server0/cim-server-1.0.0-SNAPSHOT.jar --cim.server.port=9000 --app.zk.addr=zk地址  > /root/work/server0/log.file 2>&1 &
+nohup java -jar  /root/work/server0/cim-server-1.0.0-SNAPSHOT.jar --cim.server.port=9000 --app.zk.addr=<zk-address>  > /root/work/server0/log.file 2>&1 &
 ```
 
-> cim-server 集群部署同理，只要保证 Zookeeper 地址相同即可。
+> For cim-server cluster deployment, just ensure all instances point to the same Zookeeper address.
 
-### 部署路由服务器(cim-forward-route)
+### Deploy Route Server (cim-forward-route)
 
 ```shell
 cp /cim/cim-server/cim-forward-route/target/cim-forward-route-1.0.0-SNAPSHOT.jar /xx/work/route0/
 cd /xx/work/route0/
-nohup java -jar  /root/work/route0/cim-forward-route-1.0.0-SNAPSHOT.jar --app.zk.addr=zk地址 --spring.redis.host=redis地址 --spring.redis.port=6379  > /root/work/route/log.file 2>&1 &
+nohup java -jar  /root/work/route0/cim-forward-route-1.0.0-SNAPSHOT.jar --app.zk.addr=<zk-address> --spring.redis.host=<redis-address> --spring.redis.port=6379  > /root/work/route/log.file 2>&1 &
 ```
 
-> cim-forward-route 本身就是无状态，可以部署多台；使用 Nginx 代理即可。
+> cim-forward-route is stateless and can be deployed on multiple nodes; use Nginx as a reverse proxy.
 
 
-### 启动客户端
+### Start Client
 
 ```shell
 cp /cim/cim-client/target/cim-client-1.0.0-SNAPSHOT.jar /xx/work/route0/
 cd /xx/work/route0/
-java -jar cim-client-1.0.0-SNAPSHOT.jar --server.port=8084 --cim.user.id=唯一客户端ID --cim.user.userName=用户名 --cim.route.url=http://路由服务器:8083/
+java -jar cim-client-1.0.0-SNAPSHOT.jar --server.port=8084 --cim.user.id=<unique-client-id> --cim.user.userName=<username> --cim.route.url=http://<route-server>:8083/
 ```
 
 ![](https://ws2.sinaimg.cn/large/006tNbRwly1fylgxjgshfj31vo04m7p9.jpg)
 ![](https://ws1.sinaimg.cn/large/006tNbRwly1fylgxu0x4uj31hy04q75z.jpg)
 
-如上图，启动两个客户端可以互相通信即可。
+As shown above, two clients can communicate with each other.
 
-### 本地启动客户端
+### Local Client Startup
 
-#### 注册账号
+#### Register Account
 ```shell
 curl -X POST --header 'Content-Type: application/json' --header 'Accept: application/json' -d '{
   "reqNo": "1234567890",
   "timeStamp": 0,
   "userName": "zhangsan"
-}' 'http://路由服务器:8083/registerAccount'
+}' 'http://<route-server>:8083/registerAccount'
 ```
 
-从返回结果中获取 `userId`
+Get the `userId` from the response:
 
 ```json
 {
     "code":"9000",
-    "message":"成功",
+    "message":"success",
     "reqNo":null,
     "dataBody":{
         "userId":1547028929407,
@@ -214,98 +216,98 @@ curl -X POST --header 'Content-Type: application/json' --header 'Accept: applica
 }
 ```
 
-#### 启动本地客户端
+#### Start Local Client
 ```shell
-# 启动本地客户端
+# Start local client
 cp /cim/cim-client/target/cim-client-1.0.0-SNAPSHOT.jar /xx/work/route0/
 cd /xx/work/route0/
-java -jar cim-client-1.0.0-SNAPSHOT.jar --server.port=8084 --cim.user.id=上方返回的userId --cim.user.userName=用户名 --cim.route.url=http://路由服务器:8083/
+java -jar cim-client-1.0.0-SNAPSHOT.jar --server.port=8084 --cim.user.id=<userId-from-above> --cim.user.userName=<username> --cim.route.url=http://<route-server>:8083/
 ```
 
-## 客户端内置命令
+## Built-in Commands
 
-| 命令 | 描述|
-| ------ | ------ | 
-| `:q!` | 退出客户端| 
-| `:olu` | 获取所有在线用户信息 | 
-| `:all` | 获取所有命令 | 
-| `:q [option]` | 【:q 关键字】查询聊天记录 | 
-| `:ai` | 开启 AI 模式 | 
-| `:qai` | 关闭 AI 模式 | 
-| `:pu` | 模糊匹配用户 | 
-| `:info` | 获取客户端信息 | 
-| `:emoji [option]` | 查询表情包 [option:页码] | 
-| `:delay [msg] [delayTime]` | 发送延时消息 | 
-| `:` | 更多命令正在开发中。。 | 
+| Command | Description |
+| ------ | ------ |
+| `:q!` | Quit the client |
+| `:olu` | List all online users |
+| `:all` | Show all available commands |
+| `:q [keyword]` | Search chat history by keyword |
+| `:ai` | Enable AI mode |
+| `:qai` | Disable AI mode |
+| `:pu` | Fuzzy search users |
+| `:info` | Show client information |
+| `:emoji [option]` | Browse emoji list [option: page number] |
+| `:delay [msg] [delayTime]` | Send a delayed message |
+| `:` | More commands are under development... |
 
 ![](https://ws3.sinaimg.cn/large/006tNbRwly1fylh7bdlo6g30go01shdt.gif)
 
-### 聊天记录查询
+### Chat History Query
 
 ![](https://i.loli.net/2019/05/08/5cd1c310cb796.jpg)
 
-使用命令 `:q 关键字` 即可查询与个人相关的聊天记录。
+Use the command `:q keyword` to search chat history related to you.
 
-> 客户端聊天记录默认存放在 `/opt/logs/cim/`，所以需要这个目录的写入权限。也可在启动命令中加入 `--cim.msg.logger.path = /自定义` 参数自定义目录。
+> Client chat history is stored in `/opt/logs/cim/` by default, so write permission is required for this directory. You can also customize the directory by adding `--cim.msg.logger.path=/custom/path` to the startup command.
 
 
 
-### AI 模式
+### AI Mode
 
 ![](https://i.loli.net/2019/05/08/5cd1c30e47d95.jpg)
 
-使用命令 `:ai` 开启 AI 模式，之后所有的消息都会由 `AI` 响应。
+Use the command `:ai` to enable AI mode. After that, all messages will be responded to by `AI`.
 
-`:qai` 退出 AI 模式。
+Use `:qai` to exit AI mode.
 
-### 前缀匹配用户名
+### Prefix Match Username
 
 ![](https://i.loli.net/2019/05/08/5cd1c32ac3397.jpg)
 
-使用命令 `:qu prefix` 可以按照前缀的方式搜索用户信息。
+Use the command `:qu prefix` to search user information by prefix.
 
-> 该功能主要用于在移动端中的输入框中搜索用户。 
+> This feature is primarily designed for searching users in input fields on mobile clients.
 
-### 群聊/私聊
+### Group Chat/Private Chat
 
-#### 群聊
+#### Group Chat
 
 ![](https://ws1.sinaimg.cn/large/006tNbRwly1fyli54e8e1j31t0056x11.jpg)
 ![](https://ws3.sinaimg.cn/large/006tNbRwly1fyli5yyspmj31im06atb8.jpg)
 ![](https://ws3.sinaimg.cn/large/006tNbRwly1fyli6sn3c8j31ss06qmzq.jpg)
 
-群聊只需要在控制台里输入消息回车后即可发送，同时所有在线客户端都可收到消息。
+For group chat, simply type a message in the console and press Enter to send. All online clients will receive the message.
 
-#### 私聊
+#### Private Chat
 
-私聊首先需要知道对方的 `userID` 才能进行。
+To send a private message, you need to know the recipient's `userID`.
 
-输入命令 `:olu` 可列出所有在线用户。
+Use the command `:olu` to list all online users.
 
 ![](https://ws4.sinaimg.cn/large/006tNbRwly1fyli98mlf3j31ta06mwhv.jpg)
 
-接着使用 `userId;;消息内容` 的格式即可发送私聊消息。
+Then use the format `userId;;message content` to send a private message.
 
 ![](https://ws4.sinaimg.cn/large/006tNbRwly1fylib08qlnj31sk082zo6.jpg)
 ![](https://ws1.sinaimg.cn/large/006tNbRwly1fylibc13etj31wa0564lp.jpg)
 ![](https://ws3.sinaimg.cn/large/006tNbRwly1fylicmjj6cj31wg07c4qp.jpg)
 ![](https://ws1.sinaimg.cn/large/006tNbRwly1fylicwhe04j31ua03ejsv.jpg)
 
-同时另一个账号收不到消息。
+Meanwhile, the other account will not receive the message.
 ![](https://ws3.sinaimg.cn/large/006tNbRwly1fylie727jaj31t20dq1ky.jpg)
 
 
 
-### emoji 表情支持
+### Emoji Support
 
-使用命令 `:emoji 1` 查询出所有表情列表，使用表情别名即可发送表情。
+Use the command `:emoji 1` to list all available emojis. Use the emoji alias to send an emoji.
 
 ![](https://tva1.sinaimg.cn/large/006y8mN6ly1g6j910cqrzj30dn05qjw9.jpg)
 ![](https://tva1.sinaimg.cn/large/006y8mN6ly1g6j99hazg6j30ax03hq35.jpg)
- 
-### 延时消息
 
-发送 10s 的延时消息：
+### Delayed Messages
+
+Send a message with a 10-second delay:
 
 ```shell
 :delay delayMsg 10
@@ -313,7 +315,7 @@ java -jar cim-client-1.0.0-SNAPSHOT.jar --server.port=8084 --cim.user.id=上方�
 
 ![](pic/delay.gif)
 
-## 联系作者
+## Contact
 
 ## Contributing
 
@@ -343,19 +345,4 @@ mvn checkstyle:check
 mvn package -Dcheckstyle.skip=true
 ```
 
-<div align="center">  
-
-<a href="https://t.zsxq.com/odQDJ" target="_blank"><img src="https://s2.loli.net/2024/05/17/zRkabDu2SKfChLX.png" alt="202405171520366.png"></a>
-</div>
-
-最近开通了知识星球，感谢大家对 CIM 的支持，为大家提供 100 份 10 元优惠券，也就是 69-10=59 元，具体福利大家可以扫码参考再决定是否加入。
-
-> PS: 后续会在星球开始 V2.0 版本的重构，感兴趣的可以加入星球当面催更（当然代码依然会开源）。
-
 - [crossoverJie@gmail.com](mailto:crossoverJie@gmail.com)
-- 微信公众号
-
-![index.jpg](https://i.loli.net/2021/10/12/ckQW9LYXSxFogJZ.jpg)
-
-
-
