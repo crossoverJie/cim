@@ -76,11 +76,20 @@ management:
     tracing:
       endpoint: http://localhost:4318/v1/traces
     metrics:
-      endpoint: http://localhost:4318/v1/metrics
+      export:
+        url: http://localhost:4318/v1/metrics
   tracing:
     sampling:
-      probability: 1.0
+      probability: ${TRACING_SAMPLING_PROBABILITY:1.0}
   endpoints:
     web:
       exposure:
         include: health,info,metrics
+
+# OpenTelemetry gRPC endpoint for SDK exporter
+otel:
+  exporter:
+    otlp:
+      grpc:
+        endpoint: ${OTEL_EXPORTER_OTLP_GRPC_ENDPOINT:http://localhost:4317}
+

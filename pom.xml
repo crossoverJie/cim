@@ -23,9 +23,7 @@
         <protoc-gen-grpc-java.version>1.19.0</protoc-gen-grpc-java.version>
         <checkstyle.version>10.14.2</checkstyle.version>
         <maven-checkstyle-plugin.version>3.3.1</maven-checkstyle-plugin.version>
-        <micrometer-tracing.version>1.3.0</micrometer-tracing.version>
-        <micrometer.version>1.13.0</micrometer.version>
-        <opentelemetry.version>1.38.0</opentelemetry.version>
+        <opentelemetry.version>1.40.0</opentelemetry.version>
     </properties>
 
     <parent>
@@ -214,7 +212,6 @@
             <dependency>
                 <groupId>io.micrometer</groupId>
                 <artifactId>micrometer-tracing-bridge-otel</artifactId>
-                <version>${micrometer-tracing.version}</version>
             </dependency>
 
             <!-- OpenTelemetry OTLP Exporter -->
@@ -242,7 +239,6 @@
             <dependency>
                 <groupId>io.micrometer</groupId>
                 <artifactId>micrometer-registry-otlp</artifactId>
-                <version>${micrometer.version}</version>
             </dependency>
 
         </dependencies>

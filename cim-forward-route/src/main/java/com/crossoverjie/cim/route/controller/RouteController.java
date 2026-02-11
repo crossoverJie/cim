@@ -26,6 +26,7 @@ import io.micrometer.core.instrument.Counter;
 import io.opentelemetry.api.trace.Span;
 import io.opentelemetry.api.trace.StatusCode;
 import io.opentelemetry.api.trace.Tracer;
+import io.opentelemetry.context.Scope;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.annotation.Resource;
 import java.util.List;
@@ -101,7 +102,7 @@ public class RouteController implements RouteApi {
         // === OpenTelemetry: 创建群聊路由 Span ===
         Span span = tracer.spanBuilder("cim.route.groupMsg").startSpan();
 
-        try {
+        try (Scope scope = span.makeCurrent()) {
             Map<Long, CIMServerResVO> serverResVoMap = accountService.loadRouteRelated();
             int pushCount = 0;
             for (Map.Entry<Long, CIMServerResVO> cimServerResVoEntry : serverResVoMap.entrySet()) {
@@ -157,7 +158,7 @@ public class RouteController implements RouteApi {
         // === OpenTelemetry: 创建私聊路由 Span ===
         Span span = tracer.spanBuilder("cim.route.p2pMsg").startSpan();
 
-        try {
+        try (Scope scope = span.makeCurrent()) {
             // 获取接收消息用户的路由信息
             Optional<CIMServerResVO> cimServerResVO = accountService
                     .loadRouteRelatedByUserId(p2pRequest.getReceiveUserId());
@@ -185,6 +186,7 @@ public class RouteController implements RouteApi {
 
         } catch (CIMException e) {
             span.setStatus(StatusCode.ERROR, e.getErrorMessage());
+            span.recordException(e);
             res.setCode(e.getErrorCode());
             res.setMessage(e.getErrorMessage());
         } finally {
@@ -227,13 +229,14 @@ public class RouteController implements RouteApi {
         // === OpenTelemetry: 创建登录路由 Span ===
         Span span = tracer.spanBuilder("cim.route.login").startSpan();
 
-        try {
+        try (Scope scope = span.makeCurrent()) {
             // 登录校验
             StatusEnum status = accountService.login(loginReqVO);
             res.setCode(status.getCode());
             res.setMessage(status.getMessage());
             if (status != StatusEnum.SUCCESS) {
                 span.setAttribute("loginStatus", "failed");
+                span.setStatus(StatusCode.OK);
                 return res;
             }
 

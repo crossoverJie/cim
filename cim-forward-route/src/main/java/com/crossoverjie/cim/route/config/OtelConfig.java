@@ -12,6 +12,7 @@ import io.opentelemetry.sdk.resources.Resource;
 import io.opentelemetry.sdk.trace.SdkTracerProvider;
 import io.opentelemetry.sdk.trace.export.BatchSpanProcessor;
 import jakarta.annotation.PreDestroy;
+import java.util.concurrent.TimeUnit;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -22,25 +23,19 @@ import org.springframework.context.annotation.Configuration;
  *
  * 负责初始化 OpenTelemetry SDK，提供 Tracer 用于手动创建 Span，
  * 并注册自定义 Metrics（群聊/私聊路由数、登录/注册数等）。
- *
- * 与 cim-server 的 OtelConfig 不同之处：
- * - service.name 为 "cim-forward-route"
- * - 注册的 Metrics 是路由层特有的指标
- * - Route 的 Controller 由 Spring 管理，可以直接注入 Counter Bean
  */
 @Slf4j
 @Configuration
 public class OtelConfig {
 
-    @Value("${management.otlp.tracing.endpoint:http://localhost:4318/v1/traces}")
-    private String otlpEndpoint;
+    @Value("${otel.exporter.otlp.grpc.endpoint:http://localhost:4317}")
+    private String otlpGrpcEndpoint;
 
     private SdkTracerProvider tracerProvider;
 
-    /**
-     * 创建 OpenTelemetry SDK 实例
-     * 与 cim-server 的配置类似，但 service.name 为 "cim-forward-route"
-     */
+    @jakarta.annotation.Resource
+    private MeterRegistry meterRegistry;
+
     @Bean
     public OpenTelemetry openTelemetry() {
         Resource resource = Resource.getDefault()
@@ -48,7 +43,7 @@ public class OtelConfig {
                         AttributeKey.stringKey("service.name"), "cim-forward-route")));
 
         OtlpGrpcSpanExporter spanExporter = OtlpGrpcSpanExporter.builder()
-                .setEndpoint(otlpEndpoint.replace("/v1/traces", "").replace("4318", "4317"))
+                .setEndpoint(otlpGrpcEndpoint)
                 .build();
 
         tracerProvider = SdkTracerProvider.builder()
@@ -60,7 +55,7 @@ public class OtelConfig {
                 .setTracerProvider(tracerProvider)
                 .build();
 
-        log.info("OpenTelemetry SDK initialized for cim-forward-route, OTLP endpoint={}", otlpEndpoint);
+        log.info("OpenTelemetry SDK initialized for cim-forward-route, OTLP gRPC endpoint={}", otlpGrpcEndpoint);
         return openTelemetry;
     }
 
@@ -70,11 +65,7 @@ public class OtelConfig {
     }
 
     // ========== 自定义 Metrics ==========
-    // Route 的 Counter Bean 可以直接注入到 Controller 中使用
 
-    /**
-     * 群聊消息路由计数器
-     */
     @Bean
     public Counter groupMessageCounter(MeterRegistry meterRegistry) {
         return Counter.builder("cim.route.messages.group")
@@ -82,9 +73,6 @@ public class OtelConfig {
                 .register(meterRegistry);
     }
 
-    /**
-     * 私聊消息路由计数器
-     */
     @Bean
     public Counter p2pMessageCounter(MeterRegistry meterRegistry) {
         return Counter.builder("cim.route.messages.p2p")
@@ -92,9 +80,6 @@ public class OtelConfig {
                 .register(meterRegistry);
     }
 
-    /**
-     * 登录请求计数器
-     */
     @Bean
     public Counter loginCounter(MeterRegistry meterRegistry) {
         return Counter.builder("cim.route.login.count")
@@ -102,9 +87,6 @@ public class OtelConfig {
                 .register(meterRegistry);
     }
 
-    /**
-     * 注册请求计数器
-     */
     @Bean
     public Counter registerCounter(MeterRegistry meterRegistry) {
         return Counter.builder("cim.route.register.count")
@@ -115,7 +97,7 @@ public class OtelConfig {
     @PreDestroy
     public void shutdown() {
         if (tracerProvider != null) {
-            tracerProvider.shutdown();
+            tracerProvider.shutdown().join(10, TimeUnit.SECONDS);
             log.info("OpenTelemetry TracerProvider shut down");
         }
     }

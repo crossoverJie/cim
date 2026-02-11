@@ -21,6 +21,7 @@ import io.netty.handler.timeout.IdleStateEvent;
 import io.opentelemetry.api.trace.Span;
 import io.opentelemetry.api.trace.StatusCode;
 import io.opentelemetry.api.trace.Tracer;
+import io.opentelemetry.context.Scope;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -36,11 +37,17 @@ public class CIMServerHandle extends SimpleChannelInboundHandler<Request> {
 
     /**
      * Tracer 用于手动创建 Span（链路追踪的基本单元）
-     * 使用懒加载，因为 Spring 容器启动后才能获取 Bean
+     * 使用懒加载 + volatile 缓存，因为 Spring 容器启动后才能获取 Bean
      */
+    private volatile Tracer cachedTracer;
+
     private Tracer getTracer() {
+        if (cachedTracer != null) {
+            return cachedTracer;
+        }
         try {
-            return SpringBeanFactory.getBean(Tracer.class);
+            cachedTracer = SpringBeanFactory.getBean(Tracer.class);
+            return cachedTracer;
         } catch (Exception e) {
             return null;
         }
@@ -95,10 +102,6 @@ public class CIMServerHandle extends SimpleChannelInboundHandler<Request> {
                     ? tracer.spanBuilder("cim.server.login").startSpan()
                     : null;
             try {
-                if (span != null) {
-                    // Scope 确保当前线程关联到这个 Span
-                    // 这样在 Span 内部创建的子 Span 会自动关联
-                }
                 // 保存客户端与 Channel 之间的关系
                 SessionSocketHolder.put(msg.getRequestId(), (NioSocketChannel) ctx.channel());
                 SessionSocketHolder.saveSession(msg.getRequestId(), msg.getReqMsg());

@@ -22,7 +22,7 @@
 - [x] Client SDK
 - [ ] Client use [picocli](https://picocli.info/) instead of springboot.
 - [x] Support integration testing.
-- [x] Integrate OpenTelemetry .
+- [x] Integrate OpenTelemetry.
 - [ ] Support single node startup(Contains no components).
 - [ ] Third-party components support replacement(Redis/Zookeeper, etc.).
 - [ ] Support web client(websocket).
