@@ -22,6 +22,10 @@ import com.crossoverjie.cim.route.service.CommonBizService;
 import com.crossoverjie.cim.route.service.OfflineMsgService;
 import com.crossoverjie.cim.route.service.UserInfoCacheService;
 import com.crossoverjie.cim.server.api.ServerApi;
+import io.micrometer.core.instrument.Counter;
+import io.opentelemetry.api.trace.Span;
+import io.opentelemetry.api.trace.StatusCode;
+import io.opentelemetry.api.trace.Tracer;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.annotation.Resource;
 import java.util.List;
@@ -41,7 +45,7 @@ import static com.crossoverjie.cim.common.enums.StatusEnum.OFF_LINE;
  * Function:
  *
  * @author crossoverJie
- * Date: 22/05/2018 14:46
+ *         Date: 22/05/2018 14:46
  * @since JDK 1.8
  */
 @Slf4j
@@ -70,6 +74,20 @@ public class RouteController implements RouteApi {
     @Resource
     private OfflineMsgService offlineMsgService;
 
+    @Resource
+    private Tracer tracer;
+
+    @Resource
+    private Counter groupMessageCounter;
+
+    @Resource
+    private Counter p2pMessageCounter;
+
+    @Resource
+    private Counter loginCounter;
+
+    @Resource
+    private Counter registerCounter;
 
     @Operation(summary = "群聊 API")
     @RequestMapping(value = "groupRoute", method = RequestMethod.POST)
@@ -80,28 +98,48 @@ public class RouteController implements RouteApi {
 
         log.info("msg=[{}]", groupReqVO.toString());
 
-        Map<Long, CIMServerResVO> serverResVoMap = accountService.loadRouteRelated();
-        for (Map.Entry<Long, CIMServerResVO> cimServerResVoEntry : serverResVoMap.entrySet()) {
-            Long userId = cimServerResVoEntry.getKey();
-            CIMServerResVO cimServerResVO = cimServerResVoEntry.getValue();
-            if (userId.equals(groupReqVO.getUserId())) {
-                // Skip the sender
-                Optional<CIMUserInfo> cimUserInfo = userInfoCacheService.loadUserInfoByUserId(groupReqVO.getUserId());
-                cimUserInfo.ifPresent(userInfo -> log.warn("skip send user userId={}", userInfo));
-                continue;
+        // === OpenTelemetry: 创建群聊路由 Span ===
+        Span span = tracer.spanBuilder("cim.route.groupMsg").startSpan();
+
+        try {
+            Map<Long, CIMServerResVO> serverResVoMap = accountService.loadRouteRelated();
+            int pushCount = 0;
+            for (Map.Entry<Long, CIMServerResVO> cimServerResVoEntry : serverResVoMap.entrySet()) {
+                Long userId = cimServerResVoEntry.getKey();
+                CIMServerResVO cimServerResVO = cimServerResVoEntry.getValue();
+                if (userId.equals(groupReqVO.getUserId())) {
+                    // Skip the sender
+                    Optional<CIMUserInfo> cimUserInfo = userInfoCacheService
+                            .loadUserInfoByUserId(groupReqVO.getUserId());
+                    cimUserInfo.ifPresent(userInfo -> log.warn("skip send user userId={}", userInfo));
+                    continue;
+                }
+
+                // Push message
+                ChatReqVO chatVO = new ChatReqVO(userId, groupReqVO.getMsg(), null);
+                accountService.pushMsg(cimServerResVO, groupReqVO.getUserId(), chatVO);
+                pushCount++;
             }
 
-            // Push message
-            ChatReqVO chatVO = new ChatReqVO(userId, groupReqVO.getMsg(), null);
-            accountService.pushMsg(cimServerResVO, groupReqVO.getUserId(), chatVO);
+            // 记录 Span 属性
+            span.setAttribute("senderId", groupReqVO.getUserId());
+            span.setAttribute("pushCount", pushCount);
+            span.setStatus(StatusCode.OK);
 
+            // === Metrics: 递增群聊计数器 ===
+            groupMessageCounter.increment();
+
+            res.setCode(StatusEnum.SUCCESS.getCode());
+            res.setMessage(StatusEnum.SUCCESS.getMessage());
+        } catch (Exception e) {
+            span.setStatus(StatusCode.ERROR, e.getMessage());
+            span.recordException(e);
+            throw e;
+        } finally {
+            span.end();
         }
-
-        res.setCode(StatusEnum.SUCCESS.getCode());
-        res.setMessage(StatusEnum.SUCCESS.getMessage());
         return res;
     }
-
 
     /**
      * 私聊路由
@@ -116,29 +154,44 @@ public class RouteController implements RouteApi {
     public BaseResponse<NULLBody> p2pRoute(@RequestBody P2PReqVO p2pRequest) {
         BaseResponse<NULLBody> res = new BaseResponse();
 
+        // === OpenTelemetry: 创建私聊路由 Span ===
+        Span span = tracer.spanBuilder("cim.route.p2pMsg").startSpan();
+
         try {
-            //获取接收消息用户的路由信息
-            Optional<CIMServerResVO> cimServerResVO = accountService.loadRouteRelatedByUserId(p2pRequest.getReceiveUserId());
+            // 获取接收消息用户的路由信息
+            Optional<CIMServerResVO> cimServerResVO = accountService
+                    .loadRouteRelatedByUserId(p2pRequest.getReceiveUserId());
             if (cimServerResVO.isEmpty()) {
                 log.warn("userId={} not online, save offline msg", p2pRequest.getReceiveUserId());
                 offlineMsgService.saveOfflineMsg(p2pRequest);
                 throw new CIMException(OFF_LINE);
             }
 
-            //p2pRequest.getReceiveUserId()==>消息接收者的 userID
-            ChatReqVO chatVO = new ChatReqVO(p2pRequest.getReceiveUserId(), p2pRequest.getMsg(), p2pRequest.getBatchMsg());
+            // p2pRequest.getReceiveUserId()==>消息接收者的 userID
+            ChatReqVO chatVO = new ChatReqVO(p2pRequest.getReceiveUserId(), p2pRequest.getMsg(),
+                    p2pRequest.getBatchMsg());
             accountService.pushMsg(cimServerResVO.get(), p2pRequest.getUserId(), chatVO);
+
+            // 记录 Span 属性
+            span.setAttribute("senderId", p2pRequest.getUserId());
+            span.setAttribute("receiverId", p2pRequest.getReceiveUserId());
+            span.setStatus(StatusCode.OK);
+
+            // === Metrics: 递增私聊计数器 ===
+            p2pMessageCounter.increment();
 
             res.setCode(StatusEnum.SUCCESS.getCode());
             res.setMessage(StatusEnum.SUCCESS.getMessage());
 
         } catch (CIMException e) {
+            span.setStatus(StatusCode.ERROR, e.getErrorMessage());
             res.setCode(e.getErrorCode());
             res.setMessage(e.getErrorMessage());
+        } finally {
+            span.end();
         }
         return res;
     }
-
 
     @Operation(summary = "客户端下线")
     @RequestMapping(value = "offLine", method = RequestMethod.POST)
@@ -170,30 +223,50 @@ public class RouteController implements RouteApi {
     @Override
     public BaseResponse<CIMServerResVO> login(@RequestBody LoginReqVO loginReqVO) throws Exception {
         BaseResponse<CIMServerResVO> res = new BaseResponse();
-        //登录校验
-        StatusEnum status = accountService.login(loginReqVO);
-        res.setCode(status.getCode());
-        res.setMessage(status.getMessage());
-        if (status != StatusEnum.SUCCESS) {
-            return res;
+
+        // === OpenTelemetry: 创建登录路由 Span ===
+        Span span = tracer.spanBuilder("cim.route.login").startSpan();
+
+        try {
+            // 登录校验
+            StatusEnum status = accountService.login(loginReqVO);
+            res.setCode(status.getCode());
+            res.setMessage(status.getMessage());
+            if (status != StatusEnum.SUCCESS) {
+                span.setAttribute("loginStatus", "failed");
+                return res;
+            }
+
+            // check server available
+            Set<String> availableServerList = metaStore.getAvailableServerList();
+            String key = String.valueOf(loginReqVO.getUserId());
+            String server = routeHandle.routeServer(List.copyOf(availableServerList), key);
+            log.info("userInfo=[{}] route server info=[{}]", loginReqVO, server);
+
+            RouteInfo routeInfo = RouteInfoParseUtil.parse(server);
+            routeInfo = commonBizService.checkServerAvailable(routeInfo, key);
+
+            // 保存路由信息
+            accountService.saveRouteInfo(loginReqVO, server);
+
+            CIMServerResVO vo = new CIMServerResVO(routeInfo.getIp(), routeInfo.getCimServerPort(),
+                    routeInfo.getHttpPort());
+            res.setDataBody(vo);
+
+            // 记录 Span 属性
+            span.setAttribute("userId", loginReqVO.getUserId());
+            span.setAttribute("assignedServer", server);
+            span.setStatus(StatusCode.OK);
+
+            // === Metrics: 递增登录计数器 ===
+            loginCounter.increment();
+        } catch (Exception e) {
+            span.setStatus(StatusCode.ERROR, e.getMessage());
+            span.recordException(e);
+            throw e;
+        } finally {
+            span.end();
         }
-
-        // check server available
-        Set<String> availableServerList = metaStore.getAvailableServerList();
-        String key = String.valueOf(loginReqVO.getUserId());
-        String server =
-                routeHandle.routeServer(List.copyOf(availableServerList), key);
-        log.info("userInfo=[{}] route server info=[{}]", loginReqVO, server);
-
-        RouteInfo routeInfo = RouteInfoParseUtil.parse(server);
-        routeInfo = commonBizService.checkServerAvailable(routeInfo, key);
-
-        //保存路由信息
-        accountService.saveRouteInfo(loginReqVO, server);
-
-        CIMServerResVO vo =
-                new CIMServerResVO(routeInfo.getIp(), routeInfo.getCimServerPort(), routeInfo.getHttpPort());
-        res.setDataBody(vo);
         return res;
     }
 
@@ -217,6 +290,10 @@ public class RouteController implements RouteApi {
         res.setDataBody(info);
         res.setCode(StatusEnum.SUCCESS.getCode());
         res.setMessage(StatusEnum.SUCCESS.getMessage());
+
+        // === Metrics: 递增注册计数器 ===
+        registerCounter.increment();
+
         return res;
     }
 
@@ -248,7 +325,8 @@ public class RouteController implements RouteApi {
 
         try {
             // Get the routing information of the user receiving the message
-            Optional<CIMServerResVO> cimServerResVO = accountService.loadRouteRelatedByUserId(offlineMsgReqVO.getReceiveUserId());
+            Optional<CIMServerResVO> cimServerResVO = accountService
+                    .loadRouteRelatedByUserId(offlineMsgReqVO.getReceiveUserId());
 
             cimServerResVO.ifPresent(cimServerRes -> {
                 offlineMsgService.fetchOfflineMsgs(cimServerRes, offlineMsgReqVO.getReceiveUserId());

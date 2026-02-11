@@ -70,3 +70,17 @@ offline:
       expire:
         message-ttl-days: 3
 
+# OpenTelemetry 配置
+management:
+  otlp:
+    tracing:
+      endpoint: http://localhost:4318/v1/traces
+    metrics:
+      endpoint: http://localhost:4318/v1/metrics
+  tracing:
+    sampling:
+      probability: 1.0
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics

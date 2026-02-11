@@ -22,7 +22,7 @@
 - [x] Client SDK
 - [ ] 客户端使用 [picocli](https://picocli.info/) 替代 springboot
 - [x] 支持集成测试
-- [ ] 集成 OpenTelemetry
+- [x] 集成 OpenTelemetry
 - [ ] 支持单节点启动（不依赖外部组件）
 - [ ] 第三方组件支持替换（Redis/Zookeeper 等）
 - [ ] 支持 Web 客户端（websocket）

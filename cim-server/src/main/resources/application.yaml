@@ -33,4 +33,20 @@ cim:
   heartbeat:
     time: 30 # cim heartbeat time(seconds)
 
-
+# OpenTelemetry 配置
+# management.otlp.tracing.endpoint: Jaeger 的 OTLP HTTP 接收端点
+# management.tracing.sampling.probability: 采样率，1.0 表示 100% 采样（生产环境建议降低）
+# management.endpoints.web.exposure.include: 暴露 Actuator 端点用于查看 Metrics
+management:
+  otlp:
+    tracing:
+      endpoint: http://localhost:4318/v1/traces
+    metrics:
+      endpoint: http://localhost:4318/v1/metrics
+  tracing:
+    sampling:
+      probability: 1.0
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
