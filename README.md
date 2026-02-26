@@ -9,6 +9,7 @@
 [![codecov](https://codecov.io/gh/crossoverJie/cim/graph/badge.svg?token=oW5Gd1oKmf)](https://codecov.io/gh/crossoverJie/cim)
 [![Build Status](https://img.shields.io/badge/cim-cross--im-brightgreen.svg)](https://github.com/crossoverJie/cim)
 [![](https://badge.juejin.im/entry/5c2c000e6fb9a049f5713e26/likes.svg?style=flat-square)](https://juejin.im/post/5c2bffdc51882509181395d7)
+[![Maintainability](https://cloud.quality-gate.com/dashboard/api/badge?projectName=crossoverJie_cim&branchName=master)](https://cloud.quality-gate.com/dashboard/branches/307939#overview)
 
 📘[Introduction](#introduction) |📽[Video Demo](#video-demo) | 🏖[TODO LIST](#todo-list) | 🌈[Architecture](#architecture) |💡[Flow Chart](#flow-chart)|🌁[Quick Start](#quick-start)|👨🏻‍✈️[Built-in Commands](#built-in-commands)|🎤[Chat](#group-chatprivate-chat)|❓[QA](https://github.com/crossoverJie/cim/blob/master/doc/QA.md)|💌[Contact](#contact)
 
