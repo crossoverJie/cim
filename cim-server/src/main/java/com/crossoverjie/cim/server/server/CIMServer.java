@@ -79,7 +79,7 @@ public class CIMServer {
 
     /**
      * Push msg to client.
-     * 
+     *
      * @param sendMsgReqVO message body
      */
     public void sendMsg(SendMsgReqVO sendMsgReqVO) {

@@ -21,7 +21,6 @@ import io.netty.handler.timeout.IdleStateEvent;
 import io.opentelemetry.api.trace.Span;
 import io.opentelemetry.api.trace.StatusCode;
 import io.opentelemetry.api.trace.Tracer;
-import io.opentelemetry.context.Scope;
 import lombok.extern.slf4j.Slf4j;
 
 /**
