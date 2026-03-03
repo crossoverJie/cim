@@ -15,26 +15,23 @@ import jakarta.annotation.PreDestroy;
 import java.util.concurrent.TimeUnit;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 /**
- * OpenTelemetry 配置类 - cim-forward-route
- *
- * 负责初始化 OpenTelemetry SDK，提供 Tracer 用于手动创建 Span，
- * 并注册自定义 Metrics（群聊/私聊路由数、登录/注册数等）。
+ * OpenTelemetry configuration for cim-forward-route.
+ * Only activated when cim.otel.enabled=true.
  */
 @Slf4j
 @Configuration
+@ConditionalOnProperty(name = "cim.otel.enabled", havingValue = "true")
 public class OtelConfig {
 
     @Value("${otel.exporter.otlp.grpc.endpoint:http://localhost:4317}")
     private String otlpGrpcEndpoint;
 
     private SdkTracerProvider tracerProvider;
-
-    @jakarta.annotation.Resource
-    private MeterRegistry meterRegistry;
 
     @Bean
     public OpenTelemetry openTelemetry() {
@@ -55,7 +52,7 @@ public class OtelConfig {
                 .setTracerProvider(tracerProvider)
                 .build();
 
-        log.info("OpenTelemetry SDK initialized for cim-forward-route, OTLP gRPC endpoint={}", otlpGrpcEndpoint);
+        log.info("OpenTelemetry SDK initialized for cim-forward-route, endpoint={}", otlpGrpcEndpoint);
         return openTelemetry;
     }
 
@@ -63,8 +60,6 @@ public class OtelConfig {
     public Tracer tracer(OpenTelemetry openTelemetry) {
         return openTelemetry.getTracer("cim-forward-route", "1.0.0");
     }
-
-    // ========== 自定义 Metrics ==========
 
     @Bean
     public Counter groupMessageCounter(MeterRegistry meterRegistry) {

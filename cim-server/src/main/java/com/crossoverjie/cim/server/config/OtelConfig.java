@@ -19,17 +19,17 @@ import java.util.concurrent.TimeUnit;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 /**
- * OpenTelemetry 配置类 - cim-server
- *
- * 负责初始化 OpenTelemetry SDK，提供 Tracer 用于手动创建 Span，
- * 并注册自定义 Metrics（在线用户数、消息推送数等）。
+ * OpenTelemetry configuration for cim-server.
+ * Only activated when cim.otel.enabled=true.
  */
 @Slf4j
 @Configuration
+@ConditionalOnProperty(name = "cim.otel.enabled", havingValue = "true")
 public class OtelConfig {
 
         @Value("${otel.exporter.otlp.grpc.endpoint:http://localhost:4317}")
@@ -40,9 +40,6 @@ public class OtelConfig {
         @jakarta.annotation.Resource
         private MeterRegistry meterRegistry;
 
-        /**
-         * 自定义 Metrics 计数器，使用 static volatile 以便在 Netty Handler 中线程安全访问
-         */
         @Getter
         private static volatile Counter loginCounter;
         @Getter
@@ -69,7 +66,7 @@ public class OtelConfig {
                                 .setTracerProvider(tracerProvider)
                                 .build();
 
-                log.info("OpenTelemetry SDK initialized for cim-server, OTLP gRPC endpoint={}", otlpGrpcEndpoint);
+                log.info("OpenTelemetry SDK initialized for cim-server, endpoint={}", otlpGrpcEndpoint);
                 return openTelemetry;
         }
 

@@ -70,14 +70,19 @@ offline:
       expire:
         message-ttl-days: 3
 
-# OpenTelemetry 配置
+# OpenTelemetry switch (default: disabled)
+cim:
+  otel:
+    enabled: ${OTEL_ENABLED:false}
+
+# OpenTelemetry 配置 (only effective when cim.otel.enabled=true)
 management:
   otlp:
     tracing:
-      endpoint: http://localhost:4318/v1/traces
+      endpoint: ${OTEL_EXPORTER_OTLP_HTTP_ENDPOINT:http://localhost:4318}/v1/traces
     metrics:
       export:
-        url: http://localhost:4318/v1/metrics
+        url: ${OTEL_EXPORTER_OTLP_HTTP_ENDPOINT:http://localhost:4318}/v1/metrics
   tracing:
     sampling:
       probability: ${TRACING_SAMPLING_PROBABILITY:1.0}
