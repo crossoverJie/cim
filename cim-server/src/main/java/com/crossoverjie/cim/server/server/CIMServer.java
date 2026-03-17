@@ -91,8 +91,10 @@ public class CIMServer {
         }
 
         // === OpenTelemetry: 创建消息推送 Span ===
-        Span span = tracer != null
-                ? tracer.spanBuilder("cim.server.pushMsg").startSpan()
+        final Span span = tracer != null
+                ? tracer.spanBuilder("cim.server.pushMsg")
+                        .setAttribute("targetUserId", sendMsgReqVO.getUserId())
+                        .startSpan()
                 : null;
 
         try {
@@ -110,32 +112,41 @@ public class CIMServer {
 
             Request protocol = requestBuilder.build();
 
+            final boolean finalIsBatch = isBatch;
             ChannelFuture future = socketChannel.writeAndFlush(protocol);
-            future.addListener(
-                    (ChannelFutureListener) channelFuture -> log.info("server push {} msg:[{}], socketChannel:{}",
-                            isBatch ? "batch" : "single", sendMsgReqVO, socketChannel));
-
-            // 在 Span 中记录推送目标信息
-            if (span != null) {
-                span.setAttribute("targetUserId", sendMsgReqVO.getUserId());
-                span.setAttribute("messageType", isBatch ? "batch" : "single");
-                span.setStatus(StatusCode.OK);
-            }
-
-            // === Metrics: 递增消息推送计数器 ===
-            if (OtelConfig.getMessagePushedCounter() != null) {
-                OtelConfig.getMessagePushedCounter().increment();
-            }
+            future.addListener((ChannelFutureListener) channelFuture -> {
+                try {
+                    if (channelFuture.isSuccess()) {
+                        log.info("server push {} msg:[{}], socketChannel:{}",
+                                finalIsBatch ? "batch" : "single", sendMsgReqVO, socketChannel);
+                        if (span != null) {
+                            span.setAttribute("messageType", finalIsBatch ? "batch" : "single");
+                            span.setStatus(StatusCode.OK);
+                        }
+                        // === Metrics: 递增消息推送计数器 ===
+                        if (OtelConfig.getMessagePushedCounter() != null) {
+                            OtelConfig.getMessagePushedCounter().increment();
+                        }
+                    } else {
+                        log.error("server push failed for msg:[{}]", sendMsgReqVO, channelFuture.cause());
+                        if (span != null) {
+                            span.setStatus(StatusCode.ERROR, "Push failed");
+                            span.recordException(channelFuture.cause());
+                        }
+                    }
+                } finally {
+                    if (span != null) {
+                        span.end();
+                    }
+                }
+            });
         } catch (Exception e) {
             if (span != null) {
                 span.setStatus(StatusCode.ERROR, e.getMessage());
                 span.recordException(e);
-            }
-            throw e;
-        } finally {
-            if (span != null) {
                 span.end();
             }
+            throw e;
         }
     }
 }

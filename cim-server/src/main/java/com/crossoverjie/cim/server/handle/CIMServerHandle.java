@@ -109,7 +109,8 @@ public class CIMServerHandle extends SimpleChannelInboundHandler<Request> {
                 // 在 Span 中记录属性，这些属性会在 Jaeger UI 中显示
                 if (span != null) {
                     span.setAttribute("userId", msg.getRequestId());
-                    span.setAttribute("userName", msg.getReqMsg());
+                    String userNameHash = Integer.toHexString(msg.getReqMsg().hashCode());
+                    span.setAttribute("userNameHash", userNameHash);
                     span.setStatus(StatusCode.OK);
                 }
 
