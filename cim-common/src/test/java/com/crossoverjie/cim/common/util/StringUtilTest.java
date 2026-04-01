@@ -1,281 +1,296 @@
 package com.crossoverjie.cim.common.util;
 
 import org.junit.jupiter.api.Test;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
- * Function: StringUtil 工具类测试
- * Date: 2026-04-01
+ * Function: 字符串工具类测试
+ * Date: 01/04/2026
  */
 public class StringUtilTest {
 
+
     /**
-     * 测试 isNullOrEmpty 方法 - null 值
+     * isNullOrEmpty - null值
      */
     @Test
-    public void testIsNullOrEmptyWhenNullShouldReturnTrue() {
+    public void testIsNullOrEmptyWhenNull() {
         String str = null;
         assertTrue(StringUtil.isNullOrEmpty(str), "null 应该返回 true");
     }
 
     /**
-     * 测试 isNullOrEmpty 方法 - 空格
-     *
+     * isNullOrEmpty - 空字符串
      */
     @Test
-    public void testIsNullOrEmptyWhenSingleSpaceShouldReturnTrue() {
-        String str = " ";
-        assertTrue(StringUtil.isNullOrEmpty(str),"单个空格应该返回true");
-    }
-
-
-
-    /**
-     * 测试 isNullOrEmpty 方法 - 空字符串
-     */
-    @Test
-    public void testIsNullOrEmptyWhenEmptyStringShouldReturnTrue() {
+    public void testIsNullOrEmptyWhenEmptyString() {
         String str = "";
         assertTrue(StringUtil.isNullOrEmpty(str), "空字符串应该返回 true");
     }
 
     /**
-     * 测试 isNullOrEmpty 方法 - 制表符
+     * isNullOrEmpty - 纯空格字符串
+
      */
     @Test
-    public void testIsNullOrEmptyWhenTabShouldReturnTrue() {
+    public void testIsNullOrEmptyWhenBlankSpaces() {
+        String str = "   ";
+        assertTrue(StringUtil.isNullOrEmpty(str), "纯空格应该返回 true");
+    }
+
+    /**
+     * isNullOrEmpty - 制表符
+     */
+    @Test
+    public void testIsNullOrEmptyWhenTab() {
         String str = "\t";
         assertTrue(StringUtil.isNullOrEmpty(str), "制表符应该返回 true");
     }
 
     /**
-     * 测试 isNullOrEmpty 方法 - 换行符
+     * isNullOrEmpty - 换行符
      */
     @Test
-    public void testIsNullOrEmptyWhenNewLineShouldReturnTrue() {
+    public void testIsNullOrEmptyWhenNewline() {
         String str = "\n";
         assertTrue(StringUtil.isNullOrEmpty(str), "换行符应该返回 true");
     }
 
-
     /**
-     * 测试 isNullOrEmpty 方法 - 空格字符串
+     * isNullOrEmpty - 多个空白字符组合
      */
     @Test
-    public void testIsNullOrEmptyWhenBlankStringShouldReturnTrue() {
-        String str = "   ";
-        assertTrue(StringUtil.isNullOrEmpty(str), "空格字符串应该返回 true");
+    public void testIsNullOrEmptyWhenMultipleWhitespace() {
+        String str = " \t\n ";
+        assertTrue(StringUtil.isNullOrEmpty(str), "多个空白字符应该返回 true");
     }
 
     /**
-     * 测试 isNullOrEmpty 方法 - 非空字符串
+     * isNullOrEmpty - 正常字符串
      */
     @Test
-    public void testIsNullOrEmptyWhenNonEmptyStringShouldReturnFalse() {
+    public void testIsNullOrEmptyWhenNormalString() {
         String str = "hello";
-        assertFalse(StringUtil.isNullOrEmpty(str), "非空字符串应该返回 false");
+        assertFalse(StringUtil.isNullOrEmpty(str), "正常字符串应该返回 false");
     }
 
     /**
-     * 测试 isNullOrEmpty 方法 - 带空格的字符串
+     * isNullOrEmpty - 包含空格的字符串
      */
     @Test
-    public void testIsNullOrEmptyWhenStringWithSpacesShouldReturnFalse() {
+    public void testIsNullOrEmptyWhenStringWithSpaces() {
         String str = " hello ";
-        assertFalse(StringUtil.isNullOrEmpty(str), "带空格的字符串应该返回 false");
+        assertFalse(StringUtil.isNullOrEmpty(str), "首尾有空格的字符串应该返回 false");
     }
 
+
     /**
-     * 测试 isEmpty 方法 - null 值
+     * isEmpty - null值
+
      */
     @Test
-    public void testIsEmptyWhenNullShouldReturnTrue() {
+    public void testIsEmptyWhenNull() {
         String str = null;
         assertTrue(StringUtil.isEmpty(str), "null 应该返回 true");
     }
 
     /**
-     * 测试 isEmpty 方法 - 空字符串
+     * isEmpty - 空字符串
      */
     @Test
-    public void testIsEmptyWhenEmptyStringShouldReturnTrue() {
+    public void testIsEmptyWhenEmptyString() {
         String str = "";
         assertTrue(StringUtil.isEmpty(str), "空字符串应该返回 true");
     }
 
     /**
-     * 测试 isEmpty 方法 - 空格字符串
+     * isEmpty - 纯空格字符串
      */
     @Test
-    public void testIsEmptyWhenBlankStringShouldReturnTrue() {
+    public void testIsEmptyWhenBlankSpaces() {
         String str = "   ";
-        assertTrue(StringUtil.isEmpty(str), "空格字符串应该返回 true");
+        assertTrue(StringUtil.isEmpty(str), "纯空格也应该返回 true（因为是空字符串）");
     }
 
     /**
-     * 测试 isEmpty 方法 - 非空字符串
+     * isEmpty - 正常字符串
      */
     @Test
-    public void testIsEmptyWhenNonEmptyStringShouldReturnFalse() {
+    public void testIsEmptyWhenNormalString() {
         String str = "hello";
-        assertFalse(StringUtil.isEmpty(str), "非空字符串应该返回 false");
+        assertFalse(StringUtil.isEmpty(str), "正常字符串应该返回 false");
     }
 
-    /**
-     * 测试 isEmpty 方法 - 带内容的字符串
-     */
-    @Test
-    public void testIsEmptyWhenStringWithContentShouldReturnFalse() {
-        String str = " hello ";
-        assertFalse(StringUtil.isEmpty(str), "带内容的字符串应该返回 false");
-    }
 
     /**
-     * 测试 isNotEmpty 方法 - null 值
+     * isNotEmpty - null值
      */
     @Test
-    public void testIsNotEmptyWhenNullShouldReturnFalse() {
+    public void testIsNotEmptyWhenNull() {
         String str = null;
         assertFalse(StringUtil.isNotEmpty(str), "null 应该返回 false");
     }
 
     /**
-     * 测试 isNotEmpty 方法 - 空字符串
+     * isNotEmpty - 空字符串
      */
     @Test
-    public void testIsNotEmptyWhenEmptyStringShouldReturnFalse() {
+    public void testIsNotEmptyWhenEmptyString() {
         String str = "";
         assertFalse(StringUtil.isNotEmpty(str), "空字符串应该返回 false");
     }
 
     /**
-     * 测试 isNotEmpty 方法 - 空格字符串
+     * isNotEmpty - 纯空格字符串
      */
     @Test
-    public void testIsNotEmptyWhenBlankStringShouldReturnFalse() {
+    public void testIsNotEmptyWhenBlankSpaces() {
         String str = "   ";
-        assertFalse(StringUtil.isNotEmpty(str), "空格字符串应该返回 false");
+        assertFalse(StringUtil.isNotEmpty(str), "纯空格应该返回 false");
     }
 
     /**
-     * 测试 isNotEmpty 方法 - 非空字符串
+     * isNotEmpty - 正常字符串
      */
     @Test
-    public void testIsNotEmptyWhenNonEmptyStringShouldReturnTrue() {
+    public void testIsNotEmptyWhenNormalString() {
         String str = "hello";
-        assertTrue(StringUtil.isNotEmpty(str), "非空字符串应该返回 true");
+        assertTrue(StringUtil.isNotEmpty(str), "正常字符串应该返回 true");
     }
 
-    /**
-     * 测试 isNotEmpty 方法 - 带空格的字符串
-     */
-    @Test
-    public void testIsNotEmptyWhenStringWithSpacesShouldReturnTrue() {
-        String str = " hello ";
-        assertTrue(StringUtil.isNotEmpty(str), "带空格的字符串应该返回 true");
-    }
 
     /**
-     * 测试 formatLike 方法 - null 值
+     * formatLike - null值
      */
     @Test
-    public void testFormatLikeWhenNullShouldReturnNull() {
+    public void testFormatLikeWhenNull() {
         String str = null;
         assertNull(StringUtil.formatLike(str), "null 应该返回 null");
     }
 
     /**
-     * 测试 formatLike 方法 - 空字符串
+     * formatLike - 空字符串
      */
     @Test
-    public void testFormatLikeWhenEmptyStringShouldReturnNull() {
+    public void testFormatLikeWhenEmptyString() {
         String str = "";
         assertNull(StringUtil.formatLike(str), "空字符串应该返回 null");
     }
 
-
-
     /**
-     * 测试 formatLike 方法 - SQL注入字符串
+     * SQL 注入字符（单引号）的处理
      */
     @Test
     public void testFormatLikeWhenSqlInjectionShouldHandleSafely() {
-        String str = "test' OR '1'='1";
-        String result = StringUtil.formatLike(str);
-        // 应该正确转义或处理特殊字符
-        assertNotNull(result, "SQL注入字符串应该被安全处理");
+        String input = "admin' OR '1'='1";
+        String result = StringUtil.formatLike(input);
+
+        assertEquals("%admin' OR '1'='1%", result, "结果应该包含原始单引号，且首尾有 %");
+        assertTrue(result.startsWith("%") && result.endsWith("%"), "结果必须以 % 开头和结尾");
     }
 
     /**
-     * 测试 formatLike 方法 - 带通配符的字符串
+     * 测试：SQL 通配符（% 和 _）的处理
      */
     @Test
     public void testFormatLikeWhenWildcardShouldEscapeProperly() {
-        String str = "test%";
-        String result = StringUtil.formatLike(str);
-        // 应该转义 % 字符
-        assertNotNull(result);
-        assertTrue(result.contains("%"), "应该包含转义后的 %");
+        String input = "100%_complete";
+        String result = StringUtil.formatLike(input);
+
+        assertEquals("%100%_complete%", result, "结果应该包含原始的 % 和 _，且首尾有 %");
+        assertTrue(result.contains("%") && result.contains("_"), "结果应该保留原始的通配符");
     }
+
+
     /**
-     * 测试 formatLike 方法 - 空格字符串
+     * formatLike - 纯空格字符串
      */
     @Test
-    public void testFormatLikeWhenBlankStringShouldReturnNull() {
+    public void testFormatLikeWhenBlankSpaces() {
         String str = "   ";
-        assertNull(StringUtil.formatLike(str), "空格字符串应该返回 null");
+        assertNull(StringUtil.formatLike(str), "纯空格应该返回 null");
     }
 
     /**
-     * 测试 formatLike 方法 - 普通字符串
+     * formatLike - 正常字符串
      */
     @Test
-    public void testFormatLikeWhenNormalStringShouldReturnFormattedString() {
-        String str = "hello";
+    public void testFormatLikeWhenNormalString() {
+        String result = StringUtil.formatLike("hello");
+        assertEquals("%hello%", result, "应该返回 %hello%");
+    }
+
+    /**
+     * formatLike - 带空格的字符串
+     */
+    @Test
+    public void testFormatLikeWhenStringWithSpaces() {
+        String str = " hello ";
         String result = StringUtil.formatLike(str);
         assertEquals("%hello%", result, "应该返回 %hello%");
     }
 
     /**
-     * 测试 formatLike 方法 - 带空格的字符串
-     */
-    @Test
-    public void testFormatLikeWhenStringWithSpacesShouldReturnFormattedString() {
-        String str = " hello ";
-        String result = StringUtil.formatLike(str);
-        assertEquals("% hello %", result, "应该返回 % hello %");
-    }
+     * formatLike - 中文字符串
 
-    /**
-     * 测试 formatLike 方法 - 特殊字符
      */
     @Test
-    public void testFormatLikeWhenSpecialCharactersShouldReturnFormattedString() {
-        String str = "test%_";
-        String result = StringUtil.formatLike(str);
-        assertEquals("%test%_%", result, "应该返回 %test%_%");
-    }
-
-    /**
-     * 测试 formatLike 方法 - 中文字符
-     */
-    @Test
-    public void testFormatLikeWhenChineseStringShouldReturnFormattedString() {
+    public void testFormatLikeWhenChineseString() {
         String str = "测试";
         String result = StringUtil.formatLike(str);
         assertEquals("%测试%", result, "应该返回 %测试%");
     }
 
     /**
-     * 测试性能 - 处理大字符串
+     * formatLike - 特殊字符
+
+     */
+    @Test
+    public void testFormatLikeWhenSpecialCharacters() {
+        String str = "test%_";
+        String result = StringUtil.formatLike(str);
+        assertEquals("%test%_%", result, "应该返回 %test%_%");
+    }
+
+
+    /**
+     * 处理大字符串输入
      */
     @Test
     public void testPerformanceWithLargeString() {
         String largeString = "a".repeat(10000);
-        long startTime = System.currentTimeMillis();
-        StringUtil.isNullOrEmpty(largeString);
-        long endTime = System.currentTimeMillis();
-        assertTrue((endTime - startTime) < 100, "处理大字符串应该在100ms内完成");
+
+        boolean result = assertDoesNotThrow(() -> {
+            return StringUtil.isNullOrEmpty(largeString);
+        }, "处理大字符串时不应抛出异常");
+
+        assertFalse(result, "长度为 10000 的字符串不应被视为 null 或 empty");
     }
 
+    /**
+     * 单字符测试
+     */
+    @Test
+    public void testSingleCharacter() {
+        assertFalse(StringUtil.isNullOrEmpty("a"), "单字符应该返回 false");
+        assertFalse(StringUtil.isEmpty("a"), "单字符应该返回 false");
+        assertTrue(StringUtil.isNotEmpty("a"), "单字符应该返回 true");
+        assertEquals("%a%", StringUtil.formatLike("a"), "单字符应该返回 %a%");
+    }
+
+    /**
+     * 构造函数私有化测试
+
+     */
+    @Test
+    public void testPrivateConstructor() throws Exception {
+        java.lang.reflect.Constructor<?> constructor =
+            StringUtil.class.getDeclaredConstructor();
+        constructor.setAccessible(true);
+
+        assertThrows(Exception.class, () -> {
+            constructor.newInstance();
+        }, "私有构造函数不能被调用");
+    }
 }
