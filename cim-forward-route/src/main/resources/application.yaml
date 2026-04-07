@@ -70,3 +70,31 @@ offline:
       expire:
         message-ttl-days: 3
 
+# OpenTelemetry switch (default: disabled)
+cim:
+  otel:
+    enabled: ${OTEL_ENABLED:false}
+
+# OpenTelemetry 配置 (only effective when cim.otel.enabled=true)
+management:
+  otlp:
+    tracing:
+      endpoint: ${OTEL_EXPORTER_OTLP_HTTP_ENDPOINT:http://localhost:4318}/v1/traces
+    metrics:
+      export:
+        url: ${OTEL_EXPORTER_OTLP_HTTP_ENDPOINT:http://localhost:4318}/v1/metrics
+  tracing:
+    sampling:
+      probability: ${TRACING_SAMPLING_PROBABILITY:1.0}
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
+
+# OpenTelemetry gRPC endpoint for SDK exporter
+otel:
+  exporter:
+    otlp:
+      grpc:
+        endpoint: ${OTEL_EXPORTER_OTLP_GRPC_ENDPOINT:http://localhost:4317}
+

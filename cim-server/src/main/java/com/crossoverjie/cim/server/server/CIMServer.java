@@ -2,6 +2,7 @@ package com.crossoverjie.cim.server.server;
 
 import com.crossoverjie.cim.common.protocol.Request;
 import com.crossoverjie.cim.server.api.vo.req.SendMsgReqVO;
+import com.crossoverjie.cim.server.config.OtelConfig;
 import com.crossoverjie.cim.server.init.CIMServerInitializer;
 import com.crossoverjie.cim.server.util.SessionSocketHolder;
 import io.netty.bootstrap.ServerBootstrap;
@@ -12,10 +13,14 @@ import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
+import io.opentelemetry.api.trace.Span;
+import io.opentelemetry.api.trace.StatusCode;
+import io.opentelemetry.api.trace.Tracer;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
 import java.net.InetSocketAddress;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -30,14 +35,14 @@ import org.springframework.stereotype.Component;
 @Slf4j
 public class CIMServer {
 
-
     private EventLoopGroup boss = new NioEventLoopGroup();
     private EventLoopGroup work = new NioEventLoopGroup();
 
+    @Autowired
+    private Tracer tracer;
 
     @Value("${cim.server.port}")
     private int nettyPort;
-
 
     /**
      * 启动 cim server
@@ -52,7 +57,7 @@ public class CIMServer {
                 .group(boss, work)
                 .channel(NioServerSocketChannel.class)
                 .localAddress(new InetSocketAddress(nettyPort))
-                //保持长连接
+                // 保持长连接
                 .childOption(ChannelOption.SO_KEEPALIVE, true)
                 .childHandler(new CIMServerInitializer());
 
@@ -61,7 +66,6 @@ public class CIMServer {
             log.info("Start cim server success!!!");
         }
     }
-
 
     /**
      * 销毁
@@ -73,9 +77,9 @@ public class CIMServer {
         log.info("Close cim server success!!!");
     }
 
-
     /**
      * Push msg to client.
+     *
      * @param sendMsgReqVO message body
      */
     public void sendMsg(SendMsgReqVO sendMsgReqVO) {
@@ -86,22 +90,63 @@ public class CIMServer {
             return;
         }
 
-        Request.Builder requestBuilder = Request.newBuilder()
-                .setRequestId(sendMsgReqVO.getUserId())
-                .putAllProperties(sendMsgReqVO.getProperties())
-                .setCmd(sendMsgReqVO.getCmd());
+        // === OpenTelemetry: 创建消息推送 Span ===
+        final Span span = tracer != null
+                ? tracer.spanBuilder("cim.server.pushMsg")
+                        .setAttribute("targetUserId", sendMsgReqVO.getUserId())
+                        .startSpan()
+                : null;
 
-        boolean isBatch = sendMsgReqVO.getBatchMsg() != null && sendMsgReqVO.getBatchMsg().size() > 0;
-        if (isBatch) {
-            requestBuilder.addAllBatchReqMsg(sendMsgReqVO.getBatchMsg());
-        } else {
-            requestBuilder.setReqMsg(sendMsgReqVO.getMsg());
+        try {
+            Request.Builder requestBuilder = Request.newBuilder()
+                    .setRequestId(sendMsgReqVO.getUserId())
+                    .putAllProperties(sendMsgReqVO.getProperties())
+                    .setCmd(sendMsgReqVO.getCmd());
+
+            boolean isBatch = sendMsgReqVO.getBatchMsg() != null && sendMsgReqVO.getBatchMsg().size() > 0;
+            if (isBatch) {
+                requestBuilder.addAllBatchReqMsg(sendMsgReqVO.getBatchMsg());
+            } else {
+                requestBuilder.setReqMsg(sendMsgReqVO.getMsg());
+            }
+
+            Request protocol = requestBuilder.build();
+
+            final boolean finalIsBatch = isBatch;
+            ChannelFuture future = socketChannel.writeAndFlush(protocol);
+            future.addListener((ChannelFutureListener) channelFuture -> {
+                try {
+                    if (channelFuture.isSuccess()) {
+                        log.info("server push {} msg:[{}], socketChannel:{}",
+                                finalIsBatch ? "batch" : "single", sendMsgReqVO, socketChannel);
+                        if (span != null) {
+                            span.setAttribute("messageType", finalIsBatch ? "batch" : "single");
+                            span.setStatus(StatusCode.OK);
+                        }
+                        // === Metrics: 递增消息推送计数器 ===
+                        if (OtelConfig.getMessagePushedCounter() != null) {
+                            OtelConfig.getMessagePushedCounter().increment();
+                        }
+                    } else {
+                        log.error("server push failed for msg:[{}]", sendMsgReqVO, channelFuture.cause());
+                        if (span != null) {
+                            span.setStatus(StatusCode.ERROR, "Push failed");
+                            span.recordException(channelFuture.cause());
+                        }
+                    }
+                } finally {
+                    if (span != null) {
+                        span.end();
+                    }
+                }
+            });
+        } catch (Exception e) {
+            if (span != null) {
+                span.setStatus(StatusCode.ERROR, e.getMessage());
+                span.recordException(e);
+                span.end();
+            }
+            throw e;
         }
-
-        Request protocol = requestBuilder.build();
-
-        ChannelFuture future = socketChannel.writeAndFlush(protocol);
-        future.addListener((ChannelFutureListener) channelFuture ->
-                log.info("server push {} msg:[{}], socketChannel:{}", isBatch ? "batch" : "single", sendMsgReqVO, socketChannel));
     }
 }
