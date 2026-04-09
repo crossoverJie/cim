@@ -1,7 +1,6 @@
 package com.crossoverjie.cim.server;
 
 import com.crossoverjie.cim.common.metastore.MetaStore;
-import com.crossoverjie.cim.server.config.AppConfiguration;
 import com.crossoverjie.cim.server.config.ServerConfig;
 import com.crossoverjie.cim.server.kit.RegistryMetaStore;
 import jakarta.annotation.Resource;

@@ -219,8 +219,7 @@ public class ClientImpl extends ClientState implements Client {
                 .setCmd(BaseCommand.LOGIN_REQUEST)
                 .build();
         channel.writeAndFlush(login)
-                .addListener((ChannelFutureListener) channelFuture ->
-                        {
+                .addListener((ChannelFutureListener) channelFuture -> {
                             if (channelFuture.isSuccess()) {
                                 this.conf.getEvent().info("login request send success!");
                             } else {
