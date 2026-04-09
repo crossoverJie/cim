@@ -2,6 +2,7 @@ package com.crossoverjie.cim.client.sdk.impl;
 
 import static com.crossoverjie.cim.common.enums.StatusEnum.RECONNECT_FAIL;
 
+import com.alibaba.fastjson.JSONObject;
 import com.crossoverjie.cim.client.sdk.Client;
 import com.crossoverjie.cim.client.sdk.ClientState;
 import com.crossoverjie.cim.client.sdk.FetchOfflineMsgJob;
@@ -11,6 +12,7 @@ import com.crossoverjie.cim.client.sdk.io.CIMClientHandleInitializer;
 import com.crossoverjie.cim.common.data.construct.RingBufferWheel;
 import com.crossoverjie.cim.common.exception.CIMException;
 import com.crossoverjie.cim.common.kit.HeartBeatHandler;
+import com.crossoverjie.cim.common.msg.ChannelAuthReq;
 import com.crossoverjie.cim.common.pojo.CIMUserInfo;
 import com.crossoverjie.cim.common.protocol.BaseCommand;
 import com.crossoverjie.cim.common.protocol.Request;
@@ -29,6 +31,7 @@ import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.util.concurrent.DefaultThreadFactory;
 
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.BlockingQueue;
@@ -41,6 +44,7 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.function.Consumer;
+
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
@@ -142,10 +146,14 @@ public class ClientImpl extends ClientState implements Client {
     private CompletableFuture<Boolean> doConnectServer() {
         CompletableFuture<Boolean> future = new CompletableFuture<>();
         this.userLogin(future).ifPresentOrElse((cimServer) -> {
-            this.doConnectServer(cimServer, future);
-            this.loginServer();
-            this.serverInfo = cimServer;
-            future.complete(true);
+            try {
+                this.doConnectServer(cimServer, future);
+                this.loginServer(cimServer.getAuthToken());
+                this.serverInfo = cimServer;
+                future.complete(true);
+            } catch (Exception e) {
+                this.conf.getEvent().fatal(this);
+            }
         }, () -> {
             this.conf.getEvent().error("Login fail!, cannot get server info!");
             this.conf.getEvent().fatal(this);
@@ -196,16 +204,31 @@ public class ClientImpl extends ClientState implements Client {
     /**
      * Send login cmd to server
      */
-    private void loginServer() {
+    private void loginServer(String authToken) throws InterruptedException {
+        if (Objects.isNull(channel)) {
+            throw new CIMException("connect server failure,skip login");
+        }
+        ChannelAuthReq body = ChannelAuthReq.builder()
+                .userId(this.conf.getAuth().getUserId())
+                .userName(this.conf.getAuth().getUserName())
+                .authToken(authToken)
+                .build();
         Request login = Request.newBuilder()
                 .setRequestId(this.conf.getAuth().getUserId())
-                .setReqMsg(this.conf.getAuth().getUserName())
+                .setReqMsg(JSONObject.toJSONString(body))
                 .setCmd(BaseCommand.LOGIN_REQUEST)
                 .build();
         channel.writeAndFlush(login)
                 .addListener((ChannelFutureListener) channelFuture ->
-                        this.conf.getEvent().info("Registry cim server success!")
-                );
+                        {
+                            if (channelFuture.isSuccess()) {
+                                this.conf.getEvent().info("login request send success!");
+                            } else {
+                                this.conf.getEvent().error("login request is failure");
+                                throw new CIMException("login failure");
+                            }
+                        }
+                ).sync();
     }
 
     /**
@@ -213,6 +236,7 @@ public class ClientImpl extends ClientState implements Client {
      * 2. reconnect.
      * 3. shutdown reconnect job.
      * 4. reset reconnect state.
+     *
      * @throws Exception
      */
     public void reconnect() throws Exception {

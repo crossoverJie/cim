@@ -2,6 +2,7 @@ package com.crossoverjie.cim.server.server;
 
 import com.crossoverjie.cim.common.protocol.Request;
 import com.crossoverjie.cim.server.api.vo.req.SendMsgReqVO;
+import com.crossoverjie.cim.server.config.ServerConfig;
 import com.crossoverjie.cim.server.init.CIMServerInitializer;
 import com.crossoverjie.cim.server.util.SessionSocketHolder;
 import io.netty.bootstrap.ServerBootstrap;
@@ -14,8 +15,11 @@ import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
+
 import java.net.InetSocketAddress;
+
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -23,7 +27,7 @@ import org.springframework.stereotype.Component;
  * Function:
  *
  * @author crossoverJie
- *         Date: 21/05/2018 00:30
+ * Date: 21/05/2018 00:30
  * @since JDK 1.8
  */
 @Component
@@ -35,8 +39,8 @@ public class CIMServer {
     private EventLoopGroup work = new NioEventLoopGroup();
 
 
-    @Value("${cim.server.port}")
-    private int nettyPort;
+    @Autowired
+    private ServerConfig serverConfig;
 
 
     /**
@@ -51,10 +55,10 @@ public class CIMServer {
         ServerBootstrap bootstrap = new ServerBootstrap()
                 .group(boss, work)
                 .channel(NioServerSocketChannel.class)
-                .localAddress(new InetSocketAddress(nettyPort))
+                .localAddress(new InetSocketAddress(serverConfig.getNettyPort()))
                 //保持长连接
                 .childOption(ChannelOption.SO_KEEPALIVE, true)
-                .childHandler(new CIMServerInitializer());
+                .childHandler(new CIMServerInitializer(serverConfig));
 
         ChannelFuture future = bootstrap.bind().sync();
         if (future.isSuccess()) {
@@ -76,6 +80,7 @@ public class CIMServer {
 
     /**
      * Push msg to client.
+     *
      * @param sendMsgReqVO message body
      */
     public void sendMsg(SendMsgReqVO sendMsgReqVO) {
