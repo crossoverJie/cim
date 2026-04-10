@@ -39,22 +39,40 @@ public class ServerConfig {
      * 优先获取非回环、非虚拟的 IPv4 地址
      */
     private String getLocalHostAddress() throws Exception {
-        Enumeration<NetworkInterface> interfaces = NetworkInterface.getNetworkInterfaces();
-        while (interfaces.hasMoreElements()) {
-            NetworkInterface networkInterface = interfaces.nextElement();
-            if (networkInterface.isLoopback() || networkInterface.isVirtual() || !networkInterface.isUp()) {
-                continue;
-            }
-            Enumeration<InetAddress> addresses = networkInterface.getInetAddresses();
-            while (addresses.hasMoreElements()) {
-                InetAddress address = addresses.nextElement();
-                if (address.getHostAddress().contains(":")) {
+        try {
+            Enumeration<NetworkInterface> interfaces = NetworkInterface.getNetworkInterfaces();
+            while (interfaces.hasMoreElements()) {
+                NetworkInterface networkInterface = interfaces.nextElement();
+                // 只跳过回环接口和未启用的接口
+                if (networkInterface.isLoopback() || !networkInterface.isUp()) {
                     continue;
                 }
-                return address.getHostAddress();
+
+                Enumeration<InetAddress> addresses = networkInterface.getInetAddresses();
+                while (addresses.hasMoreElements()) {
+                    InetAddress address = addresses.nextElement();
+                    String hostAddress = address.getHostAddress();
+
+                    // 跳过IPv6地址
+                    if (hostAddress.contains(":")) {
+                        continue;
+                    }
+
+                    // 跳过127.0.0.1
+                    if (!hostAddress.equals("127.0.0.1")) {
+                        log.debug("找到网络接口: {}, 地址: {}", networkInterface.getName(), hostAddress);
+                        return hostAddress;
+                    }
+                }
             }
+        } catch (Exception e) {
+            log.warn("获取网络接口地址失败", e);
         }
-        return InetAddress.getLocalHost().getHostAddress();
+
+        // 在容器环境中的回退方案
+        String fallbackHost = InetAddress.getLocalHost().getHostAddress();
+        log.warn("使用回退主机地址: {}", fallbackHost);
+        return fallbackHost;
     }
 
     public String getHost() {
