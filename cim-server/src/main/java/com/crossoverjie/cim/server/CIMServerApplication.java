@@ -10,7 +10,6 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-import java.net.InetAddress;
 
 /**
  * @author crossoverJie
@@ -31,12 +30,12 @@ public class CIMServerApplication implements CommandLineRunner {
 
 	public static void main(String[] args) {
         SpringApplication.run(CIMServerApplication.class, args);
-		log.info("Start cim server success!!!");
+			log.info("Start cim server success!!!");
 	}
 
 	@Override
 	public void run(String... args) throws Exception {
-		String addr = InetAddress.getLocalHost().getHostAddress();
+		String addr = serverConfig.getHost();
 		Thread thread = new Thread(new RegistryMetaStore(metaStore, addr, serverConfig.getNettyPort(), httpPort));
 		thread.setName("registry-zk");
 		thread.start();
