@@ -22,8 +22,7 @@ public class AppConfiguration {
     @Value("${app.zk.switch}")
     private boolean zkSwitch;
 
-    @Value("${cim.server.port}")
-    private int cimServerPort;
+
 
     @Value("${cim.route.url}")
     private String routeUrl;
@@ -68,14 +67,6 @@ public class AppConfiguration {
 
     public void setZkSwitch(boolean zkSwitch) {
         this.zkSwitch = zkSwitch;
-    }
-
-    public int getCimServerPort() {
-        return cimServerPort;
-    }
-
-    public void setCimServerPort(int cimServerPort) {
-        this.cimServerPort = cimServerPort;
     }
 
     public long getHeartBeatTime() {

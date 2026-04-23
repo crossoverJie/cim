@@ -1,7 +1,9 @@
 package com.crossoverjie.cim.server.handle;
 
+import com.alibaba.fastjson.JSONObject;
 import com.crossoverjie.cim.common.exception.CIMException;
 import com.crossoverjie.cim.common.kit.HeartBeatHandler;
+import com.crossoverjie.cim.common.msg.ChannelAuthReq;
 import com.crossoverjie.cim.common.pojo.CIMUserInfo;
 import com.crossoverjie.cim.common.protocol.BaseCommand;
 import com.crossoverjie.cim.common.protocol.Request;
@@ -19,17 +21,18 @@ import io.netty.handler.timeout.IdleState;
 import io.netty.handler.timeout.IdleStateEvent;
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.Objects;
+
 /**
  * Function:
  *
  * @author crossoverJie
- *         Date: 17/05/2018 18:52
+ * Date: 17/05/2018 18:52
  * @since JDK 1.8
  */
 @ChannelHandler.Sharable
 @Slf4j
 public class CIMServerHandle extends SimpleChannelInboundHandler<Request> {
-
 
 
     /**
@@ -69,15 +72,18 @@ public class CIMServerHandle extends SimpleChannelInboundHandler<Request> {
     }
 
 
-
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, Request msg) throws Exception {
         log.info("received msg=[{}]", msg.toString());
 
         if (msg.getCmd() == BaseCommand.LOGIN_REQUEST) {
+            final ChannelAuthReq req = JSONObject.parseObject(msg.getReqMsg(), ChannelAuthReq.class);
+            if (Objects.isNull(req)) {
+                throw new CIMException("auth req body is empty");
+            }
             //保存客户端与 Channel 之间的关系
-            SessionSocketHolder.put(msg.getRequestId(), (NioSocketChannel) ctx.channel());
-            SessionSocketHolder.saveSession(msg.getRequestId(), msg.getReqMsg());
+            SessionSocketHolder.put(req.getUserId(), (NioSocketChannel) ctx.channel());
+            SessionSocketHolder.saveSession(req.getUserId(), req.getUserName());
             log.info("client [{}] online success!!", msg.getReqMsg());
         }
 

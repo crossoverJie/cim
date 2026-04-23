@@ -1,7 +1,9 @@
 package com.crossoverjie.cim.server.init;
 
 import com.crossoverjie.cim.common.protocol.Request;
+import com.crossoverjie.cim.server.config.ServerConfig;
 import com.crossoverjie.cim.server.handle.CIMServerHandle;
+import com.crossoverjie.cim.server.handle.ClientAuthHandler;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelInitializer;
 import io.netty.handler.codec.protobuf.ProtobufDecoder;
@@ -14,10 +16,16 @@ import io.netty.handler.timeout.IdleStateHandler;
  * Function:
  *
  * @author crossoverJie
- *         Date: 17/05/2018 18:51
+ * Date: 17/05/2018 18:51
  * @since JDK 1.8
  */
 public class CIMServerInitializer extends ChannelInitializer<Channel> {
+
+    private ServerConfig serverConfig;
+
+    public CIMServerInitializer(ServerConfig serverConfig) {
+        this.serverConfig = serverConfig;
+    }
 
     private final CIMServerHandle cimServerHandle = new CIMServerHandle();
 
@@ -32,6 +40,7 @@ public class CIMServerInitializer extends ChannelInitializer<Channel> {
                 .addLast(new ProtobufDecoder(Request.getDefaultInstance()))
                 .addLast(new ProtobufVarint32LengthFieldPrepender())
                 .addLast(new ProtobufEncoder())
+                .addLast(new ClientAuthHandler(serverConfig))
                 .addLast(cimServerHandle);
     }
 }

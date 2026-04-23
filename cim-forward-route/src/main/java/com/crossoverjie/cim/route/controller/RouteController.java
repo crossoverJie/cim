@@ -1,5 +1,7 @@
 package com.crossoverjie.cim.route.controller;
 
+import com.crossoverjie.cim.common.auth.JwtUtils;
+import com.crossoverjie.cim.common.auth.jwt.dto.PayloadVO;
 import com.crossoverjie.cim.common.enums.StatusEnum;
 import com.crossoverjie.cim.common.exception.CIMException;
 import com.crossoverjie.cim.common.metastore.MetaStore;
@@ -24,10 +26,12 @@ import com.crossoverjie.cim.route.service.UserInfoCacheService;
 import com.crossoverjie.cim.server.api.ServerApi;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.annotation.Resource;
+
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -191,8 +195,16 @@ public class RouteController implements RouteApi {
         //保存路由信息
         accountService.saveRouteInfo(loginReqVO, server);
 
+        PayloadVO pv = new PayloadVO();
+        pv.setUserId(loginReqVO.getUserId());
+        pv.setHost(routeInfo.getIp());
+        pv.setPort(routeInfo.getCimServerPort());
+        pv.setUserName(loginReqVO.getUserName());
+        final String token = JwtUtils.generateToken(loginReqVO.getUserId(), pv);
+
+
         CIMServerResVO vo =
-                new CIMServerResVO(routeInfo.getIp(), routeInfo.getCimServerPort(), routeInfo.getHttpPort());
+                new CIMServerResVO(routeInfo.getIp(), routeInfo.getCimServerPort(), routeInfo.getHttpPort(), token);
         res.setDataBody(vo);
         return res;
     }

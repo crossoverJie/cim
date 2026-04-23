@@ -16,7 +16,6 @@ public interface MsgHandle {
      */
     void sendMsg(String msg) throws Exception;
 
-
     /**
      * 校验消息
      *

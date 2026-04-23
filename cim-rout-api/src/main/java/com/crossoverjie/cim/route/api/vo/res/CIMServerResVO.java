@@ -20,5 +20,11 @@ public class CIMServerResVO implements Serializable {
     private String ip;
     private Integer cimServerPort;
     private Integer httpPort;
+    private String authToken;
 
+    public CIMServerResVO(String ip, Integer cimServerPort, Integer httpPort) {
+        this.ip = ip;
+        this.cimServerPort = cimServerPort;
+        this.httpPort = httpPort;
+    }
 }
