@@ -18,32 +18,32 @@ import java.util.Enumeration;
 public class ServerConfig {
 
     /**
-     * 当前服务的地址
+     * Server port
      */
     @Value("${cim.server.port}")
     private int nettyPort;
 
     /**
-     * 当前服务的ip地址
+     * Server host IP address
      */
     private String host;
 
     @PostConstruct
     public void init() throws Exception {
         this.host = getLocalHostAddress();
-        log.info("当前服务配置, host={}, port={}", host, nettyPort);
+        log.info("Server config, host={}, port={}", host, nettyPort);
     }
 
     /**
-     * 获取本机局域网 IP 地址
-     * 优先获取非回环、非虚拟的 IPv4 地址
+     * Get local LAN IP address
+     * Prefer non-loopback, non-virtual IPv4 addresses
      */
     private String getLocalHostAddress() throws Exception {
         try {
             Enumeration<NetworkInterface> interfaces = NetworkInterface.getNetworkInterfaces();
             while (interfaces.hasMoreElements()) {
                 NetworkInterface networkInterface = interfaces.nextElement();
-                // 只跳过回环接口和未启用的接口
+                // Skip loopback and down interfaces
                 if (networkInterface.isLoopback() || !networkInterface.isUp()) {
                     continue;
                 }
@@ -53,25 +53,25 @@ public class ServerConfig {
                     InetAddress address = addresses.nextElement();
                     String hostAddress = address.getHostAddress();
 
-                    // 跳过IPv6地址
+                    // Skip IPv6 addresses
                     if (hostAddress.contains(":")) {
                         continue;
                     }
 
-                    // 跳过127.0.0.1
+                    // Skip 127.0.0.1
                     if (!hostAddress.equals("127.0.0.1")) {
-                        log.debug("找到网络接口: {}, 地址: {}", networkInterface.getName(), hostAddress);
+                        log.debug("Found network interface: {}, address: {}", networkInterface.getName(), hostAddress);
                         return hostAddress;
                     }
                 }
             }
         } catch (Exception e) {
-            log.warn("获取网络接口地址失败", e);
+            log.warn("Failed to get network interface address", e);
         }
 
-        // 在容器环境中的回退方案
+        // Fallback for container environments
         String fallbackHost = InetAddress.getLocalHost().getHostAddress();
-        log.warn("使用回退主机地址: {}", fallbackHost);
+        log.warn("Using fallback host address: {}", fallbackHost);
         return fallbackHost;
     }
 
