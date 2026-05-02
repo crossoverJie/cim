@@ -11,4 +11,15 @@ public interface MessageListener {
      * @param msg        msgs
      */
     void received(Client client, Map<String, String> properties, String msg);
+
+    /**
+     * 消息已读状态更新回调
+     * @param client client
+     * @param msgId 消息ID
+     * @param readUserId 已读用户ID
+     * @param readUserName 已读用户名
+     * @param readTimestamp 已读时间戳
+     */
+    default void onReadStatusUpdate(Client client, long msgId, long readUserId, String readUserName, long readTimestamp) {
+    }
 }

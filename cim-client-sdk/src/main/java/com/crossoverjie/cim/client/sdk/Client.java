@@ -28,6 +28,22 @@ public interface Client extends Closeable {
 
     CompletableFuture<Void> sendGroupAsync(String msg);
 
+    /**
+     * 发送消息已读回执
+     * @param msgId 消息ID
+     * @throws Exception
+     */
+    default void sendReadAck(long msgId) throws Exception {
+        sendReadAckAsync(msgId).get();
+    }
+
+    /**
+     * 异步发送消息已读回执
+     * @param msgId 消息ID
+     * @return CompletableFuture
+     */
+    CompletableFuture<Void> sendReadAckAsync(long msgId);
+
     ClientState.State getState();
 
     ClientConfigurationData.Auth getAuth();

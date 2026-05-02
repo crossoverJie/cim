@@ -6,10 +6,12 @@ import com.crossoverjie.cim.common.res.BaseResponse;
 import com.crossoverjie.cim.common.res.NULLBody;
 import com.crossoverjie.cim.route.api.vo.req.ChatReqVO;
 import com.crossoverjie.cim.route.api.vo.req.LoginReqVO;
+import com.crossoverjie.cim.route.api.vo.req.MsgReadAckReqVO;
 import com.crossoverjie.cim.route.api.vo.req.OfflineMsgReqVO;
 import com.crossoverjie.cim.route.api.vo.req.P2PReqVO;
 import com.crossoverjie.cim.route.api.vo.req.RegisterInfoReqVO;
 import com.crossoverjie.cim.route.api.vo.res.CIMServerResVO;
+import com.crossoverjie.cim.route.api.vo.res.MsgReadStatusResVO;
 import com.crossoverjie.cim.route.api.vo.res.RegisterInfoResVO;
 
 import java.util.Set;
@@ -78,5 +80,23 @@ public interface RouteApi {
 
 
     BaseResponse<NULLBody> fetchOfflineMsgs(OfflineMsgReqVO offlineMsgReqVO);
+
+    /**
+     * 消息已读回执
+     * @param msgReadAckReqVO 已读回执请求
+     * @return
+     * @throws Exception
+     */
+    BaseResponse<NULLBody> msgReadAck(MsgReadAckReqVO msgReadAckReqVO);
+
+    /**
+     * 查询消息已读状态
+     * @param msgId 消息ID
+     * @return 消息已读状态
+     * @throws Exception
+     */
+    @Request(method = Request.GET)
+    BaseResponse<MsgReadStatusResVO> getMsgReadStatus(Long msgId);
+
     // TODO: 2024/8/19  Get cache server & metastore server
 }

@@ -152,17 +152,28 @@ public class AccountServiceRedisImpl implements AccountService {
 
     @Override
     public void pushMsg(CIMServerResVO cimServerResVO, long sendUserId, ChatReqVO chatReqVO) {
+        pushMsg(cimServerResVO, sendUserId, chatReqVO, null);
+    }
+
+    @Override
+    public void pushMsg(CIMServerResVO cimServerResVO, long sendUserId, ChatReqVO chatReqVO, Map<String, String> extraProperties) {
         Optional<CIMUserInfo> cimUserInfo = userInfoCacheService.loadUserInfoByUserId(sendUserId);
 
         cimUserInfo.ifPresent(sendUserInfo -> {
             String url = "http://" + cimServerResVO.getIp() + ":" + cimServerResVO.getHttpPort();
             SendMsgReqVO vo =
                     new SendMsgReqVO(chatReqVO.getMsg(), chatReqVO.getUserId(), chatReqVO.getBatchMsg(), BaseCommand.MESSAGE);
-            vo.setProperties(Map.of(
-                    Constants.MetaKey.SEND_USER_ID, String.valueOf(sendUserId),
-                    Constants.MetaKey.SEND_USER_NAME, sendUserInfo.getUserName(),
-                    Constants.MetaKey.RECEIVE_USER_ID, String.valueOf(chatReqVO.getUserId()))
-            );
+            
+            Map<String, String> properties = new HashMap<>();
+            properties.put(Constants.MetaKey.SEND_USER_ID, String.valueOf(sendUserId));
+            properties.put(Constants.MetaKey.SEND_USER_NAME, sendUserInfo.getUserName());
+            properties.put(Constants.MetaKey.RECEIVE_USER_ID, String.valueOf(chatReqVO.getUserId()));
+            
+            if (extraProperties != null && !extraProperties.isEmpty()) {
+                properties.putAll(extraProperties);
+            }
+            
+            vo.setProperties(properties);
             serverApi.sendMsg(vo, url);
 
         });

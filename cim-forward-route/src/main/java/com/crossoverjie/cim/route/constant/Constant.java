@@ -25,6 +25,16 @@ public final class Constant {
      */
     public static final String LOGIN_STATUS_PREFIX = "login-status";
 
+    /**
+     * 消息已读状态前缀
+     */
+    public static final String MSG_READ_PREFIX = "cim-msg-read:";
+
+    /**
+     * 消息已读状态同步频道
+     */
+    public static final String MSG_READ_SYNC_CHANNEL = "cim-msg-read-sync-channel";
+
 
     public static final class OfflineStoreMode {
         /**

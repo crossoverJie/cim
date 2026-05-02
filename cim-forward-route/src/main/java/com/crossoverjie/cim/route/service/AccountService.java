@@ -66,6 +66,16 @@ public interface AccountService {
     void pushMsg(CIMServerResVO cimServerResVO, long sendUserId, ChatReqVO groupReqVO);
 
     /**
+     * 推送消息（带额外属性）
+     * @param cimServerResVO
+     * @param groupReqVO 消息
+     * @param sendUserId 发送者的ID
+     * @param extraProperties 额外的消息属性
+     * @throws Exception
+     */
+    void pushMsg(CIMServerResVO cimServerResVO, long sendUserId, ChatReqVO groupReqVO, Map<String, String> extraProperties);
+
+    /**
      * 用户下线
      * @param userId 下线用户ID
      * @throws Exception

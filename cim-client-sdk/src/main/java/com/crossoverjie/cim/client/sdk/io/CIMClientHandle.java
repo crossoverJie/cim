@@ -62,6 +62,12 @@ public class CIMClientHandle extends SimpleChannelInboundHandler<Response> {
         if (msg.getCmd() == BaseCommand.PING) {
             ClientImpl.getClient().getConf().getEvent().debug("received ping from server");
             NettyAttrUtil.updateReaderTime(ctx.channel(), System.currentTimeMillis());
+            return;
+        }
+
+        if (msg.getCmd() == BaseCommand.MESSAGE_READ_STATUS) {
+            handleReadStatusUpdate(msg);
+            return;
         }
 
         if (msg.getCmd() != BaseCommand.PING) {
@@ -85,6 +91,47 @@ public class CIMClientHandle extends SimpleChannelInboundHandler<Response> {
             });
         }
 
+    }
+
+    private void handleReadStatusUpdate(Response msg) {
+        Map<String, String> properties = msg.getPropertiesMap();
+        String msgIdStr = properties.get(Constants.MetaKey.MSG_ID);
+        String readUserIdStr = properties.get(Constants.MetaKey.READ_USER_ID);
+        String readUserName = properties.get(Constants.MetaKey.READ_USER_NAME);
+        String readTimestampStr = properties.get(Constants.MetaKey.READ_TIMESTAMP);
+
+        if (msgIdStr == null || readUserIdStr == null) {
+            log.warn("MESSAGE_READ_STATUS received but missing required properties");
+            return;
+        }
+
+        try {
+            long msgId = Long.parseLong(msgIdStr);
+            long readUserId = Long.parseLong(readUserIdStr);
+            long readTimestamp = readTimestampStr != null ? Long.parseLong(readTimestampStr) : System.currentTimeMillis();
+
+            String receiveUserId = properties.get(Constants.MetaKey.RECEIVE_USER_ID);
+            if (receiveUserId == null) {
+                log.warn("MESSAGE_READ_STATUS received but missing receiveUserId");
+                return;
+            }
+
+            ClientImpl client = ClientImpl.getClientMap().get(Long.valueOf(receiveUserId));
+            if (client == null) {
+                log.error("client not found for userId: {}", receiveUserId);
+                return;
+            }
+
+            client.getConf().getCallbackThreadPool().execute(() -> {
+                MessageListener messageListener = client.getConf().getMessageListener();
+                messageListener.onReadStatusUpdate(client, msgId, readUserId, readUserName, readTimestamp);
+                log.info("Read status update callback executed: msgId={}, readUserId={}, readUserName={}",
+                        msgId, readUserId, readUserName);
+            });
+
+        } catch (NumberFormatException e) {
+            log.error("Failed to parse MESSAGE_READ_STATUS properties", e);
+        }
     }
 
     @Override
