@@ -8,6 +8,7 @@ import com.crossoverjie.cim.client.sdk.FetchOfflineMsgJob;
 import com.crossoverjie.cim.client.sdk.ReConnectManager;
 import com.crossoverjie.cim.client.sdk.RouteManager;
 import com.crossoverjie.cim.client.sdk.io.CIMClientHandleInitializer;
+import com.crossoverjie.cim.common.constant.Constants;
 import com.crossoverjie.cim.common.data.construct.RingBufferWheel;
 import com.crossoverjie.cim.common.exception.CIMException;
 import com.crossoverjie.cim.common.kit.HeartBeatHandler;
@@ -280,6 +281,34 @@ public class ClientImpl extends ClientState implements Client {
     public CompletableFuture<Void> sendGroupAsync(String msg) {
         // TODO: 2024/9/12 return messageId
         return this.routeManager.sendGroupMsg(new ChatReqVO(this.conf.getAuth().getUserId(), msg, null));
+    }
+
+    @Override
+    public CompletableFuture<Void> sendReadAckAsync(long msgId) {
+        CompletableFuture<Void> future = new CompletableFuture<>();
+        
+        if (channel == null || !channel.isActive()) {
+            future.completeExceptionally(new IllegalStateException("Channel is not active"));
+            return future;
+        }
+
+        Request readAckRequest = Request.newBuilder()
+                .setRequestId(this.conf.getAuth().getUserId())
+                .setCmd(BaseCommand.MESSAGE_READ_ACK)
+                .putProperties(Constants.MetaKey.MSG_ID, String.valueOf(msgId))
+                .build();
+
+        channel.writeAndFlush(readAckRequest).addListener((ChannelFutureListener) channelFuture -> {
+            if (channelFuture.isSuccess()) {
+                log.info("Send read ack success: msgId={}", msgId);
+                future.complete(null);
+            } else {
+                log.error("Send read ack failed: msgId={}", msgId, channelFuture.cause());
+                future.completeExceptionally(channelFuture.cause());
+            }
+        });
+
+        return future;
     }
 
     @Override

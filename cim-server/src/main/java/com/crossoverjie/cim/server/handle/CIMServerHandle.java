@@ -1,11 +1,14 @@
 package com.crossoverjie.cim.server.handle;
 
+import com.crossoverjie.cim.common.constant.Constants;
 import com.crossoverjie.cim.common.exception.CIMException;
 import com.crossoverjie.cim.common.kit.HeartBeatHandler;
 import com.crossoverjie.cim.common.pojo.CIMUserInfo;
 import com.crossoverjie.cim.common.protocol.BaseCommand;
 import com.crossoverjie.cim.common.protocol.Request;
 import com.crossoverjie.cim.common.util.NettyAttrUtil;
+import com.crossoverjie.cim.route.api.RouteApi;
+import com.crossoverjie.cim.route.api.vo.req.MsgReadAckReqVO;
 import com.crossoverjie.cim.server.kit.RouteHandler;
 import com.crossoverjie.cim.server.kit.ServerHeartBeatHandlerImpl;
 import com.crossoverjie.cim.server.util.SessionSocketHolder;
@@ -17,6 +20,7 @@ import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.handler.timeout.IdleState;
 import io.netty.handler.timeout.IdleStateEvent;
+import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -94,6 +98,42 @@ public class CIMServerHandle extends SimpleChannelInboundHandler<Request> {
             });
         }
 
+        //消息已读回执
+        if (msg.getCmd() == BaseCommand.MESSAGE_READ_ACK) {
+            handleMsgReadAck(msg);
+        }
+
+    }
+
+    private void handleMsgReadAck(Request msg) {
+        Map<String, String> properties = msg.getPropertiesMap();
+        String msgIdStr = properties.get(Constants.MetaKey.MSG_ID);
+        
+        if (msgIdStr == null || msgIdStr.isEmpty()) {
+            log.warn("MESSAGE_READ_ACK received but msgId is missing");
+            return;
+        }
+
+        try {
+            long msgId = Long.parseLong(msgIdStr);
+            long userId = msg.getRequestId();
+            
+            log.info("Processing MESSAGE_READ_ACK: msgId={}, userId={}", msgId, userId);
+            
+            RouteApi routeApi = SpringBeanFactory.getBean(RouteApi.class);
+            MsgReadAckReqVO reqVO = new MsgReadAckReqVO();
+            reqVO.setMsgId(msgId);
+            reqVO.setUserId(userId);
+            reqVO.setTimestamp(System.currentTimeMillis());
+            
+            routeApi.msgReadAck(reqVO);
+            
+            log.info("MESSAGE_READ_ACK processed successfully: msgId={}, userId={}", msgId, userId);
+        } catch (NumberFormatException e) {
+            log.error("Invalid msgId format: {}", msgIdStr, e);
+        } catch (Exception e) {
+            log.error("Failed to process MESSAGE_READ_ACK", e);
+        }
     }
 
 

@@ -24,4 +24,6 @@ enum BaseCommand{
   MESSAGE = 1;
   PING = 2;
   OFFLINE = 3;
+  MESSAGE_READ_ACK = 4;
+  MESSAGE_READ_STATUS = 5;
 }

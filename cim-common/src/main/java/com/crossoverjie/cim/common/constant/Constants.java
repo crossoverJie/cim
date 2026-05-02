@@ -26,6 +26,11 @@ public class Constants {
         public static final String SEND_USER_NAME = "sendUserName";
         public static final String RECEIVE_USER_ID = "receiveUserId";
         public static final String RECEIVE_USER_NAME = "receiveUserName";
+        public static final String MSG_ID = "msgId";
+        public static final String GROUP_MEMBER_COUNT = "groupMemberCount";
+        public static final String READ_USER_ID = "readUserId";
+        public static final String READ_USER_NAME = "readUserName";
+        public static final String READ_TIMESTAMP = "readTimestamp";
     }
 
     //从数据库读取离线消息的每次获取量
