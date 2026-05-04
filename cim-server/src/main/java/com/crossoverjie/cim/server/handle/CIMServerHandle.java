@@ -6,6 +6,7 @@ import com.crossoverjie.cim.common.pojo.CIMUserInfo;
 import com.crossoverjie.cim.common.protocol.BaseCommand;
 import com.crossoverjie.cim.common.protocol.Request;
 import com.crossoverjie.cim.common.util.NettyAttrUtil;
+import com.crossoverjie.cim.server.kit.ReadReceiptHandler;
 import com.crossoverjie.cim.server.kit.RouteHandler;
 import com.crossoverjie.cim.server.kit.ServerHeartBeatHandlerImpl;
 import com.crossoverjie.cim.server.util.SessionSocketHolder;
@@ -19,33 +20,16 @@ import io.netty.handler.timeout.IdleState;
 import io.netty.handler.timeout.IdleStateEvent;
 import lombok.extern.slf4j.Slf4j;
 
-/**
- * Function:
- *
- * @author crossoverJie
- *         Date: 17/05/2018 18:52
- * @since JDK 1.8
- */
 @ChannelHandler.Sharable
 @Slf4j
 public class CIMServerHandle extends SimpleChannelInboundHandler<Request> {
 
-
-
-    /**
-     * 取消绑定
-     *
-     * @param ctx
-     * @throws Exception
-     */
     @Override
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
-        //可能出现业务判断离线后再次触发 channelInactive
         CIMUserInfo userInfo = SessionSocketHolder.getUserId((NioSocketChannel) ctx.channel());
         if (userInfo != null) {
             log.warn("[{}] trigger channelInactive offline!", userInfo.getUserName());
 
-            //Clear route info and offline.
             RouteHandler routeHandler = SpringBeanFactory.getBean(RouteHandler.class);
             routeHandler.userOffLine(userInfo, (NioSocketChannel) ctx.channel());
 
@@ -68,23 +52,18 @@ public class CIMServerHandle extends SimpleChannelInboundHandler<Request> {
         super.userEventTriggered(ctx, evt);
     }
 
-
-
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, Request msg) throws Exception {
         log.info("received msg=[{}]", msg.toString());
 
         if (msg.getCmd() == BaseCommand.LOGIN_REQUEST) {
-            //保存客户端与 Channel 之间的关系
             SessionSocketHolder.put(msg.getRequestId(), (NioSocketChannel) ctx.channel());
             SessionSocketHolder.saveSession(msg.getRequestId(), msg.getReqMsg());
             log.info("client [{}] online success!!", msg.getReqMsg());
         }
 
-        //心跳更新时间
         if (msg.getCmd() == BaseCommand.PING) {
             NettyAttrUtil.updateReaderTime(ctx.channel(), System.currentTimeMillis());
-            //向客户端响应 pong 消息
             Request heartBeat = SpringBeanFactory.getBean("heartBeat", Request.class);
             ctx.writeAndFlush(heartBeat).addListeners((ChannelFutureListener) future -> {
                 if (!future.isSuccess()) {
@@ -94,8 +73,25 @@ public class CIMServerHandle extends SimpleChannelInboundHandler<Request> {
             });
         }
 
-    }
+        if (msg.getCmd() == BaseCommand.P2P_MSG_READ) {
+            ReadReceiptHandler readReceiptHandler = SpringBeanFactory.getBean(ReadReceiptHandler.class);
+            readReceiptHandler.handleP2PMsgRead(msg);
+            log.info("Handled P2P_MSG_READ command for userId={}", msg.getRequestId());
+        }
 
+        if (msg.getCmd() == BaseCommand.CONVERSATION_READ) {
+            ReadReceiptHandler readReceiptHandler = SpringBeanFactory.getBean(ReadReceiptHandler.class);
+            readReceiptHandler.handleConversationRead(msg);
+            log.info("Handled CONVERSATION_READ command for userId={}", msg.getRequestId());
+        }
+
+        if (msg.getCmd() == BaseCommand.GROUP_MSG_READ) {
+            ReadReceiptHandler readReceiptHandler = SpringBeanFactory.getBean(ReadReceiptHandler.class);
+            readReceiptHandler.handleGroupMsgRead(msg);
+            log.info("Handled GROUP_MSG_READ command for userId={}", msg.getRequestId());
+        }
+
+    }
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {

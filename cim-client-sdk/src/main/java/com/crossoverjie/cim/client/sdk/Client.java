@@ -5,7 +5,10 @@ import com.crossoverjie.cim.client.sdk.impl.ClientConfigurationData;
 import com.crossoverjie.cim.common.pojo.CIMUserInfo;
 import com.crossoverjie.cim.route.api.vo.req.P2PReqVO;
 import com.crossoverjie.cim.route.api.vo.res.CIMServerResVO;
+import com.crossoverjie.cim.route.api.vo.res.GroupReadCountResVO;
+import com.crossoverjie.cim.route.api.vo.res.UnreadCountResVO;
 import java.io.Closeable;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
@@ -27,6 +30,34 @@ public interface Client extends Closeable {
     }
 
     CompletableFuture<Void> sendGroupAsync(String msg);
+
+    default void sendP2PMsgRead(Long messageId, Long sendUserId, String conversationId) throws Exception {
+        sendP2PMsgReadAsync(messageId, sendUserId, conversationId).get();
+    }
+
+    CompletableFuture<Void> sendP2PMsgReadAsync(Long messageId, Long sendUserId, String conversationId);
+
+    default void sendConversationRead(String conversationId, Integer conversationType, 
+                                       Long beforeMessageId, Long targetUserId, Long groupId) throws Exception {
+        sendConversationReadAsync(conversationId, conversationType, beforeMessageId, targetUserId, groupId).get();
+    }
+
+    CompletableFuture<Void> sendConversationReadAsync(String conversationId, Integer conversationType,
+                                                        Long beforeMessageId, Long targetUserId, Long groupId);
+
+    default void sendGroupMsgRead(Long messageId, Long groupId, Integer totalMembers) throws Exception {
+        sendGroupMsgReadAsync(messageId, groupId, totalMembers).get();
+    }
+
+    CompletableFuture<Void> sendGroupMsgReadAsync(Long messageId, Long groupId, Integer totalMembers);
+
+    UnreadCountResVO getP2PUnreadCount(String conversationId) throws Exception;
+
+    UnreadCountResVO getGroupUnreadCount(Long groupId) throws Exception;
+
+    GroupReadCountResVO getGroupMsgReadCount(Long groupId, Long messageId) throws Exception;
+
+    List<GroupReadCountResVO> getGroupMsgsReadCount(Long groupId, List<Long> messageIds) throws Exception;
 
     ClientState.State getState();
 

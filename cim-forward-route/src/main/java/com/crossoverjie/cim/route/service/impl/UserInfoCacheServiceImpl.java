@@ -13,15 +13,8 @@ import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 
+import static com.crossoverjie.cim.route.constant.Constant.ACCOUNT_PREFIX;
 import static com.crossoverjie.cim.route.constant.Constant.LOGIN_STATUS_PREFIX;
-
-/**
- * Function:
- *
- * @author crossoverJie
- *         Date: 2018/12/24 11:06
- * @since JDK 1.8
- */
 
 @Slf4j
 @Service
@@ -35,13 +28,11 @@ public class UserInfoCacheServiceImpl implements UserInfoCacheService {
 
     @Override
     public Optional<CIMUserInfo> loadUserInfoByUserId(Long userId) {
-        //Retrieve user information using a second-level cache.
         return userInfoMap.get(userId);
     }
 
     @Override
     public boolean saveAndCheckUserLoginStatus(Long userId) throws Exception {
-
         Long add = redisTemplate.opsForSet().add(LOGIN_STATUS_PREFIX, userId.toString());
         return add != 0;
     }
@@ -65,4 +56,20 @@ public class UserInfoCacheServiceImpl implements UserInfoCacheService {
         return set;
     }
 
+    @Override
+    public Set<Long> getRegisteredUserIds() {
+        Set<Long> userIds = new HashSet<>();
+        Set<String> keys = redisTemplate.keys(ACCOUNT_PREFIX + "*");
+        if (keys != null) {
+            for (String key : keys) {
+                try {
+                    String userIdStr = key.replace(ACCOUNT_PREFIX, "");
+                    userIds.add(Long.parseLong(userIdStr));
+                } catch (NumberFormatException e) {
+                    log.warn("Skipping invalid account key: {}", key);
+                }
+            }
+        }
+        return userIds;
+    }
 }

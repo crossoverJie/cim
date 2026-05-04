@@ -8,6 +8,7 @@ import com.crossoverjie.cim.client.sdk.FetchOfflineMsgJob;
 import com.crossoverjie.cim.client.sdk.ReConnectManager;
 import com.crossoverjie.cim.client.sdk.RouteManager;
 import com.crossoverjie.cim.client.sdk.io.CIMClientHandleInitializer;
+import com.crossoverjie.cim.common.constant.Constants;
 import com.crossoverjie.cim.common.data.construct.RingBufferWheel;
 import com.crossoverjie.cim.common.exception.CIMException;
 import com.crossoverjie.cim.common.kit.HeartBeatHandler;
@@ -18,6 +19,8 @@ import com.crossoverjie.cim.route.api.vo.req.ChatReqVO;
 import com.crossoverjie.cim.route.api.vo.req.LoginReqVO;
 import com.crossoverjie.cim.route.api.vo.req.P2PReqVO;
 import com.crossoverjie.cim.route.api.vo.res.CIMServerResVO;
+import com.crossoverjie.cim.route.api.vo.res.GroupReadCountResVO;
+import com.crossoverjie.cim.route.api.vo.res.UnreadCountResVO;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.ChannelFuture;
@@ -28,6 +31,8 @@ import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.util.concurrent.DefaultThreadFactory;
 
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -52,7 +57,6 @@ public class ClientImpl extends ClientState implements Client {
     private static final int CALLBACK_QUEUE_SIZE = 1024;
     private static final int CALLBACK_POOL_SIZE = 10;
 
-    // ======= private ========
     private int errorCount;
     private SocketChannel channel;
 
@@ -72,7 +76,6 @@ public class ClientImpl extends ClientState implements Client {
 
     private RingBufferWheel ringBufferWheel;
 
-    // Client connected server info
     private CIMServerResVO serverInfo;
 
     public ClientImpl(ClientConfigurationData conf) {
@@ -104,9 +107,6 @@ public class ClientImpl extends ClientState implements Client {
         postConnectionSetup();
     }
 
-    /**
-     * 1. Pull offline messages from the server
-     */
     private void postConnectionSetup() {
         ringBufferWheel = new RingBufferWheel(Executors.newFixedThreadPool(1));
         ringBufferWheel.addTask(new FetchOfflineMsgJob(routeManager, conf));
@@ -134,11 +134,6 @@ public class ClientImpl extends ClientState implements Client {
         });
     }
 
-    /**
-     * 1. User login and get target server
-     * 2. Connect target server
-     * 3. send login cmd to server
-     */
     private CompletableFuture<Boolean> doConnectServer() {
         CompletableFuture<Boolean> future = new CompletableFuture<>();
         this.userLogin(future).ifPresentOrElse((cimServer) -> {
@@ -154,11 +149,6 @@ public class ClientImpl extends ClientState implements Client {
         return future;
     }
 
-    /**
-     * Login and get server info
-     *
-     * @return Server info
-     */
     private Optional<CIMServerResVO> userLogin(CompletableFuture<Boolean> future) {
         LoginReqVO loginReqVO = new LoginReqVO(conf.getAuth().getUserId(),
                 conf.getAuth().getUserName());
@@ -193,9 +183,6 @@ public class ClientImpl extends ClientState implements Client {
         }
     }
 
-    /**
-     * Send login cmd to server
-     */
     private void loginServer() {
         Request login = Request.newBuilder()
                 .setRequestId(this.conf.getAuth().getUserId())
@@ -208,26 +195,17 @@ public class ClientImpl extends ClientState implements Client {
                 );
     }
 
-    /**
-     * 1. clear route information.
-     * 2. reconnect.
-     * 3. shutdown reconnect job.
-     * 4. reset reconnect state.
-     * @throws Exception
-     */
     public void reconnect() throws Exception {
         if (channel != null && channel.isActive()) {
             return;
         }
         this.serverInfo = null;
-        // clear route information.
         this.routeManager.offLine(this.getConf().getAuth().getUserId());
 
         this.conf.getEvent().info("cim trigger reconnecting....");
 
         this.conf.getBackoffStrategy().runBackoff();
 
-        // don't set State ready, because when connect success, the State will be set to ready automate.
         connectServer(v -> {
             this.reConnectManager.reConnectSuccess();
             this.conf.getEvent().info("Great! reConnect success!!!");
@@ -278,8 +256,60 @@ public class ClientImpl extends ClientState implements Client {
 
     @Override
     public CompletableFuture<Void> sendGroupAsync(String msg) {
-        // TODO: 2024/9/12 return messageId
         return this.routeManager.sendGroupMsg(new ChatReqVO(this.conf.getAuth().getUserId(), msg, null));
+    }
+
+    @Override
+    public CompletableFuture<Void> sendP2PMsgReadAsync(Long messageId, Long sendUserId, String conversationId) {
+        return routeManager.sendP2PMsgRead(
+                this.conf.getAuth().getUserId(),
+                messageId,
+                sendUserId,
+                conversationId
+        );
+    }
+
+    @Override
+    public CompletableFuture<Void> sendConversationReadAsync(String conversationId, Integer conversationType,
+                                                              Long beforeMessageId, Long targetUserId, Long groupId) {
+        return routeManager.sendConversationRead(
+                this.conf.getAuth().getUserId(),
+                conversationId,
+                conversationType,
+                beforeMessageId,
+                targetUserId,
+                groupId
+        );
+    }
+
+    @Override
+    public CompletableFuture<Void> sendGroupMsgReadAsync(Long messageId, Long groupId, Integer totalMembers) {
+        return routeManager.sendGroupMsgRead(
+                this.conf.getAuth().getUserId(),
+                messageId,
+                groupId,
+                totalMembers
+        );
+    }
+
+    @Override
+    public UnreadCountResVO getP2PUnreadCount(String conversationId) throws Exception {
+        return routeManager.getP2PUnreadCount(this.conf.getAuth().getUserId(), conversationId);
+    }
+
+    @Override
+    public UnreadCountResVO getGroupUnreadCount(Long groupId) throws Exception {
+        return routeManager.getGroupUnreadCount(this.conf.getAuth().getUserId(), groupId);
+    }
+
+    @Override
+    public GroupReadCountResVO getGroupMsgReadCount(Long groupId, Long messageId) throws Exception {
+        return routeManager.getGroupMsgReadCount(groupId, messageId);
+    }
+
+    @Override
+    public List<GroupReadCountResVO> getGroupMsgsReadCount(Long groupId, List<Long> messageIds) throws Exception {
+        return routeManager.getGroupMsgsReadCount(groupId, messageIds);
     }
 
     @Override

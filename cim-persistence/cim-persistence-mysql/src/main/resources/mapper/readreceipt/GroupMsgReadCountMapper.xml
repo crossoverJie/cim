@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.crossoverjie.cim.persistence.mysql.readreceipt.mapper.P2PMsgReadStatusMapper">
+
+    <insert id="insert" parameterType="map">
+        INSERT INTO ${tableName} (
+        message_id,
+        send_user_id,
+        receive_user_id,
+        conversation_id,
+        is_read,
+        read_at,
+        created_at
+        ) VALUES (
+        #{status.messageId},
+        #{status.sendUserId},
+        #{status.receiveUserId},
+        #{status.conversationId},
+        #{status.isRead},
+        #{status.readAt},
+        #{status.createdAt}
+        )
+    </insert>
+
+    <insert id="insertBatch" parameterType="map">
+        INSERT INTO ${tableName} (
+        message_id,
+        send_user_id,
+        receive_user_id,
+        conversation_id,
+        is_read,
+        read_at,
+        created_at
+        ) VALUES
+        <foreach collection="list" item="item" separator=",">
+            (
+            #{item.messageId},
+            #{item.sendUserId},
+            #{item.receiveUserId},
+            #{item.conversationId},
+            #{item.isRead},
+            #{item.readAt},
+            #{item.createdAt}
+            )
+        </foreach>
+    </insert>
+
+    <select id="selectByMessageIdAndUserId" resultType="com.crossoverjie.cim.persistence.api.pojo.P2PMsgReadStatus">
+        SELECT
+        message_id,
+        send_user_id,
+        receive_user_id,
+        conversation_id,
+        is_read,
+        read_at,
+        created_at
+        FROM ${tableName}
+        WHERE message_id = #{messageId}
+        AND receive_user_id = #{receiveUserId}
+    </select>
+
+    <select id="selectUnreadByConversation" resultType="com.crossoverjie.cim.persistence.api.pojo.P2PMsgReadStatus">
+        SELECT
+        message_id,
+        send_user_id,
+        receive_user_id,
+        conversation_id,
+        is_read,
+        read_at,
+        created_at
+        FROM ${tableName}
+        WHERE receive_user_id = #{receiveUserId}
+        AND conversation_id = #{conversationId}
+        AND is_read = 0
+        ORDER BY message_id ASC
+    </select>
+
+    <update id="updateReadStatus" parameterType="map">
+        UPDATE ${tableName}
+        SET is_read = 1,
+            read_at = NOW()
+        WHERE message_id = #{messageId}
+        AND receive_user_id = #{receiveUserId}
+    </update>
+
+    <update id="updateReadStatusByConversation" parameterType="map">
+        UPDATE ${tableName}
+        SET is_read = 1,
+            read_at = NOW()
+        WHERE receive_user_id = #{receiveUserId}
+        AND conversation_id = #{conversationId}
+        AND is_read = 0
+        AND message_id &lt;= #{beforeMessageId}
+    </update>
+
+    <select id="countUnreadByConversation" resultType="java.lang.Long">
+        SELECT COUNT(*)
+        FROM ${tableName}
+        WHERE receive_user_id = #{receiveUserId}
+        AND conversation_id = #{conversationId}
+        AND is_read = 0
+    </select>
+
+</mapper>
