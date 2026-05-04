@@ -19,9 +19,69 @@ message Response{
   repeated string batchResMsg = 5;
 }
 
+message P2PMsgReadRequest{
+  int64 message_id = 1;
+  int64 send_user_id = 2;
+  int64 receive_user_id = 3;
+  string conversation_id = 4;
+}
+
+message ConversationReadRequest{
+  int64 user_id = 1;
+  string conversation_id = 2;
+  int64 before_message_id = 3;
+}
+
+message GroupMsgReadRequest{
+  int64 message_id = 1;
+  int64 group_id = 2;
+  int64 user_id = 3;
+}
+
+message ReadReceiptPush{
+  int64 message_id = 1;
+  int64 reader_user_id = 2;
+  string reader_user_name = 3;
+  int32 read_type = 4;
+  int64 read_at = 5;
+  map<string, string> properties = 6;
+}
+
+message GroupReadCountPush{
+  int64 group_id = 1;
+  int64 message_id = 2;
+  int32 read_count = 3;
+  int32 total_members = 4;
+  int64 read_at = 5;
+}
+
+enum ReadType{
+  READ_TYPE_UNKNOWN = 0;
+  READ_TYPE_SINGLE = 1;
+  READ_TYPE_CONVERSATION = 2;
+}
+
+enum MessageType{
+  MSG_TYPE_TEXT = 0;
+  MSG_TYPE_IMAGE = 1;
+  MSG_TYPE_VOICE = 2;
+  MSG_TYPE_VIDEO = 3;
+  MSG_TYPE_FILE = 4;
+}
+
+enum ConversationType{
+  CONVERSATION_TYPE_P2P = 0;
+  CONVERSATION_TYPE_GROUP = 1;
+}
+
 enum BaseCommand{
   LOGIN_REQUEST = 0;
   MESSAGE = 1;
   PING = 2;
   OFFLINE = 3;
+  P2P_MSG_READ = 4;
+  CONVERSATION_READ = 5;
+  GROUP_MSG_READ = 6;
+  READ_RECEIPT_PUSH = 7;
+  GROUP_READ_COUNT_PUSH = 8;
 }
