@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Function:字典树字符前缀模糊匹配
+ * Function: Trie tree prefix fuzzy matching
  *
  * @author crossoverJie
  *         Date: 2019/1/7 18:58
@@ -15,19 +15,19 @@ import java.util.List;
 public class TrieTree {
 
     /**
-     * 大小写都可保存
+     * Supports both uppercase and lowercase
      */
     private static final int CHILDREN_LENGTH = 26 * 2;
 
     /**
-     * 存放的最大字符串长度
+     * Maximum string length stored
      */
     private static final int MAX_CHAR_LENGTH = 16;
 
     private static final char UPPERCASE_STAR = 'A';
 
     /**
-     * 小写就要 -71
+     * Lowercase offset is -71
      */
     private static final char LOWERCASE_STAR = 'G';
 
@@ -38,7 +38,7 @@ public class TrieTree {
     }
 
     /**
-     * 写入
+     * Insert
      *
      * @param data
      */
@@ -54,7 +54,7 @@ public class TrieTree {
             if (Character.isUpperCase(aChar)) {
                 index = aChar - UPPERCASE_STAR;
             } else {
-                //小写就要 -71
+                //Lowercase offset is -71
                 index = aChar - LOWERCASE_STAR;
             }
 
@@ -67,12 +67,12 @@ public class TrieTree {
 
                 }
 
-                //最后一个字符设置标志
+                //Set end flag for last character
                 if (i + 1 == chars.length) {
                     root.children[index].isEnd = true;
                 }
 
-                //指向下一节点
+                //Move to next node
                 root = root.children[index];
             }
 
@@ -81,7 +81,7 @@ public class TrieTree {
 
 
     /**
-     * 递归深度遍历
+     * Recursive depth traversal
      *
      * @param key
      * @return
@@ -149,7 +149,7 @@ public class TrieTree {
 
 
     /**
-     * 查询所有
+     * Get all entries
      *
      * @return
      */
@@ -204,16 +204,16 @@ public class TrieTree {
 
 
     /**
-     * 字典树节点
+     * Trie tree node
      */
     private class Node {
         /**
-         * 是否为最后一个字符
+         * Whether this is the last character
          */
         public boolean isEnd = false;
 
         /**
-         * 如果只是查询，则不需要存储数据
+         * Data storage is not needed for query-only nodes
          */
         public char data;
 

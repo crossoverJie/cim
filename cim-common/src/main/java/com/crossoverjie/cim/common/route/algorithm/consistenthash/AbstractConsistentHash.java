@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Function:一致性 hash 算法抽象类
+ * Function: Consistent hash algorithm abstract class
  *
  * @author crossoverJie
  * Date: 2019-02-27 00:35
@@ -16,7 +16,7 @@ import java.util.Map;
 public abstract class AbstractConsistentHash {
 
     /**
-     * 新增节点
+     * Add a new node
      * @param key
      * @param value
      */
@@ -35,19 +35,19 @@ public abstract class AbstractConsistentHash {
     protected abstract void clear();
 
     /**
-     * 排序节点，数据结构自身支持排序可以不用重写
+     * Sort nodes, data structures that support sorting natively may override this
      */
     protected void sort() { }
 
     /**
-     * 根据当前的 key 通过一致性 hash 算法的规则取出一个节点
+     * Get a node based on the current key using consistent hash algorithm
      * @param value
      * @return
      */
     protected abstract String getFirstNodeValue(String value);
 
     /**
-     * 传入节点列表以及客户端信息获取一个服务节点
+     * Get a service node from the node list and client key
      * @param values
      * @param key
      * @return
@@ -64,7 +64,7 @@ public abstract class AbstractConsistentHash {
     }
 
     /**
-     * hash 运算
+     * Hash computation
      * @param value
      * @return
      */

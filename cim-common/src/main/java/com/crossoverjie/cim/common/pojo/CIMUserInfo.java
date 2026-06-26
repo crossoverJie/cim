@@ -5,7 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * Function: 用户信息
+ * Function: User information
  *
  * @author crossoverJie
  *         Date: 2018/12/24 02:33

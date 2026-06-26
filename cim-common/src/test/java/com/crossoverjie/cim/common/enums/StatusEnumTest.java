@@ -7,17 +7,16 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
- * Function: 测试 StatusEnum 枚举类
+ * Function: Test StatusEnum enum class
  * Date: 01/04/2026 20:00
  */
 public class StatusEnumTest {
 
     /**
-     * 测试枚举值是否存在
+     * Test enum values exist
      */
     @Test
     public void testEnumValues() {
-        // 测试枚举值存在
         assertNotNull(StatusEnum.SUCCESS);
         assertNotNull(StatusEnum.FAIL);
         assertNotNull(StatusEnum.FALLBACK);
@@ -34,7 +33,7 @@ public class StatusEnumTest {
     }
 
     /**
-     * 测试枚举值码
+     * Test enum codes
      */
     @Test
     public void testGetCode() {
@@ -54,7 +53,7 @@ public class StatusEnumTest {
     }
 
     /**
-     * 测试枚举描述
+     * Test enum messages
      */
     @Test
     public void testGetMessage() {
@@ -68,7 +67,7 @@ public class StatusEnumTest {
     }
 
     /**
-     * 测试枚举值码方法
+     * Test code() method
      */
     @Test
     public void testCodeMethod() {
@@ -78,7 +77,7 @@ public class StatusEnumTest {
     }
 
     /**
-     * 测试枚举描述方法
+     * Test message() method
      */
     @Test
     public void testMessageMethod() {
@@ -87,7 +86,7 @@ public class StatusEnumTest {
     }
 
     /**
-     * 测试通过枚举值码查找枚举值
+     * Test findStatus success
      */
     @Test
     public void testFindStatusSuccess() {
@@ -96,7 +95,7 @@ public class StatusEnumTest {
     }
 
     /**
-     * 测试通过枚举值码查找枚举值
+     * Test findStatus fail
      */
     @Test
     public void testFindStatusFail() {
@@ -105,7 +104,7 @@ public class StatusEnumTest {
     }
 
     /**
-     * 测试通过枚举值码查找枚举值
+     * Test findStatus validation fail
      */
     @Test
     public void testFindStatusValidationFail() {
@@ -114,7 +113,7 @@ public class StatusEnumTest {
     }
 
     /**
-     * 测试通过枚举值码查找枚举值
+     * Test findStatus illegal argument
      */
     @Test
     public void testFindStatusIllegalArgument() {
@@ -124,7 +123,7 @@ public class StatusEnumTest {
     }
 
     /**
-     * 测试通过枚举值码查找枚举值
+     * Test findStatus null
      */
     @Test
     public void testFindStatusNull() {
@@ -134,7 +133,7 @@ public class StatusEnumTest {
     }
 
     /**
-     * 测试获取全部枚举值
+     * Test get all enum values
      */
     @Test
     public void testGetAllStatus() {
@@ -148,7 +147,7 @@ public class StatusEnumTest {
     }
 
     /**
-     * 测试获取全部枚举值码
+     * Test get all enum codes
      */
     @Test
     public void testGetAllStatusCode() {
@@ -163,7 +162,7 @@ public class StatusEnumTest {
     }
 
     /**
-     * 测试离线消息枚举值
+     * Test offline message enums
      */
     @Test
     public void testOfflineMessageEnums() {
