@@ -22,7 +22,7 @@ public enum StatusEnum {
     REPEAT_LOGIN("5000", "Repeat login, log out an account please!"),
 
     /** Request rate limited */
-    REQUEST_LIMIT("6000", "Request rate limited"),
+    REQUEST_LIMIT("6000", "请求限流"),
 
     /** Account offline */
     OFF_LINE("7000", "You selected user is offline!, please try again later!"),
