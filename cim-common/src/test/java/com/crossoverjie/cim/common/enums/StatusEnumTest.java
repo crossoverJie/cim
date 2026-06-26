@@ -62,7 +62,7 @@ public class StatusEnumTest {
         assertEquals("invalid argument", StatusEnum.VALIDATION_FAIL.getMessage());
         assertEquals("Failure", StatusEnum.FAIL.getMessage());
         assertEquals("Repeat login, log out an account please!", StatusEnum.REPEAT_LOGIN.getMessage());
-        assertEquals("Request rate limited", StatusEnum.REQUEST_LIMIT.getMessage());
+        assertEquals("请求限流", StatusEnum.REQUEST_LIMIT.getMessage());
         assertEquals("You selected user is offline!, please try again later!", StatusEnum.OFF_LINE.getMessage());
     }
 
